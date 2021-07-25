@@ -600,5 +600,4 @@ module.exports = {
             }
         }
     },
-    
 }
