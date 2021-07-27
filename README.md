@@ -57,7 +57,7 @@ simplydjs.antiSwear(message, {
 ```
 <br>
 
-## **Antiswear options.** (not required)
+## **Antiswear options.** (Optional)
 
 **words:** Custom Blacklisted words.. Need to be array if its more than one (words: ['this is', 'an Array'])
 
@@ -77,7 +77,7 @@ simplydjs.ghostPing(message, {
 ```
 <br>
 
-## **Ghost Ping options.** (not required)
+## **Ghost Ping options.** (Optional)
 
  **embedColor:** Embed Color for the ghost ping message
 
@@ -101,7 +101,7 @@ simplydjs.tictactoe(message, {
 ```
 <br>
 
-## **TicTacToe options.** (not required)
+## **TicTacToe options.** (Optional)
 
 **xEmoji:** Emoji for the "X" user and symbol for buttons (X & O in tictactoe)
 
@@ -126,7 +126,7 @@ simplydjs.calculator(message, {
 ```
 <br>
 
-## **Calculator options.** (not required)
+## **Calculator options.** (Optional)
 
 **embedColor:** Embed Color for the calculator results
 <br>
@@ -158,7 +158,7 @@ simplydjs.embedPages(client, message, pages, {
 ```
 <br>
 
-## **Embed Pages options.** (not required)
+## **Embed Pages options.** (Optional)
 
  **forwardEmoji:** Emoji for the button which moves the page forward
 
@@ -222,7 +222,7 @@ simplydjs.ticketSystem(message, message.channel)
 ### See.. Its small and simple right ?
 <br>
 
-## **Ticket System options.** (not required)
+## **Ticket System options.** (Optional)
 
 ### **simplydjs.ticketSystem Options**
 #### Customization that occurs before ticket has been opened.
