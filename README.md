@@ -57,7 +57,7 @@ simplydjs.antiSwear(message, {
 ```
 <br>
 
-## **Antiswear options.** (not required)
+## **Antiswear options.** (Optional)
 
 **words:** Custom Blacklisted words.. Need to be array if its more than one (words: ['this is', 'an Array'])
 
