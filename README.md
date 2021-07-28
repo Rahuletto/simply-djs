@@ -10,7 +10,7 @@
 <p align="center">
    <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a><br>
    <a href="https://www.npmjs.com/package/simply-djs"><img src="https://nodei.co/npm/simply-djs.png?downloadRank=true&downloads=true&downloadRank=true&stars=true" /></a><br>
-   <a href="https://discord.gg/CjHX8eTK"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
+   <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
 </p>
 
 <br>
@@ -22,7 +22,7 @@ npm install simply-djs
 <br>
 
 
-## **Need Help ? Join the [Discord Server](https://discord.gg/CjHX8eTK)**
+## **Need Help ? Join the [Discord Server](https://discord.gg/3JzDV9T5Fn)**
 ### We love to help people. Join the server. Dont be shy.
 <br>
 
@@ -42,28 +42,39 @@ disbut(client)
 
 <br>
 
-## <b>Antiswear
-### Total of 350+ swear words as default
+## Whats New ?
+<br>
 
+## **Webhooks**
 ```js
 const simplydjs = require('simply-djs')
 
-// message event
-simplydjs.antiSwear(message, {
-    words: ['1', '2', '3'] // or words: 'one word only'
-    whitelistwords: ['1', '2', '3'] // or whitelistwords: 'one word only'
-    msg: 'stop swearing ;(' // default: @ping `You are not allowed to say that..`
+// any event
+simplydjs.webhooks(client, {
+    chid: 'channel id', // required
+    msg: 'message (not embed)',
+    embed: exampleEmbed, // an embed
+    // u need atleast one (msg or embed) to send or it will give errors
+    username: 'webhook username', // default: ur bot username
+    avatar: 'webhook avatar', // default: ur bot avatar
 })
 ```
 <br>
 
-## **Antiswear options.** (Optional)
+#
 
-**words:** Custom Blacklisted words.. Need to be array if its more than one (words: ['this is', 'an Array'])
-
-**whitelistwords:** Some people dont want to delete some swear words. Need to be array if its more than on (whitelistwords: ['this is', 'an Array'])
-
-**msg:** Message sent when someone swears
+## **Steal Emoji**
+```js
+const simplydjs = require('simply-djs')
+// message event
+// steal command
+simplydjs.stealEmoji(message, args, {
+    embedTitle: 'Title', // default: `Emoji Added ;)`
+    embedColor: 'hex code', //default: #075FFF;
+    embedFoot: 'Text for Footer', // default: 'Stop stealing.. its illegal.'
+    failedMsg: 'sorry emoji not found' //default: "Couldn't find an emoji from it"
+})
+```
 <br>
 
 ## **Ghost Ping**
@@ -75,14 +86,6 @@ simplydjs.ghostPing(message, {
     embedFoot: 'Text for Footer' //default: 'Ghost Ping'
 })
 ```
-<br>
-
-## **Ghost Ping options.** (Optional)
-
- **embedColor:** Embed Color for the ghost ping message
-
- **embedFooter:** Embed Footer for the ghost ping message
-
 <br>
 
 ## <b>TicTacToe (Using Buttons)
@@ -101,19 +104,6 @@ simplydjs.tictactoe(message, {
 ```
 <br>
 
-## **TicTacToe options.** (Optional)
-
-**xEmoji:** Emoji for the "X" user and symbol for buttons (X & O in tictactoe)
-
-**oEmoji:** Emoji for the "O" user and symbol for buttons (X & O in tictactoe)
-
-**idleEmoji:** Emoji when the spot is empty in tictactoe
-
-**embedColor:** Embed Color for the tictactoe guide
-
-**embedFoot:** Embed Footer for the tictactoe guide
-<br>
-
 ## <b>Calculator (Using Buttons)
 ```js
 const simplydjs = require('simply-djs')
@@ -124,11 +114,6 @@ simplydjs.calculator(message, {
     embedColor: 'hex code', //default: #075FFF
 })
 ```
-<br>
-
-## **Calculator options.** (Optional)
-
-**embedColor:** Embed Color for the calculator results
 <br>
 
 ## **Embed Pages**
@@ -156,16 +141,6 @@ simplydjs.embedPages(client, message, pages, {
  // Colors that discord-buttons support. like red, blurple, grey, green
 })
 ```
-<br>
-
-## **Embed Pages options.** (Optional)
-
- **forwardEmoji:** Emoji for the button which moves the page forward
-
- **embedFooter:** Emoji for the button which moves the page backward
-
- **color:** Button Color. | Only colors that Discord Buttons support. like red, blurple, grey, green
-
 <br>
 
 ## <b>Ticket System (Using Buttons)
@@ -219,47 +194,8 @@ simplydjs.ticketSystem(message, message.channel)
 ```
 <br>
 
-### See.. Its small and simple right ?
-<br>
-
-## **Ticket System options.** (Optional)
-
-### **simplydjs.ticketSystem Options**
-#### Customization that occurs before ticket has been opened.
-<br>
-
-**embedDesc:** The Description for the Ticket System Embed (Embed that has ticket button that opens a ticket)
-
-**embedColor:** The Color of the Ticket System Embed (Embed that has ticket button that opens a ticket)
-
-**embedFoot:** The Footer for the Ticket System Embed (Embed that has ticket button that opens a ticket)
-
-**emoji:** The Emoji for the Ticket Button which opens a ticket
-
-**color:** The Color for the Ticket Button which opens a ticket. | Only colors that Discord Buttons support. like red, blurple, grey, green
-
-<br>
-
-### **simplydjs.clickBtn Options**
-#### Customization that occurs when ticket has been opened.
-<br>
-
-**embedDesc:** The Description for the Ticket System Embed (Embed which sends after creating ticket)
-
-**embedColor:** The Color of the Ticket System Embed (Embed which sends after creating ticket)
-
-**embedFoot:** The Footer for the Ticket System Embed (Embed which sends after creating ticket)
-<br>
-
-#### Ticket Buttons Customization
-
-**closeEmoji/delEmoji/openEmoji:** The Emoji used for the close/delete/reopen ticket button
-
-**closeColor/delColor/openColor:** The Color used for the close/delete/reopen ticket button | Only red, blurple, grey, green
-
-<br>
 
  <h1>Contact us | Support</h1>
  <p>
-<a href="https://discord.gg/CjHX8eTK"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
+<a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
 </p>
