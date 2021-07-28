@@ -8,7 +8,7 @@
  
 <br>
 <p align="center">
-   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a><br>
+   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a>  <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs.svg?style=flat-square" /></a><br>
    <a href="https://www.npmjs.com/package/simply-djs"><img src="https://nodei.co/npm/simply-djs.png?downloadRank=true&downloads=true&downloadRank=true&stars=true" /></a><br>
    <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
 </p>
