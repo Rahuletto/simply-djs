@@ -2,7 +2,7 @@
 #### This is an example of tictactoe (discord-buttons required)
 <br>
 
-## With Cusomizations
+## With Customization
 ```js
 const simplydjs = require('simply-djs')
 
@@ -16,7 +16,7 @@ simplydjs.tictactoe(message, {
     embedFoot: 'text for footer' //default: 'Make sure to win ;)' 
 })
 ```
-## Without Cusomizations
+## Without Customization
 ```js
 const simplydjs = require('simply-djs')
 
