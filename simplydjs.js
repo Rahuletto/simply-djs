@@ -626,7 +626,7 @@ module.exports = {
 
     webhooks: async function (client, options = []) {
 
-        if (!options.chid && !options.webhookURL) throw new Error('EMPTY_CHANNEL_ID & NO_WEBHOOK_URL. You didnt specify a channel id (or) a webhook url. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
+        if (!options.chid) throw new Error('EMPTY_CHANNEL_ID & NO_WEBHOOK_URL. You didnt specify a channel id (or) a webhook url. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
         if (!options.msg && !options.embed) throw new Error('Cannot send a empty message. Please specify a embed or message. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
@@ -635,7 +635,6 @@ module.exports = {
         if (!channel) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
         try {
-            if(channel){
             const webhooks = await channel.fetchWebhooks();
 
             let webhook = webhooks.first();
@@ -663,33 +662,6 @@ module.exports = {
                     embeds: [options.embed],
                 })
             }
-
-        } else if(options.webhookURL){ 
-            snekfetch.get(options.webhookURL).then((res) => {
-                let parsed = JSON.parse(res.text);
-                Object.assign({}, parsed);
-                let id = parsed.id;
-                let token = parsed.token;
-
-                const webhook = new Discord.WebhookClient(id, token)
-
-                if (!options.embed) {
-                    await webhook.send(options.msg || ' ', {
-                        username: options.username || client.user.username,
-                        avatarURL: options.avatar || client.user.displayAvatarURL(),
-                    })
-                } else {
-                    await webhook.send(options.msg || ' ', {
-                        username: options.username || client.user.username,
-                        avatarURL: options.avatar || client.user.displayAvatarURL(),
-                        embeds: [options.embed],
-                    })
-                }
-            })
-            .catch((err) => {
-                throw err;
-            })
-        }
     
         } catch (error) {
             console.error('Error trying to send: ', error);
