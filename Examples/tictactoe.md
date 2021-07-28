@@ -27,8 +27,8 @@ simplydjs.tictactoe(message)
 
 # Options for tictactoe function (Optional)
 ### Embed
-- **embedFoot:** The Embed Foot of the embed which is sent when the ticket has been opened
-- **embedColor:** The Embed Color of the embed which is sent when the ticket has been opened
+- **embedFoot:** The Embed Foot of the How to play embed
+- **embedColor:** The Embed Color of the How to play embed
 
 ### Buttons
 - **xEmoji:** Emoji for X user [Player 1] (Only Emoji ID)
