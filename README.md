@@ -4,8 +4,8 @@
 
 <h2 style="font-size:2.5rem; color:#075FFF" align="center">Simply-DJS</h2>
 
-<h2 align="center"> A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v12 </h2>
-<br>
+<h2 align="center"> A Simple, Easy and Beginner friendly Discord.js Package for everyone. <br>Uses Discord.js v12<br><br>Developed by Rahuletto#0243</h2>
+ 
 <br>
 <p align="center">
    <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a><br>
