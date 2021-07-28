@@ -61,139 +61,14 @@ simplydjs.webhooks(client, {
 ```
 <br>
 
-#
-
-## **Steal Emoji**
-```js
-const simplydjs = require('simply-djs')
-// message event
-// steal command
-simplydjs.stealEmoji(message, args, {
-    embedTitle: 'Title', // default: `Emoji Added ;)`
-    embedColor: 'hex code', //default: #075FFF;
-    embedFoot: 'Text for Footer', // default: 'Stop stealing.. its illegal.'
-    failedMsg: 'sorry emoji not found' //default: "Couldn't find an emoji from it"
-})
-```
-<br>
-
-## **Ghost Ping**
-```js
-const simplydjs = require('simply-djs')
-// message event
-simplydjs.ghostPing(message, {
-    embedColor: 'hex code', //default: #075FFF;
-    embedFoot: 'Text for Footer' //default: 'Ghost Ping'
-})
-```
-<br>
-
-## <b>TicTacToe (Using Buttons)
-```js
-const simplydjs = require('simply-djs')
-
-// message event
-// tictactoe command
-simplydjs.tictactoe(message, {
-    xEmoji: 'emoji id', //default: ❌
-    oEmoji: 'emoji id', //default: ⭕
-    idleEmoji: 'emoji id', //default: ➖
-    embedColor: 'hex code', //default: #075FFF
-    embedFoot: 'text for footer' //default: 'Make sure to win ;)' 
-})
-```
-<br>
-
-## <b>Calculator (Using Buttons)
-```js
-const simplydjs = require('simply-djs')
-
-// message event
-// calculator command
-simplydjs.calculator(message, {
-    embedColor: 'hex code', //default: #075FFF
-})
-```
-<br>
-
-## **Embed Pages**
-```js
-const simplydjs = require('simply-djs')
-
-// message event
-// any command
-let embed1 = new Discord.MessageEmbed()
-.setTitle('Page 1');
-
-let embed2 = new Discord.MessageEmbed()
-.setTitle('Page 2');
-
-let pages = [embed1, embed2] 
-
-// its still possible without embed
-// let pages = ['page1', 'page2', 'page3']
-
-simplydjs.embedPages(client, message, pages, {
-  forwardEmoji: 'emoji id', // default: ⏩
-  backEmoji: 'emoji id', // default: ⏪
-  color: 'colors' // default: blurple 
-
- // Colors that discord-buttons support. like red, blurple, grey, green
-})
-```
-<br>
-
-## <b>Ticket System (Using Buttons)
-### Need to tell that this is one of the easiest and compact code you gonna use. with Permission Management. meaning others without admin cant setup ticket system
-<br>
-
-### **With Customization**
-```js
-const simplydjs = require('simply-djs')
-
-client.on('clickButton', async(button) => { 
-    // a discord-buttons event which fires when a button gets clicked
-simplydjs.clickBtn(button, {
-    embedDesc: 'embed description',
-    embedColor: 'hex code', // default: #075FFF
-    closeColor: 'color from buttons', //default: blurple
-    closeEmoji: 'emoji id', // default: 🔒
-    delColor: 'color from buttons', // default: grey
-    delEmoji: 'emoji id', // default: ❌
-    openColor: 'color from buttons' , // default: green
-    openEmoji: 'emoji id' // default: 🔓
-    })
-})
-
-// message event
-// setup-ticket command
-
-simplydjs.ticketSystem(message, message.channel, {
-     embedDesc: 'embed description', // default: '🎫 Create a ticket by clicking the button 🎫'
-    embedColor: 'hex code', // default: #075FFFF
-    embedFoot: 'footer text', // default: message.guild.name
-    emoji: 'emoji id', // default: 🎫
-    color: 'color from buttons' // default: blurple
-})
-
-//Dont think its messy.. it is with all customization.
-```
-
-### **Without Customization**
-```js
-const simplydjs = require('simply-djs')
-
-client.on('clickButton', async(button) => {
-simplydjs.clickBtn(button)
-})
-
-// message event
-// setup-ticket command
-
-simplydjs.ticketSystem(message, message.channel)
-```
-<br>
-
+# Examples have been moved.
+- [clickBtn]() - (Requires discord-buttons and for Ticket System) - Fetches the button click and uses it
+- [stealEmoji]() - Gets emoji png/gif and uploads to the current server
+- [tictactoe]() - (Requires discord-buttons) - A TicTacToe game using buttons
+- [calculator]() - (Requires discord-buttons) - A Simple Handy Calculator using buttons
+- [embedPages]() - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
+- [ticketSystem]() - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
+- [webhooks]() - A Simple way to send messages with webhooks using channel id
 
  <h1>Contact us | Support</h1>
  <p>
