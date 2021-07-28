@@ -1,7 +1,7 @@
 # stealEmoji function
 #### This is an example of stealEmoji
 
-## With Cusomizations
+## With Customization
 ```js
 const simplydjs = require('simply-djs')
 // message event
@@ -14,7 +14,7 @@ simplydjs.stealEmoji(message, args, {
 })
 ```
 
-## Without Cusomizations
+## Without Customization
 ```js
 const simplydjs = require('simply-djs')
 // message event
