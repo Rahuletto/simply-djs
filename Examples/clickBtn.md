@@ -1,4 +1,4 @@
-# ClickBtn function
+# clickBtn function
 #### This is an example of clickBtn (Need to use this function when using ticketSystem)
 <br>
 
@@ -30,7 +30,7 @@ simplydjs.clickBtn(button)
 })
 ```
 
-# Options for clickBtn function
+# Options for clickBtn function (Optional)
 ### Embed
 - **embedDesc:** The Embed Description of the embed which is sent when the ticket has been opened
 - **embedColor:** The Embed Color of the embed which is sent when the ticket has been opened
