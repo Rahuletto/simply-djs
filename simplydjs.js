@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const disbut = require("discord-buttons");
 const math = require('mathjs')
-const snekfetch = require("snekfetch");
 
 module.exports = {
 
@@ -422,7 +421,7 @@ module.exports = {
                     .setID('close_ticket')
 
                 ch.send(button.clicker.user, { embed: emb, component: close_btn })
-    if(option.timeout == true || !option.timeout){
+    if(options.timeout == true || !options.timeout){
                 setTimeout(() => {
                     ch.send('Timeout.. You have reached 10 minutes. This ticket is getting deleted right now.')
 
@@ -431,7 +430,7 @@ module.exports = {
                     }, 5000)
 
                 }, 600000)
-            } else return ;
+            } else return;
             })
 
         }
@@ -626,7 +625,7 @@ module.exports = {
 
     webhooks: async function (client, options = []) {
 
-        if (!options.chid) throw new Error('EMPTY_CHANNEL_ID & NO_WEBHOOK_URL. You didnt specify a channel id (or) a webhook url. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
+        if (!options.chid) throw new Error('EMPTY_CHANNEL_ID. You didnt specify a channel id (or) a webhook url. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
         if (!options.msg && !options.embed) throw new Error('Cannot send a empty message. Please specify a embed or message. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
