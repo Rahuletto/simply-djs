@@ -27,8 +27,9 @@ simplydjs.ticketSystem(message, message.channel, {
      embedDesc: 'embed description', // default: '🎫 Create a ticket by clicking the button 🎫'
     embedColor: 'hex code', // default: #075FFFF
     embedFoot: 'footer text', // default: message.guild.name
-    emoji: 'emoji id', // default: 🎫
-    color: 'color from buttons' // default: blurple
+    emoji: 'emoji id', // default:, 🎫
+    color: 'color from buttons', // default: blurple
+    timeout: true, // default: true | Needs to be boolean (true/false)
 })
 ```
 ## Without Customization
@@ -72,3 +73,6 @@ simplydjs.ticketSystem(message, message.channel)
 ### Buttons
 - **emoji:** The Emoji for the Ticket Button which opens a ticket (Only Emoji ID)
 - **color:** The Color for the Ticket Button which opens a ticket. (Only red, green, grey/gray, blurple allowed)
+
+### Other
+- **timeout:** Timeout which deletes the ticket after 10 minutes to reduce clutter (Only boolean [true (or) false] )
