@@ -2,7 +2,7 @@
 #### This is an example of clickBtn (Need to use this function when using ticketSystem)
 <br>
 
-## With Cusomizations
+## With Customization
 ```js
 const simplydjs = require('simply-djs')
 
@@ -20,7 +20,7 @@ simplydjs.clickBtn(button, {
     })
 })
 ```
-## Without Cusomizations
+## Without Customization
 ```js
 const simplydjs = require('simply-djs')
 
