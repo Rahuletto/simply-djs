@@ -61,14 +61,13 @@ simplydjs.webhooks(client, {
 ```
 <br>
 
-# Examples have been moved.
-- [clickBtn]() - (Requires discord-buttons and for Ticket System) - Fetches the button click and uses it
-- [stealEmoji]() - Gets emoji png/gif and uploads to the current server
-- [tictactoe]() - (Requires discord-buttons) - A TicTacToe game using buttons
-- [calculator]() - (Requires discord-buttons) - A Simple Handy Calculator using buttons
-- [embedPages]() - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
-- [ticketSystem]() - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
-- [webhooks]() - A Simple way to send messages with webhooks using channel id
+# [Examples](https://github.com/Rahuletto/simply-djs/tree/main/Examples) have been moved.
+- [stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md) - Gets emoji png/gif and uploads to the current server
+- [tictactoe](https://github.com/Rahuletto/simply-djs/blob/main/Examples/tictactoe.md) - (Requires discord-buttons) - A TicTacToe game using buttons
+- [calculator](https://github.com/Rahuletto/simply-djs/blob/main/Examples/calculator.md) - (Requires discord-buttons) - A Simple Handy Calculator using buttons
+- [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
+- [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
+- [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 
  <h1>Contact us | Support</h1>
  <p>
