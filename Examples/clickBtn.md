@@ -1,5 +1,5 @@
 # clickBtn function
-#### This is an example of clickBtn (Need to use this function when using ticketSystem)
+#### This is an example of clickBtn (discord-buttons required) (Need to use this function when using ticketSystem)
 <br>
 
 ## With Customization
