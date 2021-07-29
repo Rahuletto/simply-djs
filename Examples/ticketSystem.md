@@ -16,7 +16,9 @@ simplydjs.clickBtn(button, {
     delColor: 'color from buttons', // default: grey
     delEmoji: 'emoji id', // default: ❌
     openColor: 'color from buttons' , // default: green
-    openEmoji: 'emoji id' // default: 🔓
+    openEmoji: 'emoji id', // default: 🔓
+    timeout: true, // default: true | Needs to be boolean (true/false)
+    cooldownMsg: 'message',
     })
 })
 
@@ -29,7 +31,6 @@ simplydjs.ticketSystem(message, message.channel, {
     embedFoot: 'footer text', // default: message.guild.name
     emoji: 'emoji id', // default:, 🎫
     color: 'color from buttons', // default: blurple
-    timeout: true, // default: true | Needs to be boolean (true/false)
 })
 ```
 ## Without Customization
@@ -64,6 +65,10 @@ simplydjs.ticketSystem(message, message.channel)
 - **openColor:** The color of the Delete Ticket Button (Only red, green, grey/gray, blurple allowed)
 - **openEmoji:** The emoji for the Delete Ticket Button (Only Emoji ID)
 
+### Other
+- **timeout:** Timeout which deletes the ticket after 10 minutes to reduce clutter (Only boolean [true (or) false] )
+- **cooldownMsg:** Message sent when a ticket is already opened by the user.
+
 # Options for ticketSystem function (Optional)
 ### Embed
 - **embedDesc:** The Description for the Ticket System Embed (Embed that has ticket button that opens a ticket)
@@ -73,6 +78,3 @@ simplydjs.ticketSystem(message, message.channel)
 ### Buttons
 - **emoji:** The Emoji for the Ticket Button which opens a ticket (Only Emoji ID)
 - **color:** The Color for the Ticket Button which opens a ticket. (Only red, green, grey/gray, blurple allowed)
-
-### Other
-- **timeout:** Timeout which deletes the ticket after 10 minutes to reduce clutter (Only boolean [true (or) false] )
