@@ -385,182 +385,194 @@ module.exports = {
     },
 
     clickBtn: async function (button, options = []) {
+        await button.clicker.fetch()
+
         if (button.id === 'create_ticket') {
-
-            button.reply.defer();
-
-            button.guild.channels.create(`ticket_${button.clicker.user.tag}`, {
-                type: "text",
-                permissionOverwrites: [
-                    {
-                        id: button.message.guild.roles.everyone,
-                        deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
-                    },
-                    {
-                        id: button.clicker.user.id,
-                        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'],
-                    },
-                ],
-            }).then((ch) => {
-
-
-
-                let emb = new Discord.MessageEmbed()
-                    .setTitle('Ticket Created')
-                    .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
-                    .setThumbnail(button.message.guild.iconURL())
-                    .setTimestamp()
-                    .setColor(options.embedColor || '#075FFF')
-                    .setFooter(button.message.guild.name, button.message.guild.iconURL())
-
-
-                let close_btn = new disbut.MessageButton()
-                    .setStyle(options.closeColor || 'blurple')
-                    .setEmoji(options.closeEmoji || '🔒')
-                    .setLabel('Close')
-                    .setID('close_ticket')
-
-                ch.send(button.clicker.user, { embed: emb, component: close_btn })
-    if(options.timeout == true || !options.timeout){
-                setTimeout(() => {
-                    ch.send('Timeout.. You have reached 10 minutes. This ticket is getting deleted right now.')
-
-                    setTimeout(() => {
-                        ch.delete()
-                    }, 5000)
-
-                }, 600000)
-            } else return;
-            })
-
-        }
-        if (button.id === 'close_ticket') {
-
-            button.reply.defer();
-
-            button.channel.overwritePermissions([
-                {
-                    id: button.message.guild.roles.everyone,
-                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
-                },
-                {
-                    id: button.clicker.user.id,
-                    allow: ['VIEW_CHANNEL'],
-                    deny: ['SEND_MESSAGES'],
-                },
-            ]);
-
-            let X_btn = new disbut.MessageButton()
-                .setStyle(options.delColor || 'grey')
-                .setEmoji(options.delEmoji || '❌')
-                .setLabel('Delete')
-                .setID('delete_ticket')
-
-            let open_btn = new disbut.MessageButton()
-                .setStyle(options.openColor || 'green')
-                .setEmoji(options.openEmoji || '🔓')
-                .setLabel('Reopen')
-                .setID('open_ticket')
-
-            let row = new disbut.MessageActionRow()
-                .addComponent(open_btn)
-                .addComponent(X_btn)
-
-            let emb = new Discord.MessageEmbed()
-                .setTitle('Ticket Created')
-                .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
-                .setThumbnail(button.message.guild.iconURL())
-                .setTimestamp()
-                .setColor(options.embedColor || '#075FFF')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
-
-            button.message.edit(button.clicker.user, { embed: emb, component: row })
-        }
-
-        if (button.id === 'open_ticket') {
-
-
-            button.channel.overwritePermissions([
-                {
-                    id: button.message.guild.roles.everyone,
-                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
-                },
-                {
-                    id: button.clicker.user.id,
-                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
-                },
-            ]);
-
-
-            let emb = new Discord.MessageEmbed()
-                .setTitle('Ticket Created')
-                .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here` + `This channel will be deleted after 10 minutes to reduce the clutter`)
-                .setThumbnail(button.message.guild.iconURL())
-                .setTimestamp()
-                .setColor(options.embedColor || '#075FFF')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
-
-
-            let close_btn = new disbut.MessageButton()
-                .setStyle(options.closeColor || 'blurple')
-                .setEmoji(options.closeEmoji || '🔒')
-                .setLabel('Close')
-                .setID('close_ticket')
-
-            button.message.edit(button.clicker.user, { embed: emb, component: close_btn })
-            button.reply.send('Reopened the ticket ;)').then((m) => {
-                setTimeout(() => {
-                    m.delete()
-                }, 3000)
-
-            })
-        }
-
-        if (button.id === 'delete_ticket') {
-
-            let surebtn = new disbut.MessageButton()
-                .setStyle('red')
-                .setLabel('Sure')
-                .setID('s_ticket')
-
-            let nobtn = new disbut.MessageButton()
-                .setStyle('green')
-                .setLabel('Cancel')
-                .setID('no_ticket')
-
-            let row1 = new disbut.MessageActionRow()
-                .addComponent(surebtn)
-                .addComponent(nobtn)
-
-            let emb = new Discord.MessageEmbed()
-                .setTitle('Are you sure ?')
-                .setDescription(`This will delete the channel and the ticket. You cant undo this action`)
-                .setThumbnail(button.message.guild.iconURL())
-                .setTimestamp()
-                .setColor('#c90000')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
-
-            button.reply.send({ embed: emb, component: row1 })
-
-
-        }
-
-        if (button.id === 's_ticket') {
-
-            button.reply.send('Deleting the ticket and channel.. Please wait.')
-
-            setTimeout(() => {
-                let delch = button.message.guild.channels.cache.get(button.message.channel.id)
-                delch.delete().catch((err) => {
-                    button.message.channel.send('An Error Occured. ' + err)
-                })
-            }, 2000)
-        }
-
-        if (button.id === 'no_ticket') {
-            button.message.delete();
-            button.reply.send('Ticket Deletion got canceled')
-        }
+      
+      let ticketname = `ticket_${button.clicker.user.id}`
+      
+                  let antispamo = await button.guild.channels.cache.find(ch => ch.name === ticketname.toLowerCase());
+      
+                  if(antispamo){
+                      button.reply.send(options.cooldownMsg || 'You already have a ticket opened.. Please delete it before opening another ticket.').then((msg) => {
+                        setTimeout(() => {
+                        msg.delete()
+                        }, 5000)
+      
+                      })
+                  } else if(!antispamo){
+                  button.reply.defer();
+      
+                  button.guild.channels.create(`ticket_${button.clicker.user.id}`, {
+                      type: "text",
+                      permissionOverwrites: [
+                          {
+                              id: button.message.guild.roles.everyone,
+                              deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
+                          },
+                          {
+                              id: button.clicker.user.id,
+                              allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'],
+                          },
+                      ],
+                  }).then((ch) => {
+      
+                      let emb = new Discord.MessageEmbed()
+                          .setTitle('Ticket Created')
+                          .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
+                          .setThumbnail(button.message.guild.iconURL())
+                          .setTimestamp()
+                          .setColor(options.embedColor || '#075FFF')
+                          .setFooter(button.message.guild.name, button.message.guild.iconURL())
+      
+      
+                      let close_btn = new disbut.MessageButton()
+                          .setStyle(options.closeColor || 'blurple')
+                          .setEmoji(options.closeEmoji || '🔒')
+                          .setLabel('Close')
+                          .setID('close_ticket')
+      
+                      ch.send(button.clicker.user, { embed: emb, component: close_btn })
+          if(options.timeout == true || !options.timeout){
+                      setTimeout(() => {
+                          ch.send('Timeout.. You have reached 10 minutes. This ticket is getting deleted right now.')
+      
+                          setTimeout(() => {
+                              ch.delete()
+                          }, 5000)
+      
+                      }, 600000)
+                  } else return;
+                  })
+              }
+          }
+              if (button.id === 'close_ticket') {
+      
+                  button.reply.defer();
+      
+                  button.channel.overwritePermissions([
+                      {
+                          id: button.message.guild.roles.everyone,
+                          deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
+                      },
+                      {
+                          id: button.clicker.user.id,
+                          allow: ['VIEW_CHANNEL'],
+                          deny: ['SEND_MESSAGES'],
+                      },
+                  ]);
+      
+                  let X_btn = new disbut.MessageButton()
+                      .setStyle(options.delColor || 'grey')
+                      .setEmoji(options.delEmoji || '❌')
+                      .setLabel('Delete')
+                      .setID('delete_ticket')
+      
+                  let open_btn = new disbut.MessageButton()
+                      .setStyle(options.openColor || 'green')
+                      .setEmoji(options.openEmoji || '🔓')
+                      .setLabel('Reopen')
+                      .setID('open_ticket')
+      
+                  let row = new disbut.MessageActionRow()
+                      .addComponent(open_btn)
+                      .addComponent(X_btn)
+      
+                  let emb = new Discord.MessageEmbed()
+                      .setTitle('Ticket Created')
+                      .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
+                      .setThumbnail(button.message.guild.iconURL())
+                      .setTimestamp()
+                      .setColor(options.embedColor || '#075FFF')
+                      .setFooter(button.message.guild.name, button.message.guild.iconURL())
+      
+                  button.message.edit(button.clicker.user, { embed: emb, component: row })
+              }
+      
+              if (button.id === 'open_ticket') {
+      
+      
+                  button.channel.overwritePermissions([
+                      {
+                          id: button.message.guild.roles.everyone,
+                          deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
+                      },
+                      {
+                          id: button.clicker.user.id,
+                          allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+                      },
+                  ]);
+      
+      
+                  let emb = new Discord.MessageEmbed()
+                      .setTitle('Ticket Created')
+                      .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here` + `This channel will be deleted after 10 minutes to reduce the clutter`)
+                      .setThumbnail(button.message.guild.iconURL())
+                      .setTimestamp()
+                      .setColor(options.embedColor || '#075FFF')
+                      .setFooter(button.message.guild.name, button.message.guild.iconURL())
+      
+      
+                  let close_btn = new disbut.MessageButton()
+                      .setStyle(options.closeColor || 'blurple')
+                      .setEmoji(options.closeEmoji || '🔒')
+                      .setLabel('Close')
+                      .setID('close_ticket')
+      
+                  button.message.edit(button.clicker.user, { embed: emb, component: close_btn })
+                  button.reply.send('Reopened the ticket ;)').then((m) => {
+                      setTimeout(() => {
+                          m.delete()
+                      }, 3000)
+      
+                  })
+              }
+      
+              if (button.id === 'delete_ticket') {
+      
+                  let surebtn = new disbut.MessageButton()
+                      .setStyle('red')
+                      .setLabel('Sure')
+                      .setID('s_ticket')
+      
+                  let nobtn = new disbut.MessageButton()
+                      .setStyle('green')
+                      .setLabel('Cancel')
+                      .setID('no_ticket')
+      
+                  let row1 = new disbut.MessageActionRow()
+                      .addComponent(surebtn)
+                      .addComponent(nobtn)
+      
+                  let emb = new Discord.MessageEmbed()
+                      .setTitle('Are you sure ?')
+                      .setDescription(`This will delete the channel and the ticket. You cant undo this action`)
+                      .setThumbnail(button.message.guild.iconURL())
+                      .setTimestamp()
+                      .setColor('#c90000')
+                      .setFooter(button.message.guild.name, button.message.guild.iconURL())
+      
+                  button.reply.send({ embed: emb, component: row1 })
+      
+      
+              }
+      
+              if (button.id === 's_ticket') {
+      
+                  button.reply.send('Deleting the ticket and channel.. Please wait.')
+      
+                  setTimeout(() => {
+                      let delch = button.message.guild.channels.cache.get(button.message.channel.id)
+                      delch.delete().catch((err) => {
+                          button.message.channel.send('An Error Occured. ' + err)
+                      })
+                  }, 2000)
+              }
+      
+              if (button.id === 'no_ticket') {
+                  button.message.delete();
+                  button.reply.send('Ticket Deletion got canceled')
+              }
     },
 
     stealEmoji: async function (message, args, options = []) {
