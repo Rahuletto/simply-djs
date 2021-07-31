@@ -8,9 +8,9 @@
  
 <br>
 <p align="center">
-   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a>  <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs.svg?style=flat-square" /></a><br>
+   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=flat-square" /></a><br>
    <a href="https://www.npmjs.com/package/simply-djs"><img src="https://nodei.co/npm/simply-djs.png?downloadRank=true&downloads=true&downloadRank=true&stars=true" /></a><br>
-   <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
+   <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
 </p>
 
 <br>
@@ -45,18 +45,20 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **Webhooks**
+## **ytNotify**
 ```js
 const simplydjs = require('simply-djs')
 
-// any event
-simplydjs.webhooks(client, {
-    chid: 'channel id', // required
-    msg: 'message (not embed)',
-    embed: exampleEmbed, // an embed
-    // u need atleast one (msg or embed) to send or it will give errors
-    username: 'webhook username', // default: ur bot username
-    avatar: 'webhook avatar', // default: ur bot avatar
+// ready event
+simplydjs.ytNotify('channel id', {
+  ytID: 'channel ID', // youtube channel ID from url
+  // Use ytID or ytURL. Dont use both.
+  ytURL: 'channel URL', // youtube channel URL
+
+  youtubeKEY: 'Google API Key', // Get api key from google dev console (optional)
+  timer: 'number' // default: 60000 (1 minute)
+  msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*
+  // NOTE: You should use these variables ({author} , {title}, {url}) to build the message (and) NO EMBEDS ALLOWED
 })
 ```
 <br>
@@ -68,8 +70,9 @@ simplydjs.webhooks(client, {
 - [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
 - [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
+- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video
 
  <h1>Contact us | Support</h1>
  <p>
-<a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/CjHX8eTK" /></a>
+<a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
 </p>
