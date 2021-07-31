@@ -45,8 +45,9 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **ytNotify**
-```js
+## **ytNotify** (Under Maintenance)
+<!--- 
+ ```js
 const simplydjs = require('simply-djs')
 
 // ready event
@@ -61,7 +62,9 @@ simplydjs.ytNotify('channel id', {
   // NOTE: You should use these variables ({author} , {title}, {url}) to build the message (and) NO EMBEDS ALLOWED
 })
 ```
+-->
 <br>
+
 
 # [Examples](https://github.com/Rahuletto/simply-djs/tree/main/Examples) have been moved.
 - [stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md) - Gets emoji png/gif and uploads to the current server
@@ -70,7 +73,7 @@ simplydjs.ytNotify('channel id', {
 - [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
 - [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
-- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video
+- [ytNotify] - Notifies when your favorite youtuber posts a video (UNDER MAINTENANCE)
 
  <h1>Contact us | Support</h1>
  <p>
