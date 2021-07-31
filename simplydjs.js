@@ -1,6 +1,9 @@
 const Discord = require('discord.js')
 const disbut = require("discord-buttons");
 const math = require('mathjs')
+const db = require('quick.db')
+const parse = new (require("rss-parser"))();
+const startAt = Date.now()
 
 module.exports = {
 
@@ -678,5 +681,8 @@ module.exports = {
             console.error('Error trying to send: ', error);
         }
     },
-
+    
+    ytNotify: async function(chid, options=[]){
+        // This is still a buggy function.. So its not public right now.
+    },
 }
