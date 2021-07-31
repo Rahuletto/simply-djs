@@ -1,4 +1,4 @@
-# ytNotify function
+# ytNotify function (BETA)
 #### This is an example of ytNotify (May cause errors and issues)
 <br>
 
