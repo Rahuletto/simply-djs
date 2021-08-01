@@ -49,8 +49,8 @@ disbut(client)
 
  ```js
 const simplydjs = require('simply-djs')
-const db = require('quick-db')
  
+const db = require('quick-db') // REQUIRED (to check if the vid is already posted in discord)
 const startAt = Date.now() // REQUIRED (to check if the vid is uploaded after the bot started)
 
 // ready event
