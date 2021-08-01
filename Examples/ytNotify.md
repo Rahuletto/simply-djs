@@ -1,5 +1,6 @@
 # ytNotify function (BETA)
 #### This is an example of ytNotify (May cause errors and issues)
+#### You will expect a delay between video posted and Discord message sent. (2-15 minutes)
 <br>
 
 ## Setup
