@@ -77,7 +77,7 @@ msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a ne
 - [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
 - [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
-- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - Notifies when your favorite youtuber posts a video (Finally Back)
+- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
 
  <h1>Contact us | Support</h1>
  <p>
