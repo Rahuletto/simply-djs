@@ -45,24 +45,28 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **ytNotify** (Under Maintenance)
-<!--- 
+## **ytNotify** (Finally Back)
+
  ```js
 const simplydjs = require('simply-djs')
+const db = require('quick-db')
+ 
+const startAt = Date.now() // REQUIRED (to check if the vid is uploaded after the bot started)
 
 // ready event
-simplydjs.ytNotify('channel id', {
-  ytID: 'channel ID', // youtube channel ID from url
-  // Use ytID or ytURL. Dont use both.
-  ytURL: 'channel URL', // youtube channel URL
+simplydjs.ytNotify(client, db, {
+ 
+ ytID: 'yt channel id', // channel id from URL || You can also make as Array like ['channel 1', 'channel 2']
+ // Use ytID or ytURL. Dont use both.
+ ytURL: 'yt channel URL', // channel URL || You can also make as Array like ['channel 1', 'channel 2']
+ 
+ chid: 'discord channel id', // Discord channel id to post the message
+ startAt: startAt, // REQUIRED (to check if the vid is uploaded after the bot started)
 
-  youtubeKEY: 'Google API Key', // Get api key from google dev console (optional)
-  timer: 'number' // default: 60000 (1 minute)
-  msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*
-  // NOTE: You should use these variables ({author} , {title}, {url}) to build the message (and) NO EMBEDS ALLOWED
+msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*
+  // NOTE: You should use these variables ({author} , {title}, {url}) to build the message
 })
 ```
--->
 <br>
 
 
@@ -73,7 +77,7 @@ simplydjs.ytNotify('channel id', {
 - [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - (Requires discord-buttons) - Paginator/Embed (or) Message Pages using buttons
 - [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
-- [ytNotify] - Notifies when your favorite youtuber posts a video (UNDER MAINTENANCE)
+- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - Notifies when your favorite youtuber posts a video (Finally Back)
 
  <h1>Contact us | Support</h1>
  <p>
