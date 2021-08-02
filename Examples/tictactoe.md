@@ -24,6 +24,10 @@ const simplydjs = require('simply-djs')
 // tictactoe command
 simplydjs.tictactoe(message)
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127869643-d78b69c4-ea01-4da2-abf7-2bc9584e1ae6.png)
+
+<br>
 
 # Options for tictactoe function (Optional)
 ### Embed
