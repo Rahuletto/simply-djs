@@ -21,6 +21,10 @@ const simplydjs = require('simply-djs')
 // steal command
 simplydjs.stealEmoji(message, args)
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127869837-880e67da-9a32-4df7-a070-6f2ae89e6a3f.png)
+
+<br>
 
 # Options for stealEmoji function (Optional)
 ### Embed
