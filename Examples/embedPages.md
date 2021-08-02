@@ -20,11 +20,18 @@ let pages = [embed1, embed2] // REQUIRED
 // let pages = ['page1', 'page2', 'page3']
 
 simplydjs.embedPages(client, message, pages, {
-  forwardEmoji: 'emoji id', // default: ⏩
-  backEmoji: 'emoji id', // default: ⏪
-  color: 'colors' // default: blurple 
-
- // Colors that discord-buttons support. like red, blurple, grey, green
+  forwardEmoji: 'emoji id', // default: ▶️
+  backEmoji: 'emoji id', // default: ◀️
+  lastEmoji: 'emoji id' // default: ⏩
+  firstEmoji: 'emoji id' // default: ⏪
+  delEmoji: 'emoji id' // default: 🗑️
+  
+  btncolor: 'colors' // default: green 
+  delcolor: 'colors' // default: red
+  skipcolor: 'colors' // default: blurple
+   // Colors that discord-buttons support. like red, blurple, grey, green
+   
+  skipBtn: true
 })
 ```
 ## Without Customization
