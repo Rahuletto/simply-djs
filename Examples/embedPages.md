@@ -20,18 +20,18 @@ let pages = [embed1, embed2] // REQUIRED
 // let pages = ['page1', 'page2', 'page3']
 
 simplydjs.embedPages(client, message, pages, {
-  forwardEmoji: 'emoji id', // default: ▶️
+  firstEmoji: 'emoji id', // default: ⏪
   backEmoji: 'emoji id', // default: ◀️
-  lastEmoji: 'emoji id' // default: ⏩
-  firstEmoji: 'emoji id' // default: ⏪
-  delEmoji: 'emoji id' // default: 🗑️
+  delEmoji: 'emoji id', // default: 🗑️
+  forwardEmoji: 'emoji id', // default: ▶️
+  lastEmoji: 'emoji id', // default: ⏩
   
-  btncolor: 'colors' // default: green 
-  delcolor: 'colors' // default: red
-  skipcolor: 'colors' // default: blurple
+  btncolor: 'colors', // default: green 
+  delcolor: 'colors', // default: red
+  skipcolor: 'colors', // default: blurple
    // Colors that discord-buttons support. like red, blurple, grey, green
    
-  skipBtn: true
+  skipBtn: true,
 })
 ```
 ## Without Customization
@@ -56,6 +56,14 @@ simplydjs.embedPages(client, message, pages)
 
 # Options for tictactoe function (Optional)
 ### Buttons
-- **forwardEmoji:** Emoji for Next Page button (Only Emoji ID)
+- **firstEmoji:** Emoji for First Page button (Only Emoji ID)
 - **backEmoji:** Emoji for Back Page button (Only Emoji ID)
-- **color:** Color of the Buttons (Only red, green, grey/gray, blurple allowed)
+- **delEmoji:** Emoji for Delete message button (Only Emoji ID)
+- **forwardEmoji:** Emoji for Next Page button (Only Emoji ID)
+- **lastEmoji:** Emoji for Last Page button (Only Emoji ID)
+
+- **btncolor:** Color of the Next/Previous Page Buttons (Only red, green, grey/gray, blurple allowed)
+- **delcolor:** Color of the Delete Message Buttons (Only red, green, grey/gray, blurple allowed)
+- **skipcolor:** Color of the Last/First Page Buttons (Only red, green, grey/gray, blurple allowed)
+
+- **skipBtn:** Turn on/off the Last/First Page Buttons. (Only boolean [true/false])
