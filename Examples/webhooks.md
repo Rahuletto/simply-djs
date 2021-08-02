@@ -28,6 +28,10 @@ simplydjs.webhooks(client, {
     // u need atleast one (msg or embed) to send or it will give errors
 })
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127870208-e790a498-99af-4fcc-a359-1f90607c59a5.png)
+
+<br>
 
 # Options for webhooks function [(Required)](https://github.com/Rahuletto/simply-djs/edit/main/Examples/webhooks.md)
 - **chid:** Channel id where you want to send the message
