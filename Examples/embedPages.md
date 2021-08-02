@@ -53,6 +53,10 @@ let pages = [embed1, embed2] // REQUIRED
 
 simplydjs.embedPages(client, message, pages)
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127869308-72817b88-a41a-4e46-af2b-5e556bafafa3.png)
+
+<br>
 
 # Options for tictactoe function (Optional)
 ### Buttons
@@ -61,9 +65,11 @@ simplydjs.embedPages(client, message, pages)
 - **delEmoji:** Emoji for Delete message button (Only Emoji ID)
 - **forwardEmoji:** Emoji for Next Page button (Only Emoji ID)
 - **lastEmoji:** Emoji for Last Page button (Only Emoji ID)
-
+- 
+### Button Color
 - **btncolor:** Color of the Next/Previous Page Buttons (Only red, green, grey/gray, blurple allowed)
 - **delcolor:** Color of the Delete Message Buttons (Only red, green, grey/gray, blurple allowed)
 - **skipcolor:** Color of the Last/First Page Buttons (Only red, green, grey/gray, blurple allowed)
-
+- 
+### Button Option
 - **skipBtn:** Turn on/off the Last/First Page Buttons. (Only boolean [true/false])
