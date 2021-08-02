@@ -52,6 +52,10 @@ simplydjs.ytNotify(client, db, {
  startAt: startAt, // REQUIRED (to check if the vid is uploaded after the bot started)
 })
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127870384-ff35f631-0440-40a4-a654-f1fe3e794c86.png)
+
+<br>
 
 # Options for ytNotify function [(Required)](https://github.com/Rahuletto/simply-djs/edit/main/Examples/ytNotify.md)
 - **ytID:** Youtube channel ID from the URL
