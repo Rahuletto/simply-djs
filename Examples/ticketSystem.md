@@ -47,6 +47,12 @@ simplydjs.clickBtn(button)
 
 simplydjs.ticketSystem(message, message.channel)
 ```
+# Output
+![image](https://user-images.githubusercontent.com/71836991/127871121-30c49c7f-7b18-48df-bb93-969213817e19.png)
+
+![image](https://user-images.githubusercontent.com/71836991/127871158-f13ee7a9-8cbe-415c-8e54-49c197accb32.png)
+
+<br>
 
 # Options for clickBtn function (Optional)
 ### Embed
