@@ -114,7 +114,7 @@ module.exports = {
             if (Args.a1.emoji == o_emoji && Args.a2.emoji == o_emoji && Args.a3.emoji == o_emoji) won["<:O_:863314110560993340>"] = true
             if (Args.b1.emoji == o_emoji && Args.b2.emoji == o_emoji && Args.b3.emoji == o_emoji) won["<:O_:863314110560993340>"] = true
             if (Args.c1.emoji == o_emoji && Args.c2.emoji == o_emoji && Args.c3.emoji == o_emoji) won["<:O_:863314110560993340>"] = true
-            if (won["<:O_:863314110560993340>"] != false) return m.edit(`<@!${Args.userid}> (${oEmoji}) won.. That was a nice game.`)
+            if (won["<:O_:863314110560993340>"] != false) return m.edit(`<@!${Args.userid}> (${o_emoji}) won.. That was a nice game.`)
             if (Args.a1.emoji == x_emoji && Args.b1.emoji == x_emoji && Args.c1.emoji == x_emoji) won["<:X_:863314044781723668>"] = true
             if (Args.a2.emoji == x_emoji && Args.b2.emoji == x_emoji && Args.c2.emoji == x_emoji) won["<:X_:863314044781723668>"] = true
             if (Args.a3.emoji == x_emoji && Args.b3.emoji == x_emoji && Args.c3.emoji == x_emoji) won["<:X_:863314044781723668>"] = true
@@ -327,27 +327,73 @@ module.exports = {
     },
 
     embedPages: async function (client, message, pages, style = []) {
+
+        if(!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
+        if(!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
+       
         var timeForStart = Date.now();
         const timeout = 120000
-        const pageMovingButtons1 = new disbut.MessageButton()
+if(style.skipBtn == true){
+        const firstbtn = new disbut.MessageButton()
+            .setID(`first_embed`)
+            .setLabel("")
+            .setEmoji(style.firstEmoji || "⏪")
+            .setStyle(style.skipcolor || 'blurple')
+
+            const pageMovingButtons1 = new disbut.MessageButton()
             .setID(`forward_button_embed`)
             .setLabel("")
-            .setEmoji(style.forwardEmoji || "⏩")
-            .setStyle(style.color || 'blurple')
+            .setEmoji(style.forwardEmoji || "▶️")
+            .setStyle(style.btncolor || 'green')
+
         const deleteBtn = new disbut.MessageButton()
             .setID(`delete_embed`)
             .setLabel("")
-            .setEmoji("🗑️")
+            .setEmoji(style.delEmoji || "🗑️")
             .setStyle('red')
+
         const pageMovingButtons2 = new disbut.MessageButton()
             .setID(`back_button_embed`)
             .setLabel("")
-            .setEmoji(style.backEmoji || "⏪")
-            .setStyle(style.color || 'blurple')
-        var pageMovingButtons = new disbut.MessageActionRow()
+            .setEmoji(style.backEmoji || "◀️")
+            .setStyle(style.btncolor || 'green')
+
+        const lastbtn = new disbut.MessageButton()
+            .setID(`last_embed`)
+            .setLabel("")
+            .setEmoji(style.lastEmoji || "⏩")
+            .setStyle(style.skipcolor || 'blurple')
+
+        pageMovingButtons = new disbut.MessageActionRow()
+            .addComponent(firstbtn)
             .addComponent(pageMovingButtons2)
-            .addComponent(pageMovingButtons1)
             .addComponent(deleteBtn)
+            .addComponent(pageMovingButtons1)
+           .addComponent(lastbtn)
+} else {
+        const pageMovingButtons1 = new disbut.MessageButton()
+            .setID(`forward_button_embed`)
+            .setLabel("")
+            .setEmoji(style.forwardEmoji || "▶️")
+            .setStyle(style.btncolor || 'green')
+
+        const deleteBtn = new disbut.MessageButton()
+            .setID(`delete_embed`)
+            .setLabel("")
+            .setEmoji(style.delEmoji || "🗑️")
+            .setStyle('red')
+
+        const pageMovingButtons2 = new disbut.MessageButton()
+            .setID(`back_button_embed`)
+            .setLabel("")
+            .setEmoji(style.backEmoji || "◀️")
+            .setStyle(style.btncolor || 'green')
+
+        pageMovingButtons = new disbut.MessageActionRow()
+            .addComponent(pageMovingButtons2)
+            .addComponent(deleteBtn)
+            .addComponent(pageMovingButtons1)
+}
 
         var currentPage = 0;
         var m = await message.channel.send(pages[0], { components: [pageMovingButtons] });
@@ -368,13 +414,18 @@ module.exports = {
                     }
                 } else if (b.id == "delete_embed") {
                     b.message.delete()
-                    b.reply.send('Deleted the embed').then((m) => {
+                    b.reply.send('Message Deleted').then((m) => {
                         setTimeout(() => {
                             m.delete()
                         }, 5000)
                     })
+                } else if (b.id == 'last_embed') {
+                    currentPage = pages.length - 1
+                } else if (b.id == 'first_embed') {
+                    currentPage = 0;
                 }
-                if (b.id == "back_button_embed" || b.id == "forward_button_embed") {
+
+                if (b.id == 'first_embed' || b.id == "back_button_embed" || b.id == "forward_button_embed" || b.id == 'last_embed') {
                     m.edit(pages[currentPage], { components: [pageMovingButtons] });
                     b.reply.defer(true);
                 }
@@ -408,7 +459,6 @@ module.exports = {
 
     clickBtn: async function (button, options = []) {
         await button.clicker.fetch()
-
         if (button.id === 'create_ticket') {
 
             let ticketname = `ticket_${button.clicker.user.id}`
@@ -425,8 +475,18 @@ module.exports = {
             } else if (!antispamo) {
                 button.reply.defer();
 
+                roles = {
+                    id: options.role || button.clicker.user.id,
+                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
+                }
+
+                chparent = options.categoryID || null
+                let categ = button.guild.channels.cache.get(options.categoryID)
+                if(!categ) { chparent = null }
+
                 button.guild.channels.create(`ticket_${button.clicker.user.id}`, {
                     type: "text",
+                    parent: chparent,
                     permissionOverwrites: [
                         {
                             id: button.message.guild.roles.everyone,
@@ -436,6 +496,7 @@ module.exports = {
                             id: button.clicker.user.id,
                             allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'],
                         },
+                        roles
                     ],
                 }).then((ch) => {
 
@@ -472,7 +533,7 @@ module.exports = {
 
             button.reply.defer();
 
-            button.channel.overwritePermissions([
+            button.channel.updateOverwrite([
                 {
                     id: button.message.guild.roles.everyone,
                     deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
@@ -514,7 +575,7 @@ module.exports = {
         if (button.id === 'open_ticket') {
 
 
-            button.channel.overwritePermissions([
+            button.channel.updateOverwrite([
                 {
                     id: button.message.guild.roles.everyone,
                     deny: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'] //Deny permissions
@@ -598,86 +659,88 @@ module.exports = {
     },
 
     stealEmoji: async function (message, args, options = []) {
-        if (!message.member.hasPermission("MANAGE_EMOJIS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');
 
-        if (args[0] === "https://cdn.discordapp.com/emojis/") {
+        if (!message.member.hasPermission("MANAGE_EMOJIS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');
+        
+        if (args[0].startsWith("https://cdn.discordapp.com/emojis")) {
 
             let url = args[0];
 
             if (args[1]) {
                 name = args[1]
             } else {
-                name = emoji[0]
+                name = 'emojiURL'
             }
-
-            const mentionav = new Discord.MessageEmbed()
-                .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${args[1] || emoji[0]}\`\nEmoji ID: \`${emoji[1]}\``)
-                .setThumbnail(url)
-                .setColor(options.embedColor || 0x075FFF)
-                .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
-
             message.guild.emojis
                 .create(url, name)
                 .then((emoji) => {
+
+                    const mentionav = new Discord.MessageEmbed()
+                        .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``)
+                        .setThumbnail(url)
+                        .setColor(options.embedColor || 0x075FFF)
+                        .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
+
                     message.channel.send(mentionav)
 
-                }).catch(err => message.channel.send('Error Occured. ' + err))
-        }
+                }).catch(err => message.channel.send('Error Occured. ' + err ))
 
-        const hasEmoteRegex = /<a?:.+:\d+>/gm
-        const emoteRegex = /<:.+:(\d+)>/gm
-        const animatedEmoteRegex = /<a:.+:(\d+)>/gm
+        } else {
 
-        const emoj = message.content.match(hasEmoteRegex)
+            const hasEmoteRegex = /<a?:.+:\d+>/gm
+            const emoteRegex = /<:.+:(\d+)>/gm
+            const animatedEmoteRegex = /<a:.+:(\d+)>/gm
 
-        if (emoji = emoteRegex.exec(emoj)) {
-            const url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".png?v=1"
+            const emoj = message.content.match(hasEmoteRegex)
 
-            if (args[1]) {
-                name = args[1]
-            } else {
-                name = emoji[0]
+            if (emoji = emoteRegex.exec(emoj)) {
+                const url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".png?v=1"
+
+                if (args[1]) {
+                    name = args[1]
+                } else {
+                    name = emoji[1]
+                }
+
+                message.guild.emojis
+                    .create(url, name)
+                    .then((emoji) => {
+                        const mentionav = new Discord.MessageEmbed()
+                            .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``)
+                            .setThumbnail(url)
+                            .setColor(options.embedColor || 0x075FFF)
+                            .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
+
+                        message.channel.send(mentionav)
+
+                    }).catch(err => message.channel.send('Error Occured. ' + err ))
+
+            }
+            else if (emoji = animatedEmoteRegex.exec(emoj)) {
+                const url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".gif?v=1"
+
+                if (args[1]) {
+                    name = args[1]
+                } else {
+                    name = emoji[1]
+                }
+                message.guild.emojis
+                    .create(url, name)
+                    .then((emoji) => {
+                        const mentionav = new Discord.MessageEmbed()
+                            .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``)
+                            .setThumbnail(url)
+                            .setColor(options.embedColor || 0x075FFF)
+                            .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
+
+                        message.channel.send(mentionav)
+
+                    }).catch(err => message.channel.send('Error Occured. ' + err ))
             }
 
-
-            const mentionav = new Discord.MessageEmbed()
-                .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${name}\`\nEmoji ID: \`${emoji[1]}\``)
-                .setThumbnail(url)
-                .setColor(options.embedColor || 0x075FFF)
-                .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
-
-            message.guild.emojis
-                .create(url, name)
-                .then((emoji) => {
-                    message.channel.send(mentionav)
-
-                })
-
-        }
-        else if (emoji = animatedEmoteRegex.exec(emoj)) {
-            const url = "https://cdn.discordapp.com/emojis/" + emoji[1] + ".gif?v=1"
-
-            if (args[1]) {
-                name = args[1]
-            } else {
-                name = emoji[0]
+            else {
+                message.channel.send(options.failedMsg || "Couldn't find an emoji from it" )
             }
-
-            const mentionav = new Discord.MessageEmbed()
-                .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${name}\`\nEmoji ID: \`${emoji[1]}\` `)
-                .setThumbnail(url)
-                .setColor(options.embedColor || 0x075FFF)
-                .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
-
-            message.guild.emojis
-                .create(url, name)
-                .then((emoji) => {
-                    message.channel.send(mentionav)
-
-                })
-        }
-        else {
-            message.channel.send(options.failedMsg || "Couldn't find an emoji from it")
         }
     },
 
@@ -726,8 +789,114 @@ module.exports = {
     },
 
     ytNotify: async function (client, db, options = []) {
-// Still in BETA and in development.. so no code here.
+        let startAt = options.startAt
+        let chid = options.chid
+
+        if (!chid) throw new Error('EMPTY_CHANNEL_ID. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
+        if (!options.ytID && !options.ytURL) throw new Error('EMPTY_YT_CHANNEL_ID & EMPTY_YT_CHANNEL_URL. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
+
+        let timer = options.timer || "10000"
+        let timr = parseInt(timer)
+
+        if (db.fetch(`postedVideos`) === null) db.set(`postedVideos`, []);
+        setInterval(async () => {
+
+            function URLtoID(url) {
+                let id = null
+                url = url.replace(/(>|<)/gi, "").split(/(\/channel\/|\/user\/)/);
+                if (url[2]) {
+                    id = url[2].split(/[^0-9a-z_-]/i)[0];
+                }
+                return id;
+            }
+
+            let msg = options.msg || 'Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*'
+
+            if (Array.isArray(options.ytID)) {
+
+                options.ytID.forEach((ch) => { checkVid(client, ch, chid, msg, db, startAt) })
+
+            } else if (Array.isArray(options.ytURL)) {
+
+                options.ytID.forEach((ch) => { checkVid(client, URLtoID(ch), chid, msg, db, startAt) })
+
+            } else if (!options.ytID && options.ytURL) {
+                ytID = URLtoID(options.ytURL);
+
+                checkVid(client, ytID, chid, msg, db, startAt)
+            } else {
+                ytID = options.ytID;
+
+                checkVid(client, ytID, chid, msg, db, startAt)
+            }
+
+            async function checkVid(client, ytID, chid, msg, db, startAt) {
+                parse.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${ytID}`)
+                    .then(data => {
+                        if (!data.items || !data.items[0] || !data || data.items === []) return;
+                        if (db.fetch(`postedVideos`).includes(data.items[0].link)) return;
+                        else {
+                            if (new Date(data.items[0].pubDate).getTime() < startAt) return;
+
+                            db.push("postedVideos", data.items[0].link);
+                            let channel = client.channels.cache.get(chid);
+                            if (!channel) return;
+
+                            let mssg = msg
+                                .replace(/{author}/g, data.items[0].author)
+                                .replace(/{title}/g, Discord.Util.escapeMarkdown(data.items[0].title))
+                                .replace(/{url}/g, data.items[0].link);
+                            channel.send(mssg)
+                            console.log('Notified')
+                        }
+                    });
+            }
+        }, timr);
+
     },
+
+    chatbot: async function(client, message, options=[]){
+        if(message.author.bot) return;
+      
+        let channel = options.chid
+        
+        if(Array.isArray(channel)) {
+          channel.forEach((channel) => {
+          const ch = client.channels.cache.get(channel);
+        if(!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
+          })
+          
+
+            if(channel.includes(message.channel.id)){
+                    
+                let name = options.name || client.user.username
+                let developer = options.developer || 'Rahuletto#0243'
+        
+                fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${message}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
+                 .then(res => res.json())
+              .then(reply => {
+              
+              message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
+              }); 
+            }
+        } else {
+           const ch = client.channels.cache.get(channel);
+        if(!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
+        
+            if(channel === message.channel.id){
+                    
+                let name = options.name || client.user.username
+                let developer = options.developer || 'Rahuletto#0243'
+        
+                fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${message}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
+                 .then(res => res.json())
+              .then(reply => {
+              
+              message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
+              }); 
+            }
+        }
+    }, 
 
     
 }
