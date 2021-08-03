@@ -58,7 +58,7 @@ simplydjs.embedPages(client, message, pages)
 
 <br>
 
-# Options for tictactoe function (Optional)
+# Options for embedPagesfunction (Optional)
 ### Buttons
 - **firstEmoji:** Emoji for First Page button (Only Emoji ID)
 - **backEmoji:** Emoji for Back Page button (Only Emoji ID)
