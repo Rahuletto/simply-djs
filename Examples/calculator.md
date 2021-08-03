@@ -1,5 +1,5 @@
 # calculator function
-#### This is an example of tictactoe (discord-buttons required)
+#### This is an example of calculator (discord-buttons required)
 <br>
 
 ## There is no customization
@@ -18,6 +18,6 @@ simplydjs.calculator(message, {
 
 <br>
 
-# Options for tictactoe function (Optional)
+# Options for calculator function (Optional)
 ### Embed
 - **embedColor:** The Embed Color of the calculator embed
