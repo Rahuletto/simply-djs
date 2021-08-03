@@ -1,5 +1,5 @@
 
-<p align="center"><img align="center" style="margin-bottom:-6px" src="https://cdn.discordapp.com/icons/867999056172052551/1808ea6e6a79f23a62945cba0df807dd.png?size=128"></p>
+<p align="center"><img align="center" style="margin-bottom:-6px" src="https://i.imgur.com/HxeQNT7_d.webp?maxwidth=128&fidelity=grand"></p>
 
 
 <h2 style="font-size:2.5rem; color:#075FFF" align="center">Simply-DJS</h2>
@@ -45,26 +45,15 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **ytNotify** (Finally Back)
+## **chatbot**
 
- ```js
+```js
 const simplydjs = require('simply-djs')
- 
-const db = require('quick-db') // REQUIRED (to check if the vid is already posted in discord)
-const startAt = Date.now() // REQUIRED (to check if the vid is uploaded after the bot started)
 
-// ready event
-simplydjs.ytNotify(client, db, {
- 
- ytID: 'yt channel id', // channel id from URL || You can also make as Array like ['channel 1', 'channel 2']
- // Use ytID or ytURL. Dont use both.
- ytURL: 'yt channel URL', // channel URL || You can also make as Array like ['channel 1', 'channel 2']
- 
- chid: 'discord channel id', // Discord channel id to post the message
- startAt: startAt, // REQUIRED (to check if the vid is uploaded after the bot started)
-
-msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*
-  // NOTE: You should use these variables ({author} , {title}, {url}) to build the message
+// message event
+simplydjs.chatbot(client, message, {
+chid: 'channel id',
+name: 'chatbot', // default: Your bot name
 })
 ```
 <br>
@@ -78,6 +67,7 @@ msg: 'Hello someone posted', // default: Hello ! **{author}** just uploaded a ne
 - [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - (Requires discord-buttons and clickBtn function) - A Ticket System using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 - [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
+- [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Credits: [Brainshop](https://brainshop.ai)
 
  <h1>Contact us | Support</h1>
  <p>
