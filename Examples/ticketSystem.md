@@ -19,6 +19,8 @@ simplydjs.clickBtn(button, {
     openEmoji: 'emoji id', // default: 🔓
     timeout: true, // default: true | Needs to be boolean (true/false)
     cooldownMsg: 'message',
+    categoryID: 'category id',
+    role: 'role id' // Role which sees the ticket channel (like Support Role)
     })
 })
 
