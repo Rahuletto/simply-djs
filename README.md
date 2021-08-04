@@ -63,7 +63,7 @@ client.on('clickButton', async (button) => {
    })
 })
 // message event
-simplydjs.suggestSys(client, message, args, {
+simplydjs.suggestSystem(client, message, args, {
    chid: 'channel id',
    embedColor: 'hex color', // defaultL #075FFF
    yesEmoji: 'emoji id', // default: ☑️
@@ -85,7 +85,7 @@ simplydjs.suggestSys(client, message, args, {
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 - [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
 - [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Credits: [Brainshop](https://brainshop.ai)
-- [suggestSys](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSys.md) - A Complex suggestion system which can be used easily.
+- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
 
  <h1>Contact us | Support</h1>
  <p>
