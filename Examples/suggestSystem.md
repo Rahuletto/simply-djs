@@ -1,5 +1,5 @@
-# suggestSys function
-#### This is an example of suggestSys (discord-buttons required)
+# suggestSystem function
+#### This is an example of suggestSystem (discord-buttons required)
 <br>
 
 ## With Customization
@@ -21,7 +21,7 @@ simplydjs.suggestBtn(button, users, {
    
 })
 // message event
-simplydjs.suggestSys(client, message, args, {
+simplydjs.suggestSystem(client, message, args, {
    chid: 'channel id',
    embedColor: 'hex color', // defaultL #075FFF
    yesEmoji: 'emoji id', // default: ☑️
@@ -40,7 +40,7 @@ client.on('clickButton', async (button) => {
    simplydjs.suggestBtn(button, users)
 })
 // message event
-simplydjs.suggestSys(client, message, args, {
+simplydjs.suggestSystem(client, message, args, {
    chid: 'channel id'
 })
 ```
@@ -60,7 +60,7 @@ simplydjs.suggestSys(client, message, args, {
 - **denyEmbColor:** Color for the Rejected Suggestion embed (Hex code)
 - **agreeEmbColor:** Color for the Accepted Suggestion embed (Hex code)
 
-# Options for suggestSys function (Optional)
+# Options for suggestSystem function (Optional)
 ### Buttons
 - **yesEmoji:** Emoji for Accept suggestion button (Only Emoji ID)
 - **yesColor:** Color for the Accept Suggestion button (Only blurple/red/green/grey)
