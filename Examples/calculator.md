@@ -21,3 +21,4 @@ simplydjs.calculator(message, {
 # Options for calculator function (Optional)
 ### Embed
 - **embedColor:** The Embed Color of the calculator embed
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
