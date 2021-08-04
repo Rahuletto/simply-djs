@@ -1,9 +1,8 @@
 const Discord = require('discord.js')
 const disbut = require("discord-buttons");
 const math = require('mathjs')
-const db = require('quick.db')
 const parse = new (require("rss-parser"))();
-
+let users = new Map()
 const fetch = require('node-fetch');
 
 module.exports = {
@@ -11,12 +10,19 @@ module.exports = {
     ghostPing: async function (message, options = []) {
         if (message.author.bot) return;
         if (message.mentions.users.first()) {
+
+            if (options.credit === false) {
+                foot = options.embedFoot || 'Ghost Ping.'
+            } else {
+                foot = '©️ Simply Develop. npm i simply-djs'
+            }
+
             const chembed = new Discord.MessageEmbed()
                 .setTitle('Ghost Ping Detected')
                 .setDescription(options.embedDesc || `I Found that ${message.author} **(${message.author.tag})** just ghost pinged ${message.mentions.members.first()} **(${message.mentions.users.first().tag})**\n\nContent: **${message.content}**`)
                 .setColor(options.embedColor || 0x075FFF)
 
-                .setFooter(options.embedFoot || 'Ghost Ping.')
+                .setFooter(foot)
                 .setTimestamp()
 
             message.channel.send(chembed)
@@ -26,9 +32,8 @@ module.exports = {
     tictactoe: async function (message, options = []) {
         let opponent = message.mentions.members.first()
 
-        if (opponent.id === message.member.id) {
-            message.channel.send("You cant play for 2 Players. Please provide the user to challenge!")
-        }
+        if (opponent.id === message.member.id) return message.channel.send("You cant play for 2 Players. Please provide the user to challenge!");
+
 
         if (!opponent) return message.channel.send("Please provide the user to challenge!")
         let fighters = [message.member.id, opponent.id].sort(() => (Math.random() > .5) ? 1 : -1)
@@ -88,11 +93,17 @@ module.exports = {
         }
         let { MessageButton, MessageActionRow } = require('discord-buttons')
 
+        if (options.credit === false) {
+            foot = options.embedFoot || 'Make sure to win ;)'
+        } else {
+            foot = '©️ Simply Develop. npm i simply-djs'
+        }
+
         const xoemb = new Discord.MessageEmbed()
             .setTitle('TicTacToe')
             .setDescription(`**How to Play ?**\n*Wait for your turn.. If its your turn, Click one of the buttons from the table to draw your emoji at there.*`)
             .setColor(options.embedColor || 0x075FFF)
-            .setFooter(options.embedFoot || 'Make sure to win ;)')
+            .setFooter(foot)
             .setTimestamp()
         let infomsg = await message.channel.send(xoemb).then(ms => {
             setTimeout(() => ms.delete(), 10000)
@@ -236,11 +247,17 @@ module.exports = {
                 for (let btn of button) row.push(addRow(btn));
             }
         }
+        if (options.credit === false) {
+            foot = button.message.guild.name, button.message.guild.iconURL()
+        } else {
+            foot = '©️ Simply Develop. npm i simply-djs'
+        }
 
         const emb = new Discord.MessageEmbed()
             .setColor(options.embedColor || 0x075FFF)
 
             .setDescription("```0```")
+            .setFooter(foot)
 
         message.channel.send({
             embed: emb,
@@ -250,8 +267,15 @@ module.exports = {
             let isWrong = false;
             let time = 180000
             let value = ""
-            let emb1 = new Discord.MessageEmbed()
 
+            if (options.credit === false) {
+                foot = button.message.guild.name, button.message.guild.iconURL()
+            } else {
+                foot = '©️ Simply Develop. npm i simply-djs'
+            }
+
+            let emb1 = new Discord.MessageEmbed()
+                .setFooter(foot)
                 .setColor(options.embedColor || 0x075FFF)
 
             function createCollector(val, result = false) {
@@ -328,72 +352,72 @@ module.exports = {
 
     embedPages: async function (client, message, pages, style = []) {
 
-        if(!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
-        if(!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
-       
+        if (!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
+        if (!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
+
         var timeForStart = Date.now();
         const timeout = 120000
-if(style.skipBtn == true){
-        const firstbtn = new disbut.MessageButton()
-            .setID(`first_embed`)
-            .setLabel("")
-            .setEmoji(style.firstEmoji || "⏪")
-            .setStyle(style.skipcolor || 'blurple')
+        if (style.skipBtn == true) {
+            const firstbtn = new disbut.MessageButton()
+                .setID(`first_embed`)
+                .setLabel("")
+                .setEmoji(style.firstEmoji || "⏪")
+                .setStyle(style.skipcolor || 'blurple')
 
             const pageMovingButtons1 = new disbut.MessageButton()
-            .setID(`forward_button_embed`)
-            .setLabel("")
-            .setEmoji(style.forwardEmoji || "▶️")
-            .setStyle(style.btncolor || 'green')
+                .setID(`forward_button_embed`)
+                .setLabel("")
+                .setEmoji(style.forwardEmoji || "▶️")
+                .setStyle(style.btncolor || 'green')
 
-        const deleteBtn = new disbut.MessageButton()
-            .setID(`delete_embed`)
-            .setLabel("")
-            .setEmoji(style.delEmoji || "🗑️")
-            .setStyle('red')
+            const deleteBtn = new disbut.MessageButton()
+                .setID(`delete_embed`)
+                .setLabel("")
+                .setEmoji(style.delEmoji || "🗑️")
+                .setStyle('red')
 
-        const pageMovingButtons2 = new disbut.MessageButton()
-            .setID(`back_button_embed`)
-            .setLabel("")
-            .setEmoji(style.backEmoji || "◀️")
-            .setStyle(style.btncolor || 'green')
+            const pageMovingButtons2 = new disbut.MessageButton()
+                .setID(`back_button_embed`)
+                .setLabel("")
+                .setEmoji(style.backEmoji || "◀️")
+                .setStyle(style.btncolor || 'green')
 
-        const lastbtn = new disbut.MessageButton()
-            .setID(`last_embed`)
-            .setLabel("")
-            .setEmoji(style.lastEmoji || "⏩")
-            .setStyle(style.skipcolor || 'blurple')
+            const lastbtn = new disbut.MessageButton()
+                .setID(`last_embed`)
+                .setLabel("")
+                .setEmoji(style.lastEmoji || "⏩")
+                .setStyle(style.skipcolor || 'blurple')
 
-        pageMovingButtons = new disbut.MessageActionRow()
-            .addComponent(firstbtn)
-            .addComponent(pageMovingButtons2)
-            .addComponent(deleteBtn)
-            .addComponent(pageMovingButtons1)
-           .addComponent(lastbtn)
-} else {
-        const pageMovingButtons1 = new disbut.MessageButton()
-            .setID(`forward_button_embed`)
-            .setLabel("")
-            .setEmoji(style.forwardEmoji || "▶️")
-            .setStyle(style.btncolor || 'green')
+            pageMovingButtons = new disbut.MessageActionRow()
+                .addComponent(firstbtn)
+                .addComponent(pageMovingButtons2)
+                .addComponent(deleteBtn)
+                .addComponent(pageMovingButtons1)
+                .addComponent(lastbtn)
+        } else {
+            const pageMovingButtons1 = new disbut.MessageButton()
+                .setID(`forward_button_embed`)
+                .setLabel("")
+                .setEmoji(style.forwardEmoji || "▶️")
+                .setStyle(style.btncolor || 'green')
 
-        const deleteBtn = new disbut.MessageButton()
-            .setID(`delete_embed`)
-            .setLabel("")
-            .setEmoji(style.delEmoji || "🗑️")
-            .setStyle('red')
+            const deleteBtn = new disbut.MessageButton()
+                .setID(`delete_embed`)
+                .setLabel("")
+                .setEmoji(style.delEmoji || "🗑️")
+                .setStyle('red')
 
-        const pageMovingButtons2 = new disbut.MessageButton()
-            .setID(`back_button_embed`)
-            .setLabel("")
-            .setEmoji(style.backEmoji || "◀️")
-            .setStyle(style.btncolor || 'green')
+            const pageMovingButtons2 = new disbut.MessageButton()
+                .setID(`back_button_embed`)
+                .setLabel("")
+                .setEmoji(style.backEmoji || "◀️")
+                .setStyle(style.btncolor || 'green')
 
-        pageMovingButtons = new disbut.MessageActionRow()
-            .addComponent(pageMovingButtons2)
-            .addComponent(deleteBtn)
-            .addComponent(pageMovingButtons1)
-}
+            pageMovingButtons = new disbut.MessageActionRow()
+                .addComponent(pageMovingButtons2)
+                .addComponent(deleteBtn)
+                .addComponent(pageMovingButtons1)
+        }
 
         var currentPage = 0;
         var m = await message.channel.send(pages[0], { components: [pageMovingButtons] });
@@ -442,13 +466,19 @@ if(style.skipBtn == true){
             .setLabel('Ticket')
             .setID('create_ticket');
 
+        if (options.credit === false) {
+            foot = options.embedFoot || message.guild.name, message.guild.iconURL()
+        } else {
+            foot = '©️ Simply Develop. npm i simply-djs'
+        }
+
         let embed = new Discord.MessageEmbed()
             .setTitle('Create a ticket')
             .setDescription(options.embedDesc || '🎫 Create a ticket by clicking the button 🎫')
             .setThumbnail(message.guild.iconURL())
             .setTimestamp()
             .setColor(options.embedColor || '#075FFF')
-            .setFooter(options.embedFoot || message.guild.name, message.guild.iconURL())
+            .setFooter(foot)
 
         try {
             channel.send({ embed: embed, component: ticketbtn })
@@ -482,7 +512,7 @@ if(style.skipBtn == true){
 
                 chparent = options.categoryID || null
                 let categ = button.guild.channels.cache.get(options.categoryID)
-                if(!categ) { chparent = null }
+                if (!categ) { chparent = null }
 
                 button.guild.channels.create(`ticket_${button.clicker.user.id}`, {
                     type: "text",
@@ -500,13 +530,19 @@ if(style.skipBtn == true){
                     ],
                 }).then((ch) => {
 
+                    if (options.credit === false) {
+                        foot = button.message.guild.name, button.message.guild.iconURL()
+                    } else {
+                        foot = '©️ Simply Develop. npm i simply-djs'
+                    }
+
                     let emb = new Discord.MessageEmbed()
                         .setTitle('Ticket Created')
                         .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
                         .setThumbnail(button.message.guild.iconURL())
                         .setTimestamp()
                         .setColor(options.embedColor || '#075FFF')
-                        .setFooter(button.message.guild.name, button.message.guild.iconURL())
+                        .setFooter(foot)
 
 
                     let close_btn = new disbut.MessageButton()
@@ -561,13 +597,19 @@ if(style.skipBtn == true){
                 .addComponent(open_btn)
                 .addComponent(X_btn)
 
+            if (options.credit === false) {
+                foot = button.message.guild.name, button.message.guild.iconURL()
+            } else {
+                foot = '©️ Simply Develop. npm i simply-djs'
+            }
+
             let emb = new Discord.MessageEmbed()
                 .setTitle('Ticket Created')
                 .setDescription(options.embedDesc || `Ticket has been raised by ${button.clicker.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`)
                 .setThumbnail(button.message.guild.iconURL())
                 .setTimestamp()
                 .setColor(options.embedColor || '#075FFF')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
+                .setFooter(foot)
 
             button.message.edit(button.clicker.user, { embed: emb, component: row })
         }
@@ -586,6 +628,11 @@ if(style.skipBtn == true){
                 },
             ]);
 
+            if (options.credit === false) {
+                foot = button.message.guild.name, button.message.guild.iconURL()
+            } else {
+                foot = '©️ Simply Develop. npm i simply-djs'
+            }
 
             let emb = new Discord.MessageEmbed()
                 .setTitle('Ticket Created')
@@ -593,7 +640,7 @@ if(style.skipBtn == true){
                 .setThumbnail(button.message.guild.iconURL())
                 .setTimestamp()
                 .setColor(options.embedColor || '#075FFF')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
+                .setFooter(foot)
 
 
             let close_btn = new disbut.MessageButton()
@@ -627,13 +674,19 @@ if(style.skipBtn == true){
                 .addComponent(surebtn)
                 .addComponent(nobtn)
 
+            if (options.credit === false) {
+                foot = button.message.guild.name, button.message.guild.iconURL()
+            } else {
+                foot = '©️ Simply Develop. npm i simply-djs'
+            }
+
             let emb = new Discord.MessageEmbed()
                 .setTitle('Are you sure ?')
                 .setDescription(`This will delete the channel and the ticket. You cant undo this action`)
                 .setThumbnail(button.message.guild.iconURL())
                 .setTimestamp()
                 .setColor('#c90000')
-                .setFooter(button.message.guild.name, button.message.guild.iconURL())
+                .setFooter(foot)
 
             button.reply.send({ embed: emb, component: row1 })
 
@@ -661,7 +714,7 @@ if(style.skipBtn == true){
     stealEmoji: async function (message, args, options = []) {
 
         if (!message.member.hasPermission("MANAGE_EMOJIS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');
-        
+
         if (args[0].startsWith("https://cdn.discordapp.com/emojis")) {
 
             let url = args[0];
@@ -675,15 +728,20 @@ if(style.skipBtn == true){
                 .create(url, name)
                 .then((emoji) => {
 
+                    if (options.credit === false) {
+                        foot = options.embedFoot || 'Dont steal. its illegal'
+                    } else {
+                        foot = '©️ Simply Develop. npm i simply-djs'
+                    }
                     const mentionav = new Discord.MessageEmbed()
                         .setTitle(options.embedTitle || `Emoji Added ;)\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``)
                         .setThumbnail(url)
                         .setColor(options.embedColor || 0x075FFF)
-                        .setFooter(options.embedFoot || 'Stop stealing.. its illegal.')
+                        .setFooter(foot)
 
                     message.channel.send(mentionav)
 
-                }).catch(err => message.channel.send('Error Occured. ' + err ))
+                }).catch(err => message.channel.send('Error Occured. ' + err))
 
         } else {
 
@@ -713,7 +771,7 @@ if(style.skipBtn == true){
 
                         message.channel.send(mentionav)
 
-                    }).catch(err => message.channel.send('Error Occured. ' + err ))
+                    }).catch(err => message.channel.send('Error Occured. ' + err))
 
             }
             else if (emoji = animatedEmoteRegex.exec(emoj)) {
@@ -735,11 +793,11 @@ if(style.skipBtn == true){
 
                         message.channel.send(mentionav)
 
-                    }).catch(err => message.channel.send('Error Occured. ' + err ))
+                    }).catch(err => message.channel.send('Error Occured. ' + err))
             }
 
             else {
-                message.channel.send(options.failedMsg || "Couldn't find an emoji from it" )
+                message.channel.send(options.failedMsg || "Couldn't find an emoji from it")
             }
         }
     },
@@ -855,48 +913,442 @@ if(style.skipBtn == true){
 
     },
 
-    chatbot: async function(client, message, options=[]){
-        if(message.author.bot) return;
-      
-        let channel = options.chid
-        
-        if(Array.isArray(channel)) {
-          channel.forEach((channel) => {
-          const ch = client.channels.cache.get(channel);
-        if(!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
-          })
-          
+    chatbot: async function (client, message, options = []) {
+        if (message.author.bot) return;
 
-            if(channel.includes(message.channel.id)){
-                    
+        let channel = options.chid
+
+        if (Array.isArray(channel)) {
+            channel.forEach((channel) => {
+                const ch = client.channels.cache.get(channel);
+                if (!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
+            })
+
+
+            if (channel.includes(message.channel.id)) {
+
                 let name = options.name || client.user.username
                 let developer = options.developer || 'Rahuletto#0243'
-        
+
                 fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${message}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
-                 .then(res => res.json())
-              .then(reply => {
-              
-              message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
-              }); 
+                    .then(res => res.json())
+                    .then(reply => {
+
+                        message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
+                    });
             }
         } else {
-           const ch = client.channels.cache.get(channel);
-        if(!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
-        
-            if(channel === message.channel.id){
-                    
+            const ch = client.channels.cache.get(channel);
+            if (!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
+
+            if (channel === message.channel.id) {
+
                 let name = options.name || client.user.username
                 let developer = options.developer || 'Rahuletto#0243'
-        
+
                 fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${message}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
-                 .then(res => res.json())
-              .then(reply => {
-              
-              message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
-              }); 
+                    .then(res => res.json())
+                    .then(reply => {
+
+                        message.channel.send(`${reply.message}`).catch(err => message.channel.send(`${err}`));
+                    });
             }
         }
-    }, 
+    },
 
-    
+    suggestSystem: async function (client, message, args, options = []) {
+        let channel = options.chid
+
+        const ch = client.channels.cache.get(channel);
+        if (!ch) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');;
+
+        let suggestion = args.join(" ")
+
+        if (options.credit === false) {
+            foot = options.embedFoot || 'Ghost Ping.'
+        } else {
+            foot = '©️ Simply Develop. npm i simply-djs'
+        }
+
+        const emb = new Discord.MessageEmbed()
+            .setDescription(suggestion)
+            .setAuthor(message.author.tag, message.author.displayAvatarURL())
+            .setColor(options.embedColor || '#075FFF')
+            .setFooter(foot)
+            .addFields(
+                { name: 'Status:', value: `\`\`\`Waiting for the response..\`\`\`` },
+                { name: 'Reactions', value: `*Likes:* \`0\` \n*Dislikes:* \`0\`` }
+            )
+
+        let approve = new disbut.MessageButton()
+            .setEmoji(options.yesEmoji || '☑️')
+            .setStyle(options.yesColor || 'green')
+            .setID('agree-sug')
+
+        let no = new disbut.MessageButton()
+            .setEmoji(options.noEmoji || '🇽')
+            .setStyle(options.noColor || 'red')
+            .setID('no-sug')
+
+        let row = new disbut.MessageActionRow()
+            .addComponents([approve, no])
+
+        channel.send(emb, { component: row })
+
+
+    },
+
+   suggestBtn: async function (button, users, options = []) {
+
+        if (button.id === 'no-sug') {
+            let target = await button.message.channel.messages.fetch(button.message.id)
+            let oldemb = target.embeds[0]
+
+            await button.clicker.fetch();
+
+            if (button.clicker.member.hasPermission('ADMINISTRATOR')) {
+
+                button.reply.send('Reason ?? if not, Ill give it as `No Reason` Timeout: 15 Seconds..').then((m) => setTimeout(() => { m.delete() }, 15000))
+
+                let filter = m => button.clicker.user.id === m.author.id
+
+                const collector = button.message.channel.createMessageCollector(filter, { time: 15000 });
+
+                collector.on('collect', m => {
+
+                    if (m.content.toLowerCase() === 'cancel') {
+                        m.delete()
+                        button.reply.edit('Refusal Cancelled')
+                        collector.stop()
+                    } else {
+                        m.delete()
+                        dec(m.content, oldemb)
+                        collector.stop()
+                    }
+                })
+
+                collector.on('end', collected => {
+
+                    if (collected.size === 0) {
+                        dec('No Reason', oldemb)
+                    }
+
+                });
+            } else {
+
+                if (users.has(`${button.message.id}-${button.clicker.user.id}-dislike`, button.clicker.user.id)) {
+                    button.reply.send('You cannot react again.', true)
+                }
+                else {
+
+                    if (users.has(`${button.message.id}-${button.clicker.user.id}-like`, button.clicker.user.id)) {
+                        users.delete(`${button.message.id}-${button.clicker.user.id}-like`, button.clicker.user.id)
+
+                        users.set(`${button.message.id}-${button.clicker.user.id}-dislike`, button.clicker.user.id)
+
+
+                        removelike(oldemb)
+
+                    } else {
+
+                        button.reply.defer()
+                        users.set(`${button.message.id}-${button.clicker.user.id}-dislike`, button.clicker.user.id)
+
+                        dislike(oldemb)
+                    }
+
+                }
+
+            }
+        }
+
+        async function removelike(oldemb) {
+
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let likes = likesnd[1].replace('`', '')
+            let dislikes = likesnd[3].replace('`', '')
+
+            let dislik = parseInt(dislikes) + 1
+
+            let lik = parseInt(likes) - 1
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(oldemb.color)
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setFooter(oldemb.footer)
+                .setImage(oldemb.image)
+                .addFields(
+                    { name: oldemb.fields[0].name, value: oldemb.fields[0].value },
+                    { name: 'Reactions', value: `*Likes:* \`${lik}\` \n*Dislikes:* \`${dislik}\`` }
+                )
+
+            button.message.edit(newemb, { component: row })
+
+        }
+
+        async function dislike(oldemb) {
+
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let lik = likesnd[1]
+            let dislikes = likesnd[3].replace('`', '')
+
+            let dislik = parseInt(dislikes) + 1
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(oldemb.color)
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setImage(oldemb.image)
+                .setFooter(oldemb.footer)
+                .addFields(
+                    { name: oldemb.fields[0].name, value: oldemb.fields[0].value },
+                    { name: 'Reactions', value: `*Likes:* ${lik} \n*Dislikes:* \`${dislik}\`` }
+                )
+
+            button.message.edit(newemb, { component: row })
+        }
+
+        async function dec(reason, oldemb) {
+
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+                .setDisabled(true)
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+                .setDisabled(true)
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let lik = likesnd[1]
+            let dislik = likesnd[3]
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(options.denyEmbColor || 'RED')
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setImage(oldemb.image)
+                .setFooter(oldemb.footer)
+                .addFields({ name: 'Status:', value: `\`\`\`Rejected !\`\`\`` },
+                    { name: 'Reason:', value: `\`\`\`${reason}\`\`\`` },
+                    { name: 'Reactions', value: `*Likes:* ${lik} \n*Dislikes:* ${dislik}` }
+                )
+
+            button.message.edit(newemb, { component: row })
+
+        }
+
+        if (button.id === 'agree-sug') {
+
+            let target = await button.message.channel.messages.fetch(button.message.id)
+            let oldemb = target.embeds[0]
+
+            await button.clicker.fetch();
+
+            if (button.clicker.member.hasPermission('ADMINISTRATOR')) {
+
+                button.reply.send('Tell me the reason.. if not, Ill give it as `No Reason` Timeout: 15 Seconds..').then((m) => setTimeout(() => { m.delete() }, 15000))
+
+                let filter = m => button.clicker.user.id === m.author.id
+
+                const collector = button.message.channel.createMessageCollector(filter, { time: 15000 });
+
+                collector.on('collect', m => {
+
+                    if (m.content.toLowerCase() === 'cancel') {
+                        m.delete()
+                        button.reply.edit('Approval Cancelled')
+                        collector.stop()
+                    } else {
+                        m.delete()
+                        aprov(m.content, oldemb)
+                        collector.stop()
+                    }
+                })
+
+                collector.on('end', collected => {
+
+                    if (collected.size === 0) {
+                        aprov('No Reason', oldemb)
+                    }
+
+                });
+            } else {
+
+
+                if (users.has(`${button.message.id}-${button.clicker.user.id}-like`, button.clicker.user.id)) {
+                    button.reply.send('You cannot react again.', true)
+                }
+                else {
+
+                    if (users.has(`${button.message.id}-${button.clicker.user.id}-dislike`, button.clicker.user.id)) {
+                        users.delete(`${button.message.id}-${button.clicker.user.id}-dislike`, button.clicker.user.id)
+
+
+                        users.set(`${button.message.id}-${button.clicker.user.id}-like`, button.clicker.user.id)
+
+                        removedislike(oldemb)
+
+                    } else {
+                        button.reply.defer()
+                        users.set(`${button.message.id}-${button.clicker.user.id}-like`, button.clicker.user.id)
+
+                        like(oldemb)
+                    }
+
+                }
+
+            }
+
+        }
+
+        async function removedislike(oldemb) {
+
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let likes = likesnd[1].replace('`', '')
+
+
+            let lik = parseInt(likes) + 1
+
+            let dislike = likesnd[3].replace('`', '')
+
+            let dislik = parseInt(dislike) - 1
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(oldemb.color)
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setImage(oldemb.image)
+                .setFooter(oldemb.footer)
+                .addFields(
+                    { name: oldemb.fields[0].name, value: oldemb.fields[0].value },
+                    { name: 'Reactions', value: `*Likes:* \`${lik}\` \n*Dislikes:* \`${dislik}\`` }
+                )
+
+            button.message.edit(newemb, { component: row })
+        }
+
+        async function like(oldemb) {
+
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let likes = likesnd[1].replace('`', '')
+            let dislik = likesnd[3]
+
+            let lik = parseInt(likes) + 1
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(oldemb.color)
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setImage(oldemb.image)
+                .setFooter(oldemb.footer)
+                .addFields(
+                    { name: oldemb.fields[0].name, value: oldemb.fields[0].value },
+                    { name: 'Reactions', value: `*Likes:* \`${lik}\` \n*Dislikes:* ${dislik}` }
+                )
+
+            button.message.edit(newemb, { component: row })
+        }
+
+        async function aprov(reason, oldemb) {
+            let approve = new disbut.MessageButton()
+                .setEmoji(options.yesEmoji || '☑️')
+                .setStyle(options.yesColor || 'green')
+                .setID('agree-sug')
+                .setDisabled(true)
+
+            let no = new disbut.MessageButton()
+                .setEmoji(options.noEmoji || '🇽')
+                .setStyle(options.noColor || 'red')
+                .setID('no-sug')
+                .setDisabled(true)
+
+            let row = new disbut.MessageActionRow()
+                .addComponents([approve, no])
+
+            let likesnd = oldemb.fields[1].value.split(/\s+/);
+
+            let lik = likesnd[1]
+            let dislik = likesnd[3]
+
+            const newemb = new Discord.MessageEmbed()
+                .setDescription(oldemb.description)
+                .setColor(options.agreeEmbColor || 'GREEN')
+                .setAuthor(oldemb.author.name, oldemb.author.iconURL)
+                .setImage(oldemb.image)
+                .setFooter(oldemb.footer)
+                .addFields({ name: 'Status:', value: `\`\`\`Accepted !\`\`\`` },
+                    { name: 'Reason:', value: `\`\`\`${reason}\`\`\`` },
+                    { name: 'Reactions', value: `*Likes:* ${lik} \n*Dislikes:* ${dislik}` }
+                )
+
+            button.message.edit(newemb, { component: row })
+
+        }
+    },
+
 }
