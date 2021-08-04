@@ -60,6 +60,7 @@ simplydjs.ticketSystem(message, message.channel)
 ### Embed
 - **embedDesc:** The Embed Description of the embed which is sent when the ticket has been opened
 - **embedColor:** The Embed Color of the embed which is sent when the ticket has been opened
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
 
 ### Close Ticket Button
 - **closeColor:** The color of the Close Ticket Button (Only red, green, grey/gray, blurple allowed)
@@ -82,6 +83,7 @@ simplydjs.ticketSystem(message, message.channel)
 - **embedDesc:** The Description for the Ticket System Embed (Embed that has ticket button that opens a ticket)
 - **embedColor:** The Color of the Ticket System Embed (Embed that has ticket button that opens a ticket)
 - **embedFoot:** The Footer for the Ticket System Embed (Embed that has ticket button that opens a ticket)
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
 
 ### Buttons
 - **emoji:** The Emoji for the Ticket Button which opens a ticket (Only Emoji ID)
