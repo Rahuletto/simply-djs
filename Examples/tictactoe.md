@@ -33,6 +33,7 @@ simplydjs.tictactoe(message)
 ### Embed
 - **embedFoot:** The Embed Foot of the How to play embed
 - **embedColor:** The Embed Color of the How to play embed
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
 
 ### Buttons
 - **xEmoji:** Emoji for X user [Player 1] (Only Emoji ID)
