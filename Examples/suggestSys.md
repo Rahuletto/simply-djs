@@ -66,4 +66,4 @@ simplydjs.suggestSys(client, message, args)
 
 ### Embeds
 - **embedColor:** Color for the Suggestion embed (Hex code)
-- **credit:** Give credits to this package (Boolean [true/false])
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
