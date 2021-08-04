@@ -64,6 +64,7 @@ client.on('clickButton', async (button) => {
 })
 // message event
 simplydjs.suggestSys(client, message, args, {
+   chid: 'channel id',
    embedColor: 'hex color', // defaultL #075FFF
    yesEmoji: 'emoji id', // default: ☑️
    yesColor: 'buttonColor', // default: green 
