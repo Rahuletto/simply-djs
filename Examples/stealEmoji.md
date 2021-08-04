@@ -32,3 +32,4 @@ simplydjs.stealEmoji(message, args)
 - **embedColor:** The Embed Color of the embed which is sent after uploading the emoji
 - **embedFoot:** The Embed Footer of the embed which is sent after uploading the emoji
 - **failedMsg:** The message sent when emoji id is invalid (or) emoji not found
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
