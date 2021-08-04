@@ -45,16 +45,32 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **chatbot**
+## **[suggestSys](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSys.md)**
 
 ```js
 const simplydjs = require('simply-djs')
+let users = new Map()
+// (or) let db = require('quick.db')
 
-// message event
-simplydjs.chatbot(client, message, {
-chid: 'channel id',
-name: 'chatbot', // default: Your bot name
+client.on('clickButton', async (button) => {
+   simplydjs.suggestBtn(button, users, {
+   yesEmoji: 'emoji id', // default: ☑️
+   yesColor: 'buttonColor', // default: green 
+   noEmoji: 'emoji id', // default: X
+   noColor: 'buttonColor', // default: red
+   denyEmbColor: 'hex color', // default: RED
+   agreeEmbColor: 'hex color', // default: GREEN
+   })
 })
+// message event
+simplydjs.suggestSys(client, message, args, {
+   embedColor: 'hex color', // defaultL #075FFF
+   yesEmoji: 'emoji id', // default: ☑️
+   yesColor: 'buttonColor', // default: green 
+   noEmoji: 'emoji id', // default: X
+   noColor: 'buttonColor', // default: red
+})
+
 ```
 <br>
 
@@ -68,6 +84,7 @@ name: 'chatbot', // default: Your bot name
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 - [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
 - [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Credits: [Brainshop](https://brainshop.ai)
+- [suggestSys](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSys.md) - A Complex suggestion system which can be used easily.
 
  <h1>Contact us | Support</h1>
  <p>
