@@ -31,3 +31,4 @@ chid: 'channel id',
 
 # Options for chatbot function (Optional)
 - **name:** ChatBot name
+- **developer:** Your name.
