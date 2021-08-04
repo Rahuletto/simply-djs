@@ -22,6 +22,7 @@ simplydjs.suggestBtn(button, users, {
 })
 // message event
 simplydjs.suggestSys(client, message, args, {
+   chid: 'channel id',
    embedColor: 'hex color', // defaultL #075FFF
    yesEmoji: 'emoji id', // default: ☑️
    yesColor: 'buttonColor', // default: green 
@@ -39,7 +40,9 @@ client.on('clickButton', async (button) => {
    simplydjs.suggestBtn(button, users)
 })
 // message event
-simplydjs.suggestSys(client, message, args)
+simplydjs.suggestSys(client, message, args, {
+   chid: 'channel id'
+})
 ```
 # Output
 ![image](https://user-images.githubusercontent.com/71836991/128165290-aa3f9c50-1fc3-4f5c-805d-e32e0e0b7be3.png)
