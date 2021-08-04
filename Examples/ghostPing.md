@@ -28,3 +28,4 @@ simplydjs.ghostPing(message)
 - **embedDesc:** The Embed Description of the embed which is sent after ghost ping
 - **embedColor:** The Embed Color of the embed which is sent after ghost ping
 - **embedFoot:** The Embed Footer of the embed which is sent after ghost ping
+- **credit:** Give credits to this package (Boolean [true/false]) Default: true
