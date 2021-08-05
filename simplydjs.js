@@ -1351,4 +1351,165 @@ module.exports = {
         }
     },
 
+    rps: async function(message, options = []){
+        let opponent = message.mentions.members.first()
+        if (!opponent) return message.channel.send('Please Tag a member to challenge!')
+        if (opponent.id === message.author.id) return message.channel.send('You may not play as 2 players!')
+
+        let foot = ""
+        if (options.credit === false) {
+            foot = options.embedFoot || 'Rock Paper Scissors'
+        } else {
+            foot = '©️ Simply Develop. npm i simply-djs'
+        }
+
+        let acceptEmbed = new Discord.MessageEmbed()
+        .setTitle(`Waiting for ${opponent.user.tag} to accept!`)
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(options.embedColor || 0x075FFF)
+        .setFooter(foot)
+
+        let accept = new disbut.MessageButton()
+        .setStyle('green')
+        .setID('accept')
+        .setLabel('Accept')
+
+        let accep = new disbut.MessageActionRow()
+        .addComponent(accept)
+
+        let m = await message.channel.send({embed: acceptEmbed, components: accep})
+        let filter = (button) => button.clicker.user.id == opponent.user.id
+        let collector = m.createButtonCollector(filter, {time:30000})
+        collector.on('collect', (button) => {
+            button.reply.defer()
+            let embed = new Discord.MessageEmbed()
+            .setTitle(`${message.author.tag} VS. ${opponent.user.tag}`)
+            .setColor(options.embedColor || 0x075FFF)
+            .setFooter(foot)
+            .setDescription("Select 🪨, 📄, or ✂️")
+
+            let rock = new disbut.MessageButton()
+            .setStyle('grey')
+            .setID('rock')
+            .setLabel('Rock')
+            .setEmoji('🪨')
+            
+            let paper = new disbut.MessageButton()
+            .setStyle('grey')
+            .setID('paper')
+            .setLabel('Paper')
+            .setEmoji('📄')
+            
+            let scissors = new disbut.MessageButton()
+            .setStyle('grey')
+            .setID('scissors')
+            .setLabel('Scissors')
+            .setEmoji('✂️')
+            
+            let rps = new disbut.MessageActionRow()
+            .addComponent(rock)
+            .addComponent(paper)
+            .addComponent(scissors)
+            m.edit({embed:embed, components: rps})
+            collector.stop()
+
+            let ids = new Set()
+            ids.add(message.author.id)
+            ids.add(opponent.user.id)
+            let filter = (button) => ids.has(button.clicker.user.id)
+            let collect = m.createButtonCollector(filter, { time: 30000 })
+            let mem, auth
+            collect.on('collect', b => {
+                ids.delete(b.clicker.user.id)
+                b.reply.defer()
+                if(b.clicker.user.id == opponent.id){
+                mem = b.id
+                }
+                if(b.clicker.user.id == message.author.id){
+                auth = b.id
+                }
+                if(ids.size == 0) collect.stop()
+            })
+            collect.on('end', c => {
+                if(c.size < 2){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle('Game Timed Out!')
+                    .setDescription('Game Time: 30s')
+                    .setColor(options.embedColor || 0x07FFF)
+                    .setFooter(foot)
+
+                    m.edit({embed:embed, components: []})
+                }
+                else{
+                if(mem == 'rock' && auth == 'scissors'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${opponent.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Rock defeats Scissors')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }else if(mem == 'scissors' && auth == 'rock'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${message.member.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Rock defeats Scissors')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }
+                else if(mem == 'scissors' && auth == 'paper'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${opponent.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Scissors defeats Paper')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }else if(mem == 'paper' && auth == 'scissors'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${message.member.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Scissors defeats Paper')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }
+                else if(mem == 'paper' && auth == 'rock'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${opponent.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Paper defeats Rock')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }else if(mem == 'rock' && auth == 'paper'){
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle(`${message.member.user.tag} Wins!`)
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription('Paper defeats Rock')
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }
+                else{
+                    let embed = new Discord.MessageEmbed()
+                    .setTitle('Draw!')
+                    .setColor(options.embedColor || 0x075FFF)
+                    .setDescription(`Both players chose ${mem}`)
+                    .setFooter(foot)
+                    m.edit({embed:embed, components: []})
+                }
+                }
+            })
+        })
+        collector.on('end', (c, r) => {
+            if(c.size == 0){
+                let embed = new Discord.MessageEmbed()
+                .setTitle('Challenge Not Accepted')
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
+                .setColor(options.embedColor || 0x075FFF)
+                .setFooter(foot)
+                .setDescription('Ran out of time!\nTime limit: 30s')
+                m.edit({embed: embed, components: []})
+            }else{
+
+            }
+        })
+    }
+
 }

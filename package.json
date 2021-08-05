@@ -1,15 +1,15 @@
 {
   "name": "simply-djs",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "description": "A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v12",
   "main": "simplydjs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["discord", "discord.js", "simplydjs", "buttons", "tictactoe", "calculator", "ghostping", "ticket system", "discord-ticket", "djs-ticket", "button-tickets", "ticket-buttons", "steal", "emojis", "steal-emojis", "webhooks", "djs-webhooks", "discord webhooks", "discord", "easy-webhooks"],
+  "keywords": ["discord", "discord.js", "simplydjs", "buttons", "tictactoe", "calculator", "ghostping", "ticket system", "discord-ticket", "djs-ticket", "button-tickets", "ticket-buttons", "steal", "emojis", "steal-emojis", "webhooks", "djs-webhooks", "discord webhooks", "discord", "easy-webhooks", "rps"],
   "author": "Rahuletto",
   "license": "Apache-2.0",
-  "files":  [
+  "files": [
     "./antiswear.json"
   ],
   "repository": {
@@ -19,6 +19,7 @@
   "dependencies": {
     "discord-buttons": "^4.0.0",
     "discord.js": "^12.5.3",
-    "mathjs": "^9.4.4"
+    "mathjs": "^9.4.4",
+    "rss-parser": "^3.12.0"
   }
 }
