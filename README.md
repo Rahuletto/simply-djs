@@ -46,33 +46,17 @@ disbut(client)
 ## Whats New ?
 <br>
 
-## **[suggestSys](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSys.md)**
+## **[rps](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rps.md)**
 
 ```js
 const simplydjs = require('simply-djs')
-let users = new Map()
-// (or) let db = require('quick.db')
 
-client.on('clickButton', async (button) => {
-   simplydjs.suggestBtn(button, users, {
-   yesEmoji: 'emoji id', // default: ☑️
-   yesColor: 'buttonColor', // default: green 
-   noEmoji: 'emoji id', // default: X
-   noColor: 'buttonColor', // default: red
-   denyEmbColor: 'hex color', // default: RED
-   agreeEmbColor: 'hex color', // default: GREEN
-   })
-})
 // message event
-simplydjs.suggestSystem(client, message, args, {
-   chid: 'channel id',
-   embedColor: 'hex color', // defaultL #075FFF
-   yesEmoji: 'emoji id', // default: ☑️
-   yesColor: 'buttonColor', // default: green 
-   noEmoji: 'emoji id', // default: X
-   noColor: 'buttonColor', // default: red
+// rps command
+simplydjs.rps(message, {
+    embedColor: 'hex code', //Default 0x075FFF
+    embedFoot: 'text for footer' //Default "Rock Paper Scissors"
 })
-
 ```
 <br>
 
@@ -86,7 +70,8 @@ simplydjs.suggestSystem(client, message, args, {
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 - [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
 - [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Credits: [Brainshop](https://brainshop.ai)
-- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
+- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - (Requires discord-buttons) A Complex suggestion system which can be used easily.
+- [rps](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rps.md) - (Requires discord-buttons) - A Rock Paper Scissors game using buttons (Thanks to ImpassiveMoon for making this)
 
  <h1>Contact us | Support</h1>
  <p>
