@@ -8,9 +8,9 @@ const simplydjs = require('simply-djs')
 // RPS command
 simplydjs.rps(message, {
             embedColor: "hex code", // default: #075FFF
-            timeoutEmbedColor: "hex code", // default: #075FFF
+            timeoutEmbedColor: "hex code", // default: #c90000
             drawEmbedColor: "hex code", // default: #075FFF
-            winEmbedColor: "hex code", // default: #c90000
+            winEmbedColor: "hex code", // default: #06bd00
             embedFooter: "A Game of RPS",
             rockColor: "colors", // default: grey
             paperColor: "colors", // default: grey
