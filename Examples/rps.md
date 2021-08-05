@@ -20,7 +20,7 @@ simplydjs.rps(message, {
 
 ## Without Customization
 ```js
-const simplydjs = require('simly-djs')
+const simplydjs = require('simply-djs')
 // message Event
 // RPS Command
 simplydjs.rps(message)
