@@ -4,7 +4,7 @@
 
 ## With Customization
 ```js
-const simplydjs = require('simply-djs-v13')
+const simplydjs = require('simply-djs')
 
 // messageCreate event
 // any command
@@ -36,7 +36,7 @@ simplydjs.embedPages(client, message, pages, {
 ```
 ## Without Customization
 ```js
-const simplydjs = require('simply-djs-v13')
+const simplydjs = require('simply-djs')
 
 // messageCreate event
 // any command
