@@ -1,12 +1,12 @@
 # calculator function
-#### This is an example of calculator (discord-buttons required)
+#### This is an example of calculator
 <br>
 
 ## There is no customization
 ```js
 const simplydjs = require('simply-djs')
 
-// message event
+// messageCreate event
 // calculator command
 simplydjs.calculator(message, {
     embedColor: 'hex code', //default: #075FFF
@@ -21,4 +21,3 @@ simplydjs.calculator(message, {
 # Options for calculator function (Optional)
 ### Embed
 - **embedColor:** The Embed Color of the calculator embed
-- **credit:** Give credits to this package (Boolean [true/false]) Default: true
