@@ -41,4 +41,16 @@ simplydjs.btnrole(client, message, {
 - data needs to be an array and need to follow the format that the example is shown.
 
 # Extended Customization
-- You can create your own button with its CustomId in this format `role-` and role id after it.. the button role will work like that too... `Example: .CustomId('role-123456789012345678')`
+- You can create your own button with its CustomId in this format `role-` and role id after it.. the button role will work like that too... 
+### Example:
+```js
+ const btn = new MessageButton()
+.setLabel('btnrole')
+.setStyle('DANGER')
+.setCustomId('role-123456789012345678') // role-(role id)
+
+// send it
+
+// in interactionCreate
+simplydjs.clickBtn(interaction)
+```
