@@ -3,7 +3,7 @@
 
 ## With Customization
 ```js
-const simplydjs = require('simply-djs')
+const simplydjs = require('simply-djs-v13')
 // messageDelete event
 simplydjs.ghostPing(message, {
 embedDesc: 'desc', // default: (*a long message*)
@@ -14,7 +14,7 @@ embedFoot: 'Footer' // default: 'Ghost Ping.'
 
 ## Without Customization
 ```js
-const simplydjs = require('simply-djs')
+const simplydjs = require('simply-djs-v13')
 // messageDelete event
 simplydjs.ghostPing(message)
 ```
@@ -28,4 +28,4 @@ simplydjs.ghostPing(message)
 - **embedDesc:** The Embed Description of the embed which is sent after ghost ping
 - **embedColor:** The Embed Color of the embed which is sent after ghost ping
 - **embedFoot:** The Embed Footer of the embed which is sent after ghost ping
-- **credit:** Give credits to this package (Boolean [true/false]) Default: true
+- **embed:** You can pass your own embed into it. (other embed options wont work)
