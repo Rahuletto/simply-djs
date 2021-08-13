@@ -4,7 +4,11 @@
 
 ```js
 const simplydjs = require('simply-djs')
-// message event
+
+// interactionCreate event
+simplydjs.clickBtn(interaction)
+
+// messageCreate event
 // setup-btnrole command
 simplydjs.btnrole(client, message, {
     embed: embed,
