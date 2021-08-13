@@ -20,7 +20,7 @@ simplydjs.btnrole(client, message, {
 ```
 
 # Output
-![image](https://user-images.githubusercontent.com/71836991/127870208-e790a498-99af-4fcc-a359-1f90607c59a5.png)
+![image](https://user-images.githubusercontent.com/71836991/129353127-6a0c2704-cfcd-48e1-8d1e-5aeede745a9a.png)
 
 <br>
 
