@@ -39,6 +39,10 @@ npm i simply-djs@1.0.88
 
 ```js
 const simplydjs = require('simply-djs')
+   
+// interactionCreate event
+simplydjs.clickBtn(interaction)
+   
 // message event
 // setup-btnrole command
 simplydjs.btnrole(client, message, {
