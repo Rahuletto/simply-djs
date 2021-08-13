@@ -1,12 +1,12 @@
 # embedPages function
-#### This is an example of embedPages (discord-buttons required)
+#### This is an example of embedPages
 <br>
 
 ## With Customization
 ```js
-const simplydjs = require('simply-djs')
+const simplydjs = require('simply-djs-v13')
 
-// message event
+// messageCreate event
 // any command
 let embed1 = new Discord.MessageEmbed()
 .setTitle('Page 1');
@@ -26,19 +26,19 @@ simplydjs.embedPages(client, message, pages, {
   forwardEmoji: 'emoji id', // default: ▶️
   lastEmoji: 'emoji id', // default: ⏩
   
-  btncolor: 'colors', // default: green 
-  delcolor: 'colors', // default: red
-  skipcolor: 'colors', // default: blurple
-   // Colors that discord-buttons support. like red, blurple, grey, green
+  btncolor: 'colors', // default: SUCCESS
+  delcolor: 'colors', // default: DANGER
+  skipcolor: 'colors', // default: PRIMARY
+   // Colors that discord.js support (PRIMARY/SECONDARY/SUCCESS/DANGER)
    
   skipBtn: true,
 })
 ```
 ## Without Customization
 ```js
-const simplydjs = require('simply-djs')
+const simplydjs = require('simply-djs-v13')
 
-// message event
+// messageCreate event
 // any command
 let embed1 = new Discord.MessageEmbed()
 .setTitle('Page 1');
@@ -58,7 +58,7 @@ simplydjs.embedPages(client, message, pages)
 
 <br>
 
-# Options for embedPagesfunction (Optional)
+# Options for embedPages function (Optional)
 ### Buttons
 - **firstEmoji:** Emoji for First Page button (Only Emoji ID)
 - **backEmoji:** Emoji for Back Page button (Only Emoji ID)
@@ -67,9 +67,9 @@ simplydjs.embedPages(client, message, pages)
 - **lastEmoji:** Emoji for Last Page button (Only Emoji ID)
 
 ### Button Color
-- **btncolor:** Color of the Next/Previous Page Buttons (Only red, green, grey/gray, blurple allowed)
-- **delcolor:** Color of the Delete Message Buttons (Only red, green, grey/gray, blurple allowed)
-- **skipcolor:** Color of the Last/First Page Buttons (Only red, green, grey/gray, blurple allowed)
+- **btncolor:** Color of the Next/Previous Page Buttons (PRIMARY/SECONDARY/SUCCESS/DANGER)
+- **delcolor:** Color of the Delete Message Buttons (PRIMARY/SECONDARY/SUCCESS/DANGER)
+- **skipcolor:** Color of the Last/First Page Buttons (PRIMARY/SECONDARY/SUCCESS/DANGER)
 
 ### Button Option
 - **skipBtn:** Turn on/off the Last/First Page Buttons. (Only boolean [true/false])
