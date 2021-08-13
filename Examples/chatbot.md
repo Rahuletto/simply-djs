@@ -6,7 +6,7 @@
 ```js
 const simplydjs = require('simply-djs')
 
-// message event
+// messageCreate event
 simplydjs.chatbot(client, message, {
 chid: 'channel id',
 name: 'chatbot', // default: Your bot name
@@ -16,7 +16,7 @@ name: 'chatbot', // default: Your bot name
 ```js
 const simplydjs = require('simply-djs')
 
-// message event
+// messageCreate event
 simplydjs.chatbot(client, message, {
 chid: 'channel id',
 })
@@ -31,4 +31,4 @@ chid: 'channel id',
 
 # Options for chatbot function (Optional)
 - **name:** ChatBot name
-- **developer:** Your name.
+- **developer:** Your name
