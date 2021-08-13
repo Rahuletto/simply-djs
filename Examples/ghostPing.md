@@ -3,7 +3,7 @@
 
 ## With Customization
 ```js
-const simplydjs = require('simply-djs-v13')
+const simplydjs = require('simply-djs')
 // messageDelete event
 simplydjs.ghostPing(message, {
 embedDesc: 'desc', // default: (*a long message*)
@@ -14,7 +14,7 @@ embedFoot: 'Footer' // default: 'Ghost Ping.'
 
 ## Without Customization
 ```js
-const simplydjs = require('simply-djs-v13')
+const simplydjs = require('simply-djs')
 // messageDelete event
 simplydjs.ghostPing(message)
 ```
