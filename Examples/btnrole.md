@@ -34,4 +34,4 @@ simplydjs.btnrole(client, message, {
 - **emoji:** The Emoji for the button which gives the role from role id (optional)
 
 # Note
-## data needs to be an array and need to follow the format that the example is shown.
+- data needs to be an array and need to follow the format that the example is shown.
