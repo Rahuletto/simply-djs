@@ -37,5 +37,8 @@ simplydjs.btnrole(client, message, {
 - **color:** The button color which gives the role from role id
 - **emoji:** The Emoji for the button which gives the role from role id (optional)
 
-# Note
+## Note
 - data needs to be an array and need to follow the format that the example is shown.
+
+# Extended Customization
+- You can create your own button with its CustomId in this format `role-` and role id after it.. the button role will work like that too... `Example: .CustomId('role-123456789012345678')`
