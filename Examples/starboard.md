@@ -19,7 +19,7 @@ const simplydjs = require('simply-djs')
 
 <br>
 
-# Options for starboard function [(Required)](https://github.com/Rahuletto/simply-djs/edit/main/Examples/btnrole.md)
+# Options for starboard function [(Required)](https://github.com/Rahuletto/simply-djs/main/Examples/starboard.md)
 - **chid:** Starboard channel ID
 
 # Options for starboard function (Optional)
