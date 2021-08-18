@@ -40,7 +40,7 @@ simplydjs.dropdownPages(message, {
 
 <br>
 
-# Options for menuPages function [(Required)](https://github.com/Rahuletto/simply-djs/main/Examples/menuPages.md)
+# Options for menuPages function [(Required)](https://github.com/Rahuletto/simply-djs/blob/main/Examples/menuPages.md)
 - **embed:** Embed to send with dropdown
 - **data:** Data need to be provided to give what to send
 
