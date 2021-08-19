@@ -2,26 +2,42 @@
 #### This is an example of menuPages/dropdownPages (Two names)
 <br>
 
+With Customization
 ```js
 const simplydjs = require('simply-djs')
 
 // messageCreate event
-  let embed = new Discord.MessageEmbed()
-  .setTitle('Dropdown moment')
-  .setColor('#075FFF')
-  .setDescription('This is a help dropdown like thing idk what is this but this works')
- 
-   let emb2 = new Discord.MessageEmbed()
-  .setTitle('Thanks for using my package')
-  .setColor('#cc0000')
-  .setDescription('Thank you for using my npm package')
-  .setTimestamp()
+let embed = // embed
+let emb2 = // embed
 
 simplydjs.dropdownPages(message, {
   type: 1, // default: 1
   embed: embed,
   placeHolder: 'Dropdown Pages',
   rows: [], // custom row to send the message with more buttons
+  data:[
+    {
+      label: 'Label',
+      desc: 'description',
+      emoji: 'emoji id',
+      embed: emb2, // embed sent when clicked
+    }, 
+  // etc..
+  ]
+})
+
+```
+
+Without Customization
+```js
+const simplydjs = require('simply-djs')
+
+// messageCreate event
+let embed = // embed
+let emb2 = // embed
+
+simplydjs.dropdownPages(message, {
+  embed: embed,
   data:[
     {
       label: 'Label',
