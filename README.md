@@ -1,4 +1,3 @@
-
 <p align="center"><img align="center" style="margin-bottom:-6px" src="https://i.imgur.com/HxeQNT7_d.webp?maxwidth=128&fidelity=grand"></p>
 
 
@@ -33,44 +32,37 @@ npm i simply-djs@1.0.88
 <br>
 
 ## Whats New ?
-<br>
-
-## **[btnrole](https://github.com/Rahuletto/simply-djs/blob/main/Examples/btnrole.md)**
-
-```js
-const simplydjs = require('simply-djs')
-   
-// interactionCreate event
-simplydjs.clickBtn(interaction)
-   
-// message event
-// setup-btnrole command
-simplydjs.btnrole(client, message, {
-    embed: embed,
-    data: [
-      {
-        role: 'role-id',
-        color: 'color', // default: SECONDARY
-        emoji: 'emoji id',
-      }, // etc..
-    ],
-  })
-```
+- **[starboard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md)**
+- **[rankCard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rankCard.md)**
+- **[menuPages/dropdownPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/menuPages.md)**
+- **[stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md)** Can steal attachments you send and makes it as emoji
+- **[webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md)** Fixed.
+- **[Code cleanup](https://github.com/Rahuletto/simply-djs)**
 <br>
 
 
-# [Examples](https://github.com/Rahuletto/simply-djs/tree/main/Examples) have been moved.
-- [stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md) - Gets emoji png/gif and uploads to the current server
-- [tictactoe](https://github.com/Rahuletto/simply-djs/blob/main/Examples/tictactoe.md) - A TicTacToe game using buttons
-- [calculator](https://github.com/Rahuletto/simply-djs/blob/main/Examples/calculator.md) - A Simple Handy Calculator using buttons
+# [Examples](https://github.com/Rahuletto/simply-djs/tree/main/Examples) for all functions.
+
+## General
+- [ghostPing](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ghostPing.md) - Reveals who ghost pinged a user
 - [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - Paginator/Embed (or) Message Pages using buttons
-- [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - A Ticket System using buttons
+- [stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md) - Gets emoji png/gif and uploads to the current server
+- [calculator](https://github.com/Rahuletto/simply-djs/blob/main/Examples/calculator.md) - A Simple Handy Calculator using buttons
 - [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
 - [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
-- [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Credits: [Brainshop](https://brainshop.ai)
-- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
+- [rankCard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rankCard.md) - Creates a rank card and sends it using the data you provided
+- [menuPages/dropdownPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/menuPages.md) - It has 2 names.. It is embedPages but using Select Menus.
+
+## Fun
+- [tictactoe](https://github.com/Rahuletto/simply-djs/blob/main/Examples/tictactoe.md) - A TicTacToe game using buttons
+- [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Not Google Assistant. Credits: [Brainshop](https://brainshop.ai)
 - [rps](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rps.md) - A Rock Paper Scissors game using buttons (Thanks to ImpassiveMoon for making this)
+
+## Systems
+- [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - A Ticket System using buttons
+- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
 - [btnrole](https://github.com/Rahuletto/simply-djs/blob/main/Examples/btnrole.md) - A Better Reaction Roles system using buttons.
+- [starboard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md) - A Typical starboard
 
  <h1>Contact us | Support</h1>
  <p>
