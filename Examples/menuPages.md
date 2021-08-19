@@ -2,7 +2,7 @@
 #### This is an example of menuPages/dropdownPages (Two names)
 <br>
 
-With Customization
+### With Customization
 ```js
 const simplydjs = require('simply-djs')
 
@@ -28,7 +28,7 @@ simplydjs.dropdownPages(message, {
 
 ```
 
-Without Customization
+### Without Customization
 ```js
 const simplydjs = require('simply-djs')
 
