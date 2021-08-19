@@ -1,12 +1,12 @@
 # suggestSystem function
-#### This is an example of suggestSystem (discord-buttons required)
+#### This is an example of suggestSystem
 <br>
 
 ## With Customization
 ```js
 const simplydjs = require('simply-djs')
 let users = new Map()
-// (or) let db = require('quick.db')
+// (or) let db = require('quickmongo')
 
 client.on('clickButton', async (button) => {
 
