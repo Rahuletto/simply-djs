@@ -2,6 +2,7 @@
 #### This is an example of starboard
 <br>
 
+### With Customization
 ```js
 const simplydjs = require('simply-djs')
 
@@ -11,6 +12,16 @@ const simplydjs = require('simply-djs')
     embedColor: 'hex code', // default: #FFC83D
     emoji:"emoji id", // default: ⭐
     min: 2, // default: 2
+  })
+```
+
+### Without Customization
+```js
+const simplydjs = require('simply-djs')
+
+// outside of event (no event)
+  simplydjs.starboard(client, {
+    chid: 'channel id',
   })
 ```
 
