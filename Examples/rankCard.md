@@ -2,6 +2,7 @@
 #### This is an example of rankCard (not rank system) | Thanks TheJoaqun#7239 for the help with canvas
 <br>
 
+### Required
 ```js
 const simplydjs = require('simply-djs')
 
