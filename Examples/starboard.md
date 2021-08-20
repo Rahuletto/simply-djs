@@ -2,6 +2,23 @@
 #### This is an example of starboard
 <br>
 
+### Required
+```
+Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+// and
+partials: ['REACTIONS']
+```
+### the client should look like
+```js
+
+const { Intents } = require ('discord.js')
+
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'], intents: [
+// existing intents, 
+Intents.FLAGS.GUILD_MESSAGE_REACTIONS]
+  
+});
+```
 ### With Customization
 ```js
 const simplydjs = require('simply-djs')
