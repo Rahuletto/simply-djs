@@ -6,22 +6,31 @@
 ```js
 const simplydjs = require('simply-djs')
 
-// outside of event (no event)
-  simplydjs.starboard(client, {
+// messageReactionAdd event
+simplydjs.starboard(client, reaction, {
+    event: 'messageReactionAdd',
     chid: 'channel id',
     embedColor: 'hex code', // default: #FFC83D
     emoji:"emoji id", // default: ⭐
     min: 2, // default: 2
   })
-```
 
-### Without Customization
-```js
-const simplydjs = require('simply-djs')
-
-// outside of event (no event)
-  simplydjs.starboard(client, {
+// messageReactionRemove event
+simplydjs.starboard(client, reaction, {
+    event: 'messageReactionRemove',
     chid: 'channel id',
+    embedColor: 'hex code', // default: #FFC83D
+    emoji:"emoji id", // default: ⭐
+    min: 2, // default: 2
+  })
+  
+// messageDelete event
+simplydjs.starboard(client, message, {
+    event: 'messageDelete',
+    chid: 'channel id',
+    embedColor: 'hex code', // default: #FFC83D
+    emoji:"emoji id", // default: ⭐
+    min: 2, // default: 2
   })
 ```
 
@@ -32,6 +41,7 @@ const simplydjs = require('simply-djs')
 
 # Options for starboard function [(Required)](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md)
 - **chid:** Starboard channel ID
+- **event:** Specify event you are using in starboard (WARNING: specifying wrong event causes error)
 
 # Options for starboard function (Optional)
 - **embedColor:** Color of the embed which is sent in starboard
