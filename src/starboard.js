@@ -1,22 +1,16 @@
 const Discord = require('discord.js')
-
-async function starboard(client, options=[]){
+async function starboard(client, reaction, options=[]){
   
-     let minno = options.minimum || 2
+     let minno = options.min || 2
      let min = Number(minno)
      if(!min || min === NaN) throw new Error('MIN_IS_NAN | Minimum stars number is Not A Number. Try again.');
      if(min === 0) throw new Error('MIN_IS_ZERO | Minimum stars number should not be 0..');
-   
-       if (options.credit === false) {
-                 foot = options.embedFoot || 'Starboard'
-             } else {
-                 foot = '©️ Simply Develop. npm i simply-djs'
-             }
      
-     client.on('messageReactionAdd', async (reaction, user) => {
-       
+     let event = options.event
+
+if(event === 'messageReactionAdd'){
        await reaction.fetch()
-     
+       if(!options) throw new Error('Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageReactionAdd')
       if(reaction.emoji.id === options.emoji || reaction.emoji.name === '⭐'  || reaction.emoji.name ===  '🌟'){
      
      let minmax = reaction && reaction.count
@@ -39,7 +33,7 @@ async function starboard(client, options=[]){
           .setTitle(`Jump to message`)
           .setURL(fetchMsg.url)
           .setImage(url)
-          .setFooter('⭐ | ' + fetchMsg.id + ' | ' + foot);
+          .setFooter('⭐ | ID: ' + fetchMsg.id);
      
           const msgs = await starboard.messages.fetch({ limit: 100 });
      
@@ -51,7 +45,7 @@ async function starboard(client, options=[]){
      
               if(msg.embeds[0] === null || msg.embeds[0] === []) return starboard.send({ content: `**${eemoji} 1**`, embeds: [embed] });
      
-              if(msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ' + fetchMsg.id + ' | ' + foot){
+              if(msg.embeds[0] && msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ID: ' + fetchMsg.id){
      
          let reacts = reaction && reaction.count ? reaction.count : 1
      
@@ -67,13 +61,9 @@ async function starboard(client, options=[]){
           })
           
       }
-      
-      })
-      
-     client.on('messageReactionRemove', async (reaction, user) => {
-       
-       await reaction.fetch()
-     
+} else if(event === 'messageReactionRemove'){
+  await reaction.fetch()
+  if(!options) throw new Error('Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageReactionRemove')
      
       if(reaction.emoji.id === options.emoji || reaction.emoji.name === '⭐' ||reaction.emoji.name ===  '🌟'){
           const starboard = client.channels.cache.get(options.chid)
@@ -91,7 +81,7 @@ async function starboard(client, options=[]){
           .setTitle(`Jump to message`)
           .setURL(fetchMsg.url)
           .setImage(url)
-          .setFooter('⭐ | ' + fetchMsg.id + ' | ' + foot);
+          .setFooter('⭐ | ID: ' + fetchMsg.id);
      
           const msgs = await starboard.messages.fetch({ limit: 100 });
      
@@ -102,7 +92,7 @@ async function starboard(client, options=[]){
           const existingMsg = msgs.find(async msg => {
             if(msg.embeds.length === 1){
    
-              if(msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ' + fetchMsg.id + ' | ' + foot){
+              if(msg.embeds[0] && msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ID: ' + fetchMsg.id){
                 
          let reacts = reaction && reaction.count
      
@@ -116,24 +106,20 @@ async function starboard(client, options=[]){
           });
        
       }
-     })
-     
-     client.on('messageDelete', async message => {
-       const starboard = client.channels.cache.get(options.chid)
-     
+} else if(event === 'messageDelete'){
+         const starboard = client.channels.cache.get(options.chid)
+         if(!options) throw new Error('Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageDelete')
           if(!starboard) throw new Error('INVALID_CHANNEL_ID')
      
        const msgs = await starboard.messages.fetch({ limit: 100 });
      
           const existingMsg = msgs.find(async msg => {
      
-     if(msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ' + message.id + ' | ' + foot){
+     if(msg.embeds[0] && msg.embeds[0].footer && msg.embeds[0].footer.text === '⭐ | ID: ' + reaction.id){
       msg.delete()
               }
             
           });
-     })
-     
+} else throw new Error('There are only 3 Events available in starboard function. Please read the examples for more information.')
      }
-
   module.exports = starboard;
