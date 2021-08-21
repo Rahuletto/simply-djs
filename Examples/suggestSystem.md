@@ -5,8 +5,7 @@
 ## With Customization
 ```js
 const simplydjs = require('simply-djs')
-let users = new Map()
-// (or) let db = require('quickmongo')
+let users = require('quickmongo')
 
 // interactionCreate event
 simplydjs.suggestBtn(interaction, users, {
@@ -31,8 +30,7 @@ simplydjs.suggestSystem(client, message, args, {
 ## Without Customization
 ```js
 const simplydjs = require('simply-djs')
-let users = new Map()
-// (or) let db = require('quick.db')
+let users = require('quickmongo')
 
 // interactionCreate event
    simplydjs.suggestBtn(interaction, users)
