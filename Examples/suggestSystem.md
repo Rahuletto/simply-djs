@@ -8,9 +8,8 @@ const simplydjs = require('simply-djs')
 let users = new Map()
 // (or) let db = require('quickmongo')
 
-client.on('clickButton', async (button) => {
-
-simplydjs.suggestBtn(button, users, {
+// interactionCreate event
+simplydjs.suggestBtn(interaction, users, {
    yesEmoji: 'emoji id', // default: ☑️
    yesColor: 'buttonColor', // default: green 
    noEmoji: 'emoji id', // default: X
@@ -19,8 +18,7 @@ simplydjs.suggestBtn(button, users, {
    agreeEmbColor: 'hex color', // default: GREEN
    })
    
-})
-// message event
+// messageCreate event
 simplydjs.suggestSystem(client, message, args, {
    chid: 'channel id',
    embedColor: 'hex color', // defaultL #075FFF
@@ -36,10 +34,10 @@ const simplydjs = require('simply-djs')
 let users = new Map()
 // (or) let db = require('quick.db')
 
-client.on('clickButton', async (button) => {
-   simplydjs.suggestBtn(button, users)
-})
-// message event
+// interactionCreate event
+   simplydjs.suggestBtn(interaction, users)
+
+// messageCreate event
 simplydjs.suggestSystem(client, message, args, {
    chid: 'channel id'
 })
