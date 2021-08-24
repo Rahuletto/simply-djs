@@ -32,12 +32,9 @@ npm i simply-djs@1.0.88
 <br>
 
 ## Whats New ?
-- **[starboard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md)**
-- **[rankCard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rankCard.md)**
-- **[menuPages/dropdownPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/menuPages.md)**
-- **[stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md)** Can steal attachments you send and makes it as emoji
-- **[webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md)** Fixed.
-- **[Code cleanup](https://github.com/Rahuletto/simply-djs)**
+- **[embedCreate](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedCreate.md)**
+- **[modmail](https://github.com/Rahuletto/simply-djs/blob/main/Examples/modmail.md)**
+- **[stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md)** Permissions fixed
 <br>
 
 
@@ -63,7 +60,9 @@ npm i simply-djs@1.0.88
 - [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
 - [btnrole](https://github.com/Rahuletto/simply-djs/blob/main/Examples/btnrole.md) - A Better Reaction Roles system using buttons.
 - [starboard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md) - A Typical starboard
-
+- [embedCreate](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedCreate.md) - Creates embed for you using buttons/select menus
+- [modmail](https://github.com/Rahuletto/simply-djs/blob/main/Examples/modmail.md) - an ordinary Modmail system
+   
  <h1>Contact us | Support</h1>
  <p>
 <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
