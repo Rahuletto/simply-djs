@@ -26,6 +26,10 @@ module.exports.chatbot = require('./src/chatbot')
 module.exports.ticketSystem = require('./src/ticketSystem')
 module.exports.clickBtn = require('./src/clickBtn')
 
+module.exports.embedCreate = require('./src/embed')
+
+module.exports.modmail = require('./src/modmail')
+
 module.exports.suggestSystem = require('./src/suggestSystem')
 module.exports.suggestBtn = require('./src/suggestBtn')
 
