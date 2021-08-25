@@ -6,9 +6,8 @@
 ```js
 const simplydjs = require('simply-djs')
 
-client.on('clickButton', async(button) => { 
-    // a discord-buttons event which fires when a button gets clicked
-simplydjs.clickBtn(button, {
+    // interactionCreate
+simplydjs.clickBtn(interaction, {
     embedDesc: 'embed description',
     embedColor: 'hex code', // default: #075FFF
     closeColor: 'color from buttons', //default: blurple
@@ -22,9 +21,8 @@ simplydjs.clickBtn(button, {
     categoryID: 'category id',
     role: 'role id' // Role which sees the ticket channel (like Support Role)
     })
-})
 
-// message event
+// messageCreate event
 // setup-ticket command
 
 simplydjs.ticketSystem(message, message.channel, {
@@ -39,12 +37,10 @@ simplydjs.ticketSystem(message, message.channel, {
 ```js
 const simplydjs = require('simply-djs')
 
-client.on('clickButton', async(button) => { 
-    // a discord-buttons event which fires when a button gets clicked
+// interactionCreate event
 simplydjs.clickBtn(button)
-})
 
-// message event
+// messageCreate event
 // setup-ticket command
 
 simplydjs.ticketSystem(message, message.channel)
