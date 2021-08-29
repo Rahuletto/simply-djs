@@ -22,7 +22,7 @@ async function chatbot(client, message, options = []) {
                 .then(res => res.json())
                 .then(reply => {
 
-                    message.channel.send({ content: `${reply.message}` }).catch(err => message.channel.send({ content: `${err}` }));
+                    message.reply({ content: `${reply.message}`, allowedMentions: { repliedUser: false }}).catch(err => message.channel.send({ content: `${err}` }));
                 });
         }
     } else {
@@ -38,7 +38,7 @@ async function chatbot(client, message, options = []) {
                 .then(res => res.json())
                 .then(reply => {
 
-                    message.channel.send({ content: `${reply.message}` }).catch(err => message.channel.send({ content: `${err}` }));
+                    message.reply({ content: `${reply.message}`, allowedMentions: { repliedUser: false } }).catch(err => message.channel.send({ content: `${err}` }));
                 });
         }
     }
