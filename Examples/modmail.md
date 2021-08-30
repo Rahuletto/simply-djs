@@ -48,7 +48,7 @@ simplydjs.modmail(client, message)
 - **blacklistUser:** Blacklist users if they are spamming
 - **blacklistGuild:** Set Guilds in blacklist zone so you can't create modmails in that guild
 - **categoryID:** Category ID to make the server clean
-- **embedColor:** Color of the embed which is sent in starboard
+- **embedColor:** Color of the embed which is sent in modmail
 - **credit:** Give credits to the package by making it true (Only Boolean true/false)
 
 ## Options for modmail buttons (Optional)
