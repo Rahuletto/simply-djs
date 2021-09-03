@@ -1,14 +1,13 @@
 const Discord = require('discord.js')
 
 async function clickBtn(button, options = []) {
+    if (button.isButton()) {
+    try{
     if (options.credit === false) {
         foot = button.message.guild.name, button.message.guild.iconURL()
     } else {
         foot = '©️ Simply Develop. npm i simply-djs'
     }
-
-    if (!button.isButton()) return;
-
 
     if (button.customId.startsWith('role-')) {
         let rle = button.customId.replace("role-", "")
@@ -259,6 +258,10 @@ async function clickBtn(button, options = []) {
     if (button.customId === 'no_ticket') {
         button.message.delete();
         button.reply({ content: 'Ticket Deletion got canceled', ephemeral: true })
+    }
+} catch(err){
+    console.log(`Error Occured. | clickBtn | Error: ${err}`)
+}
     }
 }
 module.exports = clickBtn;

@@ -1,8 +1,9 @@
 const Discord = require('discord.js')
 
 async function stealEmoji(message, args, options = []) {
-    if (!message.member.permissions.has("MANAGE_EMOJIS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');
-   
+    try{
+    if (!message.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');
+
     const attachment = message.attachments.first();
   const uri = attachment
   if(!uri){
@@ -142,5 +143,9 @@ const url = attachment.url
                 }).catch(err => message.channel.send({ content: 'Error Occured. ' + err }))
     }
   }  
+} catch(err){
+    console.log(`Error Occured. | stealEmoji | Error: ${err}`)
+}
+
 }
 module.exports = stealEmoji;

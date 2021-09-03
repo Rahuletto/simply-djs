@@ -6,7 +6,7 @@ registerFont('./node_modules/simply-djs/src/Fonts/Poppins-SemiBold.ttf', { famil
 registerFont('./node_modules/simply-djs/src/Fonts/Poppins-SemiBold.ttf', { family: 'Poppins-Bold' })
 
 async function rankCard(client, message, options = []) {
-
+try {
     function shortener(count) {
         const COUNT_ABBRS = ['', 'k', 'M', 'T'];
 
@@ -202,9 +202,19 @@ async function rankCard(client, message, options = []) {
         180
     );
 
+    if(options.slash === true){
+        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), AttachmentName);
+
+        message.reply({ files: [attachment], ephemeral: true})
+    } else if(!options.slash || options.slash === false){
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), AttachmentName);
 
     message.channel.send({ files: [attachment] })
+    }
+} catch(err){
+    console.log(`Error Occured. | rankCard | Error: ${err}`)
+}
+
 }
 
 module.exports = rankCard;
