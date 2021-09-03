@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 
 async function ticketSystem(message, channel, options = []) {
+    try{
     let { MessageButton, MessageActionRow } = require('discord.js')
 
     if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply({ content: "You dont have permissions to setup a ticket system" })
@@ -47,6 +48,10 @@ async function ticketSystem(message, channel, options = []) {
     } catch (err) {
         channel.send({ content: 'ERR OCCURED ' + err })
     }
+
+} catch(err){
+    console.error(`Error Occured. | ticketSystem | Error: ${err}`)
+}
 
 }
 module.exports = ticketSystem;

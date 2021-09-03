@@ -1,6 +1,6 @@
 {
   "name": "simply-djs",
-  "version": "1.1.22",
+  "version": "1.1.221",
   "description": "A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v13",
   "main": "simplydjs.js",
   "typings": "index.d.ts",

@@ -11,13 +11,15 @@ export declare function btnrole(client: Client, message: Message, options?: {
         label?: string,
         /** default: SECONDARY */
         color?: HexColorString,
-        emoji: EmojiResolvable,
+        emoji?: EmojiResolvable,
     }[]
 }): Promise<void>;
 
 export declare function calculator(message: Message, options?: {
     /** The Embed Color of the calculator embed, default: #075FFF */
     embedColor: HexColorString,
+    /** Slash support */
+    slash?: boolean,
     /**  Credit the package. (Only Boolean [true/false]) */
     credit?: boolean
 
@@ -28,6 +30,8 @@ export declare function chatbot(client: Client, message: Message, options?: {
     chid: string | string[],
     /** ChatBot name, default: Your bot name */
     name?: string,
+    /** Toggle the chatbot */
+    toggle?: boolean
     /** Your name */
     developer?: string
 }): Promise<void>;
@@ -79,6 +83,9 @@ export declare function embedPages(client: Client, message: Message, pages: Mess
     /** default: ⏩ */
     lastemoji?: EmojiResolvable,
 
+    /** Slash support */
+    slash?: boolean,
+
     /** default: SUCCESS */
     btncolor?: DiscordColor,
     /** default: DANGER */
@@ -104,6 +111,8 @@ export declare function dropdownPages(message: Message, options?: {
     type?: 1 | 2,
     /** Name that shows when nothing is selected */
     placeHolder?: string,
+    /** Slash support */
+    slash?: boolean,
     /** Custom rows to send the message with more buttons(only need to be row) */
     rows: MessageActionRow[],
     embed: MessageEmbed,
@@ -144,6 +153,8 @@ export declare function rankCard(client: Client, message: Message, options?: {
     currentXP: number,
     neededXP: number,
     rank: number,
+    /** Slash support */
+    slash?: boolean,
     /** Background of the rank card */
     background?: string
 }): Promise<void>;
@@ -157,6 +168,9 @@ export declare function rps(message: Message, options?: {
     rockColor?: ColorResolvable, // default: grey
     paperColor?: ColorResolvable, // default: grey
     scissorsColor?: ColorResolvable, // default: grey
+    /** Slash support */
+    slash?: boolean,
+    /** Credit the package */
     credit?: boolean
 }): Promise<any>;
 
@@ -182,6 +196,17 @@ export declare function stealEmoji(message: Message, args: string[], options?: {
     embedFoot?: string,
     /** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
     failedMsg?: string
+    credit?: boolean
+}): Promise<any>;
+
+export declare function stealSticker(message: Message, args: string[], options?: {
+    /**  The Embed Title of the embed which is sent after uploading the emoji, default: `Emoji Added ;)` */
+    embedTitle?: string,
+    /** The Embed Color of the embed which is sent after uploading the emoji, default: #075FFF; */
+    embedColor?: HexColorString,
+    /** The Embed Footer of the embed which is sent after uploading the emoji, default: 'Stop stealing.. its illegal.' */
+    embedFoot?: string,
+    /** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
     credit?: boolean
 }): Promise<any>;
 
@@ -212,6 +237,8 @@ export declare function suggestSystem(client: Client, message: Message, args: st
     noColor?: ColorResolvable,
     /** Color for the Suggestion embed, defaultL #075FFF */
     embedColor?: HexColorString,
+    /** Slash support */
+    slash?: boolean,
     /**  Give credits to this package(Boolean[true / false]) Default: true */
     credit?: boolean
 }): Promise<void>;
@@ -241,6 +268,8 @@ export declare function tictactoe(message: Message, options?: {
     embedColor: HexColorString,
     /**  Give credits to this package (Boolean[true / false]) Default: true */
     credit: boolean
+    /** Slash support */
+    slash?: boolean,
     //Buttons
     /** Emoji for X user[Player 1] */
     xEmoji: EmojiResolvable,
@@ -279,3 +308,15 @@ export declare function ytNotify(client: Client, db: DB, options?: ({
     /** Message sent when the youtuber posts a video */
     msg?: string
 }): Promise<void>;
+
+export declare function bumpSystem(client: Client, db: DB, options?: {
+    event: 'ready' | 'messageCreate'
+    /** Message when the event is messageCreate */
+    message?: Message,
+    /** Channel id of the bump channel */
+    chid: string,
+    /** Embed that sends when the bump is needed */
+    bumpEmbed?: MessageEmbed
+/** Embed that sends when someone bumps the server */
+    thanksEmbed?: MessageEmbed
+}): Promise<any>;

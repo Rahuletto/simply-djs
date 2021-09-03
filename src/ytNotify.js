@@ -7,11 +7,11 @@ async function ytNotify(client, db, options = []) {
 
     if (!chid) throw new Error('EMPTY_CHANNEL_ID. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
     if (!options.ytID && !options.ytURL) throw new Error('EMPTY_YT_CHANNEL_ID & EMPTY_YT_CHANNEL_URL. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
-
+ try {
     let timer = options.timer || "10000"
     let timr = parseInt(timer)
 
-    if (db.fetch(`postedVideos`) === null) db.set(`postedVideos`, []);
+    if (db.get(`postedVideos`) === null) db.set(`postedVideos`, []);
     setInterval(async () => {
 
         function URLtoID(url) {
@@ -47,7 +47,7 @@ async function ytNotify(client, db, options = []) {
             parse.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${ytID}`)
                 .then(data => {
                     if (!data.items || !data.items[0] || !data || data.items === []) return;
-                    if (db.fetch(`postedVideos`).includes(data.items[0].link)) return;
+                    if (db.get(`postedVideos`).includes(data.items[0].link)) return;
                     else {
                         if (new Date(data.items[0].pubDate).getTime() < startAt) return;
 
@@ -65,5 +65,9 @@ async function ytNotify(client, db, options = []) {
                 });
         }
     }, timr);
+} catch(err){
+    console.log(`Error Occured. | ytNotify | Error: ${err}`)
+}
+
 }
 module.exports = ytNotify;
