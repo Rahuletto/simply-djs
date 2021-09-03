@@ -15,55 +15,31 @@
 
 <br>
 
-## <b>How to install ?
+## 🖥️ <b>How to install ?
 ```
 npm install simply-djs
 ```
+   
+(or)
+```
+yarn add simply-djs
+```
 <br>
  
- ## Note.. If you want the package for discord.js v12.. do
-```
-npm i simply-djs@1.0.88
-```
- <br>
-
+# 🎉 [What's New](https://simplyd.js.org/docs/whatsnew) 🎉
+- ### Yea we have documentations now.. Amazing right ?? [Visit the Docs](https://simplyd.js.org)
+- ### As Discord trying to push all verified bots to be slash based, This is our response to it.. We introduce *(drum rolls)* [Slash Support.](https://simplyd.js.org/docs/slash)
+- ### New Everything. Yea. Lets welcome [simply-djs v2](https://simplyd.js.org)
+- ### Converting everything to mongoDB
+- ### New Functions. [bumpSystem](https://simplyd.js.org/docs/Systems/bumpSystem) and [stealSticker](https://simplyd.js.org/docs/General/stealSticker)
+- ### Thank you for everything. We learned many things from this journey. Hope it continues
+<br>
+   
 ## **Need Help ? Join the [Discord Server](https://discord.gg/3JzDV9T5Fn)**
 ### We love to help people. Join the server. Dont be shy.
 <br>
-
-## Whats New ?
-- **[embedCreate](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedCreate.md)**
-- **[modmail](https://github.com/Rahuletto/simply-djs/blob/main/Examples/modmail.md)**
-- **[stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md)** Permissions fixed
-<br>
-
-
-# [Examples](https://github.com/Rahuletto/simply-djs/tree/main/Examples) for all functions.
-
-## General
-- [ghostPing](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ghostPing.md) - Reveals who ghost pinged a user
-- [embedPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md) - Paginator/Embed (or) Message Pages using buttons
-- [stealEmoji](https://github.com/Rahuletto/simply-djs/blob/main/Examples/stealEmoji.md) - Gets emoji png/gif and uploads to the current server
-- [calculator](https://github.com/Rahuletto/simply-djs/blob/main/Examples/calculator.md) - A Simple Handy Calculator using buttons
-- [webhooks](https://github.com/Rahuletto/simply-djs/blob/main/Examples/webhooks.md) - A Simple way to send messages with webhooks using channel id
-- [ytNotify](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ytNotify.md) - Notifies when your favorite youtuber posts a video (Finally Back)
-- [rankCard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rankCard.md) - Creates a rank card and sends it using the data you provided
-- [menuPages/dropdownPages](https://github.com/Rahuletto/simply-djs/blob/main/Examples/menuPages.md) - It has 2 names.. It is embedPages but using Select Menus.
-
-## Fun
-- [tictactoe](https://github.com/Rahuletto/simply-djs/blob/main/Examples/tictactoe.md) - A TicTacToe game using buttons
-- [chatbot](https://github.com/Rahuletto/simply-djs/blob/main/Examples/chatbot.md) - Chats with you like a friend. Not Google Assistant. Credits: [Brainshop](https://brainshop.ai)
-- [rps](https://github.com/Rahuletto/simply-djs/blob/main/Examples/rps.md) - A Rock Paper Scissors game using buttons (Thanks to ImpassiveMoon for making this)
-
-## Systems
-- [ticketSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/ticketSystem.md) - A Ticket System using buttons
-- [suggestSystem](https://github.com/Rahuletto/simply-djs/blob/main/Examples/suggestSystem.md) - A Complex suggestion system which can be used easily.
-- [btnrole](https://github.com/Rahuletto/simply-djs/blob/main/Examples/btnrole.md) - A Better Reaction Roles system using buttons.
-- [starboard](https://github.com/Rahuletto/simply-djs/blob/main/Examples/starboard.md) - A Typical starboard
-- [embedCreate](https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedCreate.md) - Creates embed for you using buttons/select menus
-- [modmail](https://github.com/Rahuletto/simply-djs/blob/main/Examples/modmail.md) - an ordinary Modmail system
    
- <h1>Contact us | Support</h1>
+ <h1>👥 Contact us | Support</h1>
  <p>
 <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
 </p>
