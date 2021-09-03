@@ -1,7 +1,5 @@
 import { ButtonInteraction, Client, ColorResolvable, Emoji, EmojiResolvable, HexColorString, Message, MessageActionRow, MessageEmbed, MessageReaction, StartThreadOptions, TextBasedChannels, TextChannel, User } from 'discord.js';
-import QuickDB from 'quick.db';
-
-type DB = typeof QuickDB;
+type DB = 'quickmongo';
 
 export declare function btnrole(client: Client, message: Message, options?: {
     embed: MessageEmbed,
@@ -65,9 +63,9 @@ export declare function clickBtn(button: ButtonInteraction, options?: {
     cooldownMsg: string
 }): Promise<void>;
 
-/* Not Implemented?
-export declare function embedCreate(message: Message): Promise<void>;
-*/
+export declare function embedCreate(message: Message, options?: {
+    slash?: boolean
+}): Promise<void>;
 
 /** Colors that discord.js support */
 type DiscordColor = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER';
