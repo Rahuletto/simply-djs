@@ -68,7 +68,7 @@ try{
         }
     
         var currentPage = 0;
-        await message.reply({ embeds: [pages[0]], components: [pageMovingButtons] });
+        await message.followUp({ embeds: [pages[0]], components: [pageMovingButtons] });
         let m = await message.fetchReply()
         client.on('interactionCreate', async b => {
     

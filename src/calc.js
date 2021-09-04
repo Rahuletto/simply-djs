@@ -23,7 +23,7 @@ async function calculator(interaction, options = []) {
     
         .setDescription("```0```")
     
-      await interaction.reply({
+      await interaction.followUp({
         embeds: [emb],
         components: row
       }).then(async (mssg) => {

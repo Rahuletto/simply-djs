@@ -53,7 +53,7 @@ async function embed(message, options=[]){
     .setColor(options.embedColor || '#075FFF')
     .setFooter('Embed creator using Simply-DJS')
     
-    message.reply({ embeds: [embed], components: [row2, row]})
+    message.followUp({ embeds: [embed], components: [row2, row]})
     
     const emb = new MessageEmbed()
     .setFooter('Simply DJS')
@@ -119,7 +119,7 @@ async function embed(message, options=[]){
            const url = membed.embeds[0].image ? membed.embeds[0].image.url : '';
            
                 let isthumb = m.content.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) != null || m.attachments.first().url || ''
-            if(!isthumb) return message.reply('This is not a image url. Please provide a image url or attachment.')
+            if(!isthumb) return message.followUp({ content: 'This is not a image url. Please provide a image url or attachment.', ephemeral: true})
   
     let msg = new MessageEmbed()
     .setTitle(membed.embeds[0].title || '')

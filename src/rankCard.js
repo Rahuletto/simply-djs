@@ -205,7 +205,7 @@ try {
     if(options.slash === true){
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), AttachmentName);
 
-        message.reply({ files: [attachment], ephemeral: true})
+        message.followUp({ files: [attachment], ephemeral: true})
     } else if(!options.slash || options.slash === false){
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), AttachmentName);
 

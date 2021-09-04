@@ -6,8 +6,8 @@ async function tictactoe(message, options = []) {
         if(options.slash === true){
             let opponent = message.options.getUser('user')
 
-            if (!opponent) return message.reply({ content: 'No opponent mentioned!', ephemeral: true})
-                    if (opponent.id == message.user.id) return message.reply({ content: 'You cannot play by yourself!', ephemeral: true})
+            if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
+                    if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
                 
             if (options.credit === false) {
                 foot = options.embedFoot || 'Make sure to win ;)'
@@ -33,7 +33,7 @@ async function tictactoe(message, options = []) {
         
             let accep = new Discord.MessageActionRow()
                 .addComponents([accept, decline])
-            message.reply({
+            message.followUp({
               content: 'Hey <@' + opponent.id + '>. You got a tictactoe request',
                 embeds: [acceptEmbed],
                 components: [accep]

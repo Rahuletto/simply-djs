@@ -49,9 +49,8 @@ async function suggestSystem(client, message, args, options = []) {
            .setColor(options.embedColor || '#075FFF')
            .setFooter(foot)
    
-       await interaction.deferReply()
-       interaction.channel.send({ embeds: [embedo], components: [row1] , ephemeral: true }).then(async (m) => {
-         await interaction.deleteReply()
+       interaction.followUp({ embeds: [embedo], components: [row1] , ephemeral: true }).then(async (m) => {
+         
            const filter = (button) => button.user.id === interaction.user.id
            const collect = m.createMessageComponentCollector({ filter, componentType: 'BUTTON', max: 1, time: 15000 })
    

@@ -56,7 +56,7 @@ try {
     }
   
   
-    message.reply({ embeds: [options.embed], components: rows })
+    message.followUp({ embeds: [options.embed], components: rows })
     let m = await message.fetchReply()
       let filter = (menu) => menu.user.id == message.user.id
       const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', time: 120000, filter: filter })
@@ -67,7 +67,7 @@ try {
   
           if (selet === data[i].label) {
             if (type === 1) {
-              menu.reply({ embeds: [data[i].embed], ephemeral: true })
+              menu.followUp({ embeds: [data[i].embed], ephemeral: true })
             } else if (type === 2) {
               menu.deferUpdate()
               menu.message.edit({ embeds: [data[i].embed] })

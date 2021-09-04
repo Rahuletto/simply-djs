@@ -4,9 +4,8 @@ async function rps(message, options = []) {
     try{
         if(options.slash === true){
             let opponent = message.options.getUser('user')
-            if (!opponent) return message.reply({ content: 'No opponent mentioned!', ephemeral: true})
-            if (opponent.id == message.user.id) return message.reply({ content: 'You cannot play by yourself!', ephemeral: true})
-        
+            if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
+            if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
             if (options.credit === false) {
                 foot = options.embedFooter || "Rock Paper Scissors"
             } else {
@@ -31,7 +30,7 @@ async function rps(message, options = []) {
         
             let accep = new Discord.MessageActionRow()
                 .addComponents([accept, decline])
-            message.reply({
+            message.followUp({
               content: `Hey <@${opponent.id}>. You got a RPS invite`,
                 embeds: [acceptEmbed],
                 components: [accep]
@@ -166,7 +165,7 @@ async function rps(message, options = []) {
                                     .setColor(options.winEmbedColor || 0x06bd00)
                                     .setDescription('Scissors defeats Paper')
                                     .setFooter(foot)
-                                message.editReply({ embeds: [embed], components: [] })
+                               message.editReply({ embeds: [embed], components: [] })
                             }
                             else if (mem == 'paper' && auth == 'rock') {
                                 let embed = new Discord.MessageEmbed()
@@ -174,7 +173,7 @@ async function rps(message, options = []) {
                                     .setColor(options.winEmbedColor || 0x06bd00)
                                     .setDescription('Paper defeats Rock')
                                     .setFooter(foot)
-                                message.editReply({ embeds: [embed], components: [] })
+                               message.editReply({ embeds: [embed], components: [] })
                             } else if (mem == 'rock' && auth == 'paper') {
                                 let embed = new Discord.MessageEmbed()
                                     .setTitle(`${message.user.tag} Wins!`)
@@ -189,7 +188,7 @@ async function rps(message, options = []) {
                                     .setColor(options.winEmbedColor || 0x06bd00)
                                     .setDescription(`Both players chose ${mem}`)
                                     .setFooter(foot)
-                                message.editReply({ embeds: [embed], components: [] })
+                               message.editReply({ embeds: [embed], components: [] })
                             }
                         }
                     })
@@ -202,7 +201,7 @@ async function rps(message, options = []) {
                             .setColor(options.timeoutEmbedColor || 0xc90000)
                             .setFooter(foot)
                             .setDescription('Ran out of time!\nTime limit: 30s')
-                        message.editReply({
+                      message.editReply({
                             embeds: [embed],
                             components: []
                         })
@@ -214,7 +213,7 @@ async function rps(message, options = []) {
                             .setColor(options.timeoutEmbedColor || 0xc90000)
                             .setFooter(foot)
                             .setDescription(`${opponent.tag} has declined your game!`)
-                        message.editReply({
+                       message.editReply({
                             embeds: [embed],
                             components: []
                         })
