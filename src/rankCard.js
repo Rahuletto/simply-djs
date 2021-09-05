@@ -1,10 +1,10 @@
 const Discord = require('discord.js')
+const { join } = require('path');
 
 const Canvas = require('canvas')
 const { registerFont } = require('canvas')
-registerFont('./node_modules/simply-djs/src/Fonts/Poppins-SemiBold.ttf', { family: 'Poppins-Regular' })
-registerFont('./node_modules/simply-djs/src/Fonts/Poppins-SemiBold.ttf', { family: 'Poppins-Bold' })
-
+registerFont(join(__dirname,'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Regular' })
+registerFont(join(__dirname,'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Bold' })
 async function rankCard(client, message, options = []) {
 try {
     function shortener(count) {
