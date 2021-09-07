@@ -82,8 +82,9 @@ async function embed(message, options=[]){
         button.reply({content: 'Done 👍', ephemeral: true})
         
         message.channel.send({ content: membed.content, embeds: [membed.embeds[0] ] })
-        membed.delete()
+        membed.delete() 
         e.delete()
+        return membed.embeds[0].toJSON()
       } else
   
      if(button.values[0] === 'setContent'){
@@ -383,6 +384,7 @@ if(button.customId && button.customId === 'setDone'){
       message.channel.send({ content: membed.content, embeds: [membed.embeds[0] ], allowedMentions: { repliedUser: false } })
       membed.delete()
       e.delete()
+      return membed.embeds[0].toJSON()
     } else
 
    if(button.values[0] === 'setContent'){

@@ -259,6 +259,97 @@ async function clickBtn(button, options = []) {
         button.message.delete();
         button.reply({ content: 'Ticket Deletion got canceled', ephemeral: true })
     }
+
+      if(button.customId === 'reroll-giveaway'){
+          if(!button.member.permissions.has('ADMINISTRATOR')){
+  
+         button.reply({ content: 'Only Admins can Reroll the giveaway..', ephemeral: true})
+         } else {
+         button.reply({content: 'Rerolling the giveaway ⚙️', ephemeral: true})
+         
+         let oldembed = button.message.embeds[0]
+
+          let wino = []
+    let db = options.db
+    button.guild.members.cache.forEach(async (mem) => {
+     let givWin = await db.get(`giveaway_${button.message.id}_${mem.id}`)
+     
+    if(givWin === null || !givWin)
+     return;
+      else if(givWin === mem.id){
+         wino.push(givWin)
+       }
+      })
+       const embeddd = new Discord.MessageEmbed()
+    .setTitle ('Processing Data...')
+    .setColor(0xcc0000)
+    .setDescription(`Please wait.. We are Processing the winner with magiks`)
+  .setFooter("Giveaway Ending.. Wait a moment.")
+  
+  setTimeout(() => {
+      button.message.edit({ embeds: [embeddd], components: []})
+  }, 1000)
+  
+    
+    
+       setTimeout (async () => {
+       let winner = []
+    
+    const enterr = new Discord.MessageButton()
+     .setLabel('Enter')
+     .setStyle('SUCCESS')
+     .setDisabled(true)
+     .setCustomId('enter-giveaway')
+    
+    const rerolll = new Discord.MessageButton()
+    .setLabel('Reroll')
+     .setStyle('PRIMARY')  
+     .setCustomId('reroll-giveaway')
+     
+     const endd = new Discord.MessageButton()
+    .setLabel('End')
+    .setDisabled(true)
+     .setStyle('DANGER')
+    .setCustomId('end-giveaway')
+   
+  const roww = new Discord.MessageActionRow()
+   .addComponents([enterr, rerolll, endd])
+  
+   let entero = await db.get(`giveaway_entered_${button.message.id}`)
+  if(!entero) { button.reply({ content: 'An Error Occured. Please try again.', ephemeral: true }) }
+
+   let winnerNumber = entero
+  
+    for(let i = 0; winnerNumber > i; i++){
+        let winnumber = Math.floor((Math.random() * wino.length))
+       
+   if(wino[winnumber] === undefined) { winner.push(``)
+  
+  wino.splice(winnumber, 1); 
+   } else {
+         let winnee = winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
+         
+         wino.splice(winnumber, 1); 
+   }
+  }
+  
+    const embedd = new Discord.MessageEmbed()
+    .setTitle ('Giveaway Ended')
+    .setColor(0x3BB143)
+   .setDescription(oldembed.description.replace(`React with the buttons to enter.`, ' '))
+   .addFields(
+      { name: '🏆 Winner(s):', value: `${winner}`},
+       { name: '💝 People Entered', value: `***${entero}***`}
+    )
+    .setFooter("Giveaway Ended.")
+  
+   
+     button.message.edit({ embeds: [embedd], components: [roww]})
+   
+     }, 5000)
+          }
+     }
+
 } catch(err){
     console.log(`Error Occured. | clickBtn | Error: ${err}`)
 }

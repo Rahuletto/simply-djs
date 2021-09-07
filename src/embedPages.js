@@ -75,7 +75,7 @@ try{
             if (!b.isButton()) return;
     
             if (Date.now() - timeForStart >= timeout) return;
-            if (b.message.id == m.id && b.user.id == message.author.id) {
+            if (b.message.id == m.id && b.user.id == message.user.id) {
                 if (b.customId == "back_button_embed") {
                     if (currentPage - 1 < 0) {
                         currentPage = pages.length - 1
