@@ -41,3 +41,5 @@ module.exports.btnrole = require('./src/btnrole')
 module.exports.starboard = require('./src/starboard')
 
 module.exports.bumpSystem = require('./src/bumpSys')
+
+module.exports.giveawaySystem = require('./src/giveaway')
