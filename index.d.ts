@@ -1,6 +1,8 @@
 import { ButtonInteraction, Client, ColorResolvable, Emoji, EmojiResolvable, HexColorString, Message, MessageActionRow, MessageEmbed, MessageReaction, StartThreadOptions, TextBasedChannels, TextChannel, User } from 'discord.js';
 type DB = 'quickmongo';
 
+
+
 export declare function btnrole(client: Client, message: Message, options?: {
     embed: MessageEmbed,
     data: {
@@ -315,6 +317,6 @@ export declare function bumpSystem(client: Client, db: DB, options?: {
     chid: string,
     /** Embed that sends when the bump is needed */
     bumpEmbed?: MessageEmbed
-/** Embed that sends when someone bumps the server */
+    /** Embed that sends when someone bumps the server */
     thanksEmbed?: MessageEmbed
 }): Promise<any>;
