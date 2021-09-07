@@ -75,14 +75,20 @@ const row = new MessageActionRow()
         let antispamo = await guild.channels.cache.find(ch => ch.name === mailname.toLowerCase());
 
   if(antispamo) return message.reply({ content: 'You already have opened a modmail.. Please close it to continue.'})
+  let categg = []
 
-  chparent = options.categoryID || null
-  let categ = guild.channels.cache.get(options.categoryID)
-  if (!categ) { chparent = null }
+  if(options.categoryID){
+  for (let i = 0; i < options.categoryID.length; i++) {
+  let categ = guild.channels.cache.get(options.categoryID[i])
+  if (categ){
+     categg.push(categ)
+  }
+  }
+}
 
   guild.channels.create(`modmail_${message.author.id}`, {
     type: "text",
-    parent: chparent,
+    parent: categg[0] || null,
     permissionOverwrites: [
       {
         id: guild.roles.everyone,
@@ -90,6 +96,7 @@ const row = new MessageActionRow()
       },
     ],
   }).then(async (ch) => {
+
     let X_btn = new MessageButton()
       .setStyle(options.delColor || 'DANGER')
       .setEmoji(options.delEmoji || '❌')
@@ -138,9 +145,18 @@ let embedi = new Discord.MessageEmbed()
       .setColor(options.embedColor || '#075FFF')
       .setFooter(foot)
 
-      let supportRole = guild.roles.cache.get(options.role) || '***Support Team***'
+      let supportRole = []
+      
+      if(options.role){
+      for (let i = 0; i < options.role.length; i++) {
+        let support = guild.roles.cache.get(options.role[i])
+        if(support) {
+        supportRole.push(support)
+        }
+      }
+    }
 
-    ch.send({ content: options.content || supportRole.toString() || '***Support Team***', embeds: [emb], components: [closerow] }).then((m) => {
+    ch.send({ content: options.content || `*${supportRole[0]}*` || '***Support Team***' , embeds: [emb], components: [closerow] }).then((m) => {
 
       let cltor = m.createMessageComponentCollector({ time: 600000 })
       
