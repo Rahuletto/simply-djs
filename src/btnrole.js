@@ -6,7 +6,7 @@ async function btnrole(client, message, options = []) {
 
             let { MessageButton, MessageActionRow } = require('discord.js')
 
-            if (!message.author.permissions.has('ADMINISTRATOR')) return message.reply('You need `ADMINISTRATOR` permission to use this slash command')
+            if (!message.member.permissions.has('ADMINISTRATOR')) return message.reply('You need `ADMINISTRATOR` permission to use this slash command')
 
 
             let row = [];
