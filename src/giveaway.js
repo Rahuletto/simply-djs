@@ -6,7 +6,7 @@ async function giveawaySystem(client, db, message, options = []) {
         let interaction = message
         if (!interaction.member.permissions.has('ADMINISTRATOR')) return;
 
-  let ch = interaction.options.getChannel('channel') || interaction.channel
+        let ch = interaction.options.getChannel('channel') || interaction.channel
         let time = interaction.options.getString('time')
         let winers = interaction.options.getInteger('winners')
         let prize = interaction.options.getString('prize')
@@ -42,7 +42,7 @@ async function giveawaySystem(client, db, message, options = []) {
 
             )
         ch.send({ embeds: [embed], components: [row] }).then(async m => {
-interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
+            interaction.followUp({ content: 'Giveaway has started..', ephemeral: true })
             let timeroe = setTimeout(async () => {
                 let wino = []
 
@@ -62,13 +62,14 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                         .setFooter("Giveaway Ending.. Wait a moment.")
 
 
-                   m.edit({ embeds: [embeddd], components: [] })
+                    m.edit({ embeds: [embeddd], components: [] })
 
 
                 })
 
                 setTimeout(async () => {
                     let winner = []
+                    let winboiz = []
 
                     if (wino.length === 0 || wino === []) {
 
@@ -113,11 +114,11 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                             let winnumber = Math.floor((Math.random() * wino.length))
                             if (wino[winnumber] === undefined) {
                                 winner.push(``)
-
+                                winboiz.push('')
                                 wino.splice(winnumber, 1);
                             } else {
                                 let winnee = winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
-
+                                winboiz.push(`<@${wino[winnumber]}>`)
                                 wino.splice(winnumber, 1);
                             }
                         }
@@ -134,7 +135,23 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                             )
                             .setFooter("Giveaway Ended.")
 
+                        const embb = new Discord.MessageEmbed()
+                            .setColor(0x3BB143)
+                            .setDescription(`**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+
+                            .setFooter("Dm the host to win prizes ;)")
+
                         m.edit({ embeds: [embedd], components: [roww] })
+
+                        const gothere = new Discord.MessageButton()
+                            .setLabel('View Giveaway')
+                            .setStyle('LINK')
+                            .setURL(m.url)
+
+                        const ro = new Discord.MessageActionRow()
+                            .addComponents([gothere])
+
+                        m.channel.send({ content: `Congrats ${winboiz}. You guys just won the giveaway.`, embeds: [embb], components: [ro] })
                     }
                 }, 5000)
             }, ms(time))
@@ -187,7 +204,7 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
 
                             )
 
-                       m.edit({ embeds: [embed] })
+                        m.edit({ embeds: [embed] })
 
                     }
                 }
@@ -223,7 +240,7 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
 
                         setTimeout(async () => {
                             let winner = []
-
+                            let winboiz = []
                             if (wino.length === 0 || wino === []) {
 
                                 const embedod = new Discord.MessageEmbed()
@@ -237,7 +254,7 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                                     )
                                     .setFooter("Giveaway Ended.")
 
-                               m.edit({ embeds: [embedod], components: [] })
+                                m.edit({ embeds: [embedod], components: [] })
 
                             } else {
 
@@ -266,14 +283,13 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
 
                                 for (let i = 0; winnerNumber > i; i++) {
                                     let winnumber = Math.floor((Math.random() * wino.length))
-
                                     if (wino[winnumber] === undefined) {
                                         winner.push(``)
-
+                                        winboiz.push('')
                                         wino.splice(winnumber, 1);
                                     } else {
-                                        winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
-
+                                        let winnee = winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
+                                        winboiz.push(`<@${wino[winnumber]}>`)
                                         wino.splice(winnumber, 1);
                                     }
                                 }
@@ -292,7 +308,24 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                                     .setFooter("Giveaway Ended.")
 
 
+                                const embb = new Discord.MessageEmbed()
+                                    .setColor(0x3BB143)
+                                    .setDescription(`**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+
+                                    .setFooter("Dm the host to win prizes ;)")
+
                                 m.edit({ embeds: [embedd], components: [roww] })
+
+                                const gothere = new Discord.MessageButton()
+                                    .setLabel('View Giveaway')
+                                    .setStyle('LINK')
+                                    .setURL(m.url)
+
+                                const ro = new Discord.MessageActionRow()
+                                    .addComponents([gothere])
+
+                                m.channel.send({ content: `Congrats ${winboiz}. You guys just won the giveaway.`, embeds: [embb], components: [ro] })
+
                             }
                         }, 5000)
                     }
@@ -368,7 +401,7 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
 
                     setTimeout(async () => {
                         let winner = []
-
+                        let winboiz = []
                         if (wino.length === 0 || wino === []) {
 
                             const embedod = new Discord.MessageEmbed()
@@ -412,11 +445,11 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                                 let winnumber = Math.floor((Math.random() * wino.length))
                                 if (wino[winnumber] === undefined) {
                                     winner.push(``)
-
+                                    winboiz.push('')
                                     wino.splice(winnumber, 1);
                                 } else {
                                     let winnee = winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
-
+                                    winboiz.push(`<@${wino[winnumber]}>`)
                                     wino.splice(winnumber, 1);
                                 }
                             }
@@ -433,7 +466,24 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                                 )
                                 .setFooter("Giveaway Ended.")
 
+                            const embb = new Discord.MessageEmbed()
+                                .setColor(0x3BB143)
+                                .setDescription(`**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+
+                                .setFooter("Dm the host to win prizes ;)")
+
                             m.edit({ embeds: [embedd], components: [roww] })
+
+                            const gothere = new Discord.MessageButton()
+                                .setLabel('View Giveaway')
+                                .setStyle('LINK')
+                                .setURL(m.url)
+
+                            const ro = new Discord.MessageActionRow()
+                                .addComponents([gothere])
+
+                            m.channel.send({ content: `Congrats ${winboiz}. You guys just won the giveaway.`, embeds: [embb], components: [ro] })
+
                         }
                     }, 5000)
                 }, ms(args[0]))
@@ -565,14 +615,13 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
 
                                     for (let i = 0; winnerNumber > i; i++) {
                                         let winnumber = Math.floor((Math.random() * wino.length))
-
                                         if (wino[winnumber] === undefined) {
                                             winner.push(``)
-
+                                            winboiz.push('')
                                             wino.splice(winnumber, 1);
                                         } else {
-                                            winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
-
+                                            let winnee = winner.push((`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`).replace(',', ''))
+                                            winboiz.push(`<@${wino[winnumber]}>`)
                                             wino.splice(winnumber, 1);
                                         }
                                     }
@@ -591,7 +640,24 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
                                         .setFooter("Giveaway Ended.")
 
 
+                                    const embb = new Discord.MessageEmbed()
+                                        .setColor(0x3BB143)
+                                        .setDescription(`**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+
+                                        .setFooter("Dm the host to win prizes ;)")
+
                                     button.message.edit({ embeds: [embedd], components: [roww] })
+
+                                    const gothere = new Discord.MessageButton()
+                                        .setLabel('View Giveaway')
+                                        .setStyle('LINK')
+                                        .setURL(m.url)
+
+                                    const ro = new Discord.MessageActionRow()
+                                        .addComponents([gothere])
+
+                                    m.channel.send({ content: `Congrats ${winboiz}. You guys just won the giveaway.`, embeds: [embb], components: [ro] })
+
                                 }
                             }, 5000)
                         }
@@ -602,5 +668,6 @@ interaction.followUp({ content: 'Giveaway has started..', ephemeral: true})
             })
         }
 }
+
 
 module.exports = giveawaySystem;
