@@ -75,7 +75,7 @@ async function embed(message, options=[]){
         
         membed.delete()
         e.delete()
-        message.delete()
+        message.deleteReply()
       } else 
   
   if(button.customId && button.customId === 'setDone'){

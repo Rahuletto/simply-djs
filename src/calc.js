@@ -68,7 +68,7 @@ async function calculator(interaction, options = []) {
               
             } else if (value.includes("Delete")
             ) {
-              msg.delete()
+              interaction.deleteReply()
             } else if (value.includes("Clear")) return value = "0"
             emb1.setDescription("```" + value + "```")
             await msg.edit({
