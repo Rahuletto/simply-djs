@@ -66,10 +66,8 @@ async function calculator(interaction, options = []) {
                 components: row
               })
               
-            } else if (value.includes("Delete")
-            ) {
-              interaction.deleteReply()
-            } else if (value.includes("Clear")) return value = "0"
+            } else if (value.includes("Delete")) return interaction.deleteReply();
+             else if (value.includes("Clear")) return value = "0"
             emb1.setDescription("```" + value + "```")
             await msg.edit({
               embeds: [emb1],
@@ -188,10 +186,9 @@ async function calculator(interaction, options = []) {
                 components: row
               })
               
-            } else if (value.includes("Delete")
-            ) {
-              msg.delete()
-              interaction.delete()
+            } else if (value.includes("Delete")) {
+             msg.delete()
+              return interaction.delete();
             } else if (value.includes("Clear")) return value = "0"
             emb1.setDescription("```" + value + "```")
             await msg.edit({

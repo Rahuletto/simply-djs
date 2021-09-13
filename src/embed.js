@@ -75,7 +75,7 @@ async function embed(message, options=[]){
         
         membed.delete()
         e.delete()
-        message.deleteReply()
+
       } else 
   
   if(button.customId && button.customId === 'setDone'){
@@ -375,7 +375,6 @@ let dataopt = {
       
       membed.delete()
       e.delete()
-      message.delete()
     } else 
 
 if(button.customId && button.customId === 'setDone'){

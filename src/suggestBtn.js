@@ -6,7 +6,7 @@ async function suggestBtn(button, users, options = []) {
       try {
         let { MessageButton, MessageActionRow } = require('discord.js')
 
-        if (button.member.permissions.has('ADMINISTRATOR')) {
+        if (button.member.permissions.has('ADMINISTRATOR') || button.member.roles.has(options.modRole)) {
           if (button.customId === 'no-sug') {
 
             let target = await button.message.channel.messages.fetch(button.message.id)
