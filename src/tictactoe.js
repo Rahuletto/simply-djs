@@ -5,9 +5,10 @@ async function tictactoe(message, options = []) {
 
         if(options.slash === true){
             let opponent = message.options.getUser('user')
-
+    
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
-                    if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
+            if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play against yourself!', ephemeral: true})
+            if(opponent.user.bot) return message.followUp({ content: 'You cannot play against bots', ephemeral: true})
                 
             if (options.credit === false) {
                 foot = options.embedFoot || 'Make sure to win ;)'
@@ -279,8 +280,8 @@ async function tictactoe(message, options = []) {
 
     if (!opponent) return message.channel.send({ content: "Please provide the user to challenge!" })
 
-    if (opponent.id === message.member.id) return message.channel.send({ content: "You cant play for 2 Players. Please provide the user to challenge!" });
-
+    if (opponent.id === message.member.id) return message.channel.send({ content: "You can't play against yourself." });
+    if(opponent.user.bot) message.channel.send({ content: "You can't play against bots" })
     if (options.credit === false) {
         foot = options.embedFoot || 'Make sure to win ;)'
     } else {
@@ -309,9 +310,15 @@ async function tictactoe(message, options = []) {
         embeds: [acceptEmbed],
         components: [accep]
     }).then(m => {
-        let filter = (button) => button.user.id == opponent.id
-        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
+ 
+        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
         collector.on('collect', async (button) => {
+            if(button.user.id!== opponent.id){
+                return button.reply({
+                    content:`Only ${opponent} can confirm this selection`,
+                    ephemeral:true
+                })
+            }
             if (button.customId == 'declinettt') {
                 button.deferUpdate()
                 return collector.stop('decline')
@@ -472,13 +479,12 @@ async function tictactoe(message, options = []) {
                     let buttons = { components: [a, b, c] }
 
                     m.edit({ content: `Waiting for Input | <@!${Args.userid}> | Your Emoji: ${Args.user == 0 ? `${o_emoji}` : `${x_emoji}`}`, components: [a, b, c] })
-                    const filter = (button) => button.user.id === Args.userid;
 
-                    const collector = m.createMessageComponentCollector({ filter, componentType: 'BUTTON', max: 1, time: 30000 });
+                    const collector = m.createMessageComponentCollector({ componentType: 'BUTTON', time: 30000 });
 
                     collector.on('collect', b => {
 
-                        if (b.user.id !== Args.userid) return b.reply({ content: 'Wait for your chance.', ephemeral: true })
+                        if (b.user.id !== Args.userid) return b.reply({ content: 'Wait for your turn.', ephemeral: true })
 
                         if (Args.user == 0) {
                             Args.user = 1
