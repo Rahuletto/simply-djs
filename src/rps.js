@@ -5,6 +5,7 @@ async function rps(message, options = []) {
         if(options.slash === true){
             let opponent = message.options.getUser('user')
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
+            if (opponent.user.bot) return message.followUp({ content: 'You can\'t play against bots', ephemeral: true})
             if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
             if (options.credit === false) {
                 foot = options.embedFooter || "Rock Paper Scissors"
@@ -40,6 +41,7 @@ async function rps(message, options = []) {
                 let filter = (button) => button.user.id == opponent.id
                 const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
                 collector.on('collect', (button) => {
+                    
                     if (button.customId == 'decline') {
                         button.deferUpdate()
                         return collector.stop('decline')
@@ -223,6 +225,7 @@ async function rps(message, options = []) {
        else if(!options.slash || options.slash === false){
         let opponent = message.mentions.members.first()
     if (!opponent) return message.channel.send('No opponent mentioned!')
+    if(opponent.user.bot) return message.channel.send('You cannot play against bots')  
     if (opponent.id == message.author.id) return message.channel.send('You cannot play by yourself!')
 
     if (options.credit === false) {
@@ -253,9 +256,15 @@ async function rps(message, options = []) {
         embeds: [acceptEmbed],
         components: [accep]
     }).then(m => {
-        let filter = (button) => button.user.id == opponent.id
-        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
+  
+        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
         collector.on('collect', (button) => {
+            if(button.user.id !== opponent.id){
+                return button.reply({
+                    content:`Only ${opponent} can confirm it.`,
+                    ephemeral:true
+                })
+            }
             if (button.customId == 'decline') {
                 button.deferUpdate()
                 return collector.stop('decline')
@@ -328,11 +337,21 @@ async function rps(message, options = []) {
             ids.add(message.author.id)
             ids.add(opponent.id)
             let op, auth
-            let filter = (button) => ids.has(button.user.id)
-            const collect = m.createMessageComponentCollector({ filter: filter, type: 'BUTTON', time: 30000 })
+            const collect = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
             collect.on('collect', (b) => {
+              if(!ids.has(b.user.id)){
+                    return b.reply({
+                        content:`You can't change your choice.`,
+                        ephemeral:true
+                    })
+                }
                 ids.delete(b.user.id)
-                b.deferUpdate()
+                if(ids.size==1){
+                    b.reply({
+                        content:`You picked ${b.customId}`,
+                        ephemeral:true
+                    })
+                }
                 if (b.user.id == opponent.id) {
                     mem = b.customId
                 }
