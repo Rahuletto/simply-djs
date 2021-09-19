@@ -71,7 +71,7 @@ try{
         client.on('interactionCreate', async b => {
     
             if (!b.isButton()) return;
-    
+        if(b.user.id !== message.user.id) return b.reply({content: 'You cant change the pages of that embed..'})
             if (b.message.id == m.id && b.user.id == message.user.id) {
                 if (b.customId == "back_button_embed") {
                     if (currentPage - 1 < 0) {
@@ -168,7 +168,7 @@ try{
     client.on('interactionCreate', async b => {
 
         if (!b.isButton()) return;
-
+    if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
         if (b.message.id == m.id && b.user.id == message.author.id) {
             if (b.customId == "back_button_embed") {
                 if (currentPage - 1 < 0) {
