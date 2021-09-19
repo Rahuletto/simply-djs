@@ -458,7 +458,7 @@ let supportRole = message.guild.roles.cache.get(options.role) || '***Support Tea
   })
 }
 } catch(err){
-  console.log(`Error Occured. | modmail | Error: ${err}`)
+  console.log(`Error Occured. | modmail | Error: ${err.stack}`)
 }
 
 }

@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 
 async function stealSticker(message, args, options=[]){
+  try{
     let filter = m => m.author.id === message.author.id
 
 message.channel.send('Send the sticker/attachment now . i am collecting...')
@@ -54,5 +55,8 @@ message.guild.stickers.create(url, args[0] || 'stickerURL', args[1] || 'simply-d
   }
 
 })
+} catch(err){
+  console.log(`Error Occured. | stealSticker | Error: ${err.stack}`)
+}
 }
 module.exports = stealSticker;

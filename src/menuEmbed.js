@@ -34,6 +34,16 @@ try {
       }
     }
   
+    let delopt = {
+      label: options.delLabel || 'Delete',
+      description: options.delDesc || 'Delete the Select Menu Embed',
+      value: 'delete_menuemb',
+      emoji: options.delEmoji || '❌'
+    }
+
+
+    menuOptions.push(delopt)
+
     let slct = new MessageSelectMenu()
       .setMaxValues(1)
       .setCustomId('help')
@@ -59,9 +69,13 @@ try {
     message.followUp({ embeds: [options.embed], components: rows })
     let m = await message.fetchReply()
       let filter = (menu) => menu.user.id == message.user.id
-      const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', time: 120000, filter: filter })
+      const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', idle: 600000, filter: filter })
       collector.on('collect', async (menu) => {
         let selet = menu.values[0]
+
+        if(selet === 'delete_menuemb'){
+          menu.message.delete()
+        }
   
         for (let i = 0; i < data.length; i++) {
   
@@ -115,6 +129,16 @@ try {
     }
   }
 
+  let delopt = {
+    label: options.delLabel || 'Delete',
+    description: options.delDesc || 'Delete the Select Menu Embed',
+    value: 'delete_menuemb',
+    emoji: options.delEmoji || '❌'
+  }
+
+
+  menuOptions.push(delopt)
+  
   let slct = new MessageSelectMenu()
     .setMaxValues(1)
     .setCustomId('help')
@@ -139,9 +163,13 @@ try {
 
   message.channel.send({ embeds: [options.embed], components: rows }).then(m => {
     let filter = (menu) => menu.user.id == message.author.id
-    const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', time: 120000, filter: filter })
+    const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', idle: 600000, filter: filter })
     collector.on('collect', async (menu) => {
       let selet = menu.values[0]
+
+      if(selet === 'delete_menuemb'){
+        menu.message.delete()
+      }
 
       for (let i = 0; i < data.length; i++) {
 
@@ -164,8 +192,8 @@ try {
     })
   })
 }
-} catch(err){
-  console.log(`Error Occured. | menuPages | Error: ${err}`)
+} catch (err) {
+  console.log(`Error Occured. | menuPages | Error: ${err.stack}`)
 }
 
 }

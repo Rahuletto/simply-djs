@@ -86,8 +86,8 @@ if(options && options.toggle === false) return;
             }
         }
     } catch (err) {
-        console.log(`Error Occured. | chatbot | Error: ${err}`)
-    }
+        console.log(`Error Occured. | chatbot | Error: ${err.stack}`)
+      }
 
 }
 module.exports = chatbot;

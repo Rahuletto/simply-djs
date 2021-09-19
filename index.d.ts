@@ -21,7 +21,9 @@ export declare function calculator(message: Message, options?: {
     /** Slash support */
     slash?: boolean,
     /**  Credit the package. (Only Boolean [true/false]) */
-    credit?: boolean
+    credit?: boolean,
+    /** Have Custom Calculator footer when credits are false */
+    embedFooter?: string
 
 }): Promise<void>;
 
@@ -39,6 +41,8 @@ export declare function chatbot(client: Client, message: Message, options?: {
 export declare function clickBtn(button: ButtonInteraction, options?: {
     /**  The Embed Description of the embed which is sent when the ticket has been opened */
     embedDesc?: string,
+    /** Database */
+    db?: DB,
     /** The Embed Color of the embed which is sent when the ticket has been opened */
     embedColor?: HexColorString,
     /** Give credits to this package (Boolean[true / false]) Default: true */
@@ -103,7 +107,10 @@ export declare function ghostPing(message: Message, options?: {
     /** default: #075FFF */
     embedColor?: HexColorString,
     /** default: 'Ghost Ping.' */
-    embedFoot?: string
+    embedFoot?: string,
+    /** Credit the package */
+    credits?: boolean
+
 } | { embed: MessageEmbed }): Promise<void>;
 
 export declare function dropdownPages(message: Message, options?: {
@@ -319,4 +326,21 @@ export declare function bumpSystem(client: Client, db: DB, options?: {
     bumpEmbed?: MessageEmbed
     /** Embed that sends when someone bumps the server */
     thanksEmbed?: MessageEmbed
+}): Promise<any>;
+
+
+export declare function giveawaySystem(client: Client, db: DB, message: Message, options?: {
+    /** Slash Support */
+    slash?: boolean
+    /** Args when using message event (non slash) */
+    args: string[],
+    /** Giveaway Options */
+    prize?: string,
+    winners?: string,
+    time?: string,
+    channel?: TextChannel,
+
+    /** Embed Customization */
+    embedTitle?: string,
+
 }): Promise<any>;

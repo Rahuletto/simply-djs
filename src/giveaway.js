@@ -5,7 +5,7 @@ async function giveawaySystem(client, db, message, options = []) {
 try{
   if (options.slash === true) {
     let interaction = message
-    if (!interaction.member.permissions.has('ADMINISTRATOR')) return;
+    if (!interaction.member.permissions.has('ADMINISTRATOR')) return interaction.followUp({ content: 'You are not a admin to start the giveaway', ephemeral: true});
 
     let ch = interaction.options.getChannel('channel') || interaction.channel
     let time = interaction.options.getString('time')
@@ -38,7 +38,7 @@ try{
       .setColor(0x075FFF)
       .setTimestamp(Number(Date.now() + ms(time)))
       .setFooter('Ends ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-      .setDescription(`React with the buttons to enter the giveaway\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+      .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
       .addFields(
         { name: '🏆 Winner(s):', value: `**${options.winners || winers}**` },
         { name: '💝 People Entered', value: `***0***` },
@@ -154,7 +154,7 @@ try{
               const gothere = new Discord.MessageButton()
                 .setLabel('View Giveaway')
                 .setStyle('LINK')
-                .setURL(button.message.url)
+                .setURL(m.url)
 
               const ro = new Discord.MessageActionRow()
                 .addComponents([gothere])
@@ -194,7 +194,7 @@ try{
               .setColor(0x075FFF)
               .setTimestamp(Number(Date.now() + ms(time)))
               .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-              .setDescription(`React with the buttons to enter.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+              .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
               .addFields(
                 { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                 { name: '💝 People Entered', value: `***${enteroo - 1}***` },
@@ -216,7 +216,7 @@ try{
               .setColor(0x075FFF)
               .setTimestamp(Number(Date.now() + ms(time)))
               .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-              .setDescription(`React with the buttons to enter.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+              .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
               .addFields(
                 { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                 { name: '💝 People Entered', value: `***${enteroo + 1}***` },
@@ -235,7 +235,7 @@ try{
     if (!options.slash || options.slash === false) {
       let interaction = message
       
-      if (!interaction.member.permissions.has('ADMINISTRATOR')) return;
+      if (!interaction.member.permissions.has('ADMINISTRATOR')) return interaction.reply({ content: 'You are not a admin to start the giveaway' });
   let args = options.args
   if(!args) throw new Error('Specify args in options.. When using slash: false | If you are trying to use it in slash commands.. Have slash: true in options')
       let ch = options.channel || interaction.channel
@@ -269,7 +269,7 @@ try{
         .setColor(0x075FFF)
         .setTimestamp(Number(Date.now() + ms(time)))
         .setFooter('Ends ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-        .setDescription(`React with the buttons to enter the giveaway\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+        .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
         .addFields(
           { name: '🏆 Winner(s):', value: `**${options.winners || winers}**` },
           { name: '💝 People Entered', value: `***0***` },
@@ -425,7 +425,7 @@ try{
                 .setColor(0x075FFF)
                 .setTimestamp(Number(Date.now() + ms(time)))
                 .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-                .setDescription(`React with the buttons to enter.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+                .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
                 .addFields(
                   { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                   { name: '💝 People Entered', value: `***${enteroo - 1}***` },
@@ -447,7 +447,7 @@ try{
                 .setColor(0x075FFF)
                 .setTimestamp(Number(Date.now() + ms(time)))
                 .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-                .setDescription(`React with the buttons to enter.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+                .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
                 .addFields(
                   { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                   { name: '💝 People Entered', value: `***${enteroo + 1}***` },
@@ -463,8 +463,8 @@ try{
   
       })
     }
-  } catch(err){
-    console.log('Error | giveawaySystem | ' + err.stack)
+  } catch (err) {
+    console.log(`Error Occured. | giveawaySystem | Error: ${err.stack}`)
   }
   }
   

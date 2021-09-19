@@ -212,7 +212,7 @@ try {
     message.channel.send({ files: [attachment] })
     }
 } catch(err){
-    console.log(`Error Occured. | rankCard | Error: ${err}`)
+    console.log(`Error Occured. | rankCard | Error: ${err.stack}`)
 }
 
 }

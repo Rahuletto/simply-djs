@@ -2,6 +2,7 @@ const Discord = require('discord.js')
 const math = require('mathjs')
 
 async function calculator(interaction, options = []) {
+  try{
     if(options.slash === true) {
       let { MessageButton, MessageActionRow } = require('discord.js')
     
@@ -9,7 +10,12 @@ async function calculator(interaction, options = []) {
       let row = [];
       let text = ["Clear", "(", ")", "/", "⌫", "7", "8", "9", "*", "!", "4", "5", "6", "-", "^", "1", "2", "3", "+", "π", ".", "0", "00", "=", "Delete"];
       let current = 0;
-    
+      if (options.credit === false) {
+        foot = options.embedFoot || 'Calculator'
+    } else {
+        foot = '©️ Simply Develop. npm i simply-djs'
+    }
+
       for (let i = 0; i < text.length; i++) {
         if (button[current].length === 5) current++;
         button[current].push(createButton(text[i]));
@@ -20,7 +26,7 @@ async function calculator(interaction, options = []) {
     
       const emb = new Discord.MessageEmbed()
         .setColor(options.embedColor || 0x075FFF)
-    
+      .setFooter(foot)
         .setDescription("```0```")
     
       await interaction.followUp({
@@ -34,7 +40,7 @@ async function calculator(interaction, options = []) {
         let time = 600000
         let value = ""
         let emb1 = new Discord.MessageEmbed()
-    
+        .setFooter(foot)
           .setColor(options.embedColor || 0x075FFF)
     
         function createCollector(val, result = false) {
@@ -132,6 +138,12 @@ async function calculator(interaction, options = []) {
       let text = ["Clear", "(", ")", "/", "⌫", "7", "8", "9", "*", "!", "4", "5", "6", "-", "^", "1", "2", "3", "+", "π", ".", "0", "00", "=", "Delete"];
       let current = 0;
     
+      if (options.credit === false) {
+        foot = options.embedFoot || 'Calculator'
+    } else {
+        foot = '©️ Simply Develop. npm i simply-djs'
+    }
+
       for (let i = 0; i < text.length; i++) {
         if (button[current].length === 5) current++;
         button[current].push(createButton(text[i]));
@@ -139,10 +151,10 @@ async function calculator(interaction, options = []) {
           for (let btn of button) row.push(addRow(btn));
         }
       }
-    
+      
       const emb = new Discord.MessageEmbed()
         .setColor(options.embedColor || 0x075FFF)
-    
+      .setFooter(foot)
         .setDescription("```0```")
     
       await interaction.reply({
@@ -154,7 +166,7 @@ async function calculator(interaction, options = []) {
         let time = 600000
         let value = ""
         let emb1 = new Discord.MessageEmbed()
-    
+        .setFooter(foot)
           .setColor(options.embedColor || 0x075FFF)
     
         function createCollector(val, result = false) {
@@ -247,7 +259,9 @@ async function calculator(interaction, options = []) {
         }
       }
     }
-    
+  } catch (err) {
+    console.log(`Error Occured. | calculator | Error: ${err.stack}`)
+  }
     }
 
 module.exports = calculator;

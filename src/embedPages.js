@@ -8,8 +8,6 @@ try{
         if (!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
         if (!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
     
-        var timeForStart = Date.now();
-        const timeout = 120000
         if (style.skipBtn == true) {
             const firstbtn = new MessageButton()
                 .setCustomId(`first_embed`)
@@ -74,7 +72,6 @@ try{
     
             if (!b.isButton()) return;
     
-            if (Date.now() - timeForStart >= timeout) return;
             if (b.message.id == m.id && b.user.id == message.user.id) {
                 if (b.customId == "back_button_embed") {
                     if (currentPage - 1 < 0) {
@@ -109,8 +106,6 @@ try{
     if (!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
     if (!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
 
-    var timeForStart = Date.now();
-    const timeout = 120000
     if (style.skipBtn == true) {
         const firstbtn = new MessageButton()
             .setCustomId(`first_embed`)
@@ -174,7 +169,6 @@ try{
 
         if (!b.isButton()) return;
 
-        if (Date.now() - timeForStart >= timeout) return;
         if (b.message.id == m.id && b.user.id == message.author.id) {
             if (b.customId == "back_button_embed") {
                 if (currentPage - 1 < 0) {
@@ -205,9 +199,9 @@ try{
         
     })
 }
-} catch(err){
-    console.log(`Error Occured. | embedPages | Error: ${err}`)
-}
+} catch (err) {
+    console.log(`Error Occured. | embedPages | Error: ${err.stack}`)
+  }
 
 }
 module.exports = embedPages;

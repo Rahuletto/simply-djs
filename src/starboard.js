@@ -126,7 +126,7 @@ async function starboard(client, reaction, options = []) {
           } else throw new Error('There are only 3 Events available in starboard function. Please read the examples for more information.')
 
      } catch (err) {
-          console.log(`Error Occured. | starboard | Error: ${err}`)
+          console.log(`Error Occured. | starboard | Error: ${err.stack}`)
      }
 
 }

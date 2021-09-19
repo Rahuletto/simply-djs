@@ -601,8 +601,8 @@ collector.on('end', async (collected, reason) => {
   })
   })
 }
-} catch(err){
-  console.log(`Error Occured. | embedCreate | Error: ${err}`)
+} catch (err) {
+  console.log(`Error Occured. | embedCreate | Error: ${err.stack}`)
 }
   
 }

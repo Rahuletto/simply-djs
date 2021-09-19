@@ -476,8 +476,8 @@ async function suggestBtn(button, users, options = []) {
           button.message.edit({ embeds: [newemb], components: [row] })
 
         }
-      } catch (err) {
-        console.error(`Error Occured. | suggestBtn | Error: ${err}`)
+      } catch(err){
+        console.log(`Error Occured. | suggestBtn | Error: ${err.stack}`)
       }
     }
 

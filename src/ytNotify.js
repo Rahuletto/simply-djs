@@ -66,8 +66,8 @@ async function ytNotify(client, db, options = []) {
         }
     }, timr);
 } catch(err){
-    console.log(`Error Occured. | ytNotify | Error: ${err}`)
-}
+    console.log(`Error Occured. | ytNotify | Error: ${err.stack}`)
+  }
 
 }
 module.exports = ytNotify;

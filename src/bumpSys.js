@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 
 async function bumpSys(client, db, options = []) {
+  try{
     if (options.event === 'messageCreate') {
       let message = options.message;
       if (message.author.id === '302050872383242240') {
@@ -50,7 +51,9 @@ async function bumpSys(client, db, options = []) {
           }
         }, 5000)
       } else throw new Error('Unknown Event.. Please provide me a valid event..')
-  
+    } catch (err) {
+      console.log(`Error Occured. | bumpSystem | Error: ${err.stack}`)
+    }
   }
 
 module.exports = bumpSys;

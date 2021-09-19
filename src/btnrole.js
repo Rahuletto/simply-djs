@@ -97,9 +97,9 @@ async function btnrole(client, message, options = []) {
 
                 }
             }
-    } catch (err) {
-        console.error(`Error Occured | btnrole | . Error: ${err}`)
-    }
+        } catch (err) {
+            console.log(`Error Occured. | btnrole | Error: ${err.stack}`)
+          }
 
 }
 module.exports = btnrole;
