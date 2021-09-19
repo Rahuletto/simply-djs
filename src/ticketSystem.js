@@ -50,8 +50,8 @@ async function ticketSystem(message, channel, options = []) {
     }
 
 } catch(err){
-    console.error(`Error Occured. | ticketSystem | Error: ${err}`)
-}
+    console.log(`Error Occured. | ticketSystem | Error: ${err.stack}`)
+  }
 
 }
 module.exports = ticketSystem;

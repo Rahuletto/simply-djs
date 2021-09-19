@@ -39,9 +39,10 @@ async function tictactoe(message, options = []) {
                 components: [accep]
             })
             let m = await message.fetchReply()
-                let filter = (button) => button.user.id == opponent.id
-                const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
+                const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
                 collector.on('collect', async (button) => {
+                    if(button.user.id !== opponent.id) return button.reply({ content: 'You cant play the game as they didnt call u to play.', ephemeral: true})
+
                     if (button.customId == 'declinettt') {
                         button.deferUpdate()
                         return collector.stop('decline')
@@ -199,13 +200,12 @@ async function tictactoe(message, options = []) {
                             let buttons = { components: [a, b, c] }
         
                             m.edit({ content: `Waiting for Input | <@!${Args.userid}> | Your Emoji: ${Args.user == 0 ? `${o_emoji}` : `${x_emoji}`}`, components: [a, b, c] })
-                            const filter = (button) => button.user.id === Args.userid;
         
-                            const collector = m.createMessageComponentCollector({ filter, componentType: 'BUTTON', max: 1, time: 30000 });
+                            const collector = m.createMessageComponentCollector({ componentType: 'BUTTON', max: 1, time: 30000 });
         
                             collector.on('collect', b => {
-        
-                                if (b.user.id !== Args.userid) return b.reply({ content: 'Wait for your chance.', ephemeral: true })
+                                
+                                if (b.user.id !== Args.userid) return b.reply({ content: 'You cant play now', ephemeral: true })
         
                                 if (Args.user == 0) {
                                     Args.user = 1
@@ -309,9 +309,10 @@ async function tictactoe(message, options = []) {
         embeds: [acceptEmbed],
         components: [accep]
     }).then(m => {
-        let filter = (button) => button.user.id == opponent.id
-        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
+        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
         collector.on('collect', async (button) => {
+                if(button.user.id !== opponent.id) return button.reply({ content: 'You cant play the game as they didnt call u to play.', ephemeral: true})
+
             if (button.customId == 'declinettt') {
                 button.deferUpdate()
                 return collector.stop('decline')
@@ -472,13 +473,12 @@ async function tictactoe(message, options = []) {
                     let buttons = { components: [a, b, c] }
 
                     m.edit({ content: `Waiting for Input | <@!${Args.userid}> | Your Emoji: ${Args.user == 0 ? `${o_emoji}` : `${x_emoji}`}`, components: [a, b, c] })
-                    const filter = (button) => button.user.id === Args.userid;
 
-                    const collector = m.createMessageComponentCollector({ filter, componentType: 'BUTTON', max: 1, time: 30000 });
+                    const collector = m.createMessageComponentCollector({ componentType: 'BUTTON', max: 1, time: 30000 });
 
                     collector.on('collect', b => {
 
-                        if (b.user.id !== Args.userid) return b.reply({ content: 'Wait for your chance.', ephemeral: true })
+                        if(button.user.id !== Args.userid;) return button.reply({ content: 'You cant play now', ephemeral: true})
 
                         if (Args.user == 0) {
                             Args.user = 1
@@ -550,8 +550,8 @@ async function tictactoe(message, options = []) {
     })
 }
 } catch(err){
-    console.log(`Error Occured. | tictactoe | Error: ${err}`)
-}
+    console.log(`Error Occured. | tictactoe | Error: ${err.stack}`)
+  }
 
 }
 

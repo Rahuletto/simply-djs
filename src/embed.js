@@ -75,15 +75,16 @@ async function embed(message, options=[]){
         
         membed.delete()
         e.delete()
-        message.delete()
+
       } else 
   
   if(button.customId && button.customId === 'setDone'){
         button.reply({content: 'Done 👍', ephemeral: true})
         
         message.channel.send({ content: membed.content, embeds: [membed.embeds[0] ] })
-        membed.delete()
+        membed.delete() 
         e.delete()
+        return membed.embeds[0].toJSON()
       } else
   
      if(button.values[0] === 'setContent'){
@@ -374,7 +375,6 @@ let dataopt = {
       
       membed.delete()
       e.delete()
-      message.delete()
     } else 
 
 if(button.customId && button.customId === 'setDone'){
@@ -383,6 +383,7 @@ if(button.customId && button.customId === 'setDone'){
       message.channel.send({ content: membed.content, embeds: [membed.embeds[0] ], allowedMentions: { repliedUser: false } })
       membed.delete()
       e.delete()
+      return membed.embeds[0].toJSON()
     } else
 
    if(button.values[0] === 'setContent'){
@@ -600,8 +601,8 @@ collector.on('end', async (collected, reason) => {
   })
   })
 }
-} catch(err){
-  console.log(`Error Occured. | embedCreate | Error: ${err}`)
+} catch (err) {
+  console.log(`Error Occured. | embedCreate | Error: ${err.stack}`)
 }
   
 }

@@ -144,7 +144,7 @@ const url = attachment.url
     }
   }  
 } catch(err){
-    console.log(`Error Occured. | stealEmoji | Error: ${err}`)
+    console.log(`Error Occured. | stealEmoji | Error: ${err.stack}`)
 }
 
 }

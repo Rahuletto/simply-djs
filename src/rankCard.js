@@ -16,14 +16,14 @@ try {
         return result;
     }
 
-    const member = options.member || message.mentions.members.first() || message.member;
+    const member = options.member || message.mentions.members.first().user || message.author;
     const canvas = Canvas.createCanvas(1080, 400),
         ctx = canvas.getContext('2d')
 
     let BackgroundRadius = '20',
         BackGroundImg = options.background || 'https://media.discordapp.net/attachments/868506665102762034/876750913866461185/photo-1579546929518-9e396f3cc809.png?width=640&height=427',
         AttachmentName = 'rank.png',
-        Username = member.user.tag,
+        Username = member.tag,
         AvatarRoundRadius = '50',
         DrawLayerColor = '#000000',
         DrawLayerOpacity = '0.4',
@@ -82,7 +82,7 @@ try {
         ctx.closePath();
     }
 
-    let avatar = await Canvas.loadImage(member.user.displayAvatarURL({ dynamic: true, format: 'png' }));
+    let avatar = await Canvas.loadImage(member.displayAvatarURL({ dynamic: true, format: 'png' }));
     ctx.save();
     RoundedBox(ctx, 40 + 30, 30, 180, 180, Number(AvatarRoundRadius));
     ctx.strokeStyle = BoxColor
@@ -212,7 +212,7 @@ try {
     message.channel.send({ files: [attachment] })
     }
 } catch(err){
-    console.log(`Error Occured. | rankCard | Error: ${err}`)
+    console.log(`Error Occured. | rankCard | Error: ${err.stack}`)
 }
 
 }

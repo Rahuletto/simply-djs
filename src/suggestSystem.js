@@ -220,8 +220,8 @@ if(suggestion === '' || !suggestion) return message.reply('Give me a suggestion 
 }
 
 } catch(err){
-   console.error(`Error Occured. | suggestSystem | Error: ${err}`)
-}
+    console.log(`Error Occured. | suggestSystem | Error: ${err.stack}`)
+  }
 
 }
 module.exports = suggestSystem;

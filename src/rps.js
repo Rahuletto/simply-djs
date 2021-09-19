@@ -7,6 +7,8 @@ async function rps(message, options = []) {
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
             if (opponent.user.bot) return message.followUp({ content: 'You can\'t play against bots', ephemeral: true})
             if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
+             if (opponent.user.bot) return message.followUp({ content: 'You cannot play against bots!', ephemeral: true})
+
             if (options.credit === false) {
                 foot = options.embedFooter || "Rock Paper Scissors"
             } else {
@@ -38,10 +40,10 @@ async function rps(message, options = []) {
             })
             let m = await message.fetchReply()
 
-                let filter = (button) => button.user.id == opponent.id
-                const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000, filter: filter })
+                const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
                 collector.on('collect', (button) => {
-                    
+                    if(button.user.id !== opponent.id) return button.reply({ content: 'You cant play the game as they didnt call u to play.', ephemeral: true})
+
                     if (button.customId == 'decline') {
                         button.deferUpdate()
                         return collector.stop('decline')
@@ -114,9 +116,10 @@ async function rps(message, options = []) {
                     ids.add(message.user.id)
                     ids.add(opponent.id)
                     let op, auth
-                    let filter = (button) => ids.has(button.user.id)
-                    const collect = m.createMessageComponentCollector({ filter: filter, type: 'BUTTON', time: 30000 })
+
+                    const collect = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
                     collect.on('collect', (b) => {
+                        if(!ids.has(b.user.id)) return button.reply({ content: 'You cant play the game as they didnt call u to play.', ephemeral: true})
                         ids.delete(b.user.id)
                         b.deferUpdate()
                         if (b.user.id == opponent.id) {
@@ -256,6 +259,11 @@ async function rps(message, options = []) {
         embeds: [acceptEmbed],
         components: [accep]
     }).then(m => {
+
+        const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
+        collector.on('collect', (button) => {
+            if(button.user.id !== opponent.id) return button.reply({ content: `Only ${opponent} can accept/deny`, ephemeral: true})
+
   
         const collector = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
         collector.on('collect', (button) => {
@@ -337,6 +345,13 @@ async function rps(message, options = []) {
             ids.add(message.author.id)
             ids.add(opponent.id)
             let op, auth
+
+
+            const collect = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
+            collect.on('collect', (b) => {
+                if(!ids.has(button.user.id)) return button.reply({ content: 'You cant play the game as they didnt call u to play.', ephemeral: true})
+
+
             const collect = m.createMessageComponentCollector({ type: 'BUTTON', time: 30000 })
             collect.on('collect', (b) => {
               if(!ids.has(b.user.id)){
@@ -345,6 +360,7 @@ async function rps(message, options = []) {
                         ephemeral:true
                     })
                 }
+
                 ids.delete(b.user.id)
                 if(ids.size==1){
                     b.reply({
@@ -457,7 +473,7 @@ async function rps(message, options = []) {
     })
 }
 } catch(err){
-    console.log(`Error Occured. | rps | Error: ${err}`)
+    console.log(`Error Occured. | rps | Error: ${err.stack}`)
 }
 }
 module.exports = rps;

@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 
 async function webhooks(client, options = []) {
+    try{
     if (!options.chid) throw new Error('EMPTY_CHANNEL_ID. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
     if (!options.msg && !options.embed) throw new Error('Cannot send a empty message. Please specify a embed or message. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
@@ -9,7 +10,6 @@ async function webhooks(client, options = []) {
 
     if (!channel) throw new Error('INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support');
 
-    try {
         const webhooks = await channel.fetchWebhooks();
             let webhook = webhooks.first();
 
@@ -35,8 +35,8 @@ async function webhooks(client, options = []) {
             })
         }
 
-    } catch (error) {
-        console.error('Error trying to send: ', error);
-    }
+} catch(err){
+    console.log(`Error Occured. | webhooks | Error: ${err.stack}`)
+  }
 }
 module.exports = webhooks;

@@ -26,9 +26,9 @@ try{
         })
     }
 
-    } catch(err){
-        console.log(`Error Occured. | ghostPing | Error: ${err}`)
-    }
+} catch (err) {
+    console.log(`Error Occured. | ghostPing | Error: ${err.stack}`)
+  }
 
     }
 }
