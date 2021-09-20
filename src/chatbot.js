@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 
 async function chatbot(client, message, options = []) {
     if (message.author.bot) return;
-if(options && options.toggle === false) return;
+    if (options && options.toggle === false) return;
     let channel = options.chid
     try {
         if (Array.isArray(channel)) {
@@ -22,19 +22,19 @@ if(options && options.toggle === false) return;
                     '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
                     '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
                     '\ud83d[\ude80-\udeff]' // U+1F680 to U+1F6FF
-                  ];
+                ];
 
-            let input = message.content.replace(new RegExp(ranges.join('|'), 'g'), '.');
+                let input = message.content.replace(new RegExp(ranges.join('|'), 'g'), '.');
 
-            const hasEmoteRegex = /<a?:.+:\d+>/gm
-        const emoteRegex = /<:.+:(\d+)>/gm
-        const animatedEmoteRegex = /<a:.+:(\d+)>/gm
+                const hasEmoteRegex = /<a?:.+:\d+>/gm
+                const emoteRegex = /<:.+:(\d+)>/gm
+                const animatedEmoteRegex = /<a:.+:(\d+)>/gm
 
-        const emoj = message.content.match(hasEmoteRegex)
+                const emoj = message.content.match(hasEmoteRegex)
 
-        input = input.replace(emoteRegex.exec(emoj), '')
+                input = input.replace(emoteRegex.exec(emoj), '')
 
-        input = input.replace(animatedEmoteRegex.exec(emoj), '')
+                input = input.replace(animatedEmoteRegex.exec(emoj), '')
 
                 fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
                     .then(res => {
@@ -59,19 +59,19 @@ if(options && options.toggle === false) return;
                     '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
                     '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
                     '\ud83d[\ude80-\udeff]' // U+1F680 to U+1F6FF
-                  ];
+                ];
 
-            let input = message.content.replace(new RegExp(ranges.join('|'), 'g'), '.');
+                let input = message.content.replace(new RegExp(ranges.join('|'), 'g'), '.');
 
-            const hasEmoteRegex = /<a?:.+:\d+>/gm
-        const emoteRegex = /<:.+:(\d+)>/gm
-        const animatedEmoteRegex = /<a:.+:(\d+)>/gm
+                const hasEmoteRegex = /<a?:.+:\d+>/gm
+                const emoteRegex = /<:.+:(\d+)>/gm
+                const animatedEmoteRegex = /<a:.+:(\d+)>/gm
 
-        const emoj = message.content.match(hasEmoteRegex)
+                const emoj = message.content.match(hasEmoteRegex)
 
-        input = input.replace(emoteRegex.exec(emoj), '')
+                input = input.replace(emoteRegex.exec(emoj), '')
 
-        input = input.replace(animatedEmoteRegex.exec(emoj), '')
+                input = input.replace(animatedEmoteRegex.exec(emoj), '')
 
                 fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${name}&ownername=${developer}&user=${message.author.id}`)
                     .then(res => {
@@ -87,7 +87,7 @@ if(options && options.toggle === false) return;
         }
     } catch (err) {
         console.log(`Error Occured. | chatbot | Error: ${err.stack}`)
-      }
+    }
 
 }
 module.exports = chatbot;
