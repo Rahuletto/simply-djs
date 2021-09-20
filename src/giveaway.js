@@ -179,7 +179,7 @@ try{
           }
         }
         if (button.customId === 'enter-giveaway') {
-
+          
           let rualive = await db.get(`giveaway_${button.message.id}_${button.user.id}`)
 
           if (rualive === button.user.id) {
@@ -207,7 +207,7 @@ try{
 
             button.reply({ content: 'You have entered to the giveaway.', ephemeral: true })
             await db.set(`giveaway_${button.message.id}_${button.user.id}`, button.user.id)
-
+            
             let enteroo = await db.get(`giveaway_entered_${m.id}`)
             await db.set(`giveaway_entered_${button.message.id}`, enteroo + 1)
 

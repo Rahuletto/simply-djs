@@ -47,7 +47,7 @@ async function ytNotify(client, db, options = []) {
             parse.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${ytID}`)
                 .then(data => {
                     if (!data.items || !data.items[0] || !data || data.items === []) return;
-                    if (db.get(`postedVideos`).includes(data.items[0].link)) return;
+                    if (db.get(`postedVideos`) && db.get(`postedVideos`).includes(data.items[0].link)) return;
                     else {
                         if (new Date(data.items[0].pubDate).getTime() < startAt) return;
 

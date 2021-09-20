@@ -259,7 +259,7 @@ async function clickBtn(button, options = []) {
           button.message.delete();
           button.reply({ content: 'Ticket Deletion got canceled', ephemeral: true })
         }
-  
+  let db = options.db
         if (button.customId === 'reroll-giveaway') {
           if (!button.member.permissions.has('ADMINISTRATOR')) {
   
@@ -270,7 +270,7 @@ async function clickBtn(button, options = []) {
             let oldembed = button.message.embeds[0]
   
             let wino = []
-            let db = options.db
+            
             button.guild.members.cache.forEach(async (mem) => {
               let givWin = await db.get(`giveaway_${button.message.id}_${mem.id}`)
   

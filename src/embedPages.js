@@ -168,7 +168,19 @@ try{
     client.on('interactionCreate', async b => {
 
         if (!b.isButton()) return;
-    if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        
+        if (b.customId == "back_button_embed") {
+            if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        } else if (b.customId == "forward_button_embed") {
+            if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        } else if (b.customId == "delete_embed") {
+            if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        } else if (b.customId == 'last_embed') {
+            if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        } else if (b.customId == 'first_embed') {
+            if(b.user.id !== message.author.id) return b.reply({content: 'You cant change the pages of that embed..'})
+        }
+
         if (b.message.id == m.id && b.user.id == message.author.id) {
             if (b.customId == "back_button_embed") {
                 if (currentPage - 1 < 0) {

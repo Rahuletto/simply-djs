@@ -478,7 +478,7 @@ async function tictactoe(message, options = []) {
 
                     collector.on('collect', b => {
 
-                        if(button.user.id !== Args.userid;) return button.reply({ content: 'You cant play now', ephemeral: true})
+                        if(button.user.id !== Args.userid) return button.reply({ content: 'You cant play now', ephemeral: true})
 
                         if (Args.user == 0) {
                             Args.user = 1

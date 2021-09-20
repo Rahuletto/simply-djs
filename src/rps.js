@@ -5,9 +5,9 @@ async function rps(message, options = []) {
         if(options.slash === true){
             let opponent = message.options.getUser('user')
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true})
-            if (opponent.user.bot) return message.followUp({ content: 'You can\'t play against bots', ephemeral: true})
+            if (opponent.bot) return message.followUp({ content: 'You can\'t play against bots', ephemeral: true})
             if (opponent.id == message.user.id) return message.followUp({ content: 'You cannot play by yourself!', ephemeral: true})
-             if (opponent.user.bot) return message.followUp({ content: 'You cannot play against bots!', ephemeral: true})
+            
 
             if (options.credit === false) {
                 foot = options.embedFooter || "Rock Paper Scissors"
@@ -471,9 +471,13 @@ async function rps(message, options = []) {
             }
         })
     })
-}
+})
+    })
+       }
 } catch(err){
     console.log(`Error Occured. | rps | Error: ${err.stack}`)
 }
 }
+
+
 module.exports = rps;

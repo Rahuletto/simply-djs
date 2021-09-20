@@ -21,8 +21,8 @@ async function bumpSys(client, db, options = []) {
                 .setColor('#06bf00')
                 .setFooter('Now its time to wait for 120 minutes. (2 hours)')
   
-              message.channel.send({ embeds: [options.thanksEmbed || bumpoo] })
-              message.channel.overwritePermission
+              message.channel.send({ content: options.content || '\u200b' ,embeds: [options.thanksEmbed || bumpoo] })
+              
             }
           }
         }
@@ -46,7 +46,7 @@ async function bumpSys(client, db, options = []) {
                 .setColor('#075FFF')
                 .setFooter('Do !d bump to bump the server')
   
-              cho.send({ embeds: [options.bumpEmbed || bumpo] })
+              cho.send({ content: options.content || '\u200b', embeds: [options.bumpEmbed || bumpo] })
             } else return;
           }
         }, 5000)
