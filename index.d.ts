@@ -2,6 +2,7 @@ import {
     ButtonInteraction,
     Client,
     ColorResolvable,
+    CommandInteraction,
     EmojiResolvable,
     HexColorString,
     Message,
@@ -11,10 +12,11 @@ import {
     TextChannel,
     User
 } from 'discord.js';
-import {Collection, Fields } from 'quickmongo'
+import { Collection, Fields } from 'quickmongo'
 
 type FieldModel = Fields.FieldModel<unknown>
-type DB<T extends FieldModel = any> = Collection<T>;
+export type DB<T extends FieldModel = any> = Collection<T>;
+
 
 
 export type btnroleOptions = {
@@ -30,6 +32,19 @@ export type btnroleOptions = {
 }
 export declare function btnrole(client: Client, message: Message, options?: btnroleOptions): Promise<void>;
 
+export type bumpSystemOptions = {
+    event: 'ready' | 'messageCreate'
+    /** Message when the event is messageCreate */
+    message?: Message,
+    /** Channel id of the bump channel */
+    chid: string,
+    /** Embed that sends when the bump is needed */
+    bumpEmbed?: MessageEmbed
+    /** Embed that sends when someone bumps the server */
+    thanksEmbed?: MessageEmbed
+}
+export declare function bumpSystem(client: Client, db: DB, options?: bumpSystemOptions): Promise<any>;
+
 export type calculatorOptions = {
     /** The Embed Color of the calculator embed, default: #075FFF */
     embedColor: HexColorString,
@@ -41,7 +56,7 @@ export type calculatorOptions = {
     embedFooter?: string
 
 }
-export declare function calculator(message: Message, options?: calculatorOptions): Promise<void>;
+export declare function calculator(interaction: CommandInteraction, options?: calculatorOptions): Promise<void>;
 
 export type chatbotOptions = {
     /** Channel id for where to speak (Can be an array) */
@@ -119,7 +134,7 @@ export type embedPagesOptions = {
     /** Turn on/off the Last/First Page Buttons. */
     skipBtn: boolean
 }
-export declare function embedPages(client: Client, message: Message, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
+export declare function embedPages(client: Client, message: CommandInteraction, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
 
 export type ghostPingOptions = {
     /** default: (*a long message*) */
@@ -133,6 +148,22 @@ export type ghostPingOptions = {
 
 } | { embed: MessageEmbed }
 export declare function ghostPing(message: Message, options?: ghostPingOptions): Promise<void>;
+
+export type giveawaySystemOptions = {
+    /** Slash Support */
+    slash?: boolean
+    /** Args when using message event (non slash) */
+    args: string[],
+    /** Giveaway Options */
+    prize?: string,
+    winners?: string,
+    time?: string,
+    channel?: TextChannel,
+
+    /** Embed Customization */
+    embedTitle?: string,
+}
+export declare function giveawaySystem(client: Client, db: DB, interaction: CommandInteraction, options?: giveawaySystemOptions): Promise<any>;
 
 export type dropdownPagesOptions = {
     /** Type 1: Send as ephemeral message (invisible message) | Type 2: Edit previous message */
@@ -151,7 +182,7 @@ export type dropdownPagesOptions = {
         embed: MessageEmbed, // embed sent when clicked
     }[]
 }
-export declare function dropdownPages(message: Message, options?: dropdownPagesOptions): Promise<void>;
+export declare function dropdownPages(interaction: CommandInteraction, options?: dropdownPagesOptions): Promise<void>;
 
 export type modmailOptions = {
     /** Message Content outside of the embed, default: ***Support Team*** */
@@ -204,7 +235,7 @@ export type rpsOptions = {
     /** Credit the package */
     credit?: boolean
 }
-export declare function rps(message: Message, options?: rpsOptions): Promise<any>;
+export declare function rps(interaction: CommandInteraction, options?: rpsOptions): Promise<any>;
 
 export type starboardOptions = {
     event: 'messageReactionAdd' | 'messageReactionRemove' | 'messageDelete',
@@ -218,7 +249,7 @@ export type starboardOptions = {
     min?: number,
     credit?: boolean
 }
-export declare function starboard(client: Client, reaction: MessageReaction | Message, options?: starboardOptions): Promise<void>;
+export declare function starboard(client: Client, reaction: MessageReaction, options?: starboardOptions): Promise<void>;
 
 export type stealEmojiOptions = {
     /**  The Embed Title of the embed which is sent after uploading the emoji, default: `Emoji Added ;)` */
@@ -278,7 +309,7 @@ export type suggestSystemOptions = {
     /**  Give credits to this package(Boolean[true / false]) Default: true */
     credit?: boolean
 }
-export declare function suggestSystem(client: Client, message: Message, args: string[], options?: suggestSystemOptions): Promise<void>;
+export declare function suggestSystem(client: Client, interaction: CommandInteraction, args: string[], options?: suggestSystemOptions): Promise<void>;
 
 export type ticketSystemOptions = {
     //Embed
@@ -316,7 +347,7 @@ export type tictactoeOptions = {
     /** Emoji when the space is not occupied */
     idleEmoji: EmojiResolvable
 }
-export declare function tictactoe(message: Message, options?: tictactoeOptions): Promise<any>;
+export declare function tictactoe(interaction: CommandInteraction, options?: tictactoeOptions): Promise<any>;
 
 export type webhooksOptions = ({
     /** Channel id where you want to send the message */
@@ -349,33 +380,3 @@ export type ytNotifyOptions = ({
     msg?: string
 }
 export declare function ytNotify(client: Client, db: DB, options?: ytNotifyOptions): Promise<void>;
-
-export type bumpSystemOptions = {
-    event: 'ready' | 'messageCreate'
-    /** Message when the event is messageCreate */
-    message?: Message,
-    /** Channel id of the bump channel */
-    chid: string,
-    /** Embed that sends when the bump is needed */
-    bumpEmbed?: MessageEmbed
-    /** Embed that sends when someone bumps the server */
-    thanksEmbed?: MessageEmbed
-}
-export declare function bumpSystem(client: Client, db: DB, options?: bumpSystemOptions): Promise<any>;
-
-
-export type giveawaySystemOptions = {
-    /** Slash Support */
-    slash?: boolean
-    /** Args when using message event (non slash) */
-    args: string[],
-    /** Giveaway Options */
-    prize?: string,
-    winners?: string,
-    time?: string,
-    channel?: TextChannel,
-
-    /** Embed Customization */
-    embedTitle?: string,
-}
-export declare function giveawaySystem(client: Client, db: DB, message: Message, options?: giveawaySystemOptions): Promise<any>;

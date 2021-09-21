@@ -1,5 +1,9 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.ButtonInteraction} button 
+ * @param {import('../index').clickBtnOptions} options 
+ */
 async function clickBtn(button, options = []) {
     if (button.isButton()) {
       try {

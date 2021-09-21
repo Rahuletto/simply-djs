@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {import('../index').btnroleOptions} options 
+ */
 async function btnrole(client, message, options = []) {
     try {
             if (!options.data) throw new Error('NO_DATA_PROVIDED. You didnt specify any data to make buttons..')

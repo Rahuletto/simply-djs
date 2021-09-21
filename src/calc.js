@@ -1,6 +1,10 @@
 const Discord = require('discord.js')
 const math = require('mathjs')
 
+/**
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').calculatorOptions} options 
+ */
 async function calculator(interaction, options = []) {
   try{
     if(options.slash === true) {

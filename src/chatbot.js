@@ -1,6 +1,11 @@
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {import('../index').chatbotOptions} options 
+ */
 async function chatbot(client, message, options = []) {
     if (message.author.bot) return;
 if(options && options.toggle === false) return;

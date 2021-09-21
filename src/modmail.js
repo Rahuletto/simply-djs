@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {import('../index').modmailOptions} options 
+ */
 async function modmail(client, message, options = []) {
   let { MessageButton, MessageActionRow } = require('discord.js')
 try {

@@ -1,5 +1,9 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.CommandInteraction} message 
+ * @param {import('../index').tictactoeOptions} options 
+ */
 async function tictactoe(message, options = []) {
     try {
 

@@ -5,6 +5,12 @@ const Canvas = require('canvas')
 const { registerFont } = require('canvas')
 registerFont(join(__dirname,'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Regular' })
 registerFont(join(__dirname,'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Bold' })
+
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {import('../index').rankCardOptions} options 
+ */
 async function rankCard(client, message, options = []) {
 try {
     function shortener(count) {

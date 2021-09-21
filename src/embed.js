@@ -1,5 +1,9 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {import('../index').embedCreateOptions} options 
+ */
 async function embed(message, options=[]){
   try{
     if(options.slash === true){

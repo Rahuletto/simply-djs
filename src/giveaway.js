@@ -1,10 +1,15 @@
 const Discord = require('discord.js')
 let ms = require('ms')
 
-async function giveawaySystem(client, db, message, options = []) {
+/**
+ * @param {Discord.Client} client 
+ * @param {import('../index').DB} db 
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').giveawaySystemOptions} options 
+ */
+async function giveawaySystem(client, db, interaction, options = []) {
 try{
   if (options.slash === true) {
-    let interaction = message
     if (!interaction.member.permissions.has('ADMINISTRATOR')) return interaction.followUp({ content: 'You are not a admin to start the giveaway', ephemeral: true});
 
     let ch = interaction.options.getChannel('channel') || interaction.channel

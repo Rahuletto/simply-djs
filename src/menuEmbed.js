@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
-async function dropdownPages(message, options = []) {
+
+/**
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').dropdownPagesOptions} options 
+ */
+async function dropdownPages(interaction, options = []) {
   let { MessageActionRow, MessageSelectMenu } = require('discord.js')
 try {
   if(options.slash === true){
@@ -66,9 +71,9 @@ try {
     }
   
   
-    message.followUp({ embeds: [options.embed], components: rows })
-    let m = await message.fetchReply()
-      let filter = (menu) => menu.user.id == message.user.id
+    interaction.followUp({ embeds: [options.embed], components: rows })
+    let m = await interaction.fetchReply()
+      let filter = (menu) => menu.user.id == interaction.user.id
       const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', idle: 600000, filter: filter })
       collector.on('collect', async (menu) => {
         let selet = menu.values[0]
@@ -161,8 +166,8 @@ try {
   }
 
 
-  message.channel.send({ embeds: [options.embed], components: rows }).then(m => {
-    let filter = (menu) => menu.user.id == message.author.id
+  interaction.channel.send({ embeds: [options.embed], components: rows }).then(m => {
+    let filter = (menu) => menu.user.id == interaction.author.id
     const collector = m.createMessageComponentCollector({ type: 'SELECT_MENU', idle: 600000, filter: filter })
     collector.on('collect', async (menu) => {
       let selet = menu.values[0]

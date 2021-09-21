@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {import('../index').DB} db 
+ * @param {import('../index').bumpSystemOptions} options 
+ */
 async function bumpSys(client, db, options = []) {
   try{
     if (options.event === 'messageCreate') {

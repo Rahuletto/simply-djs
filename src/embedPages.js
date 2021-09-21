@@ -1,5 +1,11 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.CommandInteraction} message 
+ * @param {Discord.MessageEmbed[]} pages 
+ * @param {import('../index').embedPagesOptions} style 
+ */
 async function embedPages(client, message, pages, style = []) {
 
     let { MessageButton, MessageActionRow } = require('discord.js')
