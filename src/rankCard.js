@@ -1,10 +1,18 @@
 const Discord = require('discord.js')
 const { join } = require('path');
 
+
 const Canvas = require('canvas')
 const { registerFont } = require('canvas')
 registerFont(join(__dirname, 'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Regular' })
 registerFont(join(__dirname, 'Fonts', 'Poppins-SemiBold.ttf'), { family: 'Poppins-Bold' })
+
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.Message} message 
+ * @param {import('../index').rankCardOptions} options 
+ */
+ 
 async function rankCard(client, message, options = []) {
     try {
         function shortener(count) {
@@ -203,6 +211,8 @@ async function rankCard(client, message, options = []) {
         );
 
         if (options.slash === true) {
+            if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | rankCard');
+
             const attachment = new Discord.MessageAttachment(canvas.toBuffer(), AttachmentName);
 
             message.followUp({ files: [attachment], ephemeral: true })

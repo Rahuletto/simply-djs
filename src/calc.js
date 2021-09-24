@@ -1,9 +1,16 @@
 const Discord = require('discord.js')
 const math = require('mathjs')
 
+/**
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').calculatorOptions} options 
+ */
+ 
 async function calculator(interaction, options = []) {
   try {
     if (options.slash === true) {
+      if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | calculator');
+
       let { MessageButton, MessageActionRow } = require('discord.js')
 
       let button = new Array([], [], [], [], []);
@@ -72,7 +79,7 @@ async function calculator(interaction, options = []) {
                 components: row
               })
 
-            } else if (value.includes("Delete")) return interaction.deleteReply();
+            } else if (value.includes("Delete")) return interaction.deleteReply().catch(() => {});
             else if (value.includes("Clear")) return value = "0"
             emb1.setDescription("```" + value + "```")
             await msg.edit({
@@ -200,7 +207,7 @@ async function calculator(interaction, options = []) {
 
             } else if (value.includes("Delete")) {
               msg.delete()
-              return interaction.delete();
+              return interaction.delete().catch(() => {});
             } else if (value.includes("Clear")) return value = "0"
             emb1.setDescription("```" + value + "```")
             await msg.edit({

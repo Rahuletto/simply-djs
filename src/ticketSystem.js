@@ -1,5 +1,11 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {Discord.TextChannel} channel 
+ * @param {import('../index').ticketSystemOptions} options
+ */
+ 
 async function ticketSystem(message, channel, options = []) {
     try {
         let { MessageButton, MessageActionRow } = require('discord.js')

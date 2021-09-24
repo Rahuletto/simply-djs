@@ -1,6 +1,12 @@
 const Discord = require('discord.js')
 const parse = new (require("rss-parser"))();
 
+/**
+ * @param {Discord.Client} client 
+ * @param {import('../index').DB} db 
+ * @param {import('../index').ytNotifyOptions} options 
+ */
+ 
 async function ytNotify(client, db, options = []) {
     let startAt = options.startAt
     let chid = options.chid
@@ -11,7 +17,6 @@ async function ytNotify(client, db, options = []) {
         let timer = options.timer || "10000"
         let timr = parseInt(timer)
 
-        if (db.get(`postedVideos`) === null) db.set(`postedVideos`, []);
         setInterval(async () => {
 
             function URLtoID(url) {
@@ -46,12 +51,14 @@ async function ytNotify(client, db, options = []) {
             async function checkVid(client, ytID, chid, msg, db, startAt) {
                 parse.parseURL(`https://www.youtube.com/feeds/videos.xml?channel_id=${ytID}`)
                     .then(data => {
+            client.guilds.cache.forEach(await g => {
+
                         if (!data.items || !data.items[0] || !data || data.items === []) return;
-                        if (db.get(`postedVideos`) && db.get(`postedVideos`).includes(data.items[0].link)) return;
+                        if (db.pull(`postedVideos_${g.id}`) && db.pull(`postedVideos_${g.id}`).includes(data.items[0].link)) return;
                         else {
                             if (new Date(data.items[0].pubDate).getTime() < startAt) return;
 
-                            db.push("postedVideos", data.items[0].link);
+                            db.push(`postedVideos_${g.id}`, data.items[0].link);
                             let channel = client.channels.cache.get(chid);
                             if (!channel) return;
 
@@ -62,7 +69,10 @@ async function ytNotify(client, db, options = []) {
                             channel.send({ content: mssg })
                             console.log('Notified')
                         }
-                    });
+                    })
+
+                })
+
             }
         }, timr);
     } catch (err) {

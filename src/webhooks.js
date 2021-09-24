@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {import('../index').webhooksOptions} options 
+ */
+ 
 async function webhooks(client, options = []) {
     try {
         if (!options.chid) throw new Error('EMPTY_CHANNEL_ID. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support');

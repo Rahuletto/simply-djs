@@ -1,9 +1,16 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.CommandInteraction} message 
+ * @param {import('../index').tictactoeOptions} options 
+ */
+ 
 async function tictactoe(message, options = []) {
     try {
 
         if (options.slash === true) {
+            if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | tictactoe');
+
             let opponent = message.options.getUser('user')
 
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true })
@@ -478,7 +485,7 @@ async function tictactoe(message, options = []) {
 
                             collector.on('collect', b => {
 
-                                if (button.user.id !== Args.userid) return button.reply({ content: 'You cant play now', ephemeral: true })
+                                if (b.user.id !== Args.userid) return b.reply({ content: 'You cant play now', ephemeral: true })
 
                                 if (Args.user == 0) {
                                     Args.user = 1

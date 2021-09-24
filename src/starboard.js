@@ -1,4 +1,11 @@
 const Discord = require('discord.js')
+
+/** 
+ * @param {Discord.Client} client 
+ * @param {Discord.MessageReaction} reaction 
+ * @param {import('../index').starboardOptions} options 
+ */
+ 
 async function starboard(client, reaction, options = []) {
 
      try {

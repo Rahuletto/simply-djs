@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.ButtonInteraction} button 
+ * @param {import('../index').clickBtnOptions} options 
+ */
+ 
 async function clickBtn(button, options = []) {
   if (button.isButton()) {
     try {
@@ -299,7 +304,7 @@ async function clickBtn(button, options = []) {
 
           for (let i = 0; winnerNumber > i; i++) {
             let winnumber = Math.floor((Math.random() * wino.length))
-            if (wino[winnumber] === undefined) {
+            if (wino[winnumber] === undefined || wino[winnumber] === 'null') {
               winner.push(`\u200b`)
               winboiz.push('\u200b')
               wino.splice(winnumber, 1);

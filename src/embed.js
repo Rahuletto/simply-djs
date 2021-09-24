@@ -1,8 +1,14 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {import('../index').embedCreateOptions} options 
+ */
+ 
 async function embed(message, options = []) {
   try {
     if (options.slash === true) {
+      if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedCreate');
       let interaction = message
       const { MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
 

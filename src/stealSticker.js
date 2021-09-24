@@ -1,5 +1,11 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {import('../index').stealStickerOptions} options 
+ */
+ 
 async function stealSticker(message, args, options = []) {
   try {
     let filter = m => m.author.id === message.author.id

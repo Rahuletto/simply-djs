@@ -1,8 +1,15 @@
 const Discord = require('discord.js')
+
+/**
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').dropdownPagesOptions} options 
+ */
+ 
 async function dropdownPages(message, options = []) {
   let { MessageActionRow, MessageSelectMenu } = require('discord.js')
   try {
     if (options.slash === true) {
+      if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | menuPages/dropdownPages');
       let typ = options.type || 1
       let type = Number(typ)
       if (type > 2) throw new Error('There is no Type more than 2.. TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG');

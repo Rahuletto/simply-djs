@@ -1,5 +1,10 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {import('../index').ghostPingOptions} options 
+ */
+ 
 async function ghostPing(message, options = []) {
     if (message.mentions.users.first()) {
 

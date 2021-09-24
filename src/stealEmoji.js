@@ -1,5 +1,11 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Message} message 
+ * @param {string[]} args 
+ * @param {import('../index').stealEmojiOptions} options 
+ */
+ 
 async function stealEmoji(message, args, options = []) {
     try {
         if (!message.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS")) return message.channel.send('❌ You Must Have • Server Moderator or ・ Admin Role To Use This Command ❌');

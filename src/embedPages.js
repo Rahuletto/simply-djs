@@ -1,10 +1,19 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.CommandInteraction} message 
+ * @param {Discord.MessageEmbed[]} pages 
+ * @param {import('../index').embedPagesOptions} style 
+ */
+ 
 async function embedPages(client, message, pages, style = []) {
 
     let { MessageButton, MessageActionRow } = require('discord.js')
     try {
         if (style.slash === true) {
+            if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedPages');
+
             if (!pages) throw new Error("PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
             if (!client) throw new Error("client not specified. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md")
 
@@ -21,11 +30,6 @@ async function embedPages(client, message, pages, style = []) {
                     .setEmoji(style.forwardEmoji || "▶️")
                     .setStyle(style.btncolor || 'SUCCESS')
 
-                const deleteBtn = new MessageButton()
-                    .setCustomId(`delete_embed`)
-
-                    .setEmoji(style.delEmoji || "🗑️")
-                    .setStyle('DANGER')
 
                 const pageMovingButtons2 = new MessageButton()
                     .setCustomId(`back_button_embed`)
@@ -38,10 +42,21 @@ async function embedPages(client, message, pages, style = []) {
 
                     .setEmoji(style.lastEmoji || "⏩")
                     .setStyle(style.skipcolor || 'PRIMARY')
+    if(!style.delBtn || style.delBtn === true){
 
-                pageMovingButtons = new MessageActionRow()
+        const deleteBtn = new MessageButton()
+                    .setCustomId(`delete_embed`)
+
+                    .setEmoji(style.delEmoji || "🗑️")
+                    .setStyle('DANGER')
+
+                    pageMovingButtons = new MessageActionRow()
                     .addComponents([firstbtn, pageMovingButtons2, deleteBtn, pageMovingButtons1, lastbtn])
 
+    } else if(style.delBtn === false) {
+                pageMovingButtons = new MessageActionRow()
+                    .addComponents([firstbtn, pageMovingButtons2, pageMovingButtons1, lastbtn])
+    }
             } else {
                 const pageMovingButtons1 = new MessageButton()
                     .setCustomId(`forward_button_embed`)
@@ -61,8 +76,22 @@ async function embedPages(client, message, pages, style = []) {
                     .setEmoji(style.backEmoji || "◀️")
                     .setStyle(style.btncolor || 'SUCCESS')
 
-                pageMovingButtons = new MessageActionRow()
+
+    if(!style.delBtn || style.delBtn === true){
+
+        const deleteBtn = new MessageButton()
+                    .setCustomId(`delete_embed`)
+
+                    .setEmoji(style.delEmoji || "🗑️")
+                    .setStyle('DANGER')
+
+                    pageMovingButtons = new MessageActionRow()
                     .addComponents([pageMovingButtons2, deleteBtn, pageMovingButtons1])
+
+    } else if(style.delBtn === false){
+                pageMovingButtons = new MessageActionRow()
+                    .addComponents([pageMovingButtons2, pageMovingButtons1])
+    }
             }
 
             var currentPage = 0;
@@ -72,15 +101,15 @@ async function embedPages(client, message, pages, style = []) {
 
                 if (!b.isButton()) return;
                 if (b.customId == "back_button_embed") {
-                    if (b.user.id !== message.author.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
+                    if (b.user.id !== message.user.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
                 } else if (b.customId == "forward_button_embed") {
-                    if (b.user.id !== message.author.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
+                    if (b.user.id !== message.user.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
                 } else if (b.customId == "delete_embed") {
-                    if (b.user.id !== message.author.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
+                    if (b.user.id !== message.user.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
                 } else if (b.customId == 'last_embed') {
-                    if (b.user.id !== message.author.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
+                    if (b.user.id !== message.user.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
                 } else if (b.customId == 'first_embed') {
-                    if (b.user.id !== message.author.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
+                    if (b.user.id !== message.user.id) return b.reply({ content: 'You cant change the pages of that embed..', ephemeral: true })
                 }
                 if (b.message.id == m.id && b.user.id == message.user.id) {
                     if (b.customId == "back_button_embed") {
@@ -147,9 +176,22 @@ async function embedPages(client, message, pages, style = []) {
                     .setEmoji(style.lastEmoji || "⏩")
                     .setStyle(style.skipcolor || 'PRIMARY')
 
-                pageMovingButtons = new MessageActionRow()
+if(!style.delBtn || style.delBtn === true){
+
+        const deleteBtn = new MessageButton()
+                    .setCustomId(`delete_embed`)
+
+                    .setEmoji(style.delEmoji || "🗑️")
+                    .setStyle('DANGER')
+
+                   pageMovingButtons = new MessageActionRow()
                     .addComponents([firstbtn, pageMovingButtons2, deleteBtn, pageMovingButtons1, lastbtn])
 
+    } else if(style.delBtn === false){
+                pageMovingButtons = new MessageActionRow()
+                    .addComponents([firstbtn, pageMovingButtons2, pageMovingButtons1, lastbtn])
+    }
+                
             } else {
                 const pageMovingButtons1 = new MessageButton()
                     .setCustomId(`forward_button_embed`)
@@ -169,8 +211,23 @@ async function embedPages(client, message, pages, style = []) {
                     .setEmoji(style.backEmoji || "◀️")
                     .setStyle(style.btncolor || 'SUCCESS')
 
-                pageMovingButtons = new MessageActionRow()
+if(!style.delBtn || style.delBtn === true){
+
+        const deleteBtn = new MessageButton()
+                    .setCustomId(`delete_embed`)
+
+                    .setEmoji(style.delEmoji || "🗑️")
+                    .setStyle('DANGER')
+
+                  pageMovingButtons = new MessageActionRow()
                     .addComponents([pageMovingButtons2, deleteBtn, pageMovingButtons1])
+
+    } else if(style.delBtn === false){
+                pageMovingButtons = new MessageActionRow()
+                    .addComponents([pageMovingButtons2, pageMovingButtons1])
+    }
+
+                
             }
 
             var currentPage = 0;

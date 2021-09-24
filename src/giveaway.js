@@ -1,9 +1,18 @@
 const Discord = require('discord.js')
 let ms = require('ms')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {import('../index').DB} db 
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').giveawaySystemOptions} options 
+ */
+ 
 async function giveawaySystem(client, db, message, options = []) {
   try {
     if (options.slash === true) {
+      if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | giveawaySystem');
+
       let interaction = message
       if (!interaction.member.permissions.has('ADMINISTRATOR')) return interaction.followUp({ content: 'You are not a admin to start the giveaway', ephemeral: true });
 
@@ -269,7 +278,7 @@ async function giveawaySystem(client, db, message, options = []) {
           .setColor(0x075FFF)
           .setTimestamp(Number(Date.now() + ms(time)))
           .setFooter('Ends ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-          .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+          .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.author}***`)
           .addFields(
             { name: '🏆 Winner(s):', value: `**${options.winners || winers}**` },
             { name: '💝 People Entered', value: `***0***` },
@@ -312,7 +321,7 @@ async function giveawaySystem(client, db, message, options = []) {
                 const embedod = new Discord.MessageEmbed()
                   .setTitle('No one Entered.')
                   .setColor(0xcc0000)
-                  .setDescription(`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+                  .setDescription(`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.author}***`)
                   .addFields(
                     { name: '🏆 Winner(s):', value: `none` },
                     { name: '💝 People Entered', value: `***0***` },
@@ -366,7 +375,7 @@ async function giveawaySystem(client, db, message, options = []) {
                 const embedd = new Discord.MessageEmbed()
                   .setTitle(options.embedTitle || 'Giveaway Ended')
                   .setColor(0x3BB143)
-                  .setDescription(`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.user}***`)
+                  .setDescription(`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**🎉 Hosted By:** ***${message.author}***`)
                   .addFields(
                     { name: '🏆 Winner(s):', value: `${winner}` },
                     { name: '💝 People Entered', value: `***${entero}***` },
@@ -385,13 +394,13 @@ async function giveawaySystem(client, db, message, options = []) {
                 const gothere = new Discord.MessageButton()
                   .setLabel('View Giveaway')
                   .setStyle('LINK')
-                  .setURL(button.message.url)
+                  .setURL(m.url)
 
                 const ro = new Discord.MessageActionRow()
                   .addComponents([gothere])
 
                 m.channel.send({ content: `Congrats ${winboiz}. You just won the giveaway.`, embeds: [embb], components: [ro] }).then(async m => {
-                  await db.set(`giveaway_${button.message.id}_yaywon`, m.id)
+                  await db.set(`giveaway_${m.id}_yaywon`, m.id)
                 })
 
                 m.edit({ embeds: [embedd], components: [roww] })
@@ -425,7 +434,7 @@ async function giveawaySystem(client, db, message, options = []) {
                   .setColor(0x075FFF)
                   .setTimestamp(Number(Date.now() + ms(time)))
                   .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-                  .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+                  .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.author}***`)
                   .addFields(
                     { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                     { name: '💝 People Entered', value: `***${enteroo - 1}***` },
@@ -447,7 +456,7 @@ async function giveawaySystem(client, db, message, options = []) {
                   .setColor(0x075FFF)
                   .setTimestamp(Number(Date.now() + ms(time)))
                   .setFooter('Ends at ', 'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif')
-                  .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.user}***`)
+                  .setDescription(`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${options.prize || prize}***\n\n**⌛ Ends:** <t:${whytime}:R>\n\n**🎉 Hosted By:** ***${message.author}***`)
                   .addFields(
                     { name: '🏆 Winner(s):', value: `${options.winners || winers}` },
                     { name: '💝 People Entered', value: `***${enteroo + 1}***` },

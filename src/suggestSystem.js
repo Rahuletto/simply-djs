@@ -1,9 +1,18 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.Client} client 
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {string[]} args 
+ * @param {import('../index').suggestSystemOptions} options 
+ */
+ 
 async function suggestSystem(client, message, args, options = []) {
     try {
 
         if (options.slash === true) {
+            if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | suggestSystem');
+
             let interaction = message;
 
             let channel = options.chid

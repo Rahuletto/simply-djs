@@ -1,8 +1,15 @@
 const Discord = require('discord.js')
 
+/**
+ * @param {Discord.CommandInteraction} interaction 
+ * @param {import('../index').rpsOptions} options 
+ */
+ 
 async function rps(message, options = []) {
     try {
         if (options.slash === true) {
+            if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | rps');
+
             let opponent = message.options.getUser('user')
             if (!opponent) return message.followUp({ content: 'No opponent mentioned!', ephemeral: true })
             if (opponent.bot) return message.followUp({ content: 'You can\'t play against bots', ephemeral: true })

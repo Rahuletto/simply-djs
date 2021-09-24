@@ -1,9 +1,25 @@
-import { ButtonInteraction, Client, ColorResolvable, Emoji, EmojiResolvable, HexColorString, Message, MessageActionRow, MessageEmbed, MessageReaction, StartThreadOptions, TextBasedChannels, TextChannel, User } from 'discord.js';
-type DB = 'quickmongo';
+import {
+    ButtonInteraction,
+    Client,
+    ColorResolvable,
+    CommandInteraction,
+    EmojiResolvable,
+    HexColorString,
+    Message,
+    MessageActionRow,
+    MessageEmbed,
+    MessageReaction,
+    TextChannel,
+    User
+} from 'discord.js';
+import { Collection, Fields } from 'quickmongo'
+
+type FieldModel = Fields.FieldModel<unknown>
+export type DB<T extends FieldModel = any> = Collection<T>;
 
 
 
-export declare function btnrole(client: Client, message: Message, options?: {
+export type btnroleOptions = {
     embed: MessageEmbed,
     data: {
         role: string,
@@ -13,9 +29,23 @@ export declare function btnrole(client: Client, message: Message, options?: {
         color?: HexColorString,
         emoji?: EmojiResolvable,
     }[]
-}): Promise<void>;
+}
+export declare function btnrole(client: Client, message: Message, options?: btnroleOptions): Promise<void>;
 
-export declare function calculator(message: Message, options?: {
+export type bumpSystemOptions = {
+    event: 'ready' | 'messageCreate'
+    /** Message when the event is messageCreate */
+    message?: Message,
+    /** Channel id of the bump channel */
+    chid: string,
+    /** Embed that sends when the bump is needed */
+    bumpEmbed?: MessageEmbed
+    /** Embed that sends when someone bumps the server */
+    thanksEmbed?: MessageEmbed
+}
+export declare function bumpSystem(client: Client, db: DB, options?: bumpSystemOptions): Promise<any>;
+
+export type calculatorOptions = {
     /** The Embed Color of the calculator embed, default: #075FFF */
     embedColor: HexColorString,
     /** Slash support */
@@ -25,9 +55,10 @@ export declare function calculator(message: Message, options?: {
     /** Have Custom Calculator footer when credits are false */
     embedFooter?: string
 
-}): Promise<void>;
+}
+export declare function calculator(interaction: CommandInteraction, options?: calculatorOptions): Promise<void>;
 
-export declare function chatbot(client: Client, message: Message, options?: {
+export type chatbotOptions = {
     /** Channel id for where to speak (Can be an array) */
     chid: string | string[],
     /** ChatBot name, default: Your bot name */
@@ -36,9 +67,10 @@ export declare function chatbot(client: Client, message: Message, options?: {
     toggle?: boolean
     /** Your name */
     developer?: string
-}): Promise<void>;
+}
+export declare function chatbot(client: Client, message: Message, options?: chatbotOptions): Promise<void>;
 
-export declare function clickBtn(button: ButtonInteraction, options?: {
+export type clickBtnOptions = {
     /**  The Embed Description of the embed which is sent when the ticket has been opened */
     embedDesc?: string,
     /** Database */
@@ -67,15 +99,17 @@ export declare function clickBtn(button: ButtonInteraction, options?: {
     timeout: boolean,
     /** Message sent when a ticket is already opened by the user. */
     cooldownMsg: string
-}): Promise<void>;
+}
+export declare function clickBtn(button: ButtonInteraction, options?: clickBtnOptions): Promise<void>;
 
-export declare function embedCreate(message: Message, options?: {
+export type embedCreateOptions = {
     slash?: boolean
-}): Promise<void>;
+}
+export declare function embedCreate(message: Message, options?: embedCreateOptions): Promise<void>;
 
 /** Colors that discord.js support */
 type DiscordColor = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER';
-export declare function embedPages(client: Client, message: Message, pages: MessageEmbed[], style?: {
+export type embedPagesOptions = {
     /** default: ⏪ */
     firstemoji?: EmojiResolvable,
     /** default: ◀️ */
@@ -99,9 +133,10 @@ export declare function embedPages(client: Client, message: Message, pages: Mess
 
     /** Turn on/off the Last/First Page Buttons. */
     skipBtn: boolean
-}): Promise<void>;
+}
+export declare function embedPages(client: Client, message: CommandInteraction, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
 
-export declare function ghostPing(message: Message, options?: {
+export type ghostPingOptions = {
     /** default: (*a long message*) */
     embedDesc?: string,
     /** default: #075FFF */
@@ -111,9 +146,26 @@ export declare function ghostPing(message: Message, options?: {
     /** Credit the package */
     credits?: boolean
 
-} | { embed: MessageEmbed }): Promise<void>;
+} | { embed: MessageEmbed }
+export declare function ghostPing(message: Message, options?: ghostPingOptions): Promise<void>;
 
-export declare function dropdownPages(message: Message, options?: {
+export type giveawaySystemOptions = {
+    /** Slash Support */
+    slash?: boolean
+    /** Args when using message event (non slash) */
+    args: string[],
+    /** Giveaway Options */
+    prize?: string,
+    winners?: string,
+    time?: string,
+    channel?: TextChannel,
+
+    /** Embed Customization */
+    embedTitle?: string,
+}
+export declare function giveawaySystem(client: Client, db: DB, interaction: CommandInteraction, options?: giveawaySystemOptions): Promise<any>;
+
+export type dropdownPagesOptions = {
     /** Type 1: Send as ephemeral message (invisible message) | Type 2: Edit previous message */
     type?: 1 | 2,
     /** Name that shows when nothing is selected */
@@ -129,9 +181,10 @@ export declare function dropdownPages(message: Message, options?: {
         emoji?: string,
         embed: MessageEmbed, // embed sent when clicked
     }[]
-}): Promise<void>;
+}
+export declare function dropdownPages(interaction: CommandInteraction, options?: dropdownPagesOptions): Promise<void>;
 
-export declare function modmail(client: Client, message: Message, options?: {
+export type modmailOptions = {
     /** Message Content outside of the embed, default: ***Support Team*** */
     content?: string,
     /** Support Role ID (also mentions when creating if there is no options.content) */
@@ -151,9 +204,10 @@ export declare function modmail(client: Client, message: Message, options?: {
     delEmoji?: EmojiResolvable,
     /** Give credits to the package by making it true */
     credit?: boolean
-}): Promise<any>;
+}
+export declare function modmail(client: Client, message: Message, options?: modmailOptions): Promise<any>;
 
-export declare function rankCard(client: Client, message: Message, options?: {
+export type rankCardOptions = {
     /**Provide a member into the system (Identifies the member automatically if not provided) */
     member?: User,
     level: number,
@@ -164,9 +218,10 @@ export declare function rankCard(client: Client, message: Message, options?: {
     slash?: boolean,
     /** Background of the rank card */
     background?: string
-}): Promise<void>;
+}
+export declare function rankCard(client: Client, message: Message, options?: rankCardOptions): Promise<void>;
 
-export declare function rps(message: Message, options?: {
+export type rpsOptions = {
     embedColor?: HexColorString, // default: #075FFF
     timeoutEmbedColor?: HexColorString, // default: #c90000
     drawEmbedColor?: HexColorString, // default: #075FFF
@@ -179,9 +234,10 @@ export declare function rps(message: Message, options?: {
     slash?: boolean,
     /** Credit the package */
     credit?: boolean
-}): Promise<any>;
+}
+export declare function rps(interaction: CommandInteraction, options?: rpsOptions): Promise<any>;
 
-export declare function starboard(client: Client, reaction: MessageReaction | Message, options?: {
+export type starboardOptions = {
     event: 'messageReactionAdd' | 'messageReactionRemove' | 'messageDelete',
     chid: string,
     /** default: #FFC83D */
@@ -192,9 +248,10 @@ export declare function starboard(client: Client, reaction: MessageReaction | Me
     /** inimum stars needed to be on starboard, default: 2 */
     min?: number,
     credit?: boolean
-}): Promise<void>;
+}
+export declare function starboard(client: Client, reaction: MessageReaction, options?: starboardOptions): Promise<void>;
 
-export declare function stealEmoji(message: Message, args: string[], options?: {
+export type stealEmojiOptions = {
     /**  The Embed Title of the embed which is sent after uploading the emoji, default: `Emoji Added ;)` */
     embedTitle?: string,
     /** The Embed Color of the embed which is sent after uploading the emoji, default: #075FFF; */
@@ -204,9 +261,10 @@ export declare function stealEmoji(message: Message, args: string[], options?: {
     /** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
     failedMsg?: string
     credit?: boolean
-}): Promise<any>;
+}
+export declare function stealEmoji(message: Message, args: string[], options?: stealEmojiOptions): Promise<any>;
 
-export declare function stealSticker(message: Message, args: string[], options?: {
+export type stealStickerOptions = {
     /**  The Embed Title of the embed which is sent after uploading the emoji, default: `Emoji Added ;)` */
     embedTitle?: string,
     /** The Embed Color of the embed which is sent after uploading the emoji, default: #075FFF; */
@@ -215,9 +273,10 @@ export declare function stealSticker(message: Message, args: string[], options?:
     embedFoot?: string,
     /** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
     credit?: boolean
-}): Promise<any>;
+}
+export declare function stealSticker(message: Message, args: string[], options?: stealStickerOptions): Promise<any>;
 
-export declare function suggestBtn(button: ButtonInteraction, users: DB, options?: {
+export type suggestBtnOptions = {
     /**  Emoji for Accept suggestion button (Only Emoji ID), default: ☑️ */
     yesEmoji?: EmojiResolvable,
     /** Color for the Accept Suggestion button, default: green  */
@@ -230,9 +289,10 @@ export declare function suggestBtn(button: ButtonInteraction, users: DB, options
     denyEmbColor?: ColorResolvable,
     /**  Color for the Accepted Suggestion embed, default: GREEN */
     agreeEmbColor?: ColorResolvable,
-}): Promise<void>;
+}
+export declare function suggestBtn(button: ButtonInteraction, users: DB, options?: suggestBtnOptions): Promise<void>;
 
-export declare function suggestSystem(client: Client, message: Message, args: string[], options?: {
+export type suggestSystemOptions = {
     chid: string,
     /** Emoji for Accept suggestion button, default: ☑️ */
     yesEmoji?: EmojiResolvable,
@@ -248,9 +308,10 @@ export declare function suggestSystem(client: Client, message: Message, args: st
     slash?: boolean,
     /**  Give credits to this package(Boolean[true / false]) Default: true */
     credit?: boolean
-}): Promise<void>;
+}
+export declare function suggestSystem(client: Client, interaction: CommandInteraction, args: string[], options?: suggestSystemOptions): Promise<void>;
 
-export declare function ticketSystem(message: Message, channel: TextChannel, options?: {
+export type ticketSystemOptions = {
     //Embed
     /** The Description for the Ticket System Embed(Embed that has ticket button that opens a ticket) */
     embedDesc?: string,
@@ -265,9 +326,10 @@ export declare function ticketSystem(message: Message, channel: TextChannel, opt
     emoji?: EmojiResolvable,
     /** The Color for the Ticket Button which opens a ticket. */
     color?: ColorResolvable
-}): Promise<any>;
+}
+export declare function ticketSystem(message: Message, channel: TextChannel, options?: ticketSystemOptions): Promise<any>;
 
-export declare function tictactoe(message: Message, options?: {
+export type tictactoeOptions = {
     //Embed
     /**  The Embed Foot of the How to play embed */
     embedFoot: string,
@@ -284,9 +346,10 @@ export declare function tictactoe(message: Message, options?: {
     oEmoji: EmojiResolvable,
     /** Emoji when the space is not occupied */
     idleEmoji: EmojiResolvable
-}): Promise<any>;
+}
+export declare function tictactoe(interaction: CommandInteraction, options?: tictactoeOptions): Promise<any>;
 
-export declare function webhooks(client: Client, options?: ({
+export type webhooksOptions = ({
     /** Channel id where you want to send the message */
     chid: string,
     /** The Message you want to send using webhooks */
@@ -299,9 +362,10 @@ export declare function webhooks(client: Client, options?: ({
     username?: string,
     /** The Avatar of the webhook user (Only URL) */
     avatar: string
-}): Promise<void>;
+}
+export declare function webhooks(client: Client, options?: webhooksOptions): Promise<void>;
 
-export declare function ytNotify(client: Client, db: DB, options?: ({
+export type ytNotifyOptions = ({
     /** Youtube channel ID from the URL */
     ytID: string
 } | {
@@ -314,33 +378,5 @@ export declare function ytNotify(client: Client, db: DB, options?: ({
     startAt: Date,
     /** Message sent when the youtuber posts a video */
     msg?: string
-}): Promise<void>;
-
-export declare function bumpSystem(client: Client, db: DB, options?: {
-    event: 'ready' | 'messageCreate'
-    /** Message when the event is messageCreate */
-    message?: Message,
-    /** Channel id of the bump channel */
-    chid: string,
-    /** Embed that sends when the bump is needed */
-    bumpEmbed?: MessageEmbed
-    /** Embed that sends when someone bumps the server */
-    thanksEmbed?: MessageEmbed
-}): Promise<any>;
-
-
-export declare function giveawaySystem(client: Client, db: DB, message: Message, options?: {
-    /** Slash Support */
-    slash?: boolean
-    /** Args when using message event (non slash) */
-    args: string[],
-    /** Giveaway Options */
-    prize?: string,
-    winners?: string,
-    time?: string,
-    channel?: TextChannel,
-
-    /** Embed Customization */
-    embedTitle?: string,
-
-}): Promise<any>;
+}
+export declare function ytNotify(client: Client, db: DB, options?: ytNotifyOptions): Promise<void>;
