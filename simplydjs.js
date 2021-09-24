@@ -17,8 +17,6 @@ module.exports.menuPages = require('./src/menuEmbed')
 
 module.exports.dropdownPages = require('./src/menuEmbed')
 
-module.exports.webhooks = require('./src/webhooks')
-
 // Games (Fun)
 module.exports.tictactoe = require('./src/tictactoe')
 
@@ -37,6 +35,8 @@ module.exports.suggestSystem = require('./src/suggestSystem')
 module.exports.suggestBtn = require('./src/suggestBtn')
 
 module.exports.btnrole = require('./src/btnrole')
+
+module.exports.betterBtnRole = require('./src/betterBtnRole')
 
 module.exports.starboard = require('./src/starboard')
 
