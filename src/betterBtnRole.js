@@ -12,7 +12,7 @@ async function betterBtnRole(client, interaction, options=[]){
 
   let ch = interaction.options.getChannel('channel')
 let msgid = interaction.options.getString('message')
-let role = interaction.options.getRole('role')  
+let role = interaction.options.getRole('role') 
 
 let msg = await ch.messages.fetch(msgid).catch(e => {})
   

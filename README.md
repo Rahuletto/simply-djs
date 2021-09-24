@@ -27,12 +27,14 @@ yarn add simply-djs
 <br>
  
 # 🎉 [What's New](https://simplyd.js.org/docs/whatsnew) 🎉
-- ### Yea we have documentations now.. Amazing right ?? [Visit the Docs](https://simplyd.js.org)
-- ### As Discord trying to push all verified bots to be slash based, This is our response to it.. We introduce *(drum rolls)* [Slash Support.](https://simplyd.js.org/docs/slash)
-- ### New Everything. Yea. Lets welcome [simply-djs v2](https://simplyd.js.org)
-- ### Converting everything to mongoDB
-- ### New Functions. [bumpSystem](https://simplyd.js.org/docs/Systems/bumpSystem) and [stealSticker](https://simplyd.js.org/docs/General/stealSticker)
-- ### Thank you for everything. We learned many things from this journey. Hope it continues
+- ### webhooks got removed (as webhooks are easy already)
+- ### giveawaySystem ! (new giveaways system so nuggies die XD)
+- ### betterBtnRole (BETA) ! Complex btn role which dont need data XD
+- ### Throws error when Interaction (slash command) is not deferred
+- ### New JS Docs with it. (Thanks to AKORA#7997)
+- ### Most of the bugs dead (Bug Fixes)
+
+- ### Docs has Search Box and interaction functions (in separate page)
 <br>
    
 ## **Need Help ? Join the [Discord Server](https://discord.gg/3JzDV9T5Fn)**
