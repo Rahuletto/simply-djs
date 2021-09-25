@@ -349,21 +349,10 @@ export type tictactoeOptions = {
 }
 export declare function tictactoe(interaction: CommandInteraction, options?: tictactoeOptions): Promise<any>;
 
-export type webhooksOptions = ({
-    /** Channel id where you want to send the message */
-    chid: string,
-    /** The Message you want to send using webhooks */
-    msg: string
-} | {
-    /** The Embed you want to send using webhooks */
-    embed: MessageEmbed
-}) & {
-    /** The Username of the webhook user */
-    username?: string,
-    /** The Avatar of the webhook user (Only URL) */
-    avatar: string
-}
-export declare function webhooks(client: Client, options?: webhooksOptions): Promise<void>;
+export type betterBtnRoleOptions = ({
+    type: 'add' | 'remove'
+})
+export declare function betterBtnRole(client: Client, interaction: CommandInteraction ,options?: betterBtnRoleOptions): Promise<void>;
 
 export type ytNotifyOptions = ({
     /** Youtube channel ID from the URL */
