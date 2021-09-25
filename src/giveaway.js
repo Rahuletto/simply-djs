@@ -12,7 +12,7 @@ async function giveawaySystem(client, db, message, options = []) {
   try {
     if (options.slash === true) {
       let interaction = message;
-      if (!interaction.deferred() || interaction.deferred() === false)
+      if (!interaction.deferred || interaction.deferred === false)
         throw new Error(
           "Please Defer the reply when using the functions with slash. | simply-djs | giveawaySystem"
         );

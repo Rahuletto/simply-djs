@@ -9,7 +9,7 @@ async function dropdownPages(message, options = []) {
   let { MessageActionRow, MessageSelectMenu } = require("discord.js");
   try {
     if (options.slash === true) {
-      if (!message.deferred() || message.deferred() === false)
+      if (!message.deferred || message.deferred === false)
         throw new Error(
           "Please Defer the reply when using the functions with slash. | simply-djs | menuPages/dropdownPages"
         );

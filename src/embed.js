@@ -8,7 +8,7 @@ const Discord = require('discord.js')
 async function embed(message, options = []) {
   try {
     if (options.slash === true) {
-      if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedCreate');
+      if(!interaction.deferred || interaction.deferred === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedCreate');
       const { MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
 
       if(!interaction.deferred() || interaction.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedCreate');

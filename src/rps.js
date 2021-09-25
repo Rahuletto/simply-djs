@@ -8,7 +8,7 @@ const Discord = require("discord.js");
 async function rps(message, options = []) {
   try {
     if (options.slash === true) {
-      if (!message.deferred() || message.deferred() === false)
+      if (!message.deferred || message.deferred === false)
         throw new Error(
           "Please Defer the reply when using the functions with slash. | simply-djs | rps"
         );
