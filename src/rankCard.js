@@ -29,7 +29,7 @@ async function rankCard(client, message, options = []) {
     }
 
     const member =
-      options.member || message.mentions.members.first().user || message.author;
+      options.member || message.mentions.members.first()?.user || message.author;
     const canvas = Canvas.createCanvas(1080, 400),
       ctx = canvas.getContext("2d");
 
