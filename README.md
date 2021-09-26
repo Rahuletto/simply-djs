@@ -31,6 +31,7 @@ yarn add simply-djs
 - ### giveawaySystem ! (new giveaways system so nuggies die XD)
 - ### betterBtnRole (BETA) ! Complex btn role which dont need data XD
 - ### Throws error when Interaction (slash command) is not deferred
+- ### suggestBtn does ephemeral replies
 - ### New JS Docs with it. (Thanks to AKORA#7997)
 - ### Most of the bugs dead (Bug Fixes)
 

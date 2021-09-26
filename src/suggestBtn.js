@@ -7,14 +7,13 @@ const Discord = require("discord.js");
  * @param {import('../index').suggestBtnOptions} options
  */
 
-async function suggestBtn(button, users, options = []) {
+ async function suggestBtn(button, users, options = []) {
   if (button.isButton()) {
     try {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
       if (
-        button.member.permissions.has("ADMINISTRATOR") ||
-        button.member.roles.has(options.modRole)
+        button.member.permissions.has("ADMINISTRATOR")
       ) {
         if (button.customId === "no-sug") {
           let target = await button.message.channel.messages.fetch(
@@ -36,9 +35,10 @@ async function suggestBtn(button, users, options = []) {
 
           button.reply({
             content: "Do you want to Deny suggestion (or) Vote ?",
-            components: [row1]
+            components: [row1],
+            ephemeral: true
           });
-          let msg = await button.fetchReply();
+          let msg = button.channel
           let ftter = (m) => button.user.id === m.user.id;
           let coll = msg.createMessageComponentCollector({
             ftter,
@@ -53,9 +53,7 @@ async function suggestBtn(button, users, options = []) {
                   ephemeral: true,
                   components: []
                 });
-                setTimeout(() => {
-                  button.deleteReply();
-                }, 5000);
+                
 
                 let filter = (m) => button.user.id === m.author.id;
 
@@ -71,14 +69,14 @@ async function suggestBtn(button, users, options = []) {
                     collector.stop();
                   } else {
                     m.delete();
-                    dec(m.content, oldemb);
+                    dec(m.content, oldemb, button.user);
                     collector.stop();
                   }
                 });
 
                 collector.on("end", (collected) => {
                   if (collected.size === 0) {
-                    dec("No Reason", oldemb);
+                    dec("No Reason", oldemb, button.user);
                   }
                 });
               }
@@ -94,25 +92,36 @@ async function suggestBtn(button, users, options = []) {
                   components: [],
                   ephemeral: true
                 });
-                setTimeout(() => {
-                  button.deleteReply();
-                }, 5000);
+                
               } else {
                 let isit2 = await users.get(
                   `${button.message.id}-${button.user.id}-like`
                 );
-                console.log(isit2);
+                
                 if (isit2 === button.user.id) {
+
                   users.delete(`${button.message.id}-${button.user.id}-like`);
 
                   users.set(
                     `${button.message.id}-${button.user.id}-dislike`,
                     button.user.id
                   );
-                  button.deleteReply();
+                  
+                  button.editReply({
+                  content: "You disliked the suggestion.",
+                  components: [],
+                  ephemeral: true
+                });
+                  
                   removelike(oldemb);
                 } else {
-                  button.deleteReply();
+                  
+                  button.editReply({
+                  content: "You disliked the suggestion.",
+                  components: [],
+                  ephemeral: true
+                });
+                  
                   users.set(
                     `${button.message.id}-${button.user.id}-dislike`,
                     button.user.id
@@ -144,9 +153,10 @@ async function suggestBtn(button, users, options = []) {
 
           button.reply({
             content: "Do you want to Accept suggestion (or) Vote ?",
-            components: [row1]
+            components: [row1],
+            ephemeral: true
           });
-          let msg = await button.fetchReply();
+          let msg = button.channel
 
           let fttter = (m) => button.user.id === m.user.id;
           let coll = msg.createMessageComponentCollector({
@@ -165,9 +175,6 @@ async function suggestBtn(button, users, options = []) {
                   components: [],
                   ephemeral: true
                 });
-                setTimeout(() => {
-                  button.deleteReply();
-                }, 5000);
               } else {
                 let isit4 = await users.get(
                   `${button.message.id}-${button.user.id}-dislike`
@@ -181,15 +188,27 @@ async function suggestBtn(button, users, options = []) {
                     `${button.message.id}-${button.user.id}-like`,
                     button.user.id
                   );
-
+                  
+                button.editReply({
+                  content: "You liked the suggestion.",
+                  components: [],
+                  ephemeral: true
+                });
                   removedislike(oldemb);
-                  button.deleteReply();
+                  
                 } else {
-                  button.deleteReply();
+                  
                   users.set(
                     `${button.message.id}-${button.user.id}-like`,
                     button.user.id
                   );
+                  
+                  button.editReply({
+                  content: "You liked the suggestion.",
+                  components: [],
+                  ephemeral: true
+                });
+                  
 
                   like(oldemb);
                 }
@@ -204,9 +223,7 @@ async function suggestBtn(button, users, options = []) {
                   ephemeral: true,
                   components: []
                 });
-                setTimeout(() => {
-                  button.deleteReply();
-                }, 5000);
+                
 
                 let filter = (m) => button.user.id === m.author.id;
 
@@ -222,14 +239,14 @@ async function suggestBtn(button, users, options = []) {
                     collector.stop();
                   } else {
                     m.delete();
-                    aprov(m.content, oldemb);
+                    aprov(m.content, oldemb, button.user);
                     collector.stop();
                   }
                 });
 
                 collector.on("end", (collected) => {
                   if (collected.size === 0) {
-                    aprov("No Reason", oldemb);
+                    aprov("No Reason", oldemb, button.user);
                   }
                 });
               }
@@ -404,7 +421,7 @@ async function suggestBtn(button, users, options = []) {
         button.message.edit({ embeds: [newemb], components: [row] });
       }
 
-      async function dec(reason, oldemb) {
+      async function dec(reason, oldemb, user) {
         let approve = new MessageButton()
           .setEmoji(options.yesEmoji || "☑️")
           .setStyle(options.yesColor || "SUCCESS")
@@ -429,7 +446,7 @@ async function suggestBtn(button, users, options = []) {
           .setColor(options.denyEmbColor || "RED")
           .setAuthor(oldemb.author.name, oldemb.author.iconURL)
           .setImage(oldemb.image)
-          .setFooter(oldemb.footer.text)
+          .setFooter(`Rejected by ${user.tag}`)
           .addFields(
             { name: "Status:", value: `\`\`\`Rejected !\`\`\`` },
             { name: "Reason:", value: `\`\`\`${reason}\`\`\`` },
@@ -519,7 +536,7 @@ async function suggestBtn(button, users, options = []) {
         button.message.edit({ embeds: [newemb], components: [row] });
       }
 
-      async function aprov(reason, oldemb) {
+      async function aprov(reason, oldemb, user) {
         let approve = new MessageButton()
           .setEmoji(options.yesEmoji || "☑️")
           .setStyle(options.yesColor || "SUCCESS")
@@ -544,7 +561,7 @@ async function suggestBtn(button, users, options = []) {
           .setColor(options.agreeEmbColor || "GREEN")
           .setAuthor(oldemb.author.name, oldemb.author.iconURL)
           .setImage(oldemb.image)
-          .setFooter(oldemb.footer.text)
+          .setFooter(`Accepted by ${user.tag}`)
           .addFields(
             { name: "Status:", value: `\`\`\`Accepted !\`\`\`` },
             { name: "Reason:", value: `\`\`\`${reason}\`\`\`` },
