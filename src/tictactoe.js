@@ -143,9 +143,9 @@ async function tictactoe(message, options = []) {
             .setColor(options.embedColor || 0x075fff)
             .setFooter(foot)
             .setTimestamp();
-          let infomsg = message.editReply({ embeds: [xoemb] });
+          let infomsg = message.channel.send({ embeds: [xoemb] });
 
-          let msg = await message.channel.send({
+          let msg = await message.followUp({
             content: `Waiting for Input | <@!${Args.userid}>, Your Emoji: ${o_emoji}`
           });
           tictactoe(msg);
@@ -382,13 +382,62 @@ async function tictactoe(message, options = []) {
                 );
 
                 if (Object.keys(Brgs).length == 0) {
-                  if (won["<:X_:863314044781723668>"] != false) return;
-                  else if (won["<:O_:863314110560993340>"] != false) return;
-                  else
-                    return m
-                      .edit({ content: "It's a tie!", components: [] })
-                      .catch(() => {});
-                }
+                      
+                      if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.b1.emoji == o_emoji &&
+                  Args.c1.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a2.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c2.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a3.emoji == o_emoji &&
+                  Args.b3.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a3.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c1.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.a2.emoji == o_emoji &&
+                  Args.a3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.b1.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.b3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.c1.emoji == o_emoji &&
+                  Args.c2.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+
+                      if (won["<:O_:863314110560993340>"] == true) return tictactoe(m);
+                      else if (won["<:X_:863314044781723668>"] == true) return;
+                      else return m
+                          .edit({ content: "It's a tie!", components: [] })
+                          .catch(() => {});
+                    }
                 tictactoe(m);
               }
             });
@@ -412,6 +461,7 @@ async function tictactoe(message, options = []) {
             .setFooter(foot)
             .setDescription("Ran out of time!\nTime limit: 30s");
           m.edit({
+            content: "<@" + opponent.id + ">. Didnt accept in time",
             embeds: [embed],
             components: []
           });
@@ -806,10 +856,59 @@ async function tictactoe(message, options = []) {
                     );
 
                     if (Object.keys(Brgs).length == 0) {
-                      if (won["<:X_:863314044781723668>"] != false) return;
-                      else if (won["<:O_:863314110560993340>"] != false) return;
-                      else
-                        return m
+                      
+                      if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.b1.emoji == o_emoji &&
+                  Args.c1.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a2.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c2.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a3.emoji == o_emoji &&
+                  Args.b3.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a3.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.c1.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.a1.emoji == o_emoji &&
+                  Args.a2.emoji == o_emoji &&
+                  Args.a3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.b1.emoji == o_emoji &&
+                  Args.b2.emoji == o_emoji &&
+                  Args.b3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+                if (
+                  Args.c1.emoji == o_emoji &&
+                  Args.c2.emoji == o_emoji &&
+                  Args.c3.emoji == o_emoji
+                )
+                  won["<:O_:863314110560993340>"] = true;
+
+                      if (won["<:O_:863314110560993340>"] == true) return tictactoe(m);
+                      else if (won["<:X_:863314044781723668>"] == true) return;
+                      else return m
                           .edit({ content: "It's a tie!", components: [] })
                           .catch(() => {});
                     }
@@ -854,6 +953,7 @@ async function tictactoe(message, options = []) {
                 .setFooter(foot)
                 .setDescription(`${opponent.user.tag} has declined your game!`);
               m.edit({
+                content: "<@" + opponent.id + ">. Didnt accept in time",
                 embeds: [embed],
                 components: []
               });
