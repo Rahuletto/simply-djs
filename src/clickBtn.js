@@ -485,9 +485,9 @@ async function clickBtn(button, options = []) {
                 .setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
                 .setFooter("Dm the host to claim your prize 0_0");
 
-              winreroll
-                .edit({
-                  content: `Congrats ${winboiz}. You just won the giveaway.`,
+              button.message.channel
+                .send({
+                  content: `Congrats ${winboiz}. You won the reroll for the giveaway.`,
                   embeds: [embb],
                   components: [ro]
                 })
