@@ -64,9 +64,10 @@ async function ytNotify(client, db, options = []) {
             client.guilds.cache.forEach(async (g) => {
               if (!data.items || !data.items[0] || !data || data.items === [])
                 return;
+                let vidzz = db.pull(`postedVideos_${g.id}`)
               if (
-                db.pull(`postedVideos_${g.id}`) &&
-                db.pull(`postedVideos_${g.id}`).includes(data.items[0].link)
+                vidzz &&
+                vidzz.includes(data.items[0].link)
               )
                 return;
               else {

@@ -12,10 +12,6 @@ async function giveawaySystem(client, db, message, options = []) {
   try {
     if (options.slash === true) {
       let interaction = message;
-      if (!interaction.deferred || interaction.deferred === false)
-        throw new Error(
-          "Please Defer the reply when using the functions with slash. | simply-djs | giveawaySystem"
-        );
 
       if (!interaction.member.permissions.has("ADMINISTRATOR"))
         return interaction.followUp({
@@ -202,8 +198,8 @@ async function giveawaySystem(client, db, message, options = []) {
                   embeds: [embb],
                   components: [ro]
                 })
-                .then(async (m) => {
-                  await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
+                .then(async (ms) => {
+                  await db.set(`giveaway_${m.id}_yaywon`, ms.id);
                 });
 
               m.edit({ embeds: [embedd], components: [roww] });

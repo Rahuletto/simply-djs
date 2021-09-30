@@ -10,8 +10,6 @@ async function embed(message, options = []) {
     if (options.slash === true) {
      
       const { MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
-
-      if(!message.deferred() || message.deferred() === false) throw new Error('Please Defer the reply when using the functions with slash. | simply-djs | embedCreate');
       
       const done = new MessageButton()
         .setLabel('Done')

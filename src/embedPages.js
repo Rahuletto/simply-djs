@@ -11,10 +11,6 @@ async function embedPages(client, message, pages, style = []) {
   let { MessageButton, MessageActionRow } = require("discord.js");
   try {
     if (style.slash === true) {
-      if (!message.deferred || message.deferred === false)
-        throw new Error(
-          "Please Defer the reply when using the functions with slash. | simply-djs | embedPages"
-        );
 
       if (!pages)
         throw new Error(

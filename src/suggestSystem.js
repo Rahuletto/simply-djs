@@ -12,10 +12,6 @@ async function suggestSystem(client, message, args, options = []) {
     if (options.slash === true) {
       let interaction = message;
 
-      if (!interaction.deferred || interaction.deferred === false)
-        throw new Error(
-          "Please Defer the reply when using the functions with slash. | simply-djs | suggestSystem"
-        );
 
       let channel = options.chid;
 

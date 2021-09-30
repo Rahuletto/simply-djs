@@ -467,7 +467,7 @@ async function clickBtn(button, options = []) {
               let winmsgreroll = await db.get(
                 `giveaway_${button.message.id}_yaywon`
               );
-              let winreroll = await button.message.channel.messages.fetch(
+              let winreroll = await button.channel.messages.fetch(
                 winmsgreroll
               );
               const gothere = new Discord.MessageButton()
@@ -484,7 +484,16 @@ async function clickBtn(button, options = []) {
                 .setTitle("You just won the giveaway.")
                 .setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
                 .setFooter("Dm the host to claim your prize 0_0");
-
+              if(!winreroll){
+                  button.channel.send({
+                  content: `Congrats ${winboiz}. You just won the giveaway.`,
+                  embeds: [embb],
+                  components: [ro]
+                })
+                .then(async (m) => {
+                  await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
+                });
+              }
               winreroll
                 .edit({
                   content: `Congrats ${winboiz}. You just won the giveaway.`,

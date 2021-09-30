@@ -7,11 +7,9 @@ const Discord = require("discord.js");
 
 async function tictactoe(message, options = []) {
   try {
+    console.log('e')
     if (options.slash === true) {
-      if (!message.deferred || message.deferred === false)
-        throw new Error(
-          "Please Defer the reply when using the functions with slash. | simply-djs | tictactoe"
-        );
+      
 
       let opponent = message.options.getUser("user");
 
@@ -618,7 +616,7 @@ async function tictactoe(message, options = []) {
                 });
 
               let msg = await message.channel.send({
-                content: `Waiting for Input | <@!${Args.userid}>, Your Emoji: ${o_emoji}`
+                content: `Waiting for Input | <@!${Args.userid}>, Your Emoji: ${client.emojis.cache.get(o_emoji) || '⭕'}`
               });
               tictactoe(msg);
 
@@ -679,12 +677,12 @@ async function tictactoe(message, options = []) {
                 if (won["<:O_:863314110560993340>"] != false) {
                   if (Args.user == 0)
                     return m.edit({
-                      content: `<@!${fighters[1]}> (${o_emoji}) won.. That was a nice game.`,
+                      content: `<@!${fighters[1]}> (${o_emoji}) won.. That was a nice game.\n\`\`\`\n${Args.a1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.b1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.c1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n\`\`\``.replaceAll(dashmoji, "➖"),
                       components: []
                     });
                   else if (Args.user == 1)
                     return m.edit({
-                      content: `<@!${fighters[0]}> (${o_emoji}) won.. That was a nice game.`,
+                      content: `<@!${fighters[0]}> (${o_emoji}) won.. That was a nice game.\n\`\`\`\n${Args.a1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.b1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.c1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n\`\`\``.replaceAll(dashmoji, "➖"),
                       components: []
                     });
                 }
@@ -739,12 +737,12 @@ async function tictactoe(message, options = []) {
                 if (won["<:X_:863314044781723668>"] != false) {
                   if (Args.user == 0)
                     return m.edit({
-                      content: `<@!${fighters[1]}> (${x_emoji}) won.. That was a nice game.`,
+                      content: `<@!${fighters[1]}> (${x_emoji}) won.. That was a nice game.\n\`\`\`\n${Args.a1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.b1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.c1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n\`\`\``.replaceAll(dashmoji, "➖"),
                       components: []
                     });
                   else if (Args.user == 1)
                     return m.edit({
-                      content: `<@!${fighters[0]}> (${x_emoji}) won.. That was a nice game.`,
+                      content: `<@!${fighters[0]}> (${x_emoji}) won.. That was a nice game.\n\`\`\`\n${Args.a1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.b1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.c1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n\`\`\``.replaceAll(dashmoji, "➖"),
                       components: []
                     });
                 }
@@ -802,7 +800,7 @@ async function tictactoe(message, options = []) {
                   content: `Waiting for Input | <@!${
                     Args.userid
                   }> | Your Emoji: ${
-                    Args.user == 0 ? `${o_emoji}` : `${x_emoji}`
+                    Args.user == 0 ? client.emojis.cache.get(o_emoji) || '⭕' : client.emojis.cache.get(x_emoji) || "❌"
                   }`,
                   components: [a, b, c]
                 });
@@ -909,7 +907,7 @@ async function tictactoe(message, options = []) {
                       if (won["<:O_:863314110560993340>"] == true) return tictactoe(m);
                       else if (won["<:X_:863314044781723668>"] == true) return;
                       else return m
-                          .edit({ content: "It's a tie!", components: [] })
+                          .edit({ content: `It's a tie!\n\`\`\`\n${Args.a1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.a3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.b1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.b3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n${Args.c1.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c2.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')} | ${Args.c3.emoji.replace(o_emoji, '⭕').replace(x_emoji, '❌')}\n\`\`\``.replaceAll(dashmoji, "➖"), components: [] })
                           .catch(() => {});
                     }
                     tictactoe(m);

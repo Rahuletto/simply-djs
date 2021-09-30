@@ -220,10 +220,6 @@ async function rankCard(client, message, options = []) {
     ctx.fillText(textXPEdited, 730, 180);
 
     if (options.slash === true) {
-      if (!message.deferred || message.deferred === false)
-        throw new Error(
-          "Please Defer the reply when using the functions with slash. | simply-djs | rankCard"
-        );
 
       const attachment = new Discord.MessageAttachment(
         canvas.toBuffer(),

@@ -7,10 +7,7 @@ const Discord = require("discord.js");
  */
 
 async function betterBtnRole(client, interaction, options = []) {
-  if (!interaction.deferred || interaction.deferred === false)
-    throw new Error(
-      "Please Defer the reply when using the functions with slash. | simply-djs | betterBtnRole"
-    );
+
 
   let { MessageButton, MessageActionRow } = require("discord.js");
 
