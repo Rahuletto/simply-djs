@@ -53,7 +53,12 @@ async function clickBtn(button, options = []) {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
       if (button.customId === "create_ticket") {
-        let ticketname = `ticket_${button.user.id}`;
+        
+        let split = '';
+        let usr = button.user.id.split(split);
+        for (var i = 0; i < usr.length; i++) usr[i] = usr[i].trim();
+
+        let ticketname = `ticket-${usr[0]}${usr[1]}${usr[2]}${usr[3]}`
 
         let antispamo = await button.guild.channels.cache.find(
           (ch) => ch.name === ticketname.toLowerCase()
@@ -117,7 +122,7 @@ async function clickBtn(button, options = []) {
           }
 
           button.guild.channels
-            .create(`ticket_${button.user.id}`, {
+            .create(ticketname, {
               type: "text",
               parent: chparent,
               permissionOverwrites: [
