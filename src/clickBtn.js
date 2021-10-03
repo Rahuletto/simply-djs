@@ -54,7 +54,7 @@ async function clickBtn(button, options = []) {
 
       if (button.customId === "create_ticket") {
 
-        let ticketname = button.user.id.slice(0, 4)
+        let ticketname = `ticket-${button.user.id.slice(0, 4)}`
 
         let antispamo = await button.guild.channels.cache.find(
           (ch) => ch.name === ticketname.toLowerCase()
