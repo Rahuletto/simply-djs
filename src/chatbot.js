@@ -15,7 +15,7 @@ async function chatbot(client, message, options = {}) {
   // make sure channel is always a array
   /** @type {string[]} */
   let channels = [];
-  if (Array.isArray(options.chid)) options.chid;
+  if (Array.isArray(options.chid)) channels = options.chid;
   else channels.push(options.chid);
 
   try {
@@ -31,8 +31,8 @@ async function chatbot(client, message, options = {}) {
     //Return if the channel of the message is not a chatbot channel
     if (!channels.includes(message.channel.id)) return;
 
-    const botName = client.user.username,
-      developer = "Rahuletto#0243",
+    const botName = options.name ?? client.user.username,
+      developer = options.developer ?? "Rahuletto#0243",
       ranges = [
         "\ud83c[\udf00-\udfff]", // U+1F300 to U+1F3FF
         "\ud83d[\udc00-\ude4f]", // U+1F400 to U+1F64F
@@ -59,9 +59,7 @@ async function chatbot(client, message, options = {}) {
     // Using await instead of .then 
     const jsonRes = await fetch(
       `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${botName}&ownername=${developer}&user=${message.author.id}`
-    )
-      .then((res) => res.json()) // Parsing the JSON
-      .catch((err) => message.reply({ content: `Error: ${err}` })); //Catch errors that happen while fetching
+    ).then((res) => res.json()) // Parsing the JSON
 
     const chatbotReply = jsonRes.message
       .replace(/@everyone/g, "`@everyone`") //RegExp with g Flag will replace every @everyone instead of just the first
@@ -72,6 +70,9 @@ async function chatbot(client, message, options = {}) {
       allowedMentions: { repliedUser: false }
     });
   } catch (err) {
+    if (err instanceof fetch.FetchError) {
+      message.reply({ content: '**Error:**\n```' + err + '```' }); //Catch errors that happen while fetching
+    }
     console.log(`Error Occured. | chatbot | Error: ${err.stack}`);
   }
 }
