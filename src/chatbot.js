@@ -7,114 +7,73 @@ const fetch = require("node-fetch");
  * @param {import('../index').chatbotOptions} options
  */
 
-async function chatbot(client, message, options = []) {
+async function chatbot(client, message, options = {}) {
   if (message.author.bot) return;
   if (options && options.toggle === false) return;
-  let channel = options.chid;
+
+
+  // make sure channel is always a array
+  /** @type {string[]} */
+  let channels = [];
+  if (Array.isArray(options.chid)) options.chid;
+  else channels.push(options.chid);
+
   try {
-    if (Array.isArray(channel)) {
-      channel.forEach((channel) => {
-        const ch = client.channels.cache.get(channel);
-        if (!ch)
-          throw new Error(
-            `INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support`
-          );
-      });
-
-      if (channel.includes(message.channel.id)) {
-        let name = client.user.username;
-        let developer = "Rahuletto#0243";
-
-        var ranges = [
-          "\ud83c[\udf00-\udfff]", // U+1F300 to U+1F3FF
-          "\ud83d[\udc00-\ude4f]", // U+1F400 to U+1F64F
-          "\ud83d[\ude80-\udeff]" // U+1F680 to U+1F6FF
-        ];
-
-        let input = message.content.replace(
-          new RegExp(ranges.join("|"), "g"),
-          "."
-        );
-
-        const hasEmoteRegex = /<a?:.+:\d+>/gm;
-        const emoteRegex = /<:.+:(\d+)>/gm;
-        const animatedEmoteRegex = /<a:.+:(\d+)>/gm;
-
-        const emoj = message.content.match(hasEmoteRegex);
-
-        input = input.replace(emoteRegex.exec(emoj), "");
-
-        input = input.replace(animatedEmoteRegex.exec(emoj), "");
-
-        fetch(
-          `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${name}&ownername=${developer}&user=${message.author.id}`
-        )
-          .then((res) => {
-            let rep = res.json();
-            return rep;
-          })
-          .then(async (reply) => {
-            let mes = await reply.message.replace("@everyone", "`@everyone`");
-            let mess = mes.replace("@here", "`@here`");
-            message.reply({
-              content: mess.toString(),
-              allowedMentions: { repliedUser: false }
-            });
-          })
-          .catch((err) => message.reply({ content: `Error: ${err}` }));
-      }
-    } else {
-      const ch = client.channels.cache.get(channel);
+    //Check that every ID is a valid channelID
+    for (let channelID of channels) {
+      const ch = client.channels.cache.get(channelID);
       if (!ch)
         throw new Error(
-          "INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support"
+          `INVALID_CHANNEL_ID: ${channelID}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support`
         );
+    };
 
-      if (channel === message.channel.id) {
-        let name = client.user.username;
-        let developer = "Rahuletto#0243";
+    //Return if the channel of the message is not a chatbot channel
+    if (!channels.includes(message.channel.id)) return;
 
-        var ranges = [
-          "\ud83c[\udf00-\udfff]", // U+1F300 to U+1F3FF
-          "\ud83d[\udc00-\ude4f]", // U+1F400 to U+1F64F
-          "\ud83d[\ude80-\udeff]" // U+1F680 to U+1F6FF
-        ];
+    const botName = client.user.username,
+      developer = "Rahuletto#0243",
+      ranges = [
+        "\ud83c[\udf00-\udfff]", // U+1F300 to U+1F3FF
+        "\ud83d[\udc00-\ude4f]", // U+1F400 to U+1F64F
+        "\ud83d[\ude80-\udeff]" // U+1F680 to U+1F6FF
+      ];
 
-        let input = message.content.replace(
-          new RegExp(ranges.join("|"), "g"),
-          "."
-        );
+    let input = message.content.replace(
+      new RegExp(ranges.join("|"), "g"),
+      "."
+    );
 
-        const hasEmoteRegex = /<a?:.+:\d+>/gm;
-        const emoteRegex = /<:.+:(\d+)>/gm;
-        const animatedEmoteRegex = /<a:.+:(\d+)>/gm;
 
-        const emoj = message.content.match(hasEmoteRegex);
+    //Replacing Emojis
+    const hasEmoteRegex = /<a?:.+:\d+>/gm;
+    const emoteRegex = /<:.+:(\d+)>/gm;
+    const animatedEmoteRegex = /<a:.+:(\d+)>/gm;
 
-        input = input.replace(emoteRegex.exec(emoj), "");
+    const emoj = message.content.match(hasEmoteRegex);
 
-        input = input.replace(animatedEmoteRegex.exec(emoj), "");
+    input = input
+      .replace(emoteRegex.exec(emoj), "")
+      .replace(animatedEmoteRegex.exec(emoj), "");
 
-        fetch(
-          `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${name}&ownername=${developer}&user=${message.author.id}`
-        )
-          .then((res) => {
-            let rep = res.json();
-            return rep;
-          })
-          .then(async (reply) => {
-            let mes = await reply.message.replace("@everyone", "`@everyone`");
-            let mess = mes.replace("@here", "`@here`");
-            message.reply({
-              content: mess.toString(),
-              allowedMentions: { repliedUser: false }
-            });
-          })
-          .catch((err) => message.reply({ content: `Error: ${err}` }));
-      }
-    }
+    // Using await instead of .then 
+    const jsonRes = await fetch(
+      `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${botName}&ownername=${developer}&user=${message.author.id}`
+    )
+      .then((res) => res.json()) // Parsing the JSON
+      .catch((err) => message.reply({ content: `Error: ${err}` })); //Catch errors that happen while fetching
+
+    const chatbotReply = jsonRes.message
+      .replace(/@everyone/g, "`@everyone`") //RegExp with g Flag will replace every @everyone instead of just the first
+      .replace(/@here/g, "`@here`");
+
+    await message.reply({
+      content: chatbotReply,
+      allowedMentions: { repliedUser: false }
+    });
   } catch (err) {
     console.log(`Error Occured. | chatbot | Error: ${err.stack}`);
   }
 }
+
 module.exports = chatbot;
