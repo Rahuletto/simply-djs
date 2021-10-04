@@ -169,7 +169,7 @@ async function calculator(interaction, options = []) {
           const matched = evalRegex.exec(input);
           if (!matched) return "Wrong Input";
 
-          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${input})`)()}`;
+          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${input})`)()}`.replace(/\*\*/g, '^');
         } catch {
           return "Wrong Input";
         }
