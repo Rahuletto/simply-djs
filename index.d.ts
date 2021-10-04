@@ -68,7 +68,7 @@ export type chatbotOptions = {
     /** Your name */
     developer?: string
 }
-export declare function chatbot(client: Client, message: Message, options?: chatbotOptions): Promise<void>;
+export declare function chatbot(message: Message, options?: chatbotOptions): Promise<void>;
 
 export type clickBtnOptions = {
     /**  The Embed Description of the embed which is sent when the ticket has been opened */
