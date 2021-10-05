@@ -14,10 +14,10 @@ const colorMap = {
  * @param {import('../index').rpsOptions} options
  */
 
-async function rps(message, options = {}) {
+async function rps(msgOrInter, options = {}) {
   //Default values
   options.credit ??= true;
-  options.slash ??= message instanceof Discord.Interaction;
+  options.slash ??= !!msgOrInter.commandId;
 
   options.embedColor ??= '#075FFF';
   options.timeoutEmbedColor ??= '#cc0000';
@@ -96,30 +96,34 @@ async function rps(message, options = {}) {
     )
     .setFooter(foot);
 
-
   try {
-    if (message instanceof Discord.Interaction && !options.slash) {
+    if (msgOrInter.commandId && !options.slash) {
       throw new Error('You provided a Interaction but set the slash option to false')
-    } else if (message instanceof Discord.Message && options.slash) {
+    } else if (msgOrInter.mentions && options.slash) {
       throw new Error('You provided a Message but set the slash option to true')
     }
 
 
 
-    if (message instanceof Discord.Interaction) {
-      let opponent = message.options.getUser("user");
+    if (options.slash) {
+      /** @type {Discord.CommandInteraction} */
+      const interaction = msgOrInter;
+      const opponent = interaction.options.getUser("user");
+
+      await interaction.deferReply().catch(() => { })
+
       if (!opponent)
-        return await message.followUp({
+        return await interaction.followUp({
           content: "No opponent mentioned!",
           ephemeral: true
         });
       if (opponent.bot)
-        return await message.followUp({
+        return await interaction.followUp({
           content: "You can't play against bots",
           ephemeral: true
         });
-      if (opponent.id == message.user.id)
-        return await message.followUp({
+      if (opponent.id === interaction.user.id)
+        return await interaction.followUp({
           content: "You cannot play by yourself!",
           ephemeral: true
         });
@@ -129,7 +133,7 @@ async function rps(message, options = {}) {
 
       const acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.tag} to accept!`)
-        .setAuthor(message.user.tag, message.user.displayAvatarURL())
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
         .setColor(options.embedColor)
         .setFooter(foot);
 
@@ -138,7 +142,7 @@ async function rps(message, options = {}) {
 
 
       /** @type {Discord.Message} */
-      let m = await message.followUp({
+      let m = await interaction.followUp({
         content: `Hey <@${opponent.id}>. You got a RPS invite`,
         embeds: [acceptEmbed],
         components: [acceptComponents]
@@ -149,7 +153,7 @@ async function rps(message, options = {}) {
         time: 30000
       });
 
-      acceptCollector.on("collect", (button) => {
+      acceptCollector.on("collect", async (button) => {
         if (button.user.id !== opponent.id)
           return await button.reply({
             content: "You cant play the game as they didnt call u to play.",
@@ -163,19 +167,19 @@ async function rps(message, options = {}) {
 
         await button.deferUpdate();
         const selectEmbed = new Discord.MessageEmbed()
-          .setTitle(`${message.user.tag} VS. ${opponent.tag}`)
+          .setTitle(`${interaction.user.tag} VS. ${opponent.tag}`)
           .setColor(options.embedColor)
           .setFooter(foot)
           .setDescription("Select 🪨, 📄, or ✂️");
 
-        await message.editReply({
+        await interaction.editReply({
           embeds: [selectEmbed],
           components: [rpsComponents]
         });
 
         acceptCollector.stop();
         let ids = new Set();
-        ids.add(message.user.id);
+        ids.add(interaction.user.id);
         ids.add(opponent.id);
         let op, auth;
 
@@ -183,7 +187,7 @@ async function rps(message, options = {}) {
           type: "BUTTON",
           time: 30000
         });
-        btnCollector.on("collect", (b) => {
+        btnCollector.on("collect", async (b) => {
           if (!ids.has(b.user.id))
             return await button.reply({
               content: "You cant play the game as they didnt call u to play.",
@@ -191,23 +195,16 @@ async function rps(message, options = {}) {
             });
           ids.delete(b.user.id);
 
-          if (ids.size === 1) {
-            b.reply({
-              content: `You picked ${b.customId}`,
-              ephemeral: true
-            });
-          }
-
           await b.deferUpdate();
           if (b.user.id === opponent.id) op = b.customId;
-          if (b.user.id === message.user.id) auth = b.customId;
+          if (b.user.id === interaction.user.id) auth = b.customId;
 
           if (ids.size == 0) btnCollector.stop();
         });
 
-        btnCollector.on("end", (coll, reason) => {
+        btnCollector.on("end", async (coll, reason) => {
           if (reason === "time") {
-            await message.editReply({
+            await interaction.editReply({
               embeds: [timeoutEmbed],
               components: []
             });
@@ -221,34 +218,32 @@ async function rps(message, options = {}) {
 
 
             if (op === auth) {
-              await message.editReply({
+              await interaction.editReply({
                 embeds: [
                   new Discord.MessageEmbed()
                     .setTitle("Draw!")
                     .setColor(options.drawEmbedColor)
-                    .setDescription(`Both players chose ${op}`)
+                    .setDescription(`Both players chose **${op}**`)
                     .setFooter(foot)
                 ], components: []
               });
-            }
-
-            if (winnerMap[op] === auth) { //op - won
-              await message.editReply({
+            } else if (winnerMap[op] === auth) { //op - won
+              await interaction.editReply({
                 embeds: [
                   new Discord.MessageEmbed()
                     .setTitle(`${opponent.tag} Wins!`)
                     .setColor(options.winEmbedColor)
-                    .setDescription(`${op} defeats ${auth}`)
+                    .setDescription(`**${op}** defeats **${auth}**`)
                     .setFooter(foot)
                 ], components: []
               });
             } else { //auth - won
-              await message.editReply({
+              await interaction.editReply({
                 embeds: [
                   new Discord.MessageEmbed()
-                    .setTitle(`${message.user.tag} Wins!`)
+                    .setTitle(`${interaction.user.tag} Wins!`)
                     .setColor(options.winEmbedColor)
-                    .setDescription(`${auth} defeats ${op}`)
+                    .setDescription(`**${auth}** defeats **${op}**`)
                     .setFooter(foot)
                 ], components: []
               });
@@ -257,24 +252,24 @@ async function rps(message, options = {}) {
         });
       });
 
-      acceptCollector.on("end", (coll, reason) => {
+      acceptCollector.on("end", async (coll, reason) => {
         if (reason === "time") {
-          await message.editReply({
+          await interaction.editReply({
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Challenge Not Accepted in Time")
-                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
                 .setColor(options.timeoutEmbedColor)
                 .setFooter(foot)
                 .setDescription("Ran out of time!\nTime limit: 30s")
             ], components: []
           });
         } else if (reason === "decline") {
-          await message.editReply({
+          await interaction.editReply({
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Game Declined!")
-                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
                 .setColor(options.timeoutEmbedColor || 0xc90000)
                 .setFooter(foot)
                 .setDescription(`${opponent.tag} has declined your game!`)
@@ -282,18 +277,21 @@ async function rps(message, options = {}) {
           });
         }
       });
-    } else if (message instanceof Discord.Message) {
-      const opponent = message.mentions.members.first();
+    } else {
+      /** @type {Discord.Message} */
+      const message = msgOrInter;
+
+      const opponent = message.mentions.members.first()?.user;
       if (!opponent) return message.channel.send("No opponent mentioned!");
-      if (opponent.user.bot)
+      if (opponent.bot)
         return message.channel.send("You cannot play against bots");
-      if (opponent.id == message.author.id)
+      if (opponent.id === message.author.id)
         return message.channel.send("You cannot play by yourself!");
 
 
       const acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.tag} to accept!`)
-        .setAuthor(message.user.tag, message.user.displayAvatarURL())
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(options.embedColor)
         .setFooter(foot);
 
@@ -303,7 +301,7 @@ async function rps(message, options = {}) {
 
       /** @type {Discord.Message} */
       let m = await channel.send({
-        content: `Hey <@${opponent.id}>. You got a RPS invite`,
+        content: `Hey ${opponent.toString()}. You got a RPS invite`,
         embeds: [acceptEmbed],
         components: [acceptComponents]
       });
@@ -313,7 +311,7 @@ async function rps(message, options = {}) {
         time: 30000
       });
 
-      acceptCollector.on("collect", (button) => {
+      acceptCollector.on("collect", async (button) => {
         if (button.user.id !== opponent.id)
           return await button.reply({
             content: "You cant play the game as they didnt call u to play.",
@@ -327,7 +325,7 @@ async function rps(message, options = {}) {
 
         await button.deferUpdate();
         let selectEmbed = new Discord.MessageEmbed()
-          .setTitle(`${message.user.tag} VS. ${opponent.tag}`)
+          .setTitle(`${message.author.tag} VS. ${opponent.tag}`)
           .setColor(options.embedColor)
           .setFooter(foot)
           .setDescription("Select 🪨, 📄, or ✂️");
@@ -339,7 +337,7 @@ async function rps(message, options = {}) {
 
         acceptCollector.stop();
         let ids = new Set();
-        ids.add(message.user.id);
+        ids.add(message.author.id);
         ids.add(opponent.id);
 
         let op, auth;
@@ -348,7 +346,7 @@ async function rps(message, options = {}) {
           type: "BUTTON",
           time: 30000
         });
-        btnCollector.on("collect", (b) => {
+        btnCollector.on("collect", async (b) => {
           if (!ids.has(b.user.id))
             return await button.reply({
               content: "You cant play the game as they didnt call u to play.",
@@ -356,23 +354,16 @@ async function rps(message, options = {}) {
             });
           ids.delete(b.user.id);
 
-          if (ids.size === 1) {
-            b.reply({
-              content: `You picked ${b.customId}`,
-              ephemeral: true
-            });
-          }
-
           await b.deferUpdate();
           if (b.user.id === opponent.id) op = b.customId;
-          if (b.user.id === message.user.id) auth = b.customId;
+          if (b.user.id === message.author.id) auth = b.customId;
 
           if (ids.size == 0) btnCollector.stop();
         });
 
-        btnCollector.on("end", (coll, reason) => {
+        btnCollector.on("end", async (coll, reason) => {
           if (reason === "time") {
-            await message.editReply({
+            await m.edit({
               embeds: [timeoutEmbed],
               components: []
             });
@@ -391,19 +382,17 @@ async function rps(message, options = {}) {
                   new Discord.MessageEmbed()
                     .setTitle("Draw!")
                     .setColor(options.drawEmbedColor)
-                    .setDescription(`Both players chose ${op}`)
+                    .setDescription(`Both players chose **${op}**`)
                     .setFooter(foot)
                 ], components: []
               });
-            }
-
-            if (winnerMap[op] === auth) { //op - won
+            } else if (winnerMap[op] === auth) { //op - won
               await m.edit({
                 embeds: [
                   new Discord.MessageEmbed()
                     .setTitle(`${opponent.tag} Wins!`)
                     .setColor(options.winEmbedColor)
-                    .setDescription(`${op} defeats ${auth}`)
+                    .setDescription(`**${op}** defeats **${auth}**`)
                     .setFooter(foot)
                 ], components: []
               });
@@ -411,9 +400,9 @@ async function rps(message, options = {}) {
               await m.edit({
                 embeds: [
                   new Discord.MessageEmbed()
-                    .setTitle(`${message.user.tag} Wins!`)
+                    .setTitle(`${message.author.tag} Wins!`)
                     .setColor(options.winEmbedColor)
-                    .setDescription(`${auth} defeats ${op}`)
+                    .setDescription(`**${auth}** defeats **${op}**`)
                     .setFooter(foot)
                 ], components: []
               });
@@ -422,13 +411,13 @@ async function rps(message, options = {}) {
         });
       });
 
-      acceptCollector.on("end", (coll, reason) => {
+      acceptCollector.on("end", async (coll, reason) => {
         if (reason === "time") {
           await m.edit({
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Challenge Not Accepted in Time")
-                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .setColor(options.timeoutEmbedColor)
                 .setFooter(foot)
                 .setDescription("Ran out of time!\nTime limit: 30s")
@@ -439,10 +428,10 @@ async function rps(message, options = {}) {
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Game Declined!")
-                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .setColor(options.timeoutEmbedColor || 0xc90000)
                 .setFooter(foot)
-                .setDescription(`${opponent.tag} has declined your game!`)
+                .setDescription(`${opponent.toString()} has declined your game!`)
             ], components: []
           });
         }
