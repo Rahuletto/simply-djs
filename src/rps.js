@@ -1,266 +1,281 @@
 const Discord = require("discord.js");
 
+
+
+const colorMap = {
+  'grey': 'SECONDARY',
+  'red': 'DANGER',
+  'green': 'SUCCESS',
+  'blurple': 'PRIMARY'
+}
+
 /**
- * @param {Discord.CommandInteraction} interaction
+ * @param {(Discord.CommandInteraction | Discord.Message)} message
  * @param {import('../index').rpsOptions} options
  */
 
-async function rps(message, options = []) {
-  try {
-    if (options.slash === true) {
+async function rps(message, options = {}) {
+  //Default values
+  options.credit ??= true;
+  options.slash ??= message instanceof Discord.Interaction;
 
+  options.embedColor ??= '#075FFF';
+  options.timeoutEmbedColor ??= '#cc0000';
+  options.drawEmbedColor ??= '#075FFF';
+  options.winEmbedColor ??= '#06bd00';
+  /**
+   * This looks kinda weird but,
+   * (colorMap[options.rockColor] || options.rockColor) = 
+   * if rockColor is in the colorMap then its the mapped color (e. g. grey -> SECONDARY)
+   * if its undefined/null it's SECONDARY
+   * if its a normal string its the string
+   */
+  options.rockColor = (colorMap[options.rockColor] || options.rockColor) || 'SECONDARY';
+  options.paperColor = (colorMap[options.paperColor] || options.paperColor) || 'SECONDARY';
+  options.scissorsColor = (colorMap[options.scissorsColor] || options.scissorsColor) || 'SECONDARY';
+
+  let foot = options.embedFooter;
+  if (options.credit === false)
+    foot ??= "Rock Paper Scissors";
+  else
+    foot ??= "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
+
+
+
+  //Accept decline buttons
+  const accept = new Discord.MessageButton()
+    .setLabel("Accept")
+    .setStyle("SUCCESS")
+    .setCustomId("accept");
+
+  const decline = new Discord.MessageButton()
+    .setLabel("Decline")
+    .setStyle("DANGER")
+    .setCustomId("decline");
+
+
+  const acceptComponents = new Discord.MessageActionRow().addComponents([
+    accept,
+    decline
+  ]);
+
+
+
+  //RPS Buttons
+  const rock = new Discord.MessageButton()
+    .setLabel("ROCK")
+    .setCustomId("rock")
+    .setStyle(options.rockColor)
+    .setEmoji("🪨");
+
+  const paper = new Discord.MessageButton()
+    .setLabel("PAPER")
+    .setCustomId("paper")
+    .setStyle(options.paperColor)
+    .setEmoji("📄");
+
+  const scissors = new Discord.MessageButton()
+    .setLabel("SCISSORS")
+    .setCustomId("scissors")
+    .setStyle(options.scissorsColor)
+    .setEmoji("✂️");
+
+  const rpsComponents = new Discord.MessageActionRow().addComponents([
+    rock,
+    paper,
+    scissors
+  ]);
+
+
+  //Embeds
+  const timeoutEmbed = new Discord.MessageEmbed()
+    .setTitle("Game Timed Out!")
+    .setColor(options.timeoutEmbedColor)
+    .setDescription(
+      "One or more players did not make a move in time(30s)"
+    )
+    .setFooter(foot);
+
+
+  try {
+    if (message instanceof Discord.Interaction && !options.slash) {
+      throw new Error('You provided a Interaction but set the slash option to false')
+    } else if (message instanceof Discord.Message && options.slash) {
+      throw new Error('You provided a Message but set the slash option to true')
+    }
+
+
+
+    if (message instanceof Discord.Interaction) {
 
       let opponent = message.options.getUser("user");
       if (!opponent)
-        return message.followUp({
+        return await message.followUp({
           content: "No opponent mentioned!",
           ephemeral: true
         });
       if (opponent.bot)
-        return message.followUp({
+        return await message.followUp({
           content: "You can't play against bots",
           ephemeral: true
         });
       if (opponent.id == message.user.id)
-        return message.followUp({
+        return await message.followUp({
           content: "You cannot play by yourself!",
           ephemeral: true
         });
 
-      if (options.credit === false) {
-        foot = options.embedFooter || "Rock Paper Scissors";
-      } else {
-        foot = "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
-      }
+
+
 
       let acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.tag} to accept!`)
         .setAuthor(message.user.tag, message.user.displayAvatarURL())
-        .setColor(options.embedColor || 0x075fff)
+        .setColor(options.embedColor)
         .setFooter(foot);
 
-      let accept = new Discord.MessageButton()
-        .setLabel("Accept")
-        .setStyle("SUCCESS")
-        .setCustomId("accept");
 
-      let decline = new Discord.MessageButton()
-        .setLabel("Decline")
-        .setStyle("DANGER")
-        .setCustomId("decline");
 
-      let accep = new Discord.MessageActionRow().addComponents([
-        accept,
-        decline
-      ]);
-      message.followUp({
+
+
+      /** @type {Discord.Message} */
+      let m = await message.followUp({
         content: `Hey <@${opponent.id}>. You got a RPS invite`,
         embeds: [acceptEmbed],
-        components: [accep]
+        components: [acceptComponents]
       });
-      let m = await message.fetchReply();
 
-      const collector = m.createMessageComponentCollector({
+      const acceptCollector = m.createMessageComponentCollector({
         type: "BUTTON",
         time: 30000
       });
-      collector.on("collect", (button) => {
+
+      acceptCollector.on("collect", (button) => {
         if (button.user.id !== opponent.id)
-          return button.reply({
+          return await button.reply({
             content: "You cant play the game as they didnt call u to play.",
             ephemeral: true
           });
 
         if (button.customId == "decline") {
-          button.deferUpdate();
-          return collector.stop("decline");
+          await button.deferUpdate();
+          return acceptCollector.stop("decline");
         }
-        button.deferUpdate();
-        let embed = new Discord.MessageEmbed()
+
+        await button.deferUpdate();
+        let selectEmbed = new Discord.MessageEmbed()
           .setTitle(`${message.user.tag} VS. ${opponent.tag}`)
-          .setColor(options.embedColor || 0x075fff)
+          .setColor(options.embedColor)
           .setFooter(foot)
           .setDescription("Select 🪨, 📄, or ✂️");
 
-        if (options.rockColor === "grey") {
-          options.rockColor = "SECONDARY";
-        } else if (options.rockColor === "red") {
-          options.rockColor = "DANGER";
-        } else if (options.rockColor === "green") {
-          options.rockColor = "SUCCESS";
-        } else if (options.rockColor === "blurple") {
-          options.rockColor = "PRIMARY";
-        }
-
-        let rock = new Discord.MessageButton()
-          .setLabel("ROCK")
-          .setCustomId("rock")
-          .setStyle(options.rockColor || "SECONDARY")
-          .setEmoji("🪨");
-
-        if (options.paperColor === "grey") {
-          options.paperColor = "SECONDARY";
-        } else if (options.paperColor === "red") {
-          options.paperColor = "DANGER";
-        } else if (options.paperColor === "green") {
-          options.paperColor = "SUCCESS";
-        } else if (options.paperColor === "blurple") {
-          options.paperColor = "PRIMARY";
-        }
-
-        let paper = new Discord.MessageButton()
-          .setLabel("PAPER")
-          .setCustomId("paper")
-          .setStyle(options.paperColor || "SECONDARY")
-          .setEmoji("📄");
-
-        if (options.scissorsColor === "grey") {
-          options.scissorsColor = "SECONDARY";
-        } else if (options.scissorsColor === "red") {
-          options.scissorsColor = "DANGER";
-        } else if (options.scissorsColor === "green") {
-          options.scissorsColor = "SUCCESS";
-        } else if (options.scissorsColor === "blurple") {
-          options.scissorsColor = "PRIMARY";
-        }
-
-        let scissors = new Discord.MessageButton()
-          .setLabel("SCISSORS")
-          .setCustomId("scissors")
-          .setStyle(options.scissorsColor || "SECONDARY")
-          .setEmoji("✂️");
-
-        let row = new Discord.MessageActionRow().addComponents([
-          rock,
-          paper,
-          scissors
-        ]);
-
-        message.editReply({
-          embeds: [embed],
-          components: [row]
+        await message.editReply({
+          embeds: [selectEmbed],
+          components: [rpsComponents]
         });
 
-        collector.stop();
+        acceptCollector.stop();
         let ids = new Set();
         ids.add(message.user.id);
         ids.add(opponent.id);
         let op, auth;
 
-        const collect = m.createMessageComponentCollector({
+        const btnCollector = m.createMessageComponentCollector({
           type: "BUTTON",
           time: 30000
         });
-        collect.on("collect", (b) => {
+        btnCollector.on("collect", (b) => {
           if (!ids.has(b.user.id))
-            return button.reply({
+            return await button.reply({
               content: "You cant play the game as they didnt call u to play.",
               ephemeral: true
             });
           ids.delete(b.user.id);
-          b.deferUpdate();
-          if (b.user.id == opponent.id) {
-            mem = b.customId;
-          }
-          if (b.user.id == message.user.id) {
-            auth = b.customId;
-          }
-          if (ids.size == 0) collect.stop();
+          await b.deferUpdate();
+          if (b.user.id === opponent.id) op = b.customId;
+          if (b.user.id === message.user.id) auth = b.customId;
+
+          if (ids.size == 0) btnCollector.stop();
         });
-        collect.on("end", (c, reason) => {
-          if (reason == "time") {
-            let embed = new Discord.MessageEmbed()
-              .setTitle("Game Timed Out!")
-              .setColor(options.timeoutEmbedColor || 0xc90000)
-              .setDescription(
-                "One or more players did not make a move in time(30s)"
-              )
-              .setFooter(foot);
-            message.editReply({
-              embeds: [embed],
+
+        btnCollector.on("end", (coll, reason) => {
+          if (reason === "time") {
+            await message.editReply({
+              embeds: [timeoutEmbed],
               components: []
             });
           } else {
-            if (mem == "rock" && auth == "scissors") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${opponent.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Rock defeats Scissors")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else if (mem == "scissors" && auth == "rock") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${message.user.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Rock defeats Scissors")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else if (mem == "scissors" && auth == "paper") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${opponent.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Scissors defeats Paper")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else if (mem == "paper" && auth == "scissors") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${message.user.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Scissors defeats Paper")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else if (mem == "paper" && auth == "rock") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${opponent.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Paper defeats Rock")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else if (mem == "rock" && auth == "paper") {
-              let embed = new Discord.MessageEmbed()
-                .setTitle(`${message.user.tag} Wins!`)
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription("Paper defeats Rock")
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
-            } else {
-              let embed = new Discord.MessageEmbed()
-                .setTitle("Draw!")
-                .setColor(options.winEmbedColor || 0x06bd00)
-                .setDescription(`Both players chose ${mem}`)
-                .setFooter(foot);
-              message.editReply({ embeds: [embed], components: [] });
+
+            const winnerMap = {
+              'rock': 'scissors',
+              'scissors': 'paper',
+              'paper': 'rock'
+            }
+
+
+            if (op === auth) {
+              message.editReply({
+                embeds: [
+                  new Discord.MessageEmbed()
+                    .setTitle("Draw!")
+                    .setColor(options.drawEmbedColor)
+                    .setDescription(`Both players chose ${op}`)
+                    .setFooter(foot)
+                ], components: []
+              });
+            }
+
+            if (winnerMap[op] === auth) { //op - won
+              await message.editReply({
+                embeds: [
+                  new Discord.MessageEmbed()
+                    .setTitle(`${opponent.tag} Wins!`)
+                    .setColor(options.winEmbedColor)
+                    .setDescription(`${op} defeats ${auth}`)
+                    .setFooter(foot)
+                ], components: []
+              });
+            } else { //auth - won
+              await message.editReply({
+                embeds: [
+                  new Discord.MessageEmbed()
+                    .setTitle(`${message.user.tag} Wins!`)
+                    .setColor(options.winEmbedColor)
+                    .setDescription(`${auth} defeats ${op}`)
+                    .setFooter(foot)
+                ], components: []
+              });
             }
           }
         });
       });
-      collector.on("end", (collected, reason) => {
-        if (reason == "time") {
-          let embed = new Discord.MessageEmbed()
-            .setTitle("Challenge Not Accepted in Time")
-            .setAuthor(message.user.tag, message.user.displayAvatarURL())
-            .setColor(options.timeoutEmbedColor || 0xc90000)
-            .setFooter(foot)
-            .setDescription("Ran out of time!\nTime limit: 30s");
-          message.editReply({
-            embeds: [embed],
-            components: []
+
+      acceptCollector.on("end", (coll, reason) => {
+        if (reason === "time") {
+          await message.editReply({
+            embeds: [
+              new Discord.MessageEmbed()
+                .setTitle("Challenge Not Accepted in Time")
+                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setColor(options.timeoutEmbedColor)
+                .setFooter(foot)
+                .setDescription("Ran out of time!\nTime limit: 30s")
+            ], components: []
           });
-        }
-        if (reason == "decline") {
-          let embed = new Discord.MessageEmbed()
-            .setTitle("Game Declined!")
-            .setAuthor(message.user.tag, message.user.displayAvatarURL())
-            .setColor(options.timeoutEmbedColor || 0xc90000)
-            .setFooter(foot)
-            .setDescription(`${opponent.tag} has declined your game!`);
-          message.editReply({
-            embeds: [embed],
-            components: []
+        } else if (reason === "decline") {
+          await message.editReply({
+            embeds: [
+              new Discord.MessageEmbed()
+                .setTitle("Game Declined!")
+                .setAuthor(message.user.tag, message.user.displayAvatarURL())
+                .setColor(options.timeoutEmbedColor || 0xc90000)
+                .setFooter(foot)
+                .setDescription(`${opponent.tag} has declined your game!`)
+            ], components: []
           });
         }
       });
-    } else if (!options.slash || options.slash === false) {
+    } else if (message instanceof Discord.Message) {
       let opponent = message.mentions.members.first();
       if (!opponent) return message.channel.send("No opponent mentioned!");
       if (opponent.user.bot)
@@ -268,11 +283,6 @@ async function rps(message, options = []) {
       if (opponent.id == message.author.id)
         return message.channel.send("You cannot play by yourself!");
 
-      if (options.credit === false) {
-        foot = options.embedFooter || "Rock Paper Scissors";
-      } else {
-        foot = "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
-      }
 
       let acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.user.tag} to accept!`)
@@ -333,16 +343,6 @@ async function rps(message, options = []) {
                 .setFooter(foot)
                 .setDescription("Select 🪨, 📄, or ✂️");
 
-              if (options.rockColor === "grey") {
-                options.rockColor = "SECONDARY";
-              } else if (options.rockColor === "red") {
-                options.rockColor = "DANGER";
-              } else if (options.rockColor === "green") {
-                options.rockColor = "SUCCESS";
-              } else if (options.rockColor === "blurple") {
-                options.rockColor = "PRIMARY";
-              }
-
               let rock = new Discord.MessageButton()
                 .setLabel("ROCK")
                 .setCustomId("rock")
@@ -364,16 +364,6 @@ async function rps(message, options = []) {
                 .setCustomId("paper")
                 .setStyle(options.paperColor || "SECONDARY")
                 .setEmoji("📄");
-
-              if (options.scissorsColor === "grey") {
-                options.scissorsColor = "SECONDARY";
-              } else if (options.scissorsColor === "red") {
-                options.scissorsColor = "DANGER";
-              } else if (options.scissorsColor === "green") {
-                options.scissorsColor = "SUCCESS";
-              } else if (options.scissorsColor === "blurple") {
-                options.scissorsColor = "PRIMARY";
-              }
 
               let scissors = new Discord.MessageButton()
                 .setLabel("SCISSORS")
