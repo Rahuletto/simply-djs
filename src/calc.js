@@ -23,7 +23,7 @@ async function calculator(interaction, options = []) {
         "8",
         "9",
         "*",
-        "!",
+        "%",
         "4",
         "5",
         "6",
@@ -151,7 +151,7 @@ async function calculator(interaction, options = []) {
         else if (label === "Delete") style = "DANGER";
         else if (label === "⌫") style = "DANGER";
         else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
+        else if (label === "%") style = "SECONDARY";
         else if (label === "^") style = "SECONDARY";
         else if (label === ".") style = "PRIMARY";
         else if (label === "=") style = "SUCCESS";
@@ -189,7 +189,7 @@ async function calculator(interaction, options = []) {
         "8",
         "9",
         "*",
-        "!",
+        "%",
         "4",
         "5",
         "6",
@@ -314,7 +314,7 @@ async function calculator(interaction, options = []) {
         else if (label === "Delete") style = "DANGER";
         else if (label === "⌫") style = "DANGER";
         else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
+        else if (label === "%") style = "SECONDARY";
         else if (label === "^") style = "SECONDARY";
         else if (label === ".") style = "PRIMARY";
         else if (label === "=") style = "SUCCESS";
@@ -326,13 +326,16 @@ async function calculator(interaction, options = []) {
         return btn;
       }
 
-      const evalRegex = /^[0-9π+\-*\/\.\(\)\^]*$/
+      const evalRegex = /^[0-9π\+\-\*\/\.\(\)\^\%]*$/
       function mathEval(input) {
         try {
           const matched = evalRegex.exec(input);
           if (!matched) return "Wrong Input";
+          const evalInput = (input + '')
+            .replace(/\^/g, '**')
+            .replace(/\%/g, '/100')
 
-          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${input.replace(/\^/g, '**')})`)()}`;
+          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${evalInput})`)()}`;
         } catch {
           return "Wrong Input";
         }
