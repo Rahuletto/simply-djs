@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const math = require("mathjs");
 
 /**
  * @param {Discord.CommandInteraction} interaction
@@ -24,7 +23,7 @@ async function calculator(interaction, options = []) {
         "8",
         "9",
         "*",
-        "!",
+        "%",
         "4",
         "5",
         "6",
@@ -67,6 +66,7 @@ async function calculator(interaction, options = []) {
           components: row
         })
         .then(async (mssg) => {
+          /** @type {Discord.Message} */
           const msg = await interaction.fetchReply();
 
           let isWrong = false;
@@ -80,6 +80,8 @@ async function calculator(interaction, options = []) {
             const filter = (button) =>
               button.user.id === interaction.user.id &&
               button.customId === "cal" + val;
+
+            /** @type {Discord.InteractionCollector<Discord.ButtonInteraction>}*/
             let collect = msg.createMessageComponentCollector({
               filter,
               componentType: "BUTTON",
@@ -109,7 +111,7 @@ async function calculator(interaction, options = []) {
                   components: row
                 });
               } else if (value.includes("Delete"))
-                return interaction.deleteReply().catch(() => {});
+                return interaction.deleteReply().catch(() => { });
               else if (value.includes("Clear")) return (value = "0");
               emb1.setDescription("```" + value + "```");
               await msg.edit({
@@ -149,7 +151,7 @@ async function calculator(interaction, options = []) {
         else if (label === "Delete") style = "DANGER";
         else if (label === "⌫") style = "DANGER";
         else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
+        else if (label === "%") style = "SECONDARY";
         else if (label === "^") style = "SECONDARY";
         else if (label === ".") style = "PRIMARY";
         else if (label === "=") style = "SUCCESS";
@@ -161,10 +163,13 @@ async function calculator(interaction, options = []) {
         return btn;
       }
 
+      const evalRegex = /^[0-9π+\-*\/\.\(\)]*$/
       function mathEval(input) {
         try {
-          let res = `${input} = ${math.evaluate(input.replace("π", math.pi))}`;
-          return res;
+          const matched = evalRegex.exec(input);
+          if (!matched) return "Wrong Input";
+
+          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${input})`)()}`.replace(/\*\*/g, '^');
         } catch {
           return "Wrong Input";
         }
@@ -184,7 +189,7 @@ async function calculator(interaction, options = []) {
         "8",
         "9",
         "*",
-        "!",
+        "%",
         "4",
         "5",
         "6",
@@ -269,7 +274,7 @@ async function calculator(interaction, options = []) {
                 });
               } else if (value.includes("Delete")) {
                 msg.delete();
-                return interaction.delete().catch(() => {});
+                return interaction.delete().catch(() => { });
               } else if (value.includes("Clear")) return (value = "0");
               emb1.setDescription("```" + value + "```");
               await msg.edit({
@@ -309,7 +314,7 @@ async function calculator(interaction, options = []) {
         else if (label === "Delete") style = "DANGER";
         else if (label === "⌫") style = "DANGER";
         else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
+        else if (label === "%") style = "SECONDARY";
         else if (label === "^") style = "SECONDARY";
         else if (label === ".") style = "PRIMARY";
         else if (label === "=") style = "SUCCESS";
@@ -321,10 +326,16 @@ async function calculator(interaction, options = []) {
         return btn;
       }
 
+      const evalRegex = /^[0-9π\+\-\*\/\.\(\)\^\%]*$/
       function mathEval(input) {
         try {
-          let res = `${input} = ${math.evaluate(input.replace("π", math.pi))}`;
-          return res;
+          const matched = evalRegex.exec(input);
+          if (!matched) return "Wrong Input";
+          const evalInput = (input + '')
+            .replace(/\^/g, '**')
+            .replace(/\%/g, '/100')
+
+          return `${input} = ${Function(`"use strict";let π=Math.PI;return (${evalInput})`)()}`;
         } catch {
           return "Wrong Input";
         }
