@@ -10,7 +10,8 @@ import {
     MessageEmbed,
     MessageReaction,
     TextChannel,
-    User
+    User,
+    MessageButtonStyle
 } from 'discord.js';
 import { Collection, Fields } from 'quickmongo'
 
@@ -108,33 +109,35 @@ export type embedCreateOptions = {
 export declare function embedCreate(message: Message, options?: embedCreateOptions): Promise<void>;
 
 /** Colors that discord.js support */
-type DiscordColor = 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER';
+type DiscordColor = MessageButtonStyle;
 export type embedPagesOptions = {
     /** default: ⏪ */
-    firstemoji?: EmojiResolvable,
+    firstEmoji?: EmojiResolvable,
     /** default: ◀️ */
-    backemoji?: EmojiResolvable,
+    backEmoji?: EmojiResolvable,
     /** default: 🗑️ */
-    delemoji?: EmojiResolvable,
+    delEmoji?: EmojiResolvable,
     /** default: ▶️ */
-    forwardemoji?: EmojiResolvable,
+    forwardEmoji?: EmojiResolvable,
     /** default: ⏩ */
-    lastemoji?: EmojiResolvable,
+    lastEmoji?: EmojiResolvable,
 
     /** Slash support */
     slash?: boolean,
 
     /** default: SUCCESS */
     btncolor?: DiscordColor,
+    /** default: true */
+    delBtn?: boolean,
     /** default: DANGER */
     delcolor?: DiscordColor, // 
-    /** default: PRIMARY */
-    skipcolor?: DiscordColor
-
     /** Turn on/off the Last/First Page Buttons. */
     skipBtn: boolean
+    /** default: PRIMARY */
+    skipcolor?: DiscordColor
 }
-export declare function embedPages(client: Client, message: CommandInteraction, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
+export declare function embedPages(message: CommandInteraction, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
+export declare function embedPages(message: Message, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
 
 export type ghostPingOptions = {
     /** default: (*a long message*) */
