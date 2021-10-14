@@ -13,10 +13,9 @@ import {
   MessageButtonStyle,
   GuildMember
 } from 'discord.js';
-import { Collection, Fields } from 'quickmongo'
+import { Database } from 'quickmongo';
 
-type FieldModel = Fields.FieldModel<unknown>
-export type DB<T extends FieldModel = any> = Collection<T>;
+export type DB = Database;
 /** Colors that discord.js support */
 type BtnColor = MessageButtonStyle;
 type HexColorString = `#${string}` | string;
