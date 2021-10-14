@@ -230,15 +230,15 @@ export type rpsOptions = {
     drawEmbedColor?: HexColorString, // default: #075FFF
     winEmbedColor?: HexColorString, // default: #06bd00
     embedFooter?: string,
-    rockColor?: ColorResolvable, // default: grey
-    paperColor?: ColorResolvable, // default: grey
-    scissorsColor?: ColorResolvable, // default: grey
+    rockColor?: DiscordColor, // default: SECONDARY
+    paperColor?: DiscordColor, // default: SECONDARY
+    scissorsColor?: DiscordColor, // default: SECONDARY
     /** Slash support */
     slash?: boolean,
     /** Credit the package */
     credit?: boolean
 }
-export declare function rps(interaction: CommandInteraction, options?: rpsOptions): Promise<any>;
+export declare function rps(interaction: CommandInteraction | Message, options?: rpsOptions): Promise<any>;
 
 export type starboardOptions = {
     event: 'messageReactionAdd' | 'messageReactionRemove' | 'messageDelete',
