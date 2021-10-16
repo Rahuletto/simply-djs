@@ -5,7 +5,7 @@ const Discord = require("discord.js");
  * @param {import('../index').ghostPingOptions} options
  */
 
-async function ghostPing(message, options = []) {
+ async function ghostPing(message, options = []) {
   if (message.mentions.users.first()) {
     if (options.credit === false) {
       foot = options.embedFoot || "Ghost Ping. Oop.";
@@ -33,6 +33,9 @@ async function ghostPing(message, options = []) {
         message.channel
           .send({ embeds: [options.embed || chembed] })
           .then(async (msg) => {
+            if (options.logChannel) {
+              options.logChannel.send({ embeds: [options.embed || chembed] })
+            }
             setTimeout(() => {
               msg.delete();
             }, 10000);

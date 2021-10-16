@@ -23,7 +23,7 @@ async function suggestSystem(client, message, args, options = []) {
           "INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support"
         );
 
-      let suggestion = args;
+      let suggestion = interaction.options.getString(options.sugSlash || 'suggestion');
 
       if (options.credit === false) {
         foot = options.embedFoot || "Suggestion arrived";

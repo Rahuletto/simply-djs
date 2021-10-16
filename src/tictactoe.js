@@ -5,13 +5,12 @@ const Discord = require("discord.js");
  * @param {import('../index').tictactoeOptions} options
  */
 
-async function tictactoe(message, options = []) {
+ async function tictactoe(message, options = []) {
   try {
-    console.log('e')
     if (options.slash === true) {
       
 
-      let opponent = message.options.getUser("user");
+      let opponent = message.options.getUser(options.userSlash || "user");
 
       if (!opponent)
         return message.followUp({

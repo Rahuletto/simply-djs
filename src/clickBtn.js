@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const fs = require('fs')
 
 /**
  * @param {Discord.ButtonInteraction} button
@@ -35,7 +36,7 @@ async function clickBtn(button, options = []) {
               );
           } else {
             button.reply({
-              content: `Gave you the role Name: ${real.name} | ID: ${real.id}`,
+              content: `Gave you the role ${real} | Name: ${real.name} | ID: ${real.id}`,
               ephemeral: true
             });
 
@@ -53,10 +54,10 @@ async function clickBtn(button, options = []) {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
       if (button.customId === "create_ticket") {
-        let ticketname = `ticket_${button.user.id}`;
-
+        let ticketname = options.ticketname.replace('{username}', button.user.username).replace('{id}', button.user.id).replace('{tag}', button.user.tag) || `ticket_${button.user.id}`
+        let topic = `ticket_${button.user.id}`
         let antispamo = await button.guild.channels.cache.find(
-          (ch) => ch.name === ticketname.toLowerCase()
+          (ch) => ch.topic === topic.toLowerCase()
         );
 
         if (options.closeColor) {
@@ -117,8 +118,9 @@ async function clickBtn(button, options = []) {
           }
 
           button.guild.channels
-            .create(`ticket_${button.user.id}`, {
+            .create(ticketname, {
               type: "text",
+              topic: topic,
               parent: chparent,
               permissionOverwrites: [
                 {
@@ -159,9 +161,15 @@ async function clickBtn(button, options = []) {
                 .setCustomId("close_ticket");
 
               let closerow = new MessageActionRow().addComponents([close_btn]);
+                  let pingrole = ''
+
+                  if(options.pingRole) {
+                    let rol = button.guild.roles.cache.find((r) => r.id === options.pingRole);
+                    pingrole = ` ${rol}`
+                  }
 
               ch.send({
-                content: `${button.user}`,
+                content: `${button.user}${pingrole}`,
                 embeds: [emb],
                 components: [closerow]
               });
@@ -362,7 +370,9 @@ async function clickBtn(button, options = []) {
               ephemeral: true
             });
           }
-
+          
+            const numbers = new Set();
+            
           for (let i = 0; winnerNumber > i; i++) {
             let winnumber = Math.floor(Math.random() * wino.length);
             if (wino[winnumber] === undefined || wino[winnumber] === "null") {
@@ -370,13 +380,17 @@ async function clickBtn(button, options = []) {
               winboiz.push("\u200b");
               wino.splice(winnumber, 1);
             } else {
-              let winnee = winner.push(
+              if (!numbers.has(winnumber)) {
+                winner.push(
                 `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
                   ",",
                   ""
                 )
-              );
+              )
+
               winboiz.push(`<@${wino[winnumber]}>`);
+                }
+              
               wino.splice(winnumber, 1);
               await db.set(
                 `giveaway_${button.message.id}_${wino[winnumber]}`,
@@ -609,13 +623,16 @@ async function clickBtn(button, options = []) {
                   winboiz.push("\u200b");
                   wino.splice(winnumber, 1);
                 } else {
-                  let winnee = winner.push(
+                  if (!numbers.has(winnumber)) {
+                    winner.push(
                     `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
                       ",",
                       ""
                     )
-                  );
+                  )
                   winboiz.push(`<@${wino[winnumber]}>`);
+                    }
+                  
                   wino.splice(winnumber, 1);
                   await db.set(
                     `giveaway_${button.message.id}_${wino[winnumber]}`,

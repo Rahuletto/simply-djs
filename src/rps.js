@@ -1,13 +1,11 @@
 const Discord = require("discord.js");
 
-
-
 const colorMap = {
-  'grey': 'SECONDARY',
-  'red': 'DANGER',
-  'green': 'SUCCESS',
-  'blurple': 'PRIMARY'
-}
+  grey: "SECONDARY",
+  red: "DANGER",
+  green: "SUCCESS",
+  blurple: "PRIMARY"
+};
 
 /**
  * @param {(Discord.CommandInteraction | Discord.Message)} message
@@ -19,28 +17,27 @@ async function rps(msgOrInter, options = {}) {
   options.credit ??= true;
   options.slash ??= !!msgOrInter.commandId;
 
-  options.embedColor ??= '#075FFF';
-  options.timeoutEmbedColor ??= '#cc0000';
-  options.drawEmbedColor ??= '#075FFF';
-  options.winEmbedColor ??= '#06bd00';
+  options.embedColor ??= "#075FFF";
+  options.timeoutEmbedColor ??= "#cc0000";
+  options.drawEmbedColor ??= "#075FFF";
+  options.winEmbedColor ??= "#06bd00";
   /**
    * This looks kinda weird but,
-   * (colorMap[options.rockColor] || options.rockColor) = 
+   * (colorMap[options.rockColor] || options.rockColor) =
    * if rockColor is in the colorMap then its the mapped color (e. g. grey -> SECONDARY)
    * if its undefined/null it's SECONDARY
    * if its a normal string its the string
    */
-  options.rockColor = (colorMap[options.rockColor] || options.rockColor) || 'SECONDARY';
-  options.paperColor = (colorMap[options.paperColor] || options.paperColor) || 'SECONDARY';
-  options.scissorsColor = (colorMap[options.scissorsColor] || options.scissorsColor) || 'SECONDARY';
+  options.rockColor =
+    colorMap[options.rockColor] || options.rockColor || "SECONDARY";
+  options.paperColor =
+    colorMap[options.paperColor] || options.paperColor || "SECONDARY";
+  options.scissorsColor =
+    colorMap[options.scissorsColor] || options.scissorsColor || "SECONDARY";
 
   let foot = options.embedFooter;
-  if (options.credit === false)
-    foot ??= "Rock Paper Scissors";
-  else
-    foot ??= "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
-
-
+  if (options.credit === false) foot ??= "Rock Paper Scissors";
+  else foot ??= "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
 
   //Accept decline buttons
   const accept = new Discord.MessageButton()
@@ -53,13 +50,10 @@ async function rps(msgOrInter, options = {}) {
     .setStyle("DANGER")
     .setCustomId("decline");
 
-
   const acceptComponents = new Discord.MessageActionRow().addComponents([
     accept,
     decline
   ]);
-
-
 
   //RPS Buttons
   const rock = new Discord.MessageButton()
@@ -86,31 +80,30 @@ async function rps(msgOrInter, options = {}) {
     scissors
   ]);
 
-
   //Embeds
   const timeoutEmbed = new Discord.MessageEmbed()
     .setTitle("Game Timed Out!")
     .setColor(options.timeoutEmbedColor)
-    .setDescription(
-      "One or more players did not make a move in time(30s)"
-    )
+    .setDescription("One or more players did not make a move in time(30s)")
     .setFooter(foot);
 
   try {
     if (msgOrInter.commandId && !options.slash) {
-      throw new Error('You provided a Interaction but set the slash option to false')
+      throw new Error(
+        "You provided a Interaction but set the slash option to false"
+      );
     } else if (msgOrInter.mentions && options.slash) {
-      throw new Error('You provided a Message but set the slash option to true')
+      throw new Error(
+        "You provided a Message but set the slash option to true"
+      );
     }
-
-
 
     if (options.slash) {
       /** @type {Discord.CommandInteraction} */
       const interaction = msgOrInter;
-      const opponent = interaction.options.getUser("user");
+      const opponent = interaction.options.getUser(options.userSlash || "user");
 
-      await interaction.deferReply().catch(() => { })
+      await interaction.deferReply().catch(() => {});
 
       if (!opponent)
         return await interaction.followUp({
@@ -128,18 +121,11 @@ async function rps(msgOrInter, options = {}) {
           ephemeral: true
         });
 
-
-
-
       const acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.tag} to accept!`)
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
         .setColor(options.embedColor)
         .setFooter(foot);
-
-
-
-
 
       /** @type {Discord.Message} */
       let m = await interaction.followUp({
@@ -209,13 +195,11 @@ async function rps(msgOrInter, options = {}) {
               components: []
             });
           } else {
-
             const winnerMap = {
-              'rock': 'scissors',
-              'scissors': 'paper',
-              'paper': 'rock'
-            }
-
+              rock: "scissors",
+              scissors: "paper",
+              paper: "rock"
+            };
 
             if (op === auth) {
               await interaction.editReply({
@@ -225,9 +209,11 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.drawEmbedColor)
                     .setDescription(`Both players chose **${op}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
-            } else if (winnerMap[op] === auth) { //op - won
+            } else if (winnerMap[op] === auth) {
+              //op - won
               await interaction.editReply({
                 embeds: [
                   new Discord.MessageEmbed()
@@ -235,9 +221,11 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.winEmbedColor)
                     .setDescription(`**${op}** defeats **${auth}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
-            } else { //auth - won
+            } else {
+              //auth - won
               await interaction.editReply({
                 embeds: [
                   new Discord.MessageEmbed()
@@ -245,7 +233,8 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.winEmbedColor)
                     .setDescription(`**${auth}** defeats **${op}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
             }
           }
@@ -258,22 +247,30 @@ async function rps(msgOrInter, options = {}) {
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Challenge Not Accepted in Time")
-                .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+                .setAuthor(
+                  interaction.user.tag,
+                  interaction.user.displayAvatarURL()
+                )
                 .setColor(options.timeoutEmbedColor)
                 .setFooter(foot)
                 .setDescription("Ran out of time!\nTime limit: 30s")
-            ], components: []
+            ],
+            components: []
           });
         } else if (reason === "decline") {
           await interaction.editReply({
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Game Declined!")
-                .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+                .setAuthor(
+                  interaction.user.tag,
+                  interaction.user.displayAvatarURL()
+                )
                 .setColor(options.timeoutEmbedColor || 0xc90000)
                 .setFooter(foot)
                 .setDescription(`${opponent.tag} has declined your game!`)
-            ], components: []
+            ],
+            components: []
           });
         }
       });
@@ -288,7 +285,6 @@ async function rps(msgOrInter, options = {}) {
       if (opponent.id === message.author.id)
         return message.channel.send("You cannot play by yourself!");
 
-
       const acceptEmbed = new Discord.MessageEmbed()
         .setTitle(`Waiting for ${opponent.tag} to accept!`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -296,8 +292,6 @@ async function rps(msgOrInter, options = {}) {
         .setFooter(foot);
 
       const { channel } = message;
-
-
 
       /** @type {Discord.Message} */
       let m = await channel.send({
@@ -368,13 +362,11 @@ async function rps(msgOrInter, options = {}) {
               components: []
             });
           } else {
-
             const winnerMap = {
-              'rock': 'scissors',
-              'scissors': 'paper',
-              'paper': 'rock'
-            }
-
+              rock: "scissors",
+              scissors: "paper",
+              paper: "rock"
+            };
 
             if (op === auth) {
               await m.edit({
@@ -384,9 +376,11 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.drawEmbedColor)
                     .setDescription(`Both players chose **${op}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
-            } else if (winnerMap[op] === auth) { //op - won
+            } else if (winnerMap[op] === auth) {
+              //op - won
               await m.edit({
                 embeds: [
                   new Discord.MessageEmbed()
@@ -394,9 +388,11 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.winEmbedColor)
                     .setDescription(`**${op}** defeats **${auth}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
-            } else { //auth - won
+            } else {
+              //auth - won
               await m.edit({
                 embeds: [
                   new Discord.MessageEmbed()
@@ -404,7 +400,8 @@ async function rps(msgOrInter, options = {}) {
                     .setColor(options.winEmbedColor)
                     .setDescription(`**${auth}** defeats **${op}**`)
                     .setFooter(foot)
-                ], components: []
+                ],
+                components: []
               });
             }
           }
@@ -417,22 +414,32 @@ async function rps(msgOrInter, options = {}) {
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Challenge Not Accepted in Time")
-                .setAuthor(message.author.tag, message.author.displayAvatarURL())
+                .setAuthor(
+                  message.author.tag,
+                  message.author.displayAvatarURL()
+                )
                 .setColor(options.timeoutEmbedColor)
                 .setFooter(foot)
                 .setDescription("Ran out of time!\nTime limit: 30s")
-            ], components: []
+            ],
+            components: []
           });
         } else if (reason === "decline") {
           await m.edit({
             embeds: [
               new Discord.MessageEmbed()
                 .setTitle("Game Declined!")
-                .setAuthor(message.author.tag, message.author.displayAvatarURL())
+                .setAuthor(
+                  message.author.tag,
+                  message.author.displayAvatarURL()
+                )
                 .setColor(options.timeoutEmbedColor || 0xc90000)
                 .setFooter(foot)
-                .setDescription(`${opponent.toString()} has declined your game!`)
-            ], components: []
+                .setDescription(
+                  `${opponent.toString()} has declined your game!`
+                )
+            ],
+            components: []
           });
         }
       });
