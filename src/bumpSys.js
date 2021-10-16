@@ -6,6 +6,17 @@ const Discord = require("discord.js");
  * @param {import('../index').bumpSystemOptions} options
  */
 
+/**
+ --- options ---
+ 
+event => (ready/messageCreate) String
+message => Message
+chid => (Channel ID) String
+content => String
+thanksEmbed => Embed
+bumpEmbed => Embed
+ */
+
 async function bumpSys(client, db, options = []) {
   try {
     if (options.event === "messageCreate") {

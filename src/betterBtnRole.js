@@ -6,6 +6,18 @@ const Discord = require("discord.js");
  * @param {import('../index').betterBtnRoleOptions} options
  */
 
+/**
+ --- options ---
+
+ chSlash => String
+ idSlash => String
+ roleSlash => String
+ labelSlash => String
+ styleSlash => String
+ 
+ type => (add/remove) String
+ */
+
 async function betterBtnRole(client, interaction, options = []) {
 
 
@@ -32,9 +44,9 @@ async function betterBtnRole(client, interaction, options = []) {
     });
   if (options.type === "add") {
     try {
-      let label = interaction.options.getString("label") || role.name;
-      let color = interaction.options.getString("style") || "SECONDARY";
-      let emoji = interaction.options.getString("emoji");
+      let label = interaction.options.getString(options.labelSlash || "label") || role.name;
+      let color = interaction.options.getString(options.styleSlash || "style") || "SECONDARY";
+      let emoji = interaction.options.getString(options.emojiSlash || "emoji");
 
       if (msg.components) {
         for (let i = 0; msg.components.length > i; i++) {

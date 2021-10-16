@@ -34,7 +34,9 @@ const Discord = require("discord.js");
           .send({ embeds: [options.embed || chembed] })
           .then(async (msg) => {
             if (options.logChannel) {
-              options.logChannel.send({ embeds: [options.embed || chembed] })
+              let ch = message.guild.channels.cache.get(options.logChannel).catch(() => {})
+
+              ch.send({ embeds: [options.embed || chembed] })
             }
             setTimeout(() => {
               msg.delete();

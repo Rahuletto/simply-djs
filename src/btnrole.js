@@ -6,6 +6,19 @@ const Discord = require("discord.js");
  * @param {import('../index').btnroleOptions} options
  */
 
+/**
+ --- options ---
+ 
+embed => Embed
+
+ data => {
+   role => (roleID) String
+   label => String
+   emoji => (emojiID) String
+   color => (buttonColor) String
+ }
+ */
+
 async function btnrole(client, message, options = []) {
   try {
     if (!options.data)
