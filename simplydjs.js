@@ -17,6 +17,8 @@ module.exports.menuPages = require('./src/menuEmbed')
 
 module.exports.dropdownPages = require('./src/menuEmbed')
 
+module.exports.nqn = require('./src/nqn')
+
 // Games (Fun)
 module.exports.tictactoe = require('./src/tictactoe')
 
