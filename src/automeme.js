@@ -1,98 +1,88 @@
 const Discord = require("discord.js");
-const parse = new (require("rss-parser"))();
+const fetch = require("node-fetch");
 
 /**
  * @param {Discord.Client} client
- * @param {import('../index').DB} db
- * @param {import('../index').ytNotifyOptions} options
+ * @param {import('../index').automemeOptions} options
  */
 
-async function ytNotify(client, db, options = []) {
-  let startAt = options.startAt;
-  let chid = options.chid;
+/**
+ --- options ---
+ 
+  chid => (Channel ID) String
+  subReddits => Array (Custom SubReddit)
+  interval => Number
+  embedColor => HexColor
+ */
 
-  if (!chid)
-    throw new Error(
-      "EMPTY_CHANNEL_ID. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support"
-    );
-  if (!options.ytID && !options.ytURL)
-    throw new Error(
-      "EMPTY_YT_CHANNEL_ID & EMPTY_YT_CHANNEL_URL. You didnt specify a channel id. Go to https://discord.com/invite/3JzDV9T5Fn to get support"
-    );
-  try {
-    let timer = options.timer || "10000";
-    let timr = parseInt(timer);
-
-    setInterval(async () => {
-      function URLtoID(url) {
-        let id = null;
-        url = url.replace(/(>|<)/gi, "").split(/(\/channel\/|\/user\/)/);
-        if (url[2]) {
-          id = url[2].split(/[^0-9a-z_-]/i)[0];
-        }
-        return id;
-      }
-
-      let msg =
-        options.msg ||
-        "Hello ! **{author}** just uploaded a new video **{title}**\n\n*{url}*";
-
-      if (Array.isArray(options.ytID)) {
-        options.ytID.forEach((ch) => {
-          checkVid(client, ch, chid, msg, db, startAt);
-        });
-      } else if (Array.isArray(options.ytURL)) {
-        options.ytID.forEach((ch) => {
-          checkVid(client, URLtoID(ch), chid, msg, db, startAt);
-        });
-      } else if (!options.ytID && options.ytURL) {
-        ytID = URLtoID(options.ytURL);
-
-        checkVid(client, ytID, chid, msg, db, startAt);
-      } else {
-        ytID = options.ytID;
-
-        checkVid(client, ytID, chid, msg, db, startAt);
-      }
-
-      async function checkVid(client, ytID, chid, msg, db, startAt) {
-        parse
-          .parseURL(
-            `https://www.youtube.com/feeds/videos.xml?channel_id=${ytID}`
-          )
-          .then((data) => {
-            client.guilds.cache.forEach(async (g) => {
-              if (!data.items || !data.items[0] || !data || data.items === [])
-                return;
-                let vidzz = db.pull(`postedVideos_${g.id}`)
-              if (
-                vidzz &&
-                vidzz.includes(data.items[0].link)
-              )
-                return;
-              else {
-                if (new Date(data.items[0].pubDate).getTime() < startAt) return;
-
-                db.push(`postedVideos_${g.id}`, data.items[0].link);
-                let channel = client.channels.cache.get(chid);
-                if (!channel) return;
-
-                let mssg = msg
-                  .replace(/{author}/g, data.items[0].author)
-                  .replace(
-                    /{title}/g,
-                    Discord.Util.escapeMarkdown(data.items[0].title)
-                  )
-                  .replace(/{url}/g, data.items[0].link);
-                channel.send({ content: mssg });
-                console.log("Notified");
-              }
-            });
-          });
-      }
-    }, timr);
-  } catch (err) {
-    console.log(`Error Occured. | ytNotify | Error: ${err.stack}`);
+  async function automeme(client, options = []) {
+    let ch = options.chid;
+  
+    let sub = [
+      "meme",
+      "me_irl",
+      "memes",
+      "dankmeme",
+      "dankmemes",
+      "ComedyCemetery",
+      "terriblefacebookmemes",
+      "funny"
+    ];
+  
+  if(Array.isArray(options.subReddits)) {
+    options.subReddits.forEach(subb => {
+      sub.push(subb)
+    })
+  } else if(!Array.isArray(options.subReddits)){
+    sub.push(options.subReddits)
+  
+  } else if(options.subReddits === undefined || !options.subReddits){
+  
   }
-}
-module.exports = ytNotify;
+  
+    const random = Math.floor(Math.random() * sub.length);
+  
+    let interv;
+    if (options.interval) {
+      if (options.interval <= 60000)
+        throw new Error(
+          `Interval Time should be above 60000 (1 minute).`
+          );
+      interv = options.interval;
+    } else {
+      interv = 120000;
+    }
+  
+    setInterval(() => {
+      const channel = client.channels.cache.get(ch);
+      if (!channel)
+        throw new Error(
+          "Invalid channel id has been provided (OR) I don't have permissions to View the Channel"
+        );
+  
+        fetch(`https://www.reddit.com/r/${sub[random]}/random/.json`)
+        .then((res) => res.json())
+        .then((response) => {
+  
+          console.log(response[0].data.children[0].data)
+        let perma = response[0].data.children[0].data.permalink;
+        let url = `https://reddit.com${perma}`;
+        let memeImage = response[0].data.children[0].data.url || response[0].data.children[0].data.url_overridden_by_dest
+        let title = response[0].data.children[0].data.title;
+        let upp = response[0].data.children[0].data.ups;
+        let ratio = response[0].data.children[0].data.upvote_ratio;
+        
+        const embed = new MessageEmbed()
+        .setTitle(`${title}`)
+        .setURL(`${url}`)
+        .setImage(memeImage)
+        .setColor(options.embedColor || "#075FFF")
+        .setFooter(
+          `🔺 ${upp} | Upvote Ratio: ${ratio}`
+        )
+        channel.send({ embeds: [embed] });
+      });
+    }, interv);
+  }
+
+module.exports = automeme;
