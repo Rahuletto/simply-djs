@@ -7,14 +7,24 @@ const Discord = require("discord.js");
  * @param {import('../index').suggestBtnOptions} options
  */
 
- async function suggestBtn(button, users, options = []) {
+/**
+ --- options ---
+ 
+  yesEmoji => (Emoji ID) String
+  yesColor => (ButtonColor) String
+  noEmoji => (Emoji ID) String
+  noColor => (ButtonColor) String
+
+  denyEmbColor => HexColor
+  agreeEmbColor => HexColor
+ */
+
+async function suggestBtn(button, users, options = []) {
   if (button.isButton()) {
     try {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
-      if (
-        button.member.permissions.has("ADMINISTRATOR")
-      ) {
+      if (button.member.permissions.has("ADMINISTRATOR")) {
         if (button.customId === "no-sug") {
           let target = await button.message.channel.messages.fetch(
             button.message.id
@@ -38,7 +48,7 @@ const Discord = require("discord.js");
             components: [row1],
             ephemeral: true
           });
-          let msg = button.channel
+          let msg = button.channel;
           let ftter = (m) => button.user.id === m.user.id;
           let coll = msg.createMessageComponentCollector({
             ftter,
@@ -53,7 +63,6 @@ const Discord = require("discord.js");
                   ephemeral: true,
                   components: []
                 });
-                
 
                 let filter = (m) => button.user.id === m.author.id;
 
@@ -92,36 +101,33 @@ const Discord = require("discord.js");
                   components: [],
                   ephemeral: true
                 });
-                
               } else {
                 let isit2 = await users.get(
                   `${button.message.id}-${button.user.id}-like`
                 );
-                
-                if (isit2 === button.user.id) {
 
+                if (isit2 === button.user.id) {
                   users.delete(`${button.message.id}-${button.user.id}-like`);
 
                   users.set(
                     `${button.message.id}-${button.user.id}-dislike`,
                     button.user.id
                   );
-                  
+
                   button.editReply({
-                  content: "You disliked the suggestion.",
-                  components: [],
-                  ephemeral: true
-                });
-                  
+                    content: "You disliked the suggestion.",
+                    components: [],
+                    ephemeral: true
+                  });
+
                   removelike(oldemb);
                 } else {
-                  
                   button.editReply({
-                  content: "You disliked the suggestion.",
-                  components: [],
-                  ephemeral: true
-                });
-                  
+                    content: "You disliked the suggestion.",
+                    components: [],
+                    ephemeral: true
+                  });
+
                   users.set(
                     `${button.message.id}-${button.user.id}-dislike`,
                     button.user.id
@@ -156,7 +162,7 @@ const Discord = require("discord.js");
             components: [row1],
             ephemeral: true
           });
-          let msg = button.channel
+          let msg = button.channel;
 
           let fttter = (m) => button.user.id === m.user.id;
           let coll = msg.createMessageComponentCollector({
@@ -188,27 +194,24 @@ const Discord = require("discord.js");
                     `${button.message.id}-${button.user.id}-like`,
                     button.user.id
                   );
-                  
-                button.editReply({
-                  content: "You liked the suggestion.",
-                  components: [],
-                  ephemeral: true
-                });
+
+                  button.editReply({
+                    content: "You liked the suggestion.",
+                    components: [],
+                    ephemeral: true
+                  });
                   removedislike(oldemb);
-                  
                 } else {
-                  
                   users.set(
                     `${button.message.id}-${button.user.id}-like`,
                     button.user.id
                   );
-                  
+
                   button.editReply({
-                  content: "You liked the suggestion.",
-                  components: [],
-                  ephemeral: true
-                });
-                  
+                    content: "You liked the suggestion.",
+                    components: [],
+                    ephemeral: true
+                  });
 
                   like(oldemb);
                 }
@@ -223,7 +226,6 @@ const Discord = require("discord.js");
                   ephemeral: true,
                   components: []
                 });
-                
 
                 let filter = (m) => button.user.id === m.author.id;
 

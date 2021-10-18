@@ -372,18 +372,10 @@ export type betterBtnRoleOptions = ({
 })
 export declare function betterBtnRole(client: Client, interaction: CommandInteraction, options: betterBtnRoleOptions): Promise<void>;
 
-export type ytNotifyOptions = ({
-  /** Youtube channel ID from the URL */
-  ytID: string
-} | {
-  /** Youtube channel URL */
-  ytURL: string
-}) & {
-  /** Discord channel id to post message there */
+export type automemeOptions = ({
   chid: string,
-  /** This checks if the video is posted after starting the bot. */
-  startAt: Date,
-  /** Message sent when the youtuber posts a video */
-  msg?: string
-}
-export declare function ytNotify(client: Client, db: DB, options?: ytNotifyOptions): Promise<void>;
+  subReddits:  string[],
+  interval:  number,
+  embedColor: HexColorString,
+})
+export declare function automeme(client: Client, options?: automemeOptions): Promise<void>;

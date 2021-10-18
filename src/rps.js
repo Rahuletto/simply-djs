@@ -12,6 +12,26 @@ const colorMap = {
  * @param {import('../index').rpsOptions} options
  */
 
+/**
+ --- options ---
+ 
+  credit => Boolean
+  slash => Boolean
+
+  embedColor => HexColor
+  timeoutEmbedColor => HexColor
+  drawEmbedColor => HexColor
+  winEmbedColor => HexCOlor
+
+  rockColor => (ButtonColor) String
+  paperColor => (ButtonColor) String
+  scissorsColor => (ButtonColor) String
+
+  embedFoot => String
+
+  userSlash => String
+ */
+
 async function rps(msgOrInter, options = {}) {
   //Default values
   options.credit ??= true;
@@ -35,7 +55,7 @@ async function rps(msgOrInter, options = {}) {
   options.scissorsColor =
     colorMap[options.scissorsColor] || options.scissorsColor || "SECONDARY";
 
-  let foot = options.embedFooter;
+  let foot = options.embedFoot;
   if (options.credit === false) foot ??= "Rock Paper Scissors";
   else foot ??= "©️ Simply Develop. | By- ImpassiveMoon + Rahuletto";
 

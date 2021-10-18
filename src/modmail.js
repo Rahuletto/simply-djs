@@ -6,6 +6,24 @@ const Discord = require("discord.js");
  * @param {import('../index').modmailOptions} options
  */
 
+/**
+ --- options ---
+ 
+  credit => Boolean
+  dmToggle => Boolean
+  blacklistUser => Array (User ID)
+  blacklistGuild => Array (Guild ID)
+  categoryID => String
+
+  delColor => (ButtonColor) String
+  delEmoji => (Emoji ID) String
+
+  embedColor => HexColor
+  content => String
+
+  role => Array (Role ID)
+ */
+
 async function modmail(client, message, options = []) {
   let { MessageButton, MessageActionRow } = require("discord.js");
   try {

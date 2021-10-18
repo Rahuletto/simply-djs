@@ -29,6 +29,7 @@ yarn add simply-djs
 # 🎉 [What's New](https://simplyd.js.org/docs/whatsnew) 🎉
 - ### Customizability++ 85%+ Things in the package is now customizable.. So You dont need to modify the package.
 - ### New feature, nqn. 
+- ### Removed `ytNotify`
 - ### 50%+ New Options (Due to customizablity)
 - ### Typings Fixed (Thanks AKORA)
 - ### Refractoring (Cleaning) code.

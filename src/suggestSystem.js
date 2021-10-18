@@ -7,11 +7,28 @@ const Discord = require("discord.js");
  * @param {import('../index').suggestSystemOptions} options
  */
 
+/**
+ --- options ---
+ 
+  slash => Boolean
+  credit => Boolean
+  
+  chid => (Channel ID) String
+  sugSlash => String
+  
+  embedFoot => String
+  embedColor => HexColor
+
+  yesEmoji => (Emoji ID) String
+  yesColor => (ButtonColor) String
+  noEmoji => (Emoji ID) String
+  noColor => (ButtonColor) String
+ */
+
 async function suggestSystem(client, message, args, options = []) {
   try {
     if (options.slash === true) {
       let interaction = message;
-
 
       let channel = options.chid;
 
@@ -23,7 +40,9 @@ async function suggestSystem(client, message, args, options = []) {
           "INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support"
         );
 
-      let suggestion = interaction.options.getString(options.sugSlash || 'suggestion');
+      let suggestion = interaction.options.getString(
+        options.sugSlash || "suggestion"
+      );
 
       if (options.credit === false) {
         foot = options.embedFoot || "Suggestion arrived";

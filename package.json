@@ -1,6 +1,6 @@
 {
   "name": "simply-djs",
-  "version": "2.1.0-beta",
+  "version": "2.1.1-beta",
   "description": "A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v13",
   "main": "simplydjs.js",
   "typings": "index.d.ts",
@@ -64,7 +64,15 @@
     "giveaways",
     "button-giveaways",
     "button roles",
-    "slash"
+    "slash",
+    "nqn",
+    "xfinity",
+    "automeme",
+    "ai",
+    "steal",
+    "discord",
+    "djs",
+    "sdjs"
   ],
   "homepage": "https://simplyd.js.org",
   "author": "Rahuletto",
@@ -76,7 +84,7 @@
   "dependencies": {
     "ms": "^2.1.3",
     "quickmongo": "^3.0.0",
-    "rss-parser": "^3.12.0"
+    "node-fetch": "2.6.1"
   },
   "devDependencies": {
     "discord.js": "^13.2.0"

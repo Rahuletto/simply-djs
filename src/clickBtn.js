@@ -1,9 +1,38 @@
 const Discord = require("discord.js");
-const fs = require('fs')
+const fs = require("fs");
 
 /**
  * @param {Discord.ButtonInteraction} button
  * @param {import('../index').clickBtnOptions} options
+ */
+
+/**
+ --- options ---
+ 
+credit => Boolean
+ticketname => (Options {username} | {id} | {tag} ) String
+
+closeColor => (ButtonColor) String
+openColor => (ButtonColor) String
+delColor => (ButtonColor) String
+trColor => (ButtonColor) String
+
+cooldownMsg => String
+role => (Role ID) String
+categoryID => String
+
+embedDesc => String
+embedColor => HexColor
+
+delEmoji => (Emoji ID) String
+closeEmoji => (Emoji ID) String
+openEmoji => (Emoji ID) String
+trEmoji => (Emoji ID) String
+
+timeout => Boolean
+pingRole => (Role ID) String
+
+db => Database
  */
 
 async function clickBtn(button, options = []) {
@@ -54,8 +83,12 @@ async function clickBtn(button, options = []) {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
       if (button.customId === "create_ticket") {
-        let ticketname = options.ticketname.replace('{username}', button.user.username).replace('{id}', button.user.id).replace('{tag}', button.user.tag) || `ticket_${button.user.id}`
-        let topic = `ticket_${button.user.id}`
+        let ticketname =
+          options.ticketname
+            .replace("{username}", button.user.username)
+            .replace("{id}", button.user.id)
+            .replace("{tag}", button.user.tag) || `ticket_${button.user.id}`;
+        let topic = `ticket_${button.user.id}`;
         let antispamo = await button.guild.channels.cache.find(
           (ch) => ch.topic === topic.toLowerCase()
         );
@@ -161,12 +194,14 @@ async function clickBtn(button, options = []) {
                 .setCustomId("close_ticket");
 
               let closerow = new MessageActionRow().addComponents([close_btn]);
-                  let pingrole = ''
+              let pingrole = "";
 
-                  if(options.pingRole) {
-                    let rol = button.guild.roles.cache.find((r) => r.id === options.pingRole);
-                    pingrole = ` ${rol}`
-                  }
+              if (options.pingRole) {
+                let rol = button.guild.roles.cache.find(
+                  (r) => r.id === options.pingRole
+                );
+                pingrole = ` ${rol}`;
+              }
 
               ch.send({
                 content: `${button.user}${pingrole}`,
@@ -174,7 +209,8 @@ async function clickBtn(button, options = []) {
                 components: [closerow]
               });
 
-              if (options.timeout === true || !options.timeout) {
+              if (options.timeout === false) return;
+              else if (options.timeout === true || !options.timeout) {
                 setTimeout(() => {
                   ch.send({
                     content:
@@ -184,10 +220,52 @@ async function clickBtn(button, options = []) {
                   setTimeout(() => {
                     ch.delete();
                   }, 10000);
-                }, 600000);
-              } else if (options.timeout === false) return;
+                }, 10000);
+              }
             });
         }
+      }
+
+      if (button.customId === "tr_ticket") {
+        let messagecollection = await button.channel.messages.fetch({
+          limit: 100
+        });
+        let response = [];
+
+        messagecollection = messagecollection.sort(
+          (a, b) => a.createdTimestamp - b.createdTimestamp
+        );
+
+        messagecollection.forEach((m) => {
+          if (m.author.bot) return;
+          const attachment = m.attachments.first();
+          const url = attachment ? attachment.url : null;
+          if (url !== null) {
+            m.content = url;
+          }
+
+          response.push(`| ${m.author.tag} | => ${m.content}`);
+        });
+
+        await button.reply({
+          embeds: [
+            new Discord.MessageEmbed()
+              .setColor("#075FFF")
+              .setAuthor(
+                "Transcripting...",
+                "https://cdn.discordapp.com/emojis/757632044632375386.gif?v=1"
+              )
+          ]
+        });
+
+        let attach = new Discord.MessageAttachment(
+          Buffer.from(response.toString().replaceAll(",", "\n"), "utf-8"),
+          `${button.channel.topic}.txt`
+        );
+
+        setTimeout(async () => {
+          await button.editReply({ files: [attach], embeds: [] });
+        }, 3000);
       }
       if (button.customId === "close_ticket") {
         button.deferUpdate();
@@ -211,7 +289,17 @@ async function clickBtn(button, options = []) {
           .setLabel("Reopen")
           .setCustomId("open_ticket");
 
-        let row = new MessageActionRow().addComponents([open_btn, X_btn]);
+        let tr_btn = new MessageButton()
+          .setStyle(options.trColor || "PRIMARY")
+          .setEmoji(options.trEmoji || "📜")
+          .setLabel("Transcript")
+          .setCustomId("tr_ticket");
+
+        let row = new MessageActionRow().addComponents([
+          open_btn,
+          X_btn,
+          tr_btn
+        ]);
 
         let emb = new Discord.MessageEmbed()
           .setTitle("Ticket Created")
@@ -370,9 +458,7 @@ async function clickBtn(button, options = []) {
               ephemeral: true
             });
           }
-          
-            const numbers = new Set();
-            
+
           for (let i = 0; winnerNumber > i; i++) {
             let winnumber = Math.floor(Math.random() * wino.length);
             if (wino[winnumber] === undefined || wino[winnumber] === "null") {
@@ -382,15 +468,14 @@ async function clickBtn(button, options = []) {
             } else {
               if (!numbers.has(winnumber)) {
                 winner.push(
-                `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-                  ",",
-                  ""
-                )
-              )
+                  `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+                    ",",
+                    ""
+                  )
+                );
 
-              winboiz.push(`<@${wino[winnumber]}>`);
-                }
-              
+                winboiz.push(`<@${wino[winnumber]}>`);
+              }
               wino.splice(winnumber, 1);
               await db.set(
                 `giveaway_${button.message.id}_${wino[winnumber]}`,
@@ -481,9 +566,7 @@ async function clickBtn(button, options = []) {
               let winmsgreroll = await db.get(
                 `giveaway_${button.message.id}_yaywon`
               );
-              let winreroll = await button.channel.messages.fetch(
-                winmsgreroll
-              );
+              let winreroll = await button.channel.messages.fetch(winmsgreroll);
               const gothere = new Discord.MessageButton()
                 .setLabel("View Giveaway")
                 .setStyle("LINK")
@@ -498,15 +581,16 @@ async function clickBtn(button, options = []) {
                 .setTitle("You just won the giveaway.")
                 .setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
                 .setFooter("Dm the host to claim your prize 0_0");
-              if(!winreroll){
-                  button.channel.send({
-                  content: `Congrats ${winboiz}. You just won the giveaway.`,
-                  embeds: [embb],
-                  components: [ro]
-                })
-                .then(async (m) => {
-                  await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
-                });
+              if (!winreroll) {
+                button.channel
+                  .send({
+                    content: `Congrats ${winboiz}. You just won the giveaway.`,
+                    embeds: [embb],
+                    components: [ro]
+                  })
+                  .then(async (m) => {
+                    await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
+                  });
               }
               winreroll
                 .edit({
@@ -625,14 +709,14 @@ async function clickBtn(button, options = []) {
                 } else {
                   if (!numbers.has(winnumber)) {
                     winner.push(
-                    `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-                      ",",
-                      ""
-                    )
-                  )
-                  winboiz.push(`<@${wino[winnumber]}>`);
-                    }
-                  
+                      `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+                        ",",
+                        ""
+                      )
+                    );
+
+                    winboiz.push(`<@${wino[winnumber]}>`);
+                  }
                   wino.splice(winnumber, 1);
                   await db.set(
                     `giveaway_${button.message.id}_${wino[winnumber]}`,

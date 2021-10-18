@@ -8,6 +8,27 @@ let ms = require("ms");
  * @param {import('../index').giveawaySystemOptions} options
  */
 
+/**
+ --- options ---
+ 
+  slash => Boolean
+
+  chSlash => String
+  timeSlash => String 
+  winSlash => String
+  prizeSlash => String
+
+  embedTitle => String
+
+  args => Args
+  
+  prize => String
+  winners => String (Number)
+  channel => Channel
+  time => String
+  
+ */
+
 async function giveawaySystem(client, db, message, options = []) {
   try {
     if (options.slash === true) {
@@ -19,9 +40,13 @@ async function giveawaySystem(client, db, message, options = []) {
           ephemeral: true
         });
 
-      let ch = interaction.options.getChannel(options.chSlash || "channel") || interaction.channel;
+      let ch =
+        interaction.options.getChannel(options.chSlash || "channel") ||
+        interaction.channel;
       let time = interaction.options.getString(options.timeSlash || "time");
-      let winers = interaction.options.getInteger(options.winSlash || "winners");
+      let winers = interaction.options.getInteger(
+        options.winSlash || "winners"
+      );
       let prize = interaction.options.getString(options.prizeSlash || "prize");
 
       const enter = new Discord.MessageButton()

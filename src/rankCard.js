@@ -16,6 +16,20 @@ registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
  * @param {import('../index').rankCardOptions} options
  */
 
+/**
+ --- options ---
+ 
+  member => GuildMember
+  background => (Image URL) String
+  color => HexColor
+  rank => Number
+  currentXP => Number
+  level => Number
+  neededXP => Number
+
+  slash => Boolean
+ */
+
 async function rankCard(client, message, options = []) {
   try {
     function shortener(count) {
@@ -29,7 +43,9 @@ async function rankCard(client, message, options = []) {
     }
 
     const member =
-      options.member || message.mentions.members.first()?.user || message.author;
+      options.member ||
+      message.mentions.members.first()?.user ||
+      message.author;
     const canvas = Canvas.createCanvas(1080, 400),
       ctx = canvas.getContext("2d");
 
@@ -220,7 +236,6 @@ async function rankCard(client, message, options = []) {
     ctx.fillText(textXPEdited, 730, 180);
 
     if (options.slash === true) {
-
       const attachment = new Discord.MessageAttachment(
         canvas.toBuffer(),
         AttachmentName

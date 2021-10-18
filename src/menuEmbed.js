@@ -5,7 +5,29 @@ const Discord = require("discord.js");
  * @param {import('../index').dropdownPagesOptions} options
  */
 
- async function dropdownPages(message, options = []) {
+/**
+ --- options ---
+ 
+  type => (1/2) Number
+  data => {
+    label => String
+    desc => String
+    emoji => (Emoji ID) String
+    embed => Embed
+    }
+  rows => Array (ActionRows)
+
+  placeHolder => String
+  embed => Embed
+  
+  delOption => Boolean
+  delLabel => String
+  delDesc => String
+  delEmoji => (Emoji ID) String
+
+ */
+
+async function dropdownPages(message, options = []) {
   let { MessageActionRow, MessageSelectMenu } = require("discord.js");
   let typ = options.type || 1;
   let type = Number(typ);
@@ -40,15 +62,18 @@ const Discord = require("discord.js");
   }
   let delopt;
 
-  if(options.delOption === undefined || options.delOption !== false && options.delOption === true){
-  delopt = {
-    label: options.delLabel || "Delete",
-    description: options.delDesc || "Delete the Select Menu Embed",
-    value: "delete_menuemb",
-    emoji: options.delEmoji || "❌"
-  };
+  if (
+    options.delOption === undefined ||
+    (options.delOption !== false && options.delOption === true)
+  ) {
+    delopt = {
+      label: options.delLabel || "Delete",
+      description: options.delDesc || "Delete the Select Menu Embed",
+      value: "delete_menuemb",
+      emoji: options.delEmoji || "❌"
+    };
 
-  menuOptions.push(delopt);
+    menuOptions.push(delopt);
   }
 
   let slct = new MessageSelectMenu()
@@ -75,15 +100,19 @@ const Discord = require("discord.js");
 
     const collector = m.createMessageComponentCollector({
       type: "SELECT_MENU",
-      idle: 600000,
+      idle: 600000
     });
     collector.on("collect", async (menu) => {
       let selet = menu.values[0];
 
       if (selet === "delete_menuemb") {
-        if(message.user.id !== menu.user.id) return menu.reply({ content: 'You Cant delete the message as you didnt use that command', ephemeral: true }); else
-        if(message.user.id === menu.user.id) return menu.message.delete();
-        
+        if (message.user.id !== menu.user.id)
+          return menu.reply({
+            content:
+              "You Cant delete the message as you didnt use that command",
+            ephemeral: true
+          });
+        else if (message.user.id === menu.user.id) return menu.message.delete();
       }
       menu.deferUpdate();
 
@@ -92,7 +121,6 @@ const Discord = require("discord.js");
           if (type === 1) {
             menu.followUp({ embeds: [data[i].embed], ephemeral: true });
           } else if (type === 2) {
-
             menu.message.edit({ embeds: [data[i].embed] });
           }
         }
@@ -104,39 +132,45 @@ const Discord = require("discord.js");
       }
     });
   } else if (!message.commandId) {
-    message.reply({ embeds: [options.embed], components: rows }).then(async m => {
-      const collector = m.createMessageComponentCollector({
-      type: "SELECT_MENU",
-      idle: 600000,
-    });
-    collector.on("collect", async (menu) => {
-      let selet = menu.values[0];
+    message
+      .reply({ embeds: [options.embed], components: rows })
+      .then(async (m) => {
+        const collector = m.createMessageComponentCollector({
+          type: "SELECT_MENU",
+          idle: 600000
+        });
+        collector.on("collect", async (menu) => {
+          let selet = menu.values[0];
 
-      if (selet === "delete_menuemb") {
-        if(message.author.id !== menu.user.id) return menu.reply({ content: 'You Cant delete the message as you didnt use that command', ephemeral: true }); else
-        if(message.author.id === menu.user.id) return menu.message.delete();
-        
-      }
-
-  menu.deferUpdate();
-
-      for (let i = 0; i < data.length; i++) {
-        if (selet === data[i].label) {
-          if (type === 1) {
-            menu.followUp({ embeds: [data[i].embed], ephemeral: true });
-          } else if (type === 2) {
-
-            menu.message.edit({ embeds: [data[i].embed] });
+          if (selet === "delete_menuemb") {
+            if (message.author.id !== menu.user.id)
+              return menu.reply({
+                content:
+                  "You Cant delete the message as you didnt use that command",
+                ephemeral: true
+              });
+            else if (message.author.id === menu.user.id)
+              return menu.message.delete();
           }
-        }
-      }
-    });
-    collector.on("end", async (collected) => {
-      if (collected.size === 0) {
-        m.edit({ embeds: [options.embed], components: [] });
-      }
-    });
-    })
+
+          menu.deferUpdate();
+
+          for (let i = 0; i < data.length; i++) {
+            if (selet === data[i].label) {
+              if (type === 1) {
+                menu.followUp({ embeds: [data[i].embed], ephemeral: true });
+              } else if (type === 2) {
+                menu.message.edit({ embeds: [data[i].embed] });
+              }
+            }
+          }
+        });
+        collector.on("end", async (collected) => {
+          if (collected.size === 0) {
+            m.edit({ embeds: [options.embed], components: [] });
+          }
+        });
+      });
   }
 }
 
