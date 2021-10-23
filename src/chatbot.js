@@ -60,9 +60,11 @@ async function chatbot(client, message, options = {}) {
       .replace(emoteRegex.exec(emoj), "")
       .replace(animatedEmoteRegex.exec(emoj), "");
 
+      message.channel.sendTyping();
+
     // Using await instead of .then
     const jsonRes = await fetch(
-      `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${botName}&ownername=${developer}&user=${message.author.id}`
+      `https://api.affiliateplus.xyz/api/chatbot?message=${input}&botname=${botName}&ownername=${developer}&user=${message.author.id}&birthplace=Simply-DJS`
     ).then((res) => res.json()); // Parsing the JSON
 
     const chatbotReply = jsonRes.message

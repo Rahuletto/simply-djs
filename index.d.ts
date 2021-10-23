@@ -58,34 +58,34 @@ export type chatbotOptions = {
 export declare function chatbot(client: Client, message: Message, options?: chatbotOptions): Promise<void>;
 
 export type clickBtnOptions = {
-  /**  The Embed Description of the embed which is sent when the ticket has been opened */
   embedDesc?: string,
-  /** Database */
+  ticketname?: string,
+
+  pingRole?: string,
+
   db?: DB,
-  /** The Embed Color of the embed which is sent when the ticket has been opened */
   embedColor?: HexColorString,
-  /** Give credits to this package (Boolean[true / false]) Default: true */
   credit?: boolean,
-  // Close Ticket Button
-  /** The color of the Close Ticket Button */
-  closeColor: BtnColor,
-  /** The emoji for the Close Ticket Button */
-  closeEmoji: EmojiResolvable
-  //Delete Ticket Button
-  /** The color of the Delete Ticket Button */
-  delColor: BtnColor,
-  /** The emoji for the Delete Ticket Button */
-  delEmoji: string,
-  //Reopen Ticket Button
-  /** The color of the Delete Ticket Button */
-  openColor: BtnColor,
-  /**  The emoji for the Delete Ticket Button */
-  openEmoji: EmojiResolvable,
-  //Other
-  /** Timeout which deletes the ticket after 10 minutes to reduce clutter */
-  timeout: boolean,
-  /** Message sent when a ticket is already opened by the user. */
-  cooldownMsg: string
+
+  closeColor?: BtnColor,
+  closeEmoji?: EmojiResolvable
+
+  delColor?: BtnColor,
+  delEmoji?: EmojiResolvable,
+
+  openColor?: BtnColor,
+  openEmoji?: EmojiResolvable,
+
+  trColor?: BtnColor,
+  trEmoji?: EmojiResolvable,
+
+  timeout?: boolean,
+  cooldownMsg?: string,
+
+  role?: string,
+  categoryID?: string,
+
+
 }
 export declare function clickBtn(button: ButtonInteraction, options?: clickBtnOptions): Promise<void>;
 
@@ -95,60 +95,55 @@ export type embedCreateOptions = {
 export declare function embedCreate(message: Message | CommandInteraction, options?: embedCreateOptions): Promise<void>;
 
 export type embedPagesOptions = {
-  /** default: ⏪ */
+
   firstEmoji?: EmojiResolvable,
-  /** default: ◀️ */
   backEmoji?: EmojiResolvable,
-  /** default: 🗑️ */
   delEmoji?: EmojiResolvable,
-  /** default: ▶️ */
   forwardEmoji?: EmojiResolvable,
-  /** default: ⏩ */
   lastEmoji?: EmojiResolvable,
 
   /** Slash support */
   slash?: boolean,
 
-  /** default: SUCCESS */
   btncolor?: BtnColor,
-  /** default: true */
+
   delBtn?: boolean,
-  /** default: DANGER */
-  delcolor?: BtnColor, // 
-  /** Turn on/off the Last/First Page Buttons. */
+  delcolor?: BtnColor, 
+
   skipBtn: boolean
-  /** default: PRIMARY */
-  skipcolor?: BtnColor
+  skipcolor?: BtnColor,
+
+  pgCount: boolean
 }
 // client argument in the docs, but not in the code
 export declare function embedPages(message: CommandInteraction, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
 export declare function embedPages(message: Message, pages: MessageEmbed[], style?: embedPagesOptions): Promise<void>;
 
 export type ghostPingOptions = {
-  /** default: (*a long message*) */
   embedDesc?: string,
-  /** default: #075FFF */
   embedColor?: HexColorString,
-  /** default: 'Ghost Ping.' */
   embedFoot?: string,
-  /** Credit the package */
-  credits?: boolean
+  credits?: boolean,
+  logChannel?: string
 
 } | { embed: MessageEmbed }
 export declare function ghostPing(message: Message, options?: ghostPingOptions): Promise<void>;
 
 export type giveawaySystemOptions = {
-  /** Slash Support */
+
   slash?: boolean
-  /** Args when using message event (non slash) */
-  args: string[], //Not in the docs, but in the code
-  /** Giveaway Options */
+
+  args: string[],
   prize?: string,
   winners?: string,
   time?: string,
-  channel?: TextChannel, //Not in the docs, but in the code
+  channel?: TextChannel, 
 
-  /** Embed Customization */
+  prizeSlash?: string,
+  winSlash?: string,
+  timeSlash?: string,
+  chSlash?: string,
+
   embedTitle?: string, //Not in the docs, but in the code
 }
 export declare function giveawaySystem(client: Client, db: DB, interaction: CommandInteraction, options?: giveawaySystemOptions): Promise<any>;
@@ -166,6 +161,7 @@ export type dropdownPagesOptions = {
   embed: MessageEmbed,
   /** Label of the delete option in menu */
   delLabel?: string,
+  delOption?: boolean,
   /** Description of delete option in menu */
   delDesc?: string,
   /** Emoji of Delete Message Button */
@@ -231,6 +227,8 @@ export type rpsOptions = {
   scissorsColor?: BtnColor, // default: grey
   /** Slash support */
   slash?: boolean,
+
+  userSlash?: string,
   /** Credit the package */
   credit?: boolean
 }
@@ -309,6 +307,8 @@ export type suggestSystemOptions = {
   agreeEmbColor?: HexColorString,
   /** Slash support */
   slash?: boolean,
+
+  sugSlash?: string,
   /**  Give credits to this package(Boolean[true / false]) Default: true */
   credit?: boolean
 }
@@ -319,6 +319,7 @@ export type ticketSystemOptions = {
   //Embed
   /** The Description for the Ticket System Embed(Embed that has ticket button that opens a ticket) */
   embedDesc?: string,
+  slash?: boolean,
   /** The Color of the Ticket System Embed(Embed that has ticket button that opens a ticket) */
   embedColor?: HexColorString,
   /** The Footer for the Ticket System Embed(Embed that has ticket button that opens a ticket) */
@@ -349,7 +350,9 @@ export type tictactoeOptions = {
   /** Emoji for O user[Player 2] */
   oEmoji: EmojiResolvable,
   /** Emoji when the space is not occupied */
-  idleEmoji: EmojiResolvable
+  idleEmoji: EmojiResolvable,
+
+  userSlash?: string,
 }
 export declare function tictactoe(message: Message, options?: tictactoeOptions): Promise<any>;
 export declare function tictactoe(interaction: CommandInteraction, options?: tictactoeOptions): Promise<any>;
@@ -366,3 +369,5 @@ export type automemeOptions = ({
   embedColor: HexColorString,
 })
 export declare function automeme(client: Client, options?: automemeOptions): Promise<void>;
+
+export declare function nqn(message: Message): Promise<void>;
