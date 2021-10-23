@@ -148,16 +148,19 @@ async function embedPages(client, message, pages, style = {}) {
       if (!b.isButton()) return;
       if (b.message.id !== m.id) return;
 
+      b.deferUpdate();
+      
       if (style.slash) {
         if (b.user.id !== message.user.id) {
-          return b.reply({
+          return b.followUp({
             content: "You cant change the pages of that embed...",
             ephemeral: true
           });
         }
       } else {
         if (b.user.id !== message.author.id) {
-          return b.reply({
+            
+          return b.followUp({
             content: "You cant change the pages of that embed...",
             ephemeral: true
           });
@@ -189,10 +192,10 @@ async function embedPages(client, message, pages, style = {}) {
             components: [pageMovingButtons]
           });
         }
-        b.deferUpdate();
+        
       } else {
         b.message.delete();
-        b.reply({ content: "Message Deleted", ephemeral: true });
+        b.followUp({ content: "Message Deleted", ephemeral: true });
       }
     });
   } catch (err) {
