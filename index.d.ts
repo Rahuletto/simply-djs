@@ -24,9 +24,7 @@ export type btnroleOptions = {
   embed: MessageEmbed,
   data: {
     role: string,
-    /** default: *role name* */
     label?: string,
-    /** default: SECONDARY */
     color?: HexColorString,
     emoji?: EmojiResolvable,
   }[]
@@ -35,37 +33,26 @@ export declare function btnrole(client: Client, message: Message, options?: btnr
 
 export type bumpSystemOptions = {
   event: 'ready' | 'messageCreate'
-  /** Message when the event is messageCreate */
   message?: Message,
-  /** Channel id of the bump channel */
+  content?: string,
   chid: string[],
-  /** Embed that sends when the bump is needed */
   bumpEmbed?: MessageEmbed
-  /** Embed that sends when someone bumps the server */
   thanksEmbed?: MessageEmbed
 }
 export declare function bumpSystem(client: Client, db: DB, options?: bumpSystemOptions): Promise<any>;
 
 export type calculatorOptions = {
-  /** The Embed Color of the calculator embed, default: #075FFF */
   embedColor: HexColorString,
-  /** Slash support */
   slash?: boolean,
-  /**  Credit the package. (Only Boolean [true/false]) */
   credit?: boolean,
-  /** Have Custom Calculator footer when credits are false */
-  embedFooter?: string //Not in the docs, but in the code
+  embedFooter?: string
 }
 export declare function calculator(interaction: CommandInteraction, options?: calculatorOptions): Promise<void>;
 
 export type chatbotOptions = {
-  /** Channel id for where to speak (Can be an array) */
-  chid: string | string[], // Not a array in the docs
-  /** ChatBot name, default: Your bot name */
+  chid: string | string[],
   name?: string,
-  /** Toggle the chatbot */
-  toggle?: boolean //Not in the docs, but in the code
-  /** Your name */
+  toggle?: boolean,
   developer?: string
 }
 export declare function chatbot(client: Client, message: Message, options?: chatbotOptions): Promise<void>;

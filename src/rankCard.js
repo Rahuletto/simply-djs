@@ -1,15 +1,6 @@
 const Discord = require("discord.js");
 const { join } = require("path");
 
-const Canvas = require("canvas");
-const { registerFont } = require("canvas");
-registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
-  family: "Poppins-Regular"
-});
-registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
-  family: "Poppins-Bold"
-});
-
 /**
  * @param {Discord.Client} client
  * @param {Discord.Message} message
@@ -32,6 +23,15 @@ registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
 
 async function rankCard(client, message, options = []) {
   try {
+    const Canvas = require("canvas");
+const { registerFont } = require("canvas");
+registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
+  family: "Poppins-Regular"
+});
+registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
+  family: "Poppins-Bold"
+});
+
     function shortener(count) {
       const COUNT_ABBRS = ["", "k", "M", "T"];
 

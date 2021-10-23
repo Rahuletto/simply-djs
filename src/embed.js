@@ -14,6 +14,7 @@ embedColor => String
  */
 
 async function embed(message, options = []) {
+  let interaction = message;
   try {
     if (options.slash === true) {
       const {

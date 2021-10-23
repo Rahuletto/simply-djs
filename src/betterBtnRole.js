@@ -19,8 +19,6 @@ const Discord = require("discord.js");
  */
 
 async function betterBtnRole(client, interaction, options = []) {
-
-
   let { MessageButton, MessageActionRow } = require("discord.js");
 
   let ch = interaction.options.getChannel(options.chSlash || "channel");
@@ -44,8 +42,12 @@ async function betterBtnRole(client, interaction, options = []) {
     });
   if (options.type === "add") {
     try {
-      let label = interaction.options.getString(options.labelSlash || "label") || role.name;
-      let color = interaction.options.getString(options.styleSlash || "style") || "SECONDARY";
+      let label =
+        interaction.options.getString(options.labelSlash || "label") ||
+        role.name;
+      let color =
+        interaction.options.getString(options.styleSlash || "style") ||
+        "SECONDARY";
       let emoji = interaction.options.getString(options.emojiSlash || "emoji");
 
       if (msg.components) {
