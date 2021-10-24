@@ -12,6 +12,7 @@ const Discord = require("discord.js");
  */
 
 async function nqn(message) {
+let { client } = message
   if (message.author.bot) return;
   let msg = message.content;
 
