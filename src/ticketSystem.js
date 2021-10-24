@@ -6,6 +6,21 @@ const Discord = require("discord.js");
  * @param {import('../index').ticketSystemOptions} options
  */
 
+/**
+ --- options ---
+ 
+  color => (ButtonColor) String
+  emoji => (Emoji ID) String
+
+  credit => Boolean
+  slash => Boolean
+  
+  embedFoot => String
+  embedDesc => String
+  embedTitle => String
+  embedColor => HexColor
+ */
+
 async function ticketSystem(message, channel, options = []) {
   try {
     let { MessageButton, MessageActionRow } = require("discord.js");
@@ -46,7 +61,7 @@ async function ticketSystem(message, channel, options = []) {
     let a = new MessageActionRow().addComponents([ticketbtn]);
 
     let embed = new Discord.MessageEmbed()
-      .setTitle("Create a ticket")
+      .setTitle(options.embedTitle || "Create a ticket")
       .setDescription(
         options.embedDesc || "🎫 Create a ticket by clicking the button 🎫"
       )
@@ -56,7 +71,11 @@ async function ticketSystem(message, channel, options = []) {
       .setFooter(foot);
 
     try {
-      channel.send({ embeds: [embed], components: [a] });
+      if (options.slash === true || message.commandId) {
+        message.followUp("Done. Setting Ticket to that channel");
+        channel.send({ embeds: [embed], components: [a] });
+      } else if (options.slash === false || !message.commandId)
+        channel.send({ embeds: [embed], components: [a] });
     } catch (err) {
       channel.send({ content: "ERR OCCURED " + err });
     }

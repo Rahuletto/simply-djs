@@ -6,14 +6,24 @@ const Discord = require("discord.js");
  * @param {import('../index').betterBtnRoleOptions} options
  */
 
+/**
+ --- options ---
+
+ chSlash => String
+ idSlash => String
+ roleSlash => String
+ labelSlash => String
+ styleSlash => String
+ 
+ type => (add/remove) String
+ */
+
 async function betterBtnRole(client, interaction, options = []) {
-
-
   let { MessageButton, MessageActionRow } = require("discord.js");
 
-  let ch = interaction.options.getChannel("channel");
-  let msgid = interaction.options.getString("message");
-  let role = interaction.options.getRole("role");
+  let ch = interaction.options.getChannel(options.chSlash || "channel");
+  let msgid = interaction.options.getString(options.idSlash || "message");
+  let role = interaction.options.getRole(options.roleSlash || "role");
 
   let msg = await ch.messages.fetch(msgid).catch((e) => {});
 
@@ -32,9 +42,13 @@ async function betterBtnRole(client, interaction, options = []) {
     });
   if (options.type === "add") {
     try {
-      let label = interaction.options.getString("label") || role.name;
-      let color = interaction.options.getString("style") || "SECONDARY";
-      let emoji = interaction.options.getString("emoji");
+      let label =
+        interaction.options.getString(options.labelSlash || "label") ||
+        role.name;
+      let color =
+        interaction.options.getString(options.styleSlash || "style") ||
+        "SECONDARY";
+      let emoji = interaction.options.getString(options.emojiSlash || "emoji");
 
       if (msg.components) {
         for (let i = 0; msg.components.length > i; i++) {

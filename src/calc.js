@@ -1,72 +1,79 @@
 const Discord = require("discord.js");
-const math = require("mathjs");
 
 /**
  * @param {Discord.CommandInteraction} interaction
  * @param {import('../index').calculatorOptions} options
  */
 
+/**
+ --- options ---
+ 
+credit => Boolean
+embedFoot => String
+embedColor => Hex
+ */
+
 async function calculator(interaction, options = []) {
   try {
-    if (options.slash === true) {
+    let { MessageButton, MessageActionRow } = require("discord.js");
 
-      let { MessageButton, MessageActionRow } = require("discord.js");
+    let button = new Array([], [], [], [], []);
+    let row = [];
+    let text = [
+      "Clear",
+      "(",
+      ")",
+      "/",
+      "⌫",
+      "7",
+      "8",
+      "9",
+      "*",
+      "%",
+      "4",
+      "5",
+      "6",
+      "-",
+      "^",
+      "1",
+      "2",
+      "3",
+      "+",
+      "π",
+      ".",
+      "0",
+      "00",
+      "=",
+      "Delete"
+    ];
+    let current = 0;
+    if (options.credit === false) {
+      foot = options.embedFoot || "Calculator";
+    } else {
+      foot = "©️ Simply Develop. npm i simply-djs";
+    }
 
-      let button = new Array([], [], [], [], []);
-      let row = [];
-      let text = [
-        "Clear",
-        "(",
-        ")",
-        "/",
-        "⌫",
-        "7",
-        "8",
-        "9",
-        "*",
-        "!",
-        "4",
-        "5",
-        "6",
-        "-",
-        "^",
-        "1",
-        "2",
-        "3",
-        "+",
-        "π",
-        ".",
-        "0",
-        "00",
-        "=",
-        "Delete"
-      ];
-      let current = 0;
-      if (options.credit === false) {
-        foot = options.embedFoot || "Calculator";
-      } else {
-        foot = "©️ Simply Develop. npm i simply-djs";
+    for (let i = 0; i < text.length; i++) {
+      if (button[current].length === 5) current++;
+      button[current].push(createButton(text[i]));
+      if (i === text.length - 1) {
+        for (let btn of button) row.push(addRow(btn));
       }
+    }
 
-      for (let i = 0; i < text.length; i++) {
-        if (button[current].length === 5) current++;
-        button[current].push(createButton(text[i]));
-        if (i === text.length - 1) {
-          for (let btn of button) row.push(addRow(btn));
-        }
-      }
+    const emb = new Discord.MessageEmbed()
+      .setColor(options.embedColor || 0x075fff)
+      .setFooter(foot)
+      .setDescription("```0```");
 
-      const emb = new Discord.MessageEmbed()
-        .setColor(options.embedColor || 0x075fff)
-        .setFooter(foot)
-        .setDescription("```0```");
-
+    if (interaction.commandId) {
       await interaction
         .followUp({
           embeds: [emb],
           components: row
         })
         .then(async (mssg) => {
+          /** @type {Discord.Message} */
           const msg = await interaction.fetchReply();
 
           let isWrong = false;
@@ -80,6 +87,8 @@ async function calculator(interaction, options = []) {
             const filter = (button) =>
               button.user.id === interaction.user.id &&
               button.customId === "cal" + val;
+
+            /** @type {Discord.InteractionCollector<Discord.ButtonInteraction>}*/
             let collect = msg.createMessageComponentCollector({
               filter,
               componentType: "BUTTON",
@@ -98,7 +107,12 @@ async function calculator(interaction, options = []) {
               } else if (value === "0") value = val;
               else if (result) {
                 isWrong = true;
-                value = mathEval(value);
+                value = mathEval(
+                  value
+                    .replaceAll("^", "**")
+                    .replaceAll("%", "/100")
+                    .replace(" ", "")
+                );
               } else value += val;
               if (value.includes("⌫")) {
                 value = value.slice(0, -2);
@@ -135,93 +149,7 @@ async function calculator(interaction, options = []) {
             await msg.edit({ embeds: [emb1], components: [] });
           }, time);
         });
-
-      function addRow(btns) {
-        let row1 = new MessageActionRow();
-        for (let btn of btns) {
-          row1.addComponents(btn);
-        }
-        return row1;
-      }
-
-      function createButton(label, style = "SECONDARY") {
-        if (label === "Clear") style = "DANGER";
-        else if (label === "Delete") style = "DANGER";
-        else if (label === "⌫") style = "DANGER";
-        else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
-        else if (label === "^") style = "SECONDARY";
-        else if (label === ".") style = "PRIMARY";
-        else if (label === "=") style = "SUCCESS";
-        else if (isNaN(label)) style = "PRIMARY";
-        const btn = new MessageButton()
-          .setLabel(label)
-          .setStyle(style)
-          .setCustomId("cal" + label);
-        return btn;
-      }
-
-      function mathEval(input) {
-        try {
-          let res = `${input} = ${math.evaluate(input.replace("π", math.pi))}`;
-          return res;
-        } catch {
-          return "Wrong Input";
-        }
-      }
-    } else if (!options.slash || options.slash === false) {
-      let { MessageButton, MessageActionRow } = require("discord.js");
-
-      let button = new Array([], [], [], [], []);
-      let row = [];
-      let text = [
-        "Clear",
-        "(",
-        ")",
-        "/",
-        "⌫",
-        "7",
-        "8",
-        "9",
-        "*",
-        "!",
-        "4",
-        "5",
-        "6",
-        "-",
-        "^",
-        "1",
-        "2",
-        "3",
-        "+",
-        "π",
-        ".",
-        "0",
-        "00",
-        "=",
-        "Delete"
-      ];
-      let current = 0;
-
-      if (options.credit === false) {
-        foot = options.embedFoot || "Calculator";
-      } else {
-        foot = "©️ Simply Develop. npm i simply-djs";
-      }
-
-      for (let i = 0; i < text.length; i++) {
-        if (button[current].length === 5) current++;
-        button[current].push(createButton(text[i]));
-        if (i === text.length - 1) {
-          for (let btn of button) row.push(addRow(btn));
-        }
-      }
-
-      const emb = new Discord.MessageEmbed()
-        .setColor(options.embedColor || 0x075fff)
-        .setFooter(foot)
-        .setDescription("```0```");
-
+    } else if (!interaction.commandId) {
       await interaction
         .reply({
           embeds: [emb],
@@ -257,7 +185,12 @@ async function calculator(interaction, options = []) {
               } else if (value === "0") value = val;
               else if (result) {
                 isWrong = true;
-                value = mathEval(value);
+                value = mathEval(
+                  value
+                    .replaceAll("^", "**")
+                    .replaceAll("%", "/100")
+                    .replace(" ", "")
+                );
               } else value += val;
               if (value.includes("⌫")) {
                 value = value.slice(0, -2);
@@ -295,39 +228,46 @@ async function calculator(interaction, options = []) {
             await msg.edit({ embeds: [emb1], components: [] });
           }, time);
         });
+    }
 
-      function addRow(btns) {
-        let row1 = new MessageActionRow();
-        for (let btn of btns) {
-          row1.addComponents(btn);
-        }
-        return row1;
+    function addRow(btns) {
+      let row1 = new MessageActionRow();
+      for (let btn of btns) {
+        row1.addComponents(btn);
       }
+      return row1;
+    }
 
-      function createButton(label, style = "SECONDARY") {
-        if (label === "Clear") style = "DANGER";
-        else if (label === "Delete") style = "DANGER";
-        else if (label === "⌫") style = "DANGER";
-        else if (label === "π") style = "SECONDARY";
-        else if (label === "!") style = "SECONDARY";
-        else if (label === "^") style = "SECONDARY";
-        else if (label === ".") style = "PRIMARY";
-        else if (label === "=") style = "SUCCESS";
-        else if (isNaN(label)) style = "PRIMARY";
-        const btn = new MessageButton()
-          .setLabel(label)
-          .setStyle(style)
-          .setCustomId("cal" + label);
-        return btn;
-      }
+    function createButton(label, style = "SECONDARY") {
+      if (label === "Clear") style = "DANGER";
+      else if (label === "Delete") style = "DANGER";
+      else if (label === "⌫") style = "DANGER";
+      else if (label === "π") style = "SECONDARY";
+      else if (label === "%") style = "SECONDARY";
+      else if (label === "^") style = "SECONDARY";
+      else if (label === ".") style = "PRIMARY";
+      else if (label === "=") style = "SUCCESS";
+      else if (isNaN(label)) style = "PRIMARY";
+      const btn = new MessageButton()
+        .setLabel(label)
+        .setStyle(style)
+        .setCustomId("cal" + label);
+      return btn;
+    }
 
-      function mathEval(input) {
-        try {
-          let res = `${input} = ${math.evaluate(input.replace("π", math.pi))}`;
-          return res;
-        } catch {
-          return "Wrong Input";
-        }
+    const evalRegex = /^[0-9π\+\%\^\-*\/\.\(\)]*$/;
+    function mathEval(input) {
+      try {
+        const matched = evalRegex.exec(input);
+        if (!matched) return "Wrong Input";
+
+        return `${input
+          .replaceAll("**", "^")
+          .replaceAll("/100", "%")} = ${Function(
+          `"use strict";let π=Math.PI;return (${input})`
+        )()}`;
+      } catch {
+        return "Wrong Input";
       }
     }
   } catch (err) {

@@ -1,7 +1,29 @@
 const Discord = require("discord.js");
 const { join } = require("path");
 
-const Canvas = require("canvas");
+/**
+ * @param {Discord.Client} client
+ * @param {Discord.Message} message
+ * @param {import('../index').rankCardOptions} options
+ */
+
+/**
+ --- options ---
+ 
+  member => GuildMember
+  background => (Image URL) String
+  color => HexColor
+  rank => Number
+  currentXP => Number
+  level => Number
+  neededXP => Number
+
+  slash => Boolean
+ */
+
+async function rankCard(client, message, options = []) {
+  try {
+    const Canvas = require("canvas");
 const { registerFont } = require("canvas");
 registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
   family: "Poppins-Regular"
@@ -10,14 +32,6 @@ registerFont(join(__dirname, "Fonts", "Poppins-SemiBold.ttf"), {
   family: "Poppins-Bold"
 });
 
-/**
- * @param {Discord.Client} client
- * @param {Discord.Message} message
- * @param {import('../index').rankCardOptions} options
- */
-
-async function rankCard(client, message, options = []) {
-  try {
     function shortener(count) {
       const COUNT_ABBRS = ["", "k", "M", "T"];
 
@@ -29,16 +43,21 @@ async function rankCard(client, message, options = []) {
     }
 
     const member =
-      options.member || message.mentions.members.first()?.user || message.author;
+      options.member ||
+      message.mentions.members.first()?.user ||
+      message.author;
     const canvas = Canvas.createCanvas(1080, 400),
       ctx = canvas.getContext("2d");
 
+    const name = member.tag;
+    const noSymbols = string => string.replace(/[\u007f-\uffff]/g, "");
+    
     let BackgroundRadius = "20",
       BackGroundImg =
         options.background ||
         "https://media.discordapp.net/attachments/868506665102762034/876750913866461185/photo-1579546929518-9e396f3cc809.png?width=640&height=427",
       AttachmentName = "rank.png",
-      Username = member.tag,
+      Username = noSymbols(name),
       AvatarRoundRadius = "50",
       DrawLayerColor = "#000000",
       DrawLayerOpacity = "0.4",
@@ -220,7 +239,6 @@ async function rankCard(client, message, options = []) {
     ctx.fillText(textXPEdited, 730, 180);
 
     if (options.slash === true) {
-
       const attachment = new Discord.MessageAttachment(
         canvas.toBuffer(),
         AttachmentName

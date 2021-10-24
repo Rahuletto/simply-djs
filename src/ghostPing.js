@@ -5,6 +5,17 @@ const Discord = require("discord.js");
  * @param {import('../index').ghostPingOptions} options
  */
 
+/**
+ --- options ---
+ 
+  credit => Boolean
+  embedFoot => String
+  embedDesc => String
+  embedColor => HexColor
+  embed => Embed
+  logChannel => (Channel ID) String
+ */
+
 async function ghostPing(message, options = []) {
   if (message.mentions.users.first()) {
     if (options.credit === false) {
@@ -33,6 +44,13 @@ async function ghostPing(message, options = []) {
         message.channel
           .send({ embeds: [options.embed || chembed] })
           .then(async (msg) => {
+            if (options.logChannel) {
+              let ch = message.guild.channels.cache
+                .get(options.logChannel)
+                .catch(() => {});
+
+              ch.send({ embeds: [options.embed || chembed] });
+            }
             setTimeout(() => {
               msg.delete();
             }, 10000);

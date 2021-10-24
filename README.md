@@ -26,16 +26,16 @@ yarn add simply-djs
 ```
 <br>
  
-# 🎉 [What's New](https://simplyd.js.org/docs/whatsnew) 🎉
-- ### webhooks got removed (as webhooks are easy already)
-- ### giveawaySystem ! (new giveaways system so nuggies die XD)
-- ### betterBtnRole (BETA) ! Complex btn role which dont need data XD
-- ### Throws error when Interaction (slash command) is not deferred
-- ### suggestBtn does ephemeral replies
-- ### New JS Docs with it. (Thanks to AKORA#7997)
-- ### Most of the bugs dead (Bug Fixes)
+# 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
+- ### Customizability++ 85%+ Things in the package is now customizable.. So You dont need to modify the package.
+- ### New feature, nqn, automeme. 
+- ### Removed `ytNotify`
+- ### 50%+ New Options (Due to customizablity)
+- ### Typings Fixed (Thanks AKORA)
+- ### Refractoring (Cleaning) code.
+- ### Some Bug Fix.
+- ### Made Docs Cleaner, Simpler, Cooler
 
-- ### Docs has Search Box and interaction functions (in separate page)
 <br>
    
 ## **Need Help ? Join the [Discord Server](https://discord.gg/3JzDV9T5Fn)**

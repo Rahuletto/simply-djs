@@ -6,6 +6,15 @@ const Discord = require("discord.js");
  * @param {import('../index').starboardOptions} options
  */
 
+/**
+ --- options ---
+ 
+  min => Number
+  emoji => (Emoji ID) String
+  chid => (Channel ID) String
+  embedColor => HexColor
+ */
+
 async function starboard(client, reaction, options = []) {
   try {
     let minno = options.min || 2;

@@ -6,6 +6,18 @@ const Discord = require("discord.js");
  * @param {import('../index').stealEmojiOptions} options
  */
 
+/**
+ --- options ---
+ 
+  credit => Boolean
+
+  embedFoot => String
+  embedTitle => String
+  embedColor => HexColor
+
+  failedMsg => String
+ */
+
 async function stealEmoji(message, args, options = []) {
   try {
     if (!message.member.permissions.has("MANAGE_EMOJIS_AND_STICKERS"))

@@ -6,6 +6,16 @@ const Discord = require("discord.js");
  * @param {import('../index').stealStickerOptions} options
  */
 
+/**
+ --- options ---
+ 
+  credit => Boolean
+
+  embedFoot => String
+  embedTitle => String
+  embedColor => HexColor
+ */
+
 async function stealSticker(message, args, options = []) {
   try {
     let filter = (m) => m.author.id === message.author.id;

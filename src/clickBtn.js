@@ -1,8 +1,39 @@
 const Discord = require("discord.js");
+const fs = require("fs");
 
 /**
  * @param {Discord.ButtonInteraction} button
  * @param {import('../index').clickBtnOptions} options
+ */
+
+/**
+ --- options ---
+ 
+credit => Boolean
+ticketname => (Options {username} | {id} | {tag} ) String
+
+closeColor => (ButtonColor) String
+openColor => (ButtonColor) String
+delColor => (ButtonColor) String
+trColor => (ButtonColor) String
+
+cooldownMsg => String
+role => (Role ID) String
+categoryID => String
+
+embedDesc => String
+embedColor => HexColor
+embedTitle => String
+
+delEmoji => (Emoji ID) String
+closeEmoji => (Emoji ID) String
+openEmoji => (Emoji ID) String
+trEmoji => (Emoji ID) String
+
+timeout => Boolean
+pingRole => (Role ID) String
+
+db => Database
  */
 
 async function clickBtn(button, options = []) {
@@ -35,7 +66,7 @@ async function clickBtn(button, options = []) {
               );
           } else {
             button.reply({
-              content: `Gave you the role Name: ${real.name} | ID: ${real.id}`,
+              content: `Gave you the role ${real} | Name: ${real.name} | ID: ${real.id}`,
               ephemeral: true
             });
 
@@ -55,9 +86,29 @@ async function clickBtn(button, options = []) {
       if (button.customId === "create_ticket") {
         let ticketname = `ticket_${button.user.id}`;
 
+     if(options.ticketname){
+          ticketname = options.ticketname
+            .replace("{username}", button.user.username)
+            .replace("{id}", button.user.id)
+            .replace("{tag}", button.user.tag)
+       }
+
+        let topic = `Ticket-${button.user.id}`;
         let antispamo = await button.guild.channels.cache.find(
-          (ch) => ch.name === ticketname.toLowerCase()
+          (ch) => ch.topic === topic.toLowerCase()
         );
+
+        if (options.trColor) {
+          if (options.trColor === "grey") {
+            options.trColor = "SECONDARY";
+          } else if (options.trColor === "red") {
+            options.trColor = "DANGER";
+          } else if (options.trColor === "green") {
+            options.trColor = "SUCCESS";
+          } else if (options.trColor === "blurple") {
+            options.trColor = "PRIMARY";
+          }
+        }
 
         if (options.closeColor) {
           if (options.closeColor === "grey") {
@@ -117,8 +168,9 @@ async function clickBtn(button, options = []) {
           }
 
           button.guild.channels
-            .create(`ticket_${button.user.id}`, {
+            .create(ticketname, {
               type: "text",
+              topic: topic,
               parent: chparent,
               permissionOverwrites: [
                 {
@@ -159,14 +211,23 @@ async function clickBtn(button, options = []) {
                 .setCustomId("close_ticket");
 
               let closerow = new MessageActionRow().addComponents([close_btn]);
+              let pingrole = "";
+
+              if (options.pingRole) {
+                let rol = button.guild.roles.cache.find(
+                  (r) => r.id === options.pingRole
+                );
+                pingrole = ` ${rol}`;
+              }
 
               ch.send({
-                content: `${button.user}`,
+                content: `${button.user}${pingrole}`,
                 embeds: [emb],
                 components: [closerow]
               });
 
-              if (options.timeout === true || !options.timeout) {
+              if (options.timeout === false) return;
+              else if (options.timeout === true || !options.timeout) {
                 setTimeout(() => {
                   ch.send({
                     content:
@@ -176,10 +237,52 @@ async function clickBtn(button, options = []) {
                   setTimeout(() => {
                     ch.delete();
                   }, 10000);
-                }, 600000);
-              } else if (options.timeout === false) return;
+                }, 10000);
+              }
             });
         }
+      }
+
+      if (button.customId === "tr_ticket") {
+        let messagecollection = await button.channel.messages.fetch({
+          limit: 100
+        });
+        let response = [];
+
+        messagecollection = messagecollection.sort(
+          (a, b) => a.createdTimestamp - b.createdTimestamp
+        );
+
+        messagecollection.forEach((m) => {
+          if (m.author.bot) return;
+          const attachment = m.attachments.first();
+          const url = attachment ? attachment.url : null;
+          if (url !== null) {
+            m.content = url;
+          }
+
+          response.push(`| ${m.author.tag} | => ${m.content}`);
+        });
+
+        await button.reply({
+          embeds: [
+            new Discord.MessageEmbed()
+              .setColor("#075FFF")
+              .setAuthor(
+                "Transcripting...",
+                "https://cdn.discordapp.com/emojis/757632044632375386.gif?v=1"
+              )
+          ]
+        });
+
+        let attach = new Discord.MessageAttachment(
+          Buffer.from(response.toString().replaceAll(",", "\n"), "utf-8"),
+          `${button.channel.topic}.txt`
+        );
+
+        setTimeout(async () => {
+          await button.editReply({ files: [attach], embeds: [] });
+        }, 3000);
       }
       if (button.customId === "close_ticket") {
         button.deferUpdate();
@@ -203,7 +306,17 @@ async function clickBtn(button, options = []) {
           .setLabel("Reopen")
           .setCustomId("open_ticket");
 
-        let row = new MessageActionRow().addComponents([open_btn, X_btn]);
+        let tr_btn = new MessageButton()
+          .setStyle(options.trColor || "PRIMARY")
+          .setEmoji(options.trEmoji || "📜")
+          .setLabel("Transcript")
+          .setCustomId("tr_ticket");
+
+        let row = new MessageActionRow().addComponents([
+          open_btn,
+          X_btn,
+          tr_btn
+        ]);
 
         let emb = new Discord.MessageEmbed()
           .setTitle("Ticket Created")
@@ -232,7 +345,7 @@ async function clickBtn(button, options = []) {
           .catch((err) => {});
 
         let emb = new Discord.MessageEmbed()
-          .setTitle("Ticket Created")
+          .setTitle(options.embedTitle || "Ticket Created")
           .setDescription(
             options.embedDesc ||
               `Ticket has been raised by ${button.user}. We ask the Admins to summon here` +
@@ -370,13 +483,16 @@ async function clickBtn(button, options = []) {
               winboiz.push("\u200b");
               wino.splice(winnumber, 1);
             } else {
-              let winnee = winner.push(
-                `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-                  ",",
-                  ""
-                )
-              );
-              winboiz.push(`<@${wino[winnumber]}>`);
+              if (!numbers.has(winnumber)) {
+                winner.push(
+                  `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+                    ",",
+                    ""
+                  )
+                );
+
+                winboiz.push(`<@${wino[winnumber]}>`);
+              }
               wino.splice(winnumber, 1);
               await db.set(
                 `giveaway_${button.message.id}_${wino[winnumber]}`,
@@ -467,9 +583,7 @@ async function clickBtn(button, options = []) {
               let winmsgreroll = await db.get(
                 `giveaway_${button.message.id}_yaywon`
               );
-              let winreroll = await button.channel.messages.fetch(
-                winmsgreroll
-              );
+              let winreroll = await button.channel.messages.fetch(winmsgreroll);
               const gothere = new Discord.MessageButton()
                 .setLabel("View Giveaway")
                 .setStyle("LINK")
@@ -484,15 +598,16 @@ async function clickBtn(button, options = []) {
                 .setTitle("You just won the giveaway.")
                 .setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
                 .setFooter("Dm the host to claim your prize 0_0");
-              if(!winreroll){
-                  button.channel.send({
-                  content: `Congrats ${winboiz}. You just won the giveaway.`,
-                  embeds: [embb],
-                  components: [ro]
-                })
-                .then(async (m) => {
-                  await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
-                });
+              if (!winreroll) {
+                button.channel
+                  .send({
+                    content: `Congrats ${winboiz}. You just won the giveaway.`,
+                    embeds: [embb],
+                    components: [ro]
+                  })
+                  .then(async (m) => {
+                    await db.set(`giveaway_${button.message.id}_yaywon`, m.id);
+                  });
               }
               winreroll
                 .edit({
@@ -609,13 +724,16 @@ async function clickBtn(button, options = []) {
                   winboiz.push("\u200b");
                   wino.splice(winnumber, 1);
                 } else {
-                  let winnee = winner.push(
-                    `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-                      ",",
-                      ""
-                    )
-                  );
-                  winboiz.push(`<@${wino[winnumber]}>`);
+                  if (!numbers.has(winnumber)) {
+                    winner.push(
+                      `\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+                        ",",
+                        ""
+                      )
+                    );
+
+                    winboiz.push(`<@${wino[winnumber]}>`);
+                  }
                   wino.splice(winnumber, 1);
                   await db.set(
                     `giveaway_${button.message.id}_${wino[winnumber]}`,
