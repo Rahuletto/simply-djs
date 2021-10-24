@@ -23,6 +23,7 @@ categoryID => String
 
 embedDesc => String
 embedColor => HexColor
+embedTitle => String
 
 delEmoji => (Emoji ID) String
 closeEmoji => (Emoji ID) String
@@ -83,15 +84,31 @@ async function clickBtn(button, options = []) {
       let { MessageButton, MessageActionRow } = require("discord.js");
 
       if (button.customId === "create_ticket") {
-        let ticketname =
-          options.ticketname
+        let ticketname = `ticket_${button.user.id}`;
+
+     if(options.ticketname){
+          ticketname = options.ticketname
             .replace("{username}", button.user.username)
             .replace("{id}", button.user.id)
-            .replace("{tag}", button.user.tag) || `ticket_${button.user.id}`;
-        let topic = `ticket_${button.user.id}`;
+            .replace("{tag}", button.user.tag)
+       }
+
+        let topic = `Ticket-${button.user.id}`;
         let antispamo = await button.guild.channels.cache.find(
           (ch) => ch.topic === topic.toLowerCase()
         );
+
+        if (options.trColor) {
+          if (options.trColor === "grey") {
+            options.trColor = "SECONDARY";
+          } else if (options.trColor === "red") {
+            options.trColor = "DANGER";
+          } else if (options.trColor === "green") {
+            options.trColor = "SUCCESS";
+          } else if (options.trColor === "blurple") {
+            options.trColor = "PRIMARY";
+          }
+        }
 
         if (options.closeColor) {
           if (options.closeColor === "grey") {
@@ -328,7 +345,7 @@ async function clickBtn(button, options = []) {
           .catch((err) => {});
 
         let emb = new Discord.MessageEmbed()
-          .setTitle("Ticket Created")
+          .setTitle(options.embedTitle || "Ticket Created")
           .setDescription(
             options.embedDesc ||
               `Ticket has been raised by ${button.user}. We ask the Admins to summon here` +
