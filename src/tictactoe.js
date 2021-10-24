@@ -23,7 +23,10 @@ const Discord = require("discord.js");
  */
 
 async function tictactoe(message, options = []) {
+  
   try {
+    const { client } = message;
+    
     if (options.slash === true) {
       let opponent = message.options.getUser(options.userSlash || "user");
 

@@ -26,14 +26,15 @@ yarn add simply-djs
 ```
 <br>
  
-# 🎉 [What's New](https://simplyd.js.org/docs/whatsnew) 🎉
+# 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 - ### Customizability++ 85%+ Things in the package is now customizable.. So You dont need to modify the package.
-- ### New feature, nqn. 
+- ### New feature, nqn, automeme. 
 - ### Removed `ytNotify`
 - ### 50%+ New Options (Due to customizablity)
 - ### Typings Fixed (Thanks AKORA)
 - ### Refractoring (Cleaning) code.
 - ### Some Bug Fix.
+- ### Made Docs Cleaner, Simpler, Cooler
 
 <br>
    

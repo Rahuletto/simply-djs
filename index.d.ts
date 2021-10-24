@@ -16,7 +16,7 @@ import {
 import { Database } from 'quickmongo';
 
 export type DB = Database;
-/** Colors that discord.js support */
+
 type BtnColor = MessageButtonStyle;
 type HexColorString = `#${string}` | string;
 
