@@ -481,16 +481,15 @@ async function clickBtn(button, options = []) {
 							winboiz.push('\u200b')
 							wino.splice(winnumber, 1)
 						} else {
-							if (!numbers.has(winnumber)) {
-								winner.push(
-									`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-										',',
-										''
-									)
+							winner.push(
+								`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+									',',
+									''
 								)
+							)
 
-								winboiz.push(`<@${wino[winnumber]}>`)
-							}
+							winboiz.push(`<@${wino[winnumber]}>`)
+
 							wino.splice(winnumber, 1)
 							await db.set(
 								`giveaway_${button.message.id}_${wino[winnumber]}`,
@@ -714,16 +713,14 @@ async function clickBtn(button, options = []) {
 									winboiz.push('\u200b')
 									wino.splice(winnumber, 1)
 								} else {
-									if (!numbers.has(winnumber)) {
-										winner.push(
-											`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-												',',
-												''
-											)
+									winner.push(
+										`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+											',',
+											''
 										)
+									)
 
-										winboiz.push(`<@${wino[winnumber]}>`)
-									}
+									winboiz.push(`<@${wino[winnumber]}>`)
 									wino.splice(winnumber, 1)
 									await db.set(
 										`giveaway_${button.message.id}_${wino[winnumber]}`,
@@ -731,6 +728,7 @@ async function clickBtn(button, options = []) {
 									)
 								}
 							}
+
 							let entero = await db.get(`giveaway_entered_${button.message.id}`)
 
 							const embedd = new Discord.MessageEmbed()

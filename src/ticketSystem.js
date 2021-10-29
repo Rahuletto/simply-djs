@@ -75,7 +75,7 @@ async function ticketSystem(message, channel, options = []) {
 				message.followUp('Done. Setting Ticket to that channel')
 				channel.send({ embeds: [embed], components: [a] })
 			} else if (options.slash === false || !message.commandId)
-				channel.send({ embeds: [embed], components: [a] })
+				{ channel.send({ embeds: [embed], components: [a] }) }
 		} catch (err) {
 			channel.send({ content: 'ERR OCCURED ' + err })
 		}

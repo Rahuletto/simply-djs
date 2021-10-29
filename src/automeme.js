@@ -59,6 +59,10 @@ async function automeme(client, options = []) {
 		fetch(`https://www.reddit.com/r/${sub[random]}/random/.json`)
 			.then((res) => res.json())
 			.then((response) => {
+
+				if(!response) return;
+				if(!response[0].data) return;
+				
 				let perma = response[0].data.children[0].data.permalink
 				let url = `https://reddit.com${perma}`
 				let memeImage =
@@ -68,7 +72,7 @@ async function automeme(client, options = []) {
 				let upp = response[0].data.children[0].data.ups
 				let ratio = response[0].data.children[0].data.upvote_ratio
 
-				const embed = new MessageEmbed()
+				const embed = new Discord.MessageEmbed()
 					.setTitle(`${title}`)
 					.setURL(`${url}`)
 					.setImage(memeImage)

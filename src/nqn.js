@@ -46,10 +46,10 @@ async function nqn(message) {
 	if (msg === message.content) return
 
 	let webhook = await message.channel.fetchWebhooks()
-	webhook = webhook.find((x) => x.name === 'simply-djs | CyberJack')
+	webhook = webhook.find((x) => x.name === 'simply-djs | CTK')
 
 	if (!webhook) {
-		webhook = await message.channel.createWebhook('simply-djs | CyberJack', {
+		webhook = await message.channel.createWebhook('simply-djs | CTK', {
 			avatar: client.user.displayAvatarURL({ dynamic: true })
 		})
 	}
@@ -65,7 +65,7 @@ async function nqn(message) {
 	webhook.send(msg).catch((err) => {})
 
 	await webhook.edit({
-		name: 'simply-djs | CyberJack',
+		name: 'simply-djs | CTK',
 		avatar: client.user.displayAvatarURL({ dynamic: true })
 	})
 }
