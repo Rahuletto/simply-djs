@@ -1,5 +1,9 @@
 .github
 .gitignore
+.husky
+.vscode
+.prettierrc.json
+**/*.tgz
 Examples
 FUNDING.yml
 README.md
