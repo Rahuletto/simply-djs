@@ -28,7 +28,7 @@ yarn add simply-djs
  
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 - ### Customizability++ 85%+ Things in the package is now customizable.. So You dont need to modify the package.
-- ### New feature, nqn, automeme. 
+- ### New feature, `nqn`, `automeme`. 
 - ### Removed `ytNotify`
 - ### 50%+ New Options (Due to customizablity)
 - ### Typings Fixed (Thanks AKORA)
@@ -37,9 +37,20 @@ yarn add simply-djs
 - ### Made Docs Cleaner, Simpler, Cooler
 
 <br>
-   
+
+# But Why ?
+- Simplifies things in discord.js
+- Fastest Support ever
+- Ultra Customizable
+- Beginner Friendly
+- Easier than other packages
+- Full Slash Support
+- 21 Functions
+- Single line can make big stuff
+- Simple & Understandable **[Documentation](https://simplyd.js.org)**
+
 ## **Need Help ? Join the [Discord Server](https://discord.gg/3JzDV9T5Fn)**
-### We love to help people. Join the server. Dont be shy.
+
 <br>
    
  <h1>👥 Contact us | Support</h1>
