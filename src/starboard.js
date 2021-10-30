@@ -19,7 +19,7 @@ async function starboard(client, reaction, options = []) {
 	try {
 		let minno = options.min || 2
 		let min = Number(minno)
-		if (!min || min === NaN)
+		if (!min || isNaN(min))
 			throw new Error(
 				'MIN_IS_NAN | Minimum stars number is Not A Number. Try again.'
 			)
