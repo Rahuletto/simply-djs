@@ -7,20 +7,6 @@ const { join } = require('path')
  * @param {import('../index').rankCardOptions} options
  */
 
-/**
- --- options ---
- 
-  member => GuildMember
-  background => (Image URL) String
-  color => HexColor
-  rank => Number
-  currentXP => Number
-  level => Number
-  neededXP => Number
-
-  slash => Boolean
- */
-
 async function rankCard(client, message, options = []) {
 	try {
 		const Canvas = require('canvas')
@@ -31,6 +17,10 @@ async function rankCard(client, message, options = []) {
 		registerFont(join(__dirname, 'Fonts', 'Poppins-SemiBold.ttf'), {
 			family: 'Poppins-Bold'
 		})
+
+		console.log(
+			'rankCard has been deprecated.. Will get deleted soon.. Use other rankCard generators or use simply-xp. https://www.npmjs.com/package/simply-xp'
+		)
 
 		function shortener(count) {
 			const COUNT_ABBRS = ['', 'k', 'M', 'T']

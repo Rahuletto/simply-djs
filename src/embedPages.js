@@ -105,14 +105,6 @@ async function embedPages(client, message, pages, style = {}) {
 		/** @type {Discord.Message} */
 		var m
 
-		if (message instanceof Discord.Interaction && !style.slash) {
-			throw new Error(
-				'You provided a Interaction but set the slash option to false'
-			)
-		} else if (message instanceof Discord.Message && style.slash) {
-			throw new Error('You provided a Message but set the slash option to true')
-		}
-
 		if (style.slash) {
 			if (style.pgCount) {
 				await message.followUp({
@@ -150,17 +142,11 @@ async function embedPages(client, message, pages, style = {}) {
 
 			if (style.slash) {
 				if (b.user.id !== message.user.id) {
-					return b.followUp({
-						content: 'You cant change the pages of that embed...',
-						ephemeral: true
-					})
+					return
 				}
 			} else {
 				if (b.user.id !== message.author.id) {
-					return b.followUp({
-						content: 'You cant change the pages of that embed...',
-						ephemeral: true
-					})
+					return
 				}
 			}
 
@@ -191,7 +177,6 @@ async function embedPages(client, message, pages, style = {}) {
 				}
 			} else {
 				b.message.delete()
-				b.followUp({ content: 'Message Deleted', ephemeral: true })
 			}
 		})
 	} catch (err) {

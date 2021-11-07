@@ -108,14 +108,6 @@ async function rps(msgOrInter, options = {}) {
 		.setFooter(foot)
 
 	try {
-		if (msgOrInter.commandId && !options.slash) {
-			throw new Error(
-				'You provided a Interaction but set the slash option to false'
-			)
-		} else if (msgOrInter.mentions && options.slash) {
-			throw new Error('You provided a Message but set the slash option to true')
-		}
-
 		if (options.slash) {
 			/** @type {Discord.CommandInteraction} */
 			const interaction = msgOrInter

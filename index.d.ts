@@ -82,6 +82,12 @@ export type clickBtnOptions = {
 	embedColor?: HexColorString
 	credit?: boolean
 
+	embed?: MessageEmbed
+	logembed?: MessageEmbed
+	aysEmb?: MessageEmbed
+
+	logChannel?: string
+
 	closeColor?: BtnColor
 	closeEmoji?: EmojiResolvable
 
@@ -107,6 +113,11 @@ export declare function clickBtn(
 
 export type embedCreateOptions = {
 	slash?: boolean
+
+	embed?: MessageEmbed
+
+	embedFoot?: string
+	credit?: boolean
 }
 export declare function embedCreate(
 	message: Message | CommandInteraction,
@@ -346,6 +357,7 @@ export type stealStickerOptions = {
 	embedFoot?: string
 	/** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
 	credit?: boolean
+	slash?: boolean
 }
 export declare function stealSticker(
 	message: Message,
@@ -413,6 +425,8 @@ export type ticketSystemOptions = {
 	embedFoot?: string
 	/** Give credits to this package(Boolean[true / false]) Default: true */
 	credit?: boolean
+
+	embed?: MessageEmbed
 	//Buttons
 	/** The Emoji for the Ticket Button which opens a ticket */
 	emoji?: EmojiResolvable
@@ -444,6 +458,8 @@ export type tictactoeOptions = {
 	idleEmoji: EmojiResolvable
 
 	userSlash?: string
+
+	resultBtn?: boolean
 }
 export declare function tictactoe(
 	message: Message,

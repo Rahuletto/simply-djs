@@ -10,6 +10,7 @@ const Discord = require('discord.js')
  --- options ---
  
   credit => Boolean
+  slash => Boolean
 
   embedFoot => String
   embedTitle => String

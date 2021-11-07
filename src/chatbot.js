@@ -65,9 +65,8 @@ async function chatbot(client, message, options = {}) {
 		params.set('age', age)
 		params.set('birthyear', client.user.createdAt.getFullYear())
 		params.set('birthdate', client.user.createdAt.toLocaleDateString())
-		params.set('birthplace', 'Simply-DJS')
+		params.set('birthplace', 'Simply-Develop')
 		params.set('location', message.guild.name)
-		params.set('company', 'Simply-DJS')
 		params.set('user', message.author.id)
 
 		// Using await instead of .then
