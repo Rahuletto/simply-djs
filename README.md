@@ -37,6 +37,7 @@ yarn add simply-djs
 - ### ticketSystem Redefined ! Custom Embeds, Log Channels, etc..
 - ### stealSticker got Slash Support
 - ### clickBtn and suggestBtn rewritten. 50% Less Errors
+- ### embedPages Rewritten !
 - ### Bug Fixes
 
 <br>

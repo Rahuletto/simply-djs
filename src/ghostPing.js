@@ -45,9 +45,9 @@ async function ghostPing(message, options = []) {
 					.send({ embeds: [options.embed || chembed] })
 					.then(async (msg) => {
 						if (options.logChannel) {
-							let ch = message.guild.channels.cache
-								.get(options.logChannel)
-								.catch(() => {})
+							let ch = message.guild.channels.cache.get(options.logChannel)
+
+							if (!ch) return
 
 							ch.send({ embeds: [options.embed || chembed] })
 						}

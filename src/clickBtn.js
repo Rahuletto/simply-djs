@@ -14,7 +14,7 @@ ticketname => (Options {username} | {id} | {tag} ) String
 
 embed => Embed
 logembed => Embed
-aysEmb => Embed
+confirmEmb => Embed
 
 logChannel => (Channel ID) String
 
@@ -197,10 +197,20 @@ async function clickBtn(button, options = []) {
 
 							if (options.role && Array.isArray(options.role)) {
 								options.role.forEach((e) => {
-									lep.push(e)
+									let rw = button.guild.roles.cache.find((r) => r.id === e)
+
+									if (rw) {
+										lep.push(e)
+									}
 								})
 							} else if (options.role && !Array.isArray(options.role)) {
-								lep.push(options.role)
+								let rew = button.guild.roles.cache.find(
+									(r) => r.id === options.role
+								)
+
+								if (rew) {
+									lep.push(options.role)
+								}
 							}
 
 							if (options.pingRole && Array.isArray(options.pingRole)) {
@@ -451,7 +461,10 @@ async function clickBtn(button, options = []) {
 					.setColor('#c90000')
 					.setFooter(foot)
 
-				button.followUp({ embeds: [options.aysEmb || emb], components: [row1] })
+				button.followUp({
+					embeds: [options.confirmEmb || emb],
+					components: [row1]
+				})
 			}
 
 			if (button.customId === 's_ticket') {

@@ -84,7 +84,7 @@ export type clickBtnOptions = {
 
 	embed?: MessageEmbed
 	logembed?: MessageEmbed
-	aysEmb?: MessageEmbed
+	confirmEmb?: MessageEmbed
 
 	logChannel?: string
 

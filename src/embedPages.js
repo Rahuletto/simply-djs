@@ -40,7 +40,6 @@ async function embedPages(client, message, pages, style = {}) {
 	style.pgCount ??= false
 	style.skipBtn ??= true
 	style.delBtn ??= true
-	style.slash ??= true
 
 	try {
 		if (!pages)
@@ -49,27 +48,27 @@ async function embedPages(client, message, pages, style = {}) {
 			)
 
 		//Defining all buttons
-		const firstBtn = new MessageButton()
+		let firstBtn = new MessageButton()
 			.setCustomId('first_embed')
 			.setEmoji(style.firstEmoji)
 			.setStyle(style.skipcolor)
 
-		const forwardBtn = new MessageButton()
+		let forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
 			.setEmoji(style.forwardEmoji)
 			.setStyle(style.btncolor)
 
-		const backBtn = new MessageButton()
+		let backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
 			.setEmoji(style.backEmoji)
 			.setStyle(style.btncolor)
 
-		const lastBtn = new MessageButton()
+		let lastBtn = new MessageButton()
 			.setCustomId('last_embed')
 			.setEmoji(style.lastEmoji)
 			.setStyle(style.skipcolor)
 
-		const deleteBtn = new MessageButton()
+		let deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
 			.setEmoji(style.delEmoji)
 			.setStyle(style.delcolor)
@@ -105,17 +104,19 @@ async function embedPages(client, message, pages, style = {}) {
 		/** @type {Discord.Message} */
 		var m
 
-		if (style.slash) {
+		if (style.slash === true) {
 			if (style.pgCount) {
 				await message.followUp({
 					content: `***Page: 1/${pages.length}***`,
 					embeds: [pages[0]],
-					components: [pageMovingButtons]
+					components: [pageMovingButtons],
+					allowedMentions: { repliedUser: false }
 				})
 			} else {
 				await message.followUp({
 					embeds: [pages[0]],
-					components: [pageMovingButtons]
+					components: [pageMovingButtons],
+					allowedMentions: { repliedUser: false }
 				})
 			}
 			m = await message.fetchReply()
@@ -124,23 +125,29 @@ async function embedPages(client, message, pages, style = {}) {
 				m = await message.reply({
 					content: `***Page: 1/${pages.length}***`,
 					embeds: [pages[0]],
-					components: [pageMovingButtons]
+					components: [pageMovingButtons],
+					allowedMentions: { repliedUser: false }
 				})
 			} else {
 				m = await message.reply({
 					embeds: [pages[0]],
-					components: [pageMovingButtons]
+					components: [pageMovingButtons],
+					allowedMentions: { repliedUser: false }
 				})
 			}
 		}
 
-		client.on('interactionCreate', async (b) => {
+		let collector = m.createMessageComponentCollector({
+			time: style.timeout || 120000
+		})
+
+		collector.on('collect', async (b) => {
 			if (!b.isButton()) return
 			if (b.message.id !== m.id) return
 
 			b.deferUpdate()
 
-			if (style.slash) {
+			if (style.slash === true) {
 				if (b.user.id !== message.user.id) {
 					return
 				}
@@ -167,20 +174,84 @@ async function embedPages(client, message, pages, style = {}) {
 					m.edit({
 						content: `***Page: ${currentPage + 1}/${pages.length}***`,
 						embeds: [pages[currentPage]],
-						components: [pageMovingButtons]
+						components: [pageMovingButtons],
+						allowedMentions: { repliedUser: false }
 					})
 				} else {
 					m.edit({
 						embeds: [pages[currentPage]],
-						components: [pageMovingButtons]
+						components: [pageMovingButtons],
+						allowedMentions: { repliedUser: false }
 					})
 				}
 			} else {
 				b.message.delete()
 			}
 		})
+
+		collector.on('end', async (collected) => {
+			firstBtn = new MessageButton()
+				.setCustomId('first_embed')
+				.setEmoji(style.firstEmoji)
+				.setStyle(style.skipcolor)
+				.setDisabled(true)
+
+			forwardBtn = new MessageButton()
+				.setCustomId('forward_button_embed')
+				.setEmoji(style.forwardEmoji)
+				.setStyle(style.btncolor)
+				.setDisabled(true)
+
+			backBtn = new MessageButton()
+				.setCustomId('back_button_embed')
+				.setEmoji(style.backEmoji)
+				.setStyle(style.btncolor)
+				.setDisabled(true)
+
+			lastBtn = new MessageButton()
+				.setCustomId('last_embed')
+				.setEmoji(style.lastEmoji)
+				.setStyle(style.skipcolor)
+				.setDisabled(true)
+
+			deleteBtn = new MessageButton()
+				.setCustomId('delete_embed')
+				.setEmoji(style.delEmoji)
+				.setStyle(style.delcolor)
+				.setDisabled(true)
+
+			//Creating the MessageActionRow
+			pageMovingButtons = new MessageActionRow()
+			if (style.skipBtn == true) {
+				if (style.delBtn) {
+					pageMovingButtons.addComponents([
+						firstBtn,
+						backBtn,
+						deleteBtn,
+						forwardBtn,
+						lastBtn
+					])
+				} else {
+					pageMovingButtons.addComponents([
+						firstBtn,
+						backBtn,
+						forwardBtn,
+						lastBtn
+					])
+				}
+			} else {
+				if (style.delBtn) {
+					pageMovingButtons.addComponents([backBtn, deleteBtn, forwardBtn])
+				} else {
+					pageMovingButtons.addComponents([backBtn, forwardBtn])
+				}
+			}
+
+			m.edit({ components: [pageMovingButtons] })
+		})
 	} catch (err) {
 		console.log(`Error Occured. | embedPages | Error: ${err.stack}`)
 	}
 }
+
 module.exports = embedPages
