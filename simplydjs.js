@@ -52,6 +52,8 @@ module.exports.tictactoe = require('./src/tictactoe')
 module.exports.rps = require('./src/rps')
 
 module.exports.chatbot = require('./src/chatbot')
+
+module.exports.rickroll = require('src/rickroll.js')
 // Systems
 module.exports.ticketSystem = require('./src/ticketSystem')
 module.exports.clickBtn = require('./src/clickBtn')
