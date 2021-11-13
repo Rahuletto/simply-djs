@@ -237,6 +237,9 @@ export type modmailOptions = {
 	content?: string
 	/** Support Role ID (also mentions when creating if there is no options.content) */
 	role?: string
+	pingRole?: string
+
+	mailname?: string
 	/** Toggle ON/OFF the dm modmail feature, default: true */
 	dmToggle?: boolean
 	/** Blacklist users if they are spamming */
@@ -250,6 +253,9 @@ export type modmailOptions = {
 	delColor?: BtnColor
 	/** Emoji that the button has.. (Emoji ID), default: '❌' */
 	delEmoji?: EmojiResolvable
+
+	trColor?: BtnColor
+	trEmoji?: EmojiResolvable
 	/** Give credits to the package by making it true */
 	credit?: boolean
 }

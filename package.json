@@ -1,6 +1,6 @@
 {
 	"name": "simply-djs",
-	"version": "2.2.1-beta",
+	"version": "2.2.0",
 	"description": "A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v13",
 	"main": "simplydjs.js",
 	"typings": "index.d.ts",
@@ -75,7 +75,10 @@
 		"djs",
 		"sdjs",
 		"memez",
-		"dankmemer"
+		"dankmemer",
+		"updates",
+		"bot",
+		"disc"
 	],
 	"homepage": "https://simplyd.js.org",
 	"author": "Rahuletto",

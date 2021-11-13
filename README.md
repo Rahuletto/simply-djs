@@ -38,6 +38,7 @@ yarn add simply-djs
 - ### stealSticker got Slash Support
 - ### clickBtn and suggestBtn rewritten. 50% Less Errors
 - ### embedPages Rewritten !
+- ### modmail Redefined ! Bug Fixes, Transcript, etc..
 - ### Bug Fixes
 
 <br>
