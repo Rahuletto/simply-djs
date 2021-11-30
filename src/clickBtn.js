@@ -755,6 +755,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'end-giveaway') {
+				button.deferUpdate()
 				if (!button.member.permissions.has('ADMINISTRATOR')) {
 					button.followUp({
 						content: 'Only Admins can End the giveaway..',

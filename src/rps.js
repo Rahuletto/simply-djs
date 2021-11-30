@@ -169,6 +169,7 @@ async function rps(msgOrInter, options = {}) {
 					.setDescription('Select 🪨, 📄, or ✂️')
 
 				await interaction.editReply({
+					content: '**Lets play..**',
 					embeds: [selectEmbed],
 					components: [rpsComponents]
 				})
@@ -192,15 +193,19 @@ async function rps(msgOrInter, options = {}) {
 					ids.delete(b.user.id)
 
 					await b.deferUpdate()
+
 					if (b.user.id === opponent.id) op = b.customId
 					if (b.user.id === interaction.user.id) auth = b.customId
 
 					if (ids.size == 0) btnCollector.stop()
+
+					console.log(op, auth)
 				})
 
 				btnCollector.on('end', async (coll, reason) => {
 					if (reason === 'time') {
 						await interaction.editReply({
+							content: '** **',
 							embeds: [timeoutEmbed],
 							components: []
 						})
@@ -213,11 +218,16 @@ async function rps(msgOrInter, options = {}) {
 
 						if (op === auth) {
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle('Draw!')
 										.setColor(options.drawEmbedColor)
-										.setDescription(`Both players chose **${op}**`)
+										.setDescription(
+											`Both players chose **${
+												op.charAt(0).toUpperCase() + op.slice(1)
+											}**`
+										)
 										.setFooter(foot)
 								],
 								components: []
@@ -225,11 +235,18 @@ async function rps(msgOrInter, options = {}) {
 						} else if (winnerMap[op] === auth) {
 							//op - won
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${opponent.tag} Wins!`)
 										.setColor(options.winEmbedColor)
-										.setDescription(`**${op}** defeats **${auth}**`)
+										.setDescription(
+											`**${
+												op.charAt(0).toUpperCase() + op.slice(1)
+											}** defeats **${
+												auth.charAt(0).toUpperCase() + auth.slice(1)
+											}**`
+										)
 										.setFooter(foot)
 								],
 								components: []
@@ -237,11 +254,18 @@ async function rps(msgOrInter, options = {}) {
 						} else {
 							//auth - won
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${interaction.user.tag} Wins!`)
 										.setColor(options.winEmbedColor)
-										.setDescription(`**${auth}** defeats **${op}**`)
+										.setDescription(
+											`**${
+												auth.charAt(0).toUpperCase() + auth.slice(1)
+											}** defeats **${
+												op.charAt(0).toUpperCase() + op.slice(1)
+											}**`
+										)
 										.setFooter(foot)
 								],
 								components: []
@@ -254,6 +278,7 @@ async function rps(msgOrInter, options = {}) {
 			acceptCollector.on('end', async (coll, reason) => {
 				if (reason === 'time') {
 					await interaction.editReply({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Challenge Not Accepted in Time')
@@ -269,6 +294,7 @@ async function rps(msgOrInter, options = {}) {
 					})
 				} else if (reason === 'decline') {
 					await interaction.editReply({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Game Declined!')
@@ -335,6 +361,7 @@ async function rps(msgOrInter, options = {}) {
 					.setDescription('Select 🪨, 📄, or ✂️')
 
 				await m.edit({
+					content: '**Lets play..**',
 					embeds: [selectEmbed],
 					components: [rpsComponents]
 				})
@@ -368,6 +395,7 @@ async function rps(msgOrInter, options = {}) {
 				btnCollector.on('end', async (coll, reason) => {
 					if (reason === 'time') {
 						await m.edit({
+							content: '** **',
 							embeds: [timeoutEmbed],
 							components: []
 						})
@@ -380,6 +408,7 @@ async function rps(msgOrInter, options = {}) {
 
 						if (op === auth) {
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle('Draw!')
@@ -392,6 +421,7 @@ async function rps(msgOrInter, options = {}) {
 						} else if (winnerMap[op] === auth) {
 							//op - won
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${opponent.tag} Wins!`)
@@ -404,6 +434,7 @@ async function rps(msgOrInter, options = {}) {
 						} else {
 							//auth - won
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${message.author.tag} Wins!`)
@@ -421,6 +452,7 @@ async function rps(msgOrInter, options = {}) {
 			acceptCollector.on('end', async (coll, reason) => {
 				if (reason === 'time') {
 					await m.edit({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Challenge Not Accepted in Time')
@@ -436,6 +468,7 @@ async function rps(msgOrInter, options = {}) {
 					})
 				} else if (reason === 'decline') {
 					await m.edit({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Game Declined!')

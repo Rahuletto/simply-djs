@@ -153,7 +153,7 @@ async function tictactoe(message, options = []) {
 
 					let epm = new Discord.MessageEmbed()
 						.setTitle('TicTacToe..')
-						.setColor('#075FFF')
+						.setColor(options.embedColor || 0x075fff)
 						.setFooter(foot)
 						.setTimestamp()
 
@@ -174,6 +174,57 @@ async function tictactoe(message, options = []) {
 							'<:O_:863314110560993340>': false,
 							'<:X_:863314044781723668>': false
 						}
+
+						let a1 = new MessageButton()
+							.setStyle(Args.a1.style)
+							.setEmoji(Args.a1.emoji)
+							.setCustomId('a1')
+							.setDisabled(Args.a1.disabled)
+						let a2 = new MessageButton()
+							.setStyle(Args.a2.style)
+							.setEmoji(Args.a2.emoji)
+							.setCustomId('a2')
+							.setDisabled(Args.a2.disabled)
+						let a3 = new MessageButton()
+							.setStyle(Args.a3.style)
+							.setEmoji(Args.a3.emoji)
+							.setCustomId('a3')
+							.setDisabled(Args.a3.disabled)
+						let b1 = new MessageButton()
+							.setStyle(Args.b1.style)
+							.setEmoji(Args.b1.emoji)
+							.setCustomId('b1')
+							.setDisabled(Args.b1.disabled)
+						let b2 = new MessageButton()
+							.setStyle(Args.b2.style)
+							.setEmoji(Args.b2.emoji)
+							.setCustomId('b2')
+							.setDisabled(Args.b2.disabled)
+						let b3 = new MessageButton()
+							.setStyle(Args.b3.style)
+							.setEmoji(Args.b3.emoji)
+							.setCustomId('b3')
+							.setDisabled(Args.b3.disabled)
+						let c1 = new MessageButton()
+							.setStyle(Args.c1.style)
+							.setEmoji(Args.c1.emoji)
+							.setCustomId('c1')
+							.setDisabled(Args.c1.disabled)
+						let c2 = new MessageButton()
+							.setStyle(Args.c2.style)
+							.setEmoji(Args.c2.emoji)
+							.setCustomId('c2')
+							.setDisabled(Args.c2.disabled)
+						let c3 = new MessageButton()
+							.setStyle(Args.c3.style)
+							.setEmoji(Args.c3.emoji)
+							.setCustomId('c3')
+							.setDisabled(Args.c3.disabled)
+						let a = new MessageActionRow().addComponents([a1, a2, a3])
+						let b = new MessageActionRow().addComponents([b1, b2, b3])
+						let c = new MessageActionRow().addComponents([c1, c2, c3])
+						let buttons = [a, b, c]
+
 						if (
 							Args.a1.emoji == o_emoji &&
 							Args.b1.emoji == o_emoji &&
@@ -230,6 +281,7 @@ async function tictactoe(message, options = []) {
 											content: `<@${fighters[1]}> \`(${
 												client.emojis.cache.get(o_emoji) || '⭕'
 											})\` won`,
+											components: buttons,
 
 											embeds: [
 												epm.setDescription(
@@ -289,6 +341,7 @@ async function tictactoe(message, options = []) {
 											content: `<@${fighters[0]}> \`(${
 												client.emojis.cache.get(o_emoji) || '⭕'
 											})\` won`,
+											components: buttons,
 											embeds: [
 												epm.setDescription(
 													`<@!${fighters[0]}> (${
@@ -398,6 +451,7 @@ async function tictactoe(message, options = []) {
 											content: `<@${fighters[1]}> \`(${
 												client.emojis.cache.get(x_emoji) || '❌'
 											})\` won`,
+											components: buttons,
 											embeds: [
 												epm.setDescription(
 													`<@!${fighters[1]}> (${
@@ -455,6 +509,7 @@ async function tictactoe(message, options = []) {
 											content: `<@${fighters[0]}> \`(${
 												client.emojis.cache.get(x_emoji) || '❌'
 											})\` won`,
+											components: buttons,
 											embeds: [
 												epm.setDescription(
 													`<@!${fighters[0]}> (${
@@ -507,55 +562,6 @@ async function tictactoe(message, options = []) {
 										})
 							}
 						}
-						let a1 = new MessageButton()
-							.setStyle(Args.a1.style)
-							.setEmoji(Args.a1.emoji)
-							.setCustomId('a1')
-							.setDisabled(Args.a1.disabled)
-						let a2 = new MessageButton()
-							.setStyle(Args.a2.style)
-							.setEmoji(Args.a2.emoji)
-							.setCustomId('a2')
-							.setDisabled(Args.a2.disabled)
-						let a3 = new MessageButton()
-							.setStyle(Args.a3.style)
-							.setEmoji(Args.a3.emoji)
-							.setCustomId('a3')
-							.setDisabled(Args.a3.disabled)
-						let b1 = new MessageButton()
-							.setStyle(Args.b1.style)
-							.setEmoji(Args.b1.emoji)
-							.setCustomId('b1')
-							.setDisabled(Args.b1.disabled)
-						let b2 = new MessageButton()
-							.setStyle(Args.b2.style)
-							.setEmoji(Args.b2.emoji)
-							.setCustomId('b2')
-							.setDisabled(Args.b2.disabled)
-						let b3 = new MessageButton()
-							.setStyle(Args.b3.style)
-							.setEmoji(Args.b3.emoji)
-							.setCustomId('b3')
-							.setDisabled(Args.b3.disabled)
-						let c1 = new MessageButton()
-							.setStyle(Args.c1.style)
-							.setEmoji(Args.c1.emoji)
-							.setCustomId('c1')
-							.setDisabled(Args.c1.disabled)
-						let c2 = new MessageButton()
-							.setStyle(Args.c2.style)
-							.setEmoji(Args.c2.emoji)
-							.setCustomId('c2')
-							.setDisabled(Args.c2.disabled)
-						let c3 = new MessageButton()
-							.setStyle(Args.c3.style)
-							.setEmoji(Args.c3.emoji)
-							.setCustomId('c3')
-							.setDisabled(Args.c3.disabled)
-						let a = new MessageActionRow().addComponents([a1, a2, a3])
-						let b = new MessageActionRow().addComponents([b1, b2, b3])
-						let c = new MessageActionRow().addComponents([c1, c2, c3])
-						let buttons = { components: [a, b, c] }
 
 						m.edit({
 							content: `<@${Args.userid}>`,
@@ -726,8 +732,8 @@ async function tictactoe(message, options = []) {
 								tictactoe(m)
 							}
 						})
-						collector.on('end', (collected) => {
-							if (collected.size == 0)
+						collector.on('end', (collected, reason) => {
+							if (collected.size === 0 && reason == 'time')
 								m.edit({
 									content: `<@!${Args.userid}> didn\'t react in time! (30s)`,
 									components: []
@@ -891,7 +897,7 @@ async function tictactoe(message, options = []) {
 
 							let epm = new Discord.MessageEmbed()
 								.setTitle('TicTacToe..')
-								.setColor('#075FFF')
+								.setColor(options.embedColor || 0x075fff)
 								.setFooter(foot)
 								.setTimestamp()
 
@@ -913,6 +919,57 @@ async function tictactoe(message, options = []) {
 									'<:O_:863314110560993340>': false,
 									'<:X_:863314044781723668>': false
 								}
+
+								let a1 = new MessageButton()
+									.setStyle(Args.a1.style)
+									.setEmoji(Args.a1.emoji)
+									.setCustomId('a1')
+									.setDisabled(Args.a1.disabled)
+								let a2 = new MessageButton()
+									.setStyle(Args.a2.style)
+									.setEmoji(Args.a2.emoji)
+									.setCustomId('a2')
+									.setDisabled(Args.a2.disabled)
+								let a3 = new MessageButton()
+									.setStyle(Args.a3.style)
+									.setEmoji(Args.a3.emoji)
+									.setCustomId('a3')
+									.setDisabled(Args.a3.disabled)
+								let b1 = new MessageButton()
+									.setStyle(Args.b1.style)
+									.setEmoji(Args.b1.emoji)
+									.setCustomId('b1')
+									.setDisabled(Args.b1.disabled)
+								let b2 = new MessageButton()
+									.setStyle(Args.b2.style)
+									.setEmoji(Args.b2.emoji)
+									.setCustomId('b2')
+									.setDisabled(Args.b2.disabled)
+								let b3 = new MessageButton()
+									.setStyle(Args.b3.style)
+									.setEmoji(Args.b3.emoji)
+									.setCustomId('b3')
+									.setDisabled(Args.b3.disabled)
+								let c1 = new MessageButton()
+									.setStyle(Args.c1.style)
+									.setEmoji(Args.c1.emoji)
+									.setCustomId('c1')
+									.setDisabled(Args.c1.disabled)
+								let c2 = new MessageButton()
+									.setStyle(Args.c2.style)
+									.setEmoji(Args.c2.emoji)
+									.setCustomId('c2')
+									.setDisabled(Args.c2.disabled)
+								let c3 = new MessageButton()
+									.setStyle(Args.c3.style)
+									.setEmoji(Args.c3.emoji)
+									.setCustomId('c3')
+									.setDisabled(Args.c3.disabled)
+								let a = new MessageActionRow().addComponents([a1, a2, a3])
+								let b = new MessageActionRow().addComponents([b1, b2, b3])
+								let c = new MessageActionRow().addComponents([c1, c2, c3])
+								let buttons = { components: [a, b, c] }
+
 								if (
 									Args.a1.emoji == o_emoji &&
 									Args.b1.emoji == o_emoji &&
@@ -1011,56 +1068,6 @@ async function tictactoe(message, options = []) {
 								)
 									won['<:X_:863314044781723668>'] = true
 
-								let a1 = new MessageButton()
-									.setStyle(Args.a1.style)
-									.setEmoji(Args.a1.emoji)
-									.setCustomId('a1')
-									.setDisabled(Args.a1.disabled)
-								let a2 = new MessageButton()
-									.setStyle(Args.a2.style)
-									.setEmoji(Args.a2.emoji)
-									.setCustomId('a2')
-									.setDisabled(Args.a2.disabled)
-								let a3 = new MessageButton()
-									.setStyle(Args.a3.style)
-									.setEmoji(Args.a3.emoji)
-									.setCustomId('a3')
-									.setDisabled(Args.a3.disabled)
-								let b1 = new MessageButton()
-									.setStyle(Args.b1.style)
-									.setEmoji(Args.b1.emoji)
-									.setCustomId('b1')
-									.setDisabled(Args.b1.disabled)
-								let b2 = new MessageButton()
-									.setStyle(Args.b2.style)
-									.setEmoji(Args.b2.emoji)
-									.setCustomId('b2')
-									.setDisabled(Args.b2.disabled)
-								let b3 = new MessageButton()
-									.setStyle(Args.b3.style)
-									.setEmoji(Args.b3.emoji)
-									.setCustomId('b3')
-									.setDisabled(Args.b3.disabled)
-								let c1 = new MessageButton()
-									.setStyle(Args.c1.style)
-									.setEmoji(Args.c1.emoji)
-									.setCustomId('c1')
-									.setDisabled(Args.c1.disabled)
-								let c2 = new MessageButton()
-									.setStyle(Args.c2.style)
-									.setEmoji(Args.c2.emoji)
-									.setCustomId('c2')
-									.setDisabled(Args.c2.disabled)
-								let c3 = new MessageButton()
-									.setStyle(Args.c3.style)
-									.setEmoji(Args.c3.emoji)
-									.setCustomId('c3')
-									.setDisabled(Args.c3.disabled)
-								let a = new MessageActionRow().addComponents([a1, a2, a3])
-								let b = new MessageActionRow().addComponents([b1, b2, b3])
-								let c = new MessageActionRow().addComponents([c1, c2, c3])
-								let buttons = { components: [a, b, c] }
-
 								m.edit({
 									content: `<@${Args.userid}>`,
 									embeds: [
@@ -1083,6 +1090,7 @@ async function tictactoe(message, options = []) {
 													content: `<@${fighters[1]}> \`(${
 														client.emojis.cache.get(o_emoji) || '⭕'
 													})\` won.`,
+													components: buttons,
 													embeds: [
 														epm.setDescription(
 															`<@!${fighters[1]}> (${
@@ -1141,7 +1149,7 @@ async function tictactoe(message, options = []) {
 													content: `<@${fighters[0]}> \`(${
 														client.emojis.cache.get(o_emoji) || '⭕'
 													})\` won.`,
-
+													components: buttons,
 													embeds: [
 														epm.setDescription(
 															`<@!${fighters[0]}> (${
@@ -1204,6 +1212,7 @@ async function tictactoe(message, options = []) {
 													content: `<@${fighters[1]}> \`(${
 														client.emojis.cache.get(x_emoji) || '❌'
 													})\` won.`,
+													components: buttons,
 													embeds: [
 														epm.setDescription(
 															`<@!${fighters[1]}> (${
@@ -1268,7 +1277,8 @@ async function tictactoe(message, options = []) {
 																client.emojis.cache.get(x_emoji) || '❌'
 															}) won.. That was a nice game.`
 														)
-													]
+													],
+													components: buttons
 												})
 												.then((m) => {
 													m.react('❌')
@@ -1471,7 +1481,7 @@ async function tictactoe(message, options = []) {
 									}
 								})
 								collector.on('end', (collected) => {
-									if (collected.size == 0)
+									if (collected.size === 0 && reason == 'time')
 										m.edit({
 											content: `<@${Args.userid}> didn\'t react in time! (30s)`,
 											components: []

@@ -32,6 +32,8 @@ let ms = require('ms')
 async function giveawaySystem(client, db, message, options = []) {
 	try {
 		if (options.slash === true) {
+			var timeForStart = Date.now()
+
 			let interaction = message
 
 			if (!interaction.member.permissions.has('ADMINISTRATOR'))
@@ -91,22 +93,31 @@ async function giveawaySystem(client, db, message, options = []) {
 					{ name: '💝 People Entered', value: `***0***` }
 				)
 			ch.send({ embeds: [embed], components: [row] }).then(async (m) => {
+				const link = new MessageButton()
+					.setLabel('View Giveaway.')
+					.setStyle('LINK')
+					.setURL(m.url)
+
+				let rowew = new MessageActionRow().addComponents([link])
+
 				interaction.followUp({
-					content: 'Giveaway has started..',
+					content: 'Giveaway has started.',
+					components: [rowew],
 					ephemeral: true
 				})
 
-				let timeroe = setTimeout(async () => {
-					let wino = []
+				let timeroe = setInterval(async () => {
+					if (Date.now() - timeForStart >= ms(time)) {
+						let wino = []
 
-					interaction.guild.members.cache.forEach(async (mem) => {
-						let givWin = await db.get(`giveaway_${m.id}_${mem.id}`)
+						interaction.guild.members.cache.forEach(async (mem) => {
+							let givWin = await db.get(`giveaway_${m.id}_${mem.id}`)
 
-						if (givWin === null || !givWin) return
-						else if (givWin === mem.id) {
-							wino.push(givWin)
-						}
-
+							if (givWin === null || !givWin) return
+							else if (givWin === mem.id) {
+								wino.push(givWin)
+							}
+						})
 						const embeddd = new Discord.MessageEmbed()
 							.setTitle('Processing Data...')
 							.setColor(0xcc0000)
@@ -116,127 +127,131 @@ async function giveawaySystem(client, db, message, options = []) {
 							.setFooter('Giveaway Ending.. Wait a moment.')
 
 						m.edit({ embeds: [embeddd], components: [] })
-					})
 
-					setTimeout(async () => {
-						let winner = []
-						let winboiz = []
+						setTimeout(async () => {
+							clearInterval(timeroe)
 
-						if (wino.length === 0 || wino === []) {
-							const embedod = new Discord.MessageEmbed()
-								.setTitle('No one Entered.')
-								.setColor(0xcc0000)
-								.setDescription(
-									`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${
-										options.prize || prize
-									}***\n\n**🎉 Hosted By:** ***${message.user}***`
-								)
-								.addFields(
-									{ name: '🏆 Winner(s):', value: `none` },
-									{ name: '💝 People Entered', value: `***0***` }
-								)
-								.setFooter('Giveaway Ended.')
+							let winner = []
+							let winboiz = []
 
-							m.edit({ embeds: [embedod], components: [] })
-						} else {
-							const enterr = new Discord.MessageButton()
-								.setLabel('Enter')
-								.setStyle('SUCCESS')
-								.setDisabled(true)
-								.setCustomId('enter-giveaway')
-
-							const rerolll = new Discord.MessageButton()
-								.setLabel('Reroll')
-								.setStyle('PRIMARY')
-								.setCustomId('reroll-giveaway')
-
-							const endd = new Discord.MessageButton()
-								.setLabel('End')
-								.setDisabled(true)
-								.setStyle('DANGER')
-								.setCustomId('end-giveaway')
-
-							const roww = new Discord.MessageActionRow().addComponents([
-								enterr,
-								rerolll,
-								endd
-							])
-
-							let winnerNumber = options.winners || winers
-
-							for (let i = 0; winnerNumber > i; i++) {
-								await db.set(`giveaway_winnerCount_${m.id}`, winnerNumber)
-
-								let winnumber = Math.floor(Math.random() * wino.length)
-								if (wino[winnumber] === undefined) {
-									winner.push(`\u200b`)
-									winboiz.push('\u200b')
-									wino.splice(winnumber, 1)
-								} else {
-									let winnee = winner.push(
-										`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-											',',
-											''
-										)
+							if (wino.length === 0 || wino === []) {
+								const embedod = new Discord.MessageEmbed()
+									.setTitle('No one Entered.')
+									.setColor(0xcc0000)
+									.setDescription(
+										`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${
+											options.prize || prize
+										}***\n\n**🎉 Hosted By:** ***${message.user}***`
 									)
-									winboiz.push(`<@${wino[winnumber]}>`)
-									wino.splice(winnumber, 1)
-									await db.delete(`giveaway_${m.id}_${wino[winnumber]}`)
+									.addFields(
+										{ name: '🏆 Winner(s):', value: `none` },
+										{ name: '💝 People Entered', value: `***0***` }
+									)
+									.setFooter('Giveaway Ended.')
+
+								m.edit({ embeds: [embedod], components: [] })
+							} else {
+								const enterr = new Discord.MessageButton()
+									.setLabel('Enter')
+									.setStyle('SUCCESS')
+									.setDisabled(true)
+									.setCustomId('enter-giveaway')
+
+								const rerolll = new Discord.MessageButton()
+									.setLabel('Reroll')
+									.setStyle('PRIMARY')
+									.setCustomId('reroll-giveaway')
+
+								const endd = new Discord.MessageButton()
+									.setLabel('End')
+									.setDisabled(true)
+									.setStyle('DANGER')
+									.setCustomId('end-giveaway')
+
+								const roww = new Discord.MessageActionRow().addComponents([
+									enterr,
+									rerolll,
+									endd
+								])
+
+								let winnerNumber = options.winners || winers
+
+								for (let i = 0; winnerNumber > i; i++) {
+									await db.set(`giveaway_winnerCount_${m.id}`, winnerNumber)
+
+									let winnumber = Math.floor(Math.random() * wino.length)
+									if (wino[winnumber] === undefined) {
+										winner.push(`\u200b`)
+										winboiz.push('\u200b')
+										wino.splice(winnumber, 1)
+									} else {
+										let winnee = winner.push(
+											`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+												',',
+												''
+											)
+										)
+										winboiz.push(`<@${wino[winnumber]}>`)
+										wino.splice(winnumber, 1)
+										await db.delete(`giveaway_${m.id}_${wino[winnumber]}`)
+									}
 								}
+								let entero = await db.get(`giveaway_entered_${m.id}`)
+
+								const embedd = new Discord.MessageEmbed()
+									.setTitle(options.embedTitle || 'Giveaway Ended')
+									.setColor(0x3bb143)
+									.setDescription(
+										`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${
+											options.prize || prize
+										}***\n\n**🎉 Hosted By:** ***${message.user}***`
+									)
+									.addFields(
+										{ name: '🏆 Winner(s):', value: `${winner}` },
+										{ name: '💝 People Entered', value: `***${entero}***` }
+									)
+									.setFooter('Giveaway Ended.')
+
+								const embb = new Discord.MessageEmbed()
+									.setColor(0x3bb143)
+									.setTitle('You just won the giveaway.')
+									.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
+									.setFooter('Dm the host to claim your prize 0_0')
+
+								const gothere = new Discord.MessageButton()
+									.setLabel('View Giveaway')
+									.setStyle('LINK')
+									.setURL(m.url)
+
+								const ro = new Discord.MessageActionRow().addComponents([
+									gothere
+								])
+
+								m.channel
+									.send({
+										content: `Congrats ${winboiz}. You just won the giveaway.`,
+										embeds: [embb],
+										components: [ro]
+									})
+									.then(async (ms) => {
+										await db.set(`giveaway_${m.id}_yaywon`, ms.id)
+									})
+
+								m.edit({ embeds: [embedd], components: [roww] })
 							}
-							let entero = await db.get(`giveaway_entered_${m.id}`)
-
-							const embedd = new Discord.MessageEmbed()
-								.setTitle(options.embedTitle || 'Giveaway Ended')
-								.setColor(0x3bb143)
-								.setDescription(
-									`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${
-										options.prize || prize
-									}***\n\n**🎉 Hosted By:** ***${message.user}***`
-								)
-								.addFields(
-									{ name: '🏆 Winner(s):', value: `${winner}` },
-									{ name: '💝 People Entered', value: `***${entero}***` }
-								)
-								.setFooter('Giveaway Ended.')
-
-							const embb = new Discord.MessageEmbed()
-								.setColor(0x3bb143)
-								.setTitle('You just won the giveaway.')
-								.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-								.setFooter('Dm the host to claim your prize 0_0')
-
-							const gothere = new Discord.MessageButton()
-								.setLabel('View Giveaway')
-								.setStyle('LINK')
-								.setURL(m.url)
-
-							const ro = new Discord.MessageActionRow().addComponents([gothere])
-
-							m.channel
-								.send({
-									content: `Congrats ${winboiz}. You just won the giveaway.`,
-									embeds: [embb],
-									components: [ro]
-								})
-								.then(async (ms) => {
-									await db.set(`giveaway_${m.id}_yaywon`, ms.id)
-								})
-
-							m.edit({ embeds: [embedd], components: [roww] })
-						}
-					}, 5000)
-				}, ms(time))
+						}, 5000)
+					}
+				}, 5000)
 
 				let collecto = m.createMessageComponentCollector({
-					type: 'BUTTON',
-					time: ms(time) * 10
+					type: 'BUTTON'
 				})
 
 				collecto.on('collect', async (button) => {
+					if (Date.now() - timeForStart >= ms(time)) return
 					if (button.customId === 'end-giveaway') {
 						if (button.member.permissions.has('ADMINISTRATOR')) {
-							clearTimeout(timeroe)
+							clearInterval(timeroe)
 						}
 					}
 					if (button.customId === 'enter-giveaway') {
@@ -322,9 +337,10 @@ async function giveawaySystem(client, db, message, options = []) {
 			})
 		} else if (!options.slash || options.slash === false) {
 			let interaction = message
+			var timeForStart = Date.now()
 
 			if (!interaction.member.permissions.has('ADMINISTRATOR'))
-				return interaction.reply({
+				return interaction.followUp({
 					content: 'You are not a admin to start the giveaway'
 				})
 			let args = options.args
@@ -381,21 +397,31 @@ async function giveawaySystem(client, db, message, options = []) {
 					{ name: '💝 People Entered', value: `***0***` }
 				)
 			ch.send({ embeds: [embed], components: [row] }).then(async (m) => {
+				const link = new MessageButton()
+					.setLabel('View Giveaway.')
+					.setStyle('LINK')
+					.setURL(m.url)
+
+				let rowew = new MessageActionRow().addComponents([link])
+
 				interaction.reply({
-					content: 'Giveaway has started..',
+					content: 'Giveaway has started.',
+					components: [rowew],
 					ephemeral: true
 				})
 
-				let timeroe = setTimeout(async () => {
-					let wino = []
+				let timeroe = setInterval(async () => {
+					if (Date.now() - timeForStart >= ms(time)) {
+						let wino = []
 
-					interaction.guild.members.cache.forEach(async (mem) => {
-						let givWin = await db.get(`giveaway_${m.id}_${mem.id}`)
+						interaction.guild.members.cache.forEach(async (mem) => {
+							let givWin = await db.get(`giveaway_${m.id}_${mem.id}`)
 
-						if (givWin === null || !givWin) return
-						else if (givWin === mem.id) {
-							wino.push(givWin)
-						}
+							if (givWin === null || !givWin) return
+							else if (givWin === mem.id) {
+								wino.push(givWin)
+							}
+						})
 
 						const embeddd = new Discord.MessageEmbed()
 							.setTitle('Processing Data...')
@@ -406,127 +432,131 @@ async function giveawaySystem(client, db, message, options = []) {
 							.setFooter('Giveaway Ending.. Wait a moment.')
 
 						m.edit({ embeds: [embeddd], components: [] })
-					})
 
-					setTimeout(async () => {
-						let winner = []
-						let winboiz = []
+						setTimeout(async () => {
+							clearInterval(timeroe)
 
-						if (wino.length === 0 || wino === []) {
-							const embedod = new Discord.MessageEmbed()
-								.setTitle('No one Entered.')
-								.setColor(0xcc0000)
-								.setDescription(
-									`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${
-										options.prize || prize
-									}***\n\n**🎉 Hosted By:** ***${message.author}***`
-								)
-								.addFields(
-									{ name: '🏆 Winner(s):', value: `none` },
-									{ name: '💝 People Entered', value: `***0***` }
-								)
-								.setFooter('Giveaway Ended.')
+							let winner = []
+							let winboiz = []
 
-							m.edit({ embeds: [embedod], components: [] })
-						} else {
-							const enterr = new Discord.MessageButton()
-								.setLabel('Enter')
-								.setStyle('SUCCESS')
-								.setDisabled(true)
-								.setCustomId('enter-giveaway')
-
-							const rerolll = new Discord.MessageButton()
-								.setLabel('Reroll')
-								.setStyle('PRIMARY')
-								.setCustomId('reroll-giveaway')
-
-							const endd = new Discord.MessageButton()
-								.setLabel('End')
-								.setDisabled(true)
-								.setStyle('DANGER')
-								.setCustomId('end-giveaway')
-
-							const roww = new Discord.MessageActionRow().addComponents([
-								enterr,
-								rerolll,
-								endd
-							])
-
-							let winnerNumber = options.winners || winers
-
-							for (let i = 0; winnerNumber > i; i++) {
-								await db.set(`giveaway_winnerCount_${m.id}`, winnerNumber)
-
-								let winnumber = Math.floor(Math.random() * wino.length)
-								if (wino[winnumber] === undefined) {
-									winner.push(`\u200b`)
-									winboiz.push('\u200b')
-									wino.splice(winnumber, 1)
-								} else {
-									let winnee = winner.push(
-										`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
-											',',
-											''
-										)
+							if (wino.length === 0 || wino === []) {
+								const embedod = new Discord.MessageEmbed()
+									.setTitle('No one Entered.')
+									.setColor(0xcc0000)
+									.setDescription(
+										`**Sadly No one entered the giveaway ;(**\n\n**🎁 Prize:** ***${
+											options.prize || prize
+										}***\n\n**🎉 Hosted By:** ***${message.author}***`
 									)
-									winboiz.push(`<@${wino[winnumber]}>`)
-									wino.splice(winnumber, 1)
-									await db.delete(`giveaway_${m.id}_${wino[winnumber]}`)
+									.addFields(
+										{ name: '🏆 Winner(s):', value: `none` },
+										{ name: '💝 People Entered', value: `***0***` }
+									)
+									.setFooter('Giveaway Ended.')
+
+								m.edit({ embeds: [embedod], components: [] })
+							} else {
+								const enterr = new Discord.MessageButton()
+									.setLabel('Enter')
+									.setStyle('SUCCESS')
+									.setDisabled(true)
+									.setCustomId('enter-giveaway')
+
+								const rerolll = new Discord.MessageButton()
+									.setLabel('Reroll')
+									.setStyle('PRIMARY')
+									.setCustomId('reroll-giveaway')
+
+								const endd = new Discord.MessageButton()
+									.setLabel('End')
+									.setDisabled(true)
+									.setStyle('DANGER')
+									.setCustomId('end-giveaway')
+
+								const roww = new Discord.MessageActionRow().addComponents([
+									enterr,
+									rerolll,
+									endd
+								])
+
+								let winnerNumber = options.winners || winers
+
+								for (let i = 0; winnerNumber > i; i++) {
+									await db.set(`giveaway_winnerCount_${m.id}`, winnerNumber)
+
+									let winnumber = Math.floor(Math.random() * wino.length)
+									if (wino[winnumber] === undefined) {
+										winner.push(`\u200b`)
+										winboiz.push('\u200b')
+										wino.splice(winnumber, 1)
+									} else {
+										let winnee = winner.push(
+											`\n***<@${wino[winnumber]}>*** **(ID: ${wino[winnumber]})**`.replace(
+												',',
+												''
+											)
+										)
+										winboiz.push(`<@${wino[winnumber]}>`)
+										wino.splice(winnumber, 1)
+										await db.delete(`giveaway_${m.id}_${wino[winnumber]}`)
+									}
 								}
+								let entero = await db.get(`giveaway_entered_${m.id}`)
+
+								const embedd = new Discord.MessageEmbed()
+									.setTitle(options.embedTitle || 'Giveaway Ended')
+									.setColor(0x3bb143)
+									.setDescription(
+										`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${
+											options.prize || prize
+										}***\n\n**🎉 Hosted By:** ***${message.author}***`
+									)
+									.addFields(
+										{ name: '🏆 Winner(s):', value: `${winner}` },
+										{ name: '💝 People Entered', value: `***${entero}***` }
+									)
+									.setFooter('Giveaway Ended.')
+
+								const embb = new Discord.MessageEmbed()
+									.setColor(0x3bb143)
+									.setTitle('You just won the giveaway.')
+									.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
+									.setFooter('Dm the host to claim your prize 0_0')
+
+								const gothere = new Discord.MessageButton()
+									.setLabel('View Giveaway')
+									.setStyle('LINK')
+									.setURL(m.url)
+
+								const ro = new Discord.MessageActionRow().addComponents([
+									gothere
+								])
+
+								m.channel
+									.send({
+										content: `Congrats ${winboiz}. You just won the giveaway.`,
+										embeds: [embb],
+										components: [ro]
+									})
+									.then(async (m) => {
+										await db.set(`giveaway_${m.id}_yaywon`, m.id)
+									})
+
+								m.edit({ embeds: [embedd], components: [roww] })
 							}
-							let entero = await db.get(`giveaway_entered_${m.id}`)
-
-							const embedd = new Discord.MessageEmbed()
-								.setTitle(options.embedTitle || 'Giveaway Ended')
-								.setColor(0x3bb143)
-								.setDescription(
-									`Giveaway ended. YAY.\n\n**🎁 Prize:** ***${
-										options.prize || prize
-									}***\n\n**🎉 Hosted By:** ***${message.author}***`
-								)
-								.addFields(
-									{ name: '🏆 Winner(s):', value: `${winner}` },
-									{ name: '💝 People Entered', value: `***${entero}***` }
-								)
-								.setFooter('Giveaway Ended.')
-
-							const embb = new Discord.MessageEmbed()
-								.setColor(0x3bb143)
-								.setTitle('You just won the giveaway.')
-								.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-								.setFooter('Dm the host to claim your prize 0_0')
-
-							const gothere = new Discord.MessageButton()
-								.setLabel('View Giveaway')
-								.setStyle('LINK')
-								.setURL(m.url)
-
-							const ro = new Discord.MessageActionRow().addComponents([gothere])
-
-							m.channel
-								.send({
-									content: `Congrats ${winboiz}. You just won the giveaway.`,
-									embeds: [embb],
-									components: [ro]
-								})
-								.then(async (m) => {
-									await db.set(`giveaway_${m.id}_yaywon`, m.id)
-								})
-
-							m.edit({ embeds: [embedd], components: [roww] })
-						}
-					}, 5000)
-				}, ms(time))
+						}, 5000)
+					}
+				}, 5000)
 
 				let collecto = m.createMessageComponentCollector({
-					type: 'BUTTON',
-					time: ms(time) * 10
+					type: 'BUTTON'
 				})
 
 				collecto.on('collect', async (button) => {
+					if (Date.now() - timeForStart >= ms(time)) return
 					if (button.customId === 'end-giveaway') {
 						if (button.member.permissions.has('ADMINISTRATOR')) {
-							clearTimeout(timeroe)
+							clearInterval(timeroe)
 						}
 					}
 					if (button.customId === 'enter-giveaway') {

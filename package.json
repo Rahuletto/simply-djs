@@ -1,6 +1,6 @@
 {
 	"name": "simply-djs",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"description": "A Simple, Easy and Beginner friendly Discord.js Package for everyone. Uses Discord.js v13",
 	"main": "simplydjs.js",
 	"typings": "index.d.ts",
@@ -78,11 +78,15 @@
 		"dankmemer",
 		"updates",
 		"bot",
-		"disc"
+		"disc",
+		"simple",
+		"disc",
+		"dyno",
+		"mee"
 	],
 	"homepage": "https://simplyd.js.org",
 	"author": "Rahuletto",
-	"license": "Apache-2.0",
+	"license": "CC BY-NC-ND 4.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Rahuletto/simply-djs"

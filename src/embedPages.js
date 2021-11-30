@@ -25,6 +25,9 @@ const { MessageButton, MessageActionRow } = Discord
 
   pgCount => Boolean
   slash => Boolean
+
+  timeout => Number
+  rows = Array (ActionRows)
  */
 
 async function embedPages(client, message, pages, style = {}) {
@@ -43,10 +46,19 @@ async function embedPages(client, message, pages, style = {}) {
 
 	try {
 		if (!pages)
-			throw new Error(
-				'PAGES_NOT_FOUND. You didnt specify any pages to me. See Examples to clarify your doubts. https://github.com/Rahuletto/simply-djs/blob/main/Examples/embedPages.md'
-			)
+			throw new Error('PAGES_NOT_FOUND. You didnt specify any pages to me.')
 
+		let comps
+
+		if (style.rows) {
+			if (!Array.isArray(style.rows))
+				throw new Error(
+					'ARR_NOT_FOUND. The custom rows (style.rows) you specified is not a Array.'
+				)
+			comps = rows
+		} else {
+			comps = []
+		}
 		//Defining all buttons
 		let firstBtn = new MessageButton()
 			.setCustomId('first_embed')
@@ -101,6 +113,9 @@ async function embedPages(client, message, pages, style = {}) {
 		}
 
 		var currentPage = 0
+
+		comps.push(pageMovingButtons)
+
 		/** @type {Discord.Message} */
 		var m
 
@@ -109,13 +124,13 @@ async function embedPages(client, message, pages, style = {}) {
 				await message.followUp({
 					content: `***Page: 1/${pages.length}***`,
 					embeds: [pages[0]],
-					components: [pageMovingButtons],
+					components: comps,
 					allowedMentions: { repliedUser: false }
 				})
 			} else {
 				await message.followUp({
 					embeds: [pages[0]],
-					components: [pageMovingButtons],
+					components: comps,
 					allowedMentions: { repliedUser: false }
 				})
 			}
@@ -125,13 +140,13 @@ async function embedPages(client, message, pages, style = {}) {
 				m = await message.reply({
 					content: `***Page: 1/${pages.length}***`,
 					embeds: [pages[0]],
-					components: [pageMovingButtons],
+					components: comps,
 					allowedMentions: { repliedUser: false }
 				})
 			} else {
 				m = await message.reply({
 					embeds: [pages[0]],
-					components: [pageMovingButtons],
+					components: comps,
 					allowedMentions: { repliedUser: false }
 				})
 			}
@@ -174,18 +189,20 @@ async function embedPages(client, message, pages, style = {}) {
 					m.edit({
 						content: `***Page: ${currentPage + 1}/${pages.length}***`,
 						embeds: [pages[currentPage]],
-						components: [pageMovingButtons],
+						components: comps,
 						allowedMentions: { repliedUser: false }
 					})
 				} else {
 					m.edit({
 						embeds: [pages[currentPage]],
-						components: [pageMovingButtons],
+						components: comps,
 						allowedMentions: { repliedUser: false }
 					})
 				}
 			} else {
-				b.message.delete()
+				try {
+					b.message.delete()
+				} catch {}
 			}
 		})
 

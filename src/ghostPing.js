@@ -26,7 +26,14 @@ async function ghostPing(message, options = []) {
 		try {
 			if (message.author.bot) return
 
-			if (message.content.includes(`<@${message.mentions.users.first().id}>`)) {
+			if (
+				message.content.includes(
+					`<@${message.mentions.members.first()?.user.id}>`
+				) ||
+				message.content.includes(
+					`<@!${message.mentions.members.first()?.user.id}>`
+				)
+			) {
 				const chembed = new Discord.MessageEmbed()
 					.setTitle('Ghost Ping Detected')
 					.setDescription(
@@ -44,16 +51,22 @@ async function ghostPing(message, options = []) {
 				message.channel
 					.send({ embeds: [options.embed || chembed] })
 					.then(async (msg) => {
-						if (options.logChannel) {
-							let ch = message.guild.channels.cache.get(options.logChannel)
-
-							if (!ch) return
-
-							ch.send({ embeds: [options.embed || chembed] })
-						}
 						setTimeout(() => {
 							msg.delete()
 						}, 10000)
+
+						if (options.logChannel) {
+							let ch = await message.guild.channels.cache.get(
+								options.logChannel,
+								{
+									cache: true
+								}
+							)
+
+							if (!ch) return
+
+							await ch.send({ embeds: [options.embed || chembed] })
+						}
 					})
 			}
 		} catch (err) {
@@ -61,4 +74,5 @@ async function ghostPing(message, options = []) {
 		}
 	}
 }
+
 module.exports = ghostPing
