@@ -108,14 +108,6 @@ async function rps(msgOrInter, options = {}) {
 		.setFooter(foot)
 
 	try {
-		if (msgOrInter.commandId && !options.slash) {
-			throw new Error(
-				'You provided a Interaction but set the slash option to false'
-			)
-		} else if (msgOrInter.mentions && options.slash) {
-			throw new Error('You provided a Message but set the slash option to true')
-		}
-
 		if (options.slash) {
 			/** @type {Discord.CommandInteraction} */
 			const interaction = msgOrInter
@@ -177,6 +169,7 @@ async function rps(msgOrInter, options = {}) {
 					.setDescription('Select 🪨, 📄, or ✂️')
 
 				await interaction.editReply({
+					content: '**Lets play..**',
 					embeds: [selectEmbed],
 					components: [rpsComponents]
 				})
@@ -200,15 +193,18 @@ async function rps(msgOrInter, options = {}) {
 					ids.delete(b.user.id)
 
 					await b.deferUpdate()
+
 					if (b.user.id === opponent.id) op = b.customId
 					if (b.user.id === interaction.user.id) auth = b.customId
-
-					if (ids.size == 0) btnCollector.stop()
+					setTimeout(() => {
+						if (ids.size == 0) btnCollector.stop()
+					}, 500)
 				})
 
 				btnCollector.on('end', async (coll, reason) => {
 					if (reason === 'time') {
 						await interaction.editReply({
+							content: '** **',
 							embeds: [timeoutEmbed],
 							components: []
 						})
@@ -218,9 +214,13 @@ async function rps(msgOrInter, options = {}) {
 							scissors: 'paper',
 							paper: 'rock'
 						}
-
 						if (op === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle('Draw!')
@@ -231,8 +231,17 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else if (winnerMap[op] === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//op - won
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${opponent.tag} Wins!`)
@@ -243,8 +252,17 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//auth - won
 							await interaction.editReply({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${interaction.user.tag} Wins!`)
@@ -262,6 +280,7 @@ async function rps(msgOrInter, options = {}) {
 			acceptCollector.on('end', async (coll, reason) => {
 				if (reason === 'time') {
 					await interaction.editReply({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Challenge Not Accepted in Time')
@@ -277,6 +296,7 @@ async function rps(msgOrInter, options = {}) {
 					})
 				} else if (reason === 'decline') {
 					await interaction.editReply({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Game Declined!')
@@ -343,6 +363,7 @@ async function rps(msgOrInter, options = {}) {
 					.setDescription('Select 🪨, 📄, or ✂️')
 
 				await m.edit({
+					content: '**Lets play..**',
 					embeds: [selectEmbed],
 					components: [rpsComponents]
 				})
@@ -376,6 +397,7 @@ async function rps(msgOrInter, options = {}) {
 				btnCollector.on('end', async (coll, reason) => {
 					if (reason === 'time') {
 						await m.edit({
+							content: '** **',
 							embeds: [timeoutEmbed],
 							components: []
 						})
@@ -387,7 +409,13 @@ async function rps(msgOrInter, options = {}) {
 						}
 
 						if (op === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle('Draw!')
@@ -398,8 +426,17 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else if (winnerMap[op] === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//op - won
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${opponent.tag} Wins!`)
@@ -410,8 +447,17 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//auth - won
 							await m.edit({
+								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle(`${message.author.tag} Wins!`)
@@ -429,6 +475,7 @@ async function rps(msgOrInter, options = {}) {
 			acceptCollector.on('end', async (coll, reason) => {
 				if (reason === 'time') {
 					await m.edit({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Challenge Not Accepted in Time')
@@ -444,6 +491,7 @@ async function rps(msgOrInter, options = {}) {
 					})
 				} else if (reason === 'decline') {
 					await m.edit({
+						content: '** **',
 						embeds: [
 							new Discord.MessageEmbed()
 								.setTitle('Game Declined!')

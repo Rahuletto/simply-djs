@@ -11,6 +11,11 @@ const Discord = require('discord.js')
 slash => Boolean
 embedTitle => String
 embedColor => String 
+
+embed => Embed
+
+embedFoot => String
+credit => Boolean
  */
 
 async function embed(message, options = []) {
@@ -67,6 +72,10 @@ async function embed(message, options = []) {
 
 			let menuOptions = []
 
+			let foot = options.embedFoot
+			if (options.credit === false) foot ??= 'Create Embed with ease'
+			else foot ??= 'Embed creator using Simply-DJS'
+
 			for (let i = 0; i < name.length; i++) {
 				let dataopt = {
 					label: name[i],
@@ -96,14 +105,17 @@ async function embed(message, options = []) {
 					'https://media.discordapp.net/attachments/867344516600037396/879238983492710450/unknown.png'
 				)
 				.setColor(options.embedColor || '#075FFF')
-				.setFooter('Embed creator using Simply-DJS')
+				.setFooter(foot)
 
-			message.followUp({ embeds: [embed], components: [row2, row] })
+			message.followUp({
+				embeds: [options.embed || embed],
+				components: [row2, row]
+			})
 
-			const emb = new MessageEmbed().setFooter('Simply DJS').setColor('#2F3136')
+			const emb = new MessageEmbed().setFooter(foot).setColor('#2F3136')
 
 			message.channel
-				.send({ content: '***Preview***', embeds: [emb] })
+				.send({ content: '* *', embeds: [emb] })
 				.then(async (a) => {
 					let lel = await message.fetchReply()
 					let e = await message.fetchReply()
@@ -262,25 +274,32 @@ async function embed(message, options = []) {
 							})
 
 							titleclr.on('collect', async (m) => {
-								const url = membed.embeds[0].image
-									? membed.embeds[0].image.url
-									: ''
-								let msg = new MessageEmbed()
-									.setTitle(membed.embeds[0].title || '')
-									.setURL(m.content)
-									.setDescription(membed.embeds[0].description || '')
-									.setColor(membed.embeds[0].color || '#2F3136')
-									.setImage(url || '')
-									.setFooter(membed.embeds[0].footer.text || '')
-									.setThumbnail(
-										membed.embeds[0].thumbnail
-											? membed.embeds[0].thumbnail.url
-											: ''
+								if (!m.content.startsWith('http')) {
+									m.delete()
+									return button.editReply(
+										'A URL should start with http protocol. Please give a valid URL.'
 									)
+								} else {
+									const url = membed.embeds[0].image
+										? membed.embeds[0].image.url
+										: ''
+									let msg = new MessageEmbed()
+										.setTitle(membed.embeds[0].title || '')
+										.setURL(m.content)
+										.setDescription(membed.embeds[0].description || '')
+										.setColor(membed.embeds[0].color || '#2F3136')
+										.setImage(url || '')
+										.setFooter(membed.embeds[0].footer.text || '')
+										.setThumbnail(
+											membed.embeds[0].thumbnail
+												? membed.embeds[0].thumbnail.url
+												: ''
+										)
 
-								m.delete()
-								titleclr.stop()
-								membed.edit({ content: membed.content, embeds: [msg] })
+									m.delete()
+									titleclr.stop()
+									membed.edit({ content: membed.content, embeds: [msg] })
+								}
 							})
 						} else if (button.values[0] === 'setImage') {
 							button.reply({
@@ -531,7 +550,7 @@ async function embed(message, options = []) {
 						.setColor('#2F3136')
 
 					message.channel
-						.send({ content: '***Preview***', embeds: [emb] })
+						.send({ content: '* *', embeds: [emb] })
 						.then(async (a) => {
 							let membed = await message.channel.messages.fetch(a.id)
 							let lel = await message.channel.messages.fetch(e.id)
@@ -687,25 +706,32 @@ async function embed(message, options = []) {
 									})
 
 									titleclr.on('collect', async (m) => {
-										const url = membed.embeds[0].image
-											? membed.embeds[0].image.url
-											: ''
-										let msg = new MessageEmbed()
-											.setTitle(membed.embeds[0].title || '')
-											.setURL(m.content)
-											.setDescription(membed.embeds[0].description || '')
-											.setColor(membed.embeds[0].color || '#2F3136')
-											.setImage(url || '')
-											.setFooter(membed.embeds[0].footer.text || '')
-											.setThumbnail(
-												membed.embeds[0].thumbnail
-													? membed.embeds[0].thumbnail.url
-													: ''
+										if (!m.content.startsWith('http')) {
+											m.delete()
+											return button.editReply(
+												'A URL should start with http protocol. Please give a valid URL.'
 											)
+										} else {
+											const url = membed.embeds[0].image
+												? membed.embeds[0].image.url
+												: ''
+											let msg = new MessageEmbed()
+												.setTitle(membed.embeds[0].title || '')
+												.setURL(m.content)
+												.setDescription(membed.embeds[0].description || '')
+												.setColor(membed.embeds[0].color || '#2F3136')
+												.setImage(url || '')
+												.setFooter(membed.embeds[0].footer.text || '')
+												.setThumbnail(
+													membed.embeds[0].thumbnail
+														? membed.embeds[0].thumbnail.url
+														: ''
+												)
 
-										m.delete()
-										titleclr.stop()
-										membed.edit({ content: membed.content, embeds: [msg] })
+											m.delete()
+											titleclr.stop()
+											membed.edit({ content: membed.content, embeds: [msg] })
+										}
 									})
 								} else if (button.values[0] === 'setImage') {
 									button.reply({

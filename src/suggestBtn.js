@@ -52,7 +52,7 @@ async function suggestBtn(button, users, options = []) {
 					let ftter = (m) => button.user.id === m.user.id
 					let coll = msg.createMessageComponentCollector({
 						ftter,
-						time: 20000
+						time: 30000
 					})
 					coll.on('collect', async (btn) => {
 						if (btn.customId === 'deny-sug') {
@@ -68,7 +68,7 @@ async function suggestBtn(button, users, options = []) {
 
 								const collector = button.channel.createMessageCollector({
 									filter,
-									time: 15000
+									time: 120000
 								})
 
 								collector.on('collect', (m) => {
@@ -167,7 +167,7 @@ async function suggestBtn(button, users, options = []) {
 					let fttter = (m) => button.user.id === m.user.id
 					let coll = msg.createMessageComponentCollector({
 						fttter,
-						time: 20000
+						time: 30000
 					})
 					coll.on('collect', async (btn) => {
 						if (btn.customId === 'agree-vote') {
@@ -229,7 +229,7 @@ async function suggestBtn(button, users, options = []) {
 
 								const collector = button.channel.createMessageCollector({
 									filter,
-									time: 15000
+									time: 120000
 								})
 
 								collector.on('collect', (m) => {

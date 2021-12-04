@@ -14,6 +14,8 @@ const Discord = require('discord.js')
 
   credit => Boolean
   slash => Boolean
+
+  embed => Embed
   
   embedFoot => String
   embedDesc => String
@@ -73,9 +75,10 @@ async function ticketSystem(message, channel, options = []) {
 		try {
 			if (options.slash === true || message.commandId) {
 				message.followUp('Done. Setting Ticket to that channel')
-				channel.send({ embeds: [embed], components: [a] })
-			} else if (options.slash === false || !message.commandId)
-				{ channel.send({ embeds: [embed], components: [a] }) }
+				channel.send({ embeds: [options.embed || embed], components: [a] })
+			} else if (options.slash === false || !message.commandId) {
+				channel.send({ embeds: [options.embed || embed], components: [a] })
+			}
 		} catch (err) {
 			channel.send({ content: 'ERR OCCURED ' + err })
 		}

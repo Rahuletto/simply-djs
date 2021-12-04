@@ -12,6 +12,12 @@ const fs = require('fs')
 credit => Boolean
 ticketname => (Options {username} | {id} | {tag} ) String
 
+embed => Embed
+logembed => Embed
+confirmEmb => Embed
+
+logChannel => (Channel ID) String
+
 closeColor => (ButtonColor) String
 openColor => (ButtonColor) String
 delColor => (ButtonColor) String
@@ -46,13 +52,14 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId.startsWith('role-')) {
+				button.deferReply({ ephemeral: true })
 				let rle = button.customId.replace('role-', '')
 
 				let real = button.guild.roles.cache.find((r) => r.id === rle)
 				if (!real) return
 				else {
 					if (button.member.roles.cache.find((r) => r.id === real.id)) {
-						button.reply({
+						button.followUp({
 							content: 'You already have the role. Removing it now',
 							ephemeral: true
 						})
@@ -65,7 +72,7 @@ async function clickBtn(button, options = []) {
 								)
 							)
 					} else {
-						button.reply({
+						button.followUp({
 							content: `Gave you the role ${real} | Name: ${real.name} | ID: ${real.id}`,
 							ephemeral: true
 						})
@@ -84,6 +91,7 @@ async function clickBtn(button, options = []) {
 			let { MessageButton, MessageActionRow } = require('discord.js')
 
 			if (button.customId === 'create_ticket') {
+				button.deferUpdate()
 				let ticketname = `ticket_${button.user.id}`
 
 				if (options.ticketname) {
@@ -93,9 +101,9 @@ async function clickBtn(button, options = []) {
 						.replace('{tag}', button.user.tag)
 				}
 
-				let topic = `Ticket-${button.user.id}`
+				let topic = `Ticket opened by <@${button.user.id}>`
 				let antispamo = await button.guild.channels.cache.find(
-					(ch) => ch.topic === topic.toLowerCase()
+					(ch) => ch.topic === topic
 				)
 
 				if (options.trColor) {
@@ -147,20 +155,13 @@ async function clickBtn(button, options = []) {
 				}
 
 				if (antispamo) {
-					button.reply({
+					button.followUp({
 						content:
 							options.cooldownMsg ||
 							'You already have a ticket opened.. Please delete it before opening another ticket.',
 						ephemeral: true
 					})
 				} else if (!antispamo) {
-					button.deferUpdate()
-
-					roles = {
-						id: options.role || button.user.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
-					}
-
 					chparent = options.categoryID || null
 					let categ = button.guild.channels.cache.get(options.categoryID)
 					if (!categ) {
@@ -188,21 +189,87 @@ async function clickBtn(button, options = []) {
 										'SEND_MESSAGES',
 										'READ_MESSAGE_HISTORY'
 									]
-								},
-								roles
+								}
 							]
 						})
 						.then((ch) => {
+							let lep = []
+
+							if (options.role && Array.isArray(options.role)) {
+								options.role.forEach((e) => {
+									let rw = button.guild.roles.cache.find((r) => r.id === e)
+
+									if (rw) {
+										lep.push(e)
+									}
+								})
+							} else if (options.role && !Array.isArray(options.role)) {
+								let rew = button.guild.roles.cache.find(
+									(r) => r.id === options.role
+								)
+
+								if (rew) {
+									lep.push(options.role)
+								}
+							}
+
+							if (options.pingRole && Array.isArray(options.pingRole)) {
+								options.pingRole.forEach((e) => {
+									let rw = button.guild.roles.cache.find((r) => r.id === e)
+
+									if (rw) {
+										lep.push(e)
+									}
+								})
+							} else if (options.pingRole && !Array.isArray(options.pingRole)) {
+								let rww = button.guild.roles.cache.find(
+									(r) => r.id === options.pingRole
+								)
+
+								if (rww) {
+									lep.push(options.pingRole)
+								}
+							}
+
+							lep.forEach((e) => {
+								ch.permissionOverwrites
+									.create(e, {
+										VIEW_CHANNEL: true,
+										SEND_MESSAGES: true,
+										READ_MESSAGE_HISTORY: true
+									})
+									.catch((er) => {
+										console.log(`Error | clickBtn | ${er.stack}`)
+										ch.send({ content: `Error: \n\`\`\`\n${er.stack}\n\`\`\`` })
+									})
+							})
+
+							let lele =
+								'\nThis channel will be deleted after 10 minutes to reduce the clutter'
+
+							if (options.timeout === false) {
+								lele = ''
+							}
+
 							let emb = new Discord.MessageEmbed()
 								.setTitle('Ticket Created')
 								.setDescription(
 									options.embedDesc ||
-										`Ticket has been raised by ${button.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`
+										`Ticket has been raised by ${button.user}. We ask the Admins to summon here\n**User ID**: \`${button.user.id}\` | **User Tag**: \`${button.user.tag}\`\n${lele}`
 								)
 								.setThumbnail(button.message.guild.iconURL())
 								.setTimestamp()
 								.setColor(options.embedColor || '#075FFF')
 								.setFooter(foot)
+
+							if (options.embed) {
+								options.embed.description = options.embed.description
+									.replaceAll('{tag}', button.user.tag)
+									.replaceAll('{user}', button.user)
+									.replaceAll('{id}', button.user.id)
+									.replaceAll('{timeout}', lele)
+									.replaceAll('{guild}', button.guild.name)
+							}
 
 							let close_btn = new MessageButton()
 								.setStyle(options.closeColor || 'PRIMARY')
@@ -211,19 +278,41 @@ async function clickBtn(button, options = []) {
 								.setCustomId('close_ticket')
 
 							let closerow = new MessageActionRow().addComponents([close_btn])
-							let pingrole = ''
+							let pingrole = []
 
 							if (options.pingRole) {
-								let rol = button.guild.roles.cache.find(
-									(r) => r.id === options.pingRole
-								)
-								pingrole = ` ${rol}`
+								if (options.pingRole && Array.isArray(options.pingRole)) {
+									options.pingRole.forEach((e) => {
+										let rollw = button.guild.roles.cache.find((r) => r.id === e)
+
+										if (rollw) {
+											pingrole.push(`${rollw}`)
+										}
+									})
+								} else if (
+									options.pingRole &&
+									!Array.isArray(options.pingRole)
+								) {
+									let rol = button.guild.roles.cache.find(
+										(r) => r.id === options.pingRole
+									)
+
+									if (rol) {
+										pingrole.push(`${rol}`)
+									}
+								}
+							}
+
+							if (pingrole.length === 0) {
+								pingrole = ''
 							}
 
 							ch.send({
-								content: `${button.user}${pingrole}`,
-								embeds: [emb],
+								content: `${button.user} ${pingrole}`,
+								embeds: [options.embed || emb],
 								components: [closerow]
+							}).then(async (msg) => {
+								await msg.pin()
 							})
 
 							if (options.timeout === false) return
@@ -237,13 +326,14 @@ async function clickBtn(button, options = []) {
 									setTimeout(() => {
 										ch.delete()
 									}, 10000)
-								}, 10000)
+								}, 600000)
 							}
 						})
 				}
 			}
 
 			if (button.customId === 'tr_ticket') {
+				button.deferUpdate()
 				let messagecollection = await button.channel.messages.fetch({
 					limit: 100
 				})
@@ -264,7 +354,7 @@ async function clickBtn(button, options = []) {
 					response.push(`| ${m.author.tag} | => ${m.content}`)
 				})
 
-				await button.reply({
+				let kek = await button.followUp({
 					embeds: [
 						new Discord.MessageEmbed()
 							.setColor('#075FFF')
@@ -281,7 +371,7 @@ async function clickBtn(button, options = []) {
 				)
 
 				setTimeout(async () => {
-					await button.editReply({ files: [attach], embeds: [] })
+					await kek.edit({ files: [attach], embeds: [] })
 				}, 3000)
 			}
 			if (button.customId === 'close_ticket') {
@@ -318,43 +408,20 @@ async function clickBtn(button, options = []) {
 					tr_btn
 				])
 
-				let emb = new Discord.MessageEmbed()
-					.setTitle('Ticket Created')
-					.setDescription(
-						options.embedDesc ||
-							`Ticket has been raised by ${button.user}. We ask the Admins to summon here\n\nThis channel will be deleted after 10 minutes to reduce the clutter`
-					)
-					.setThumbnail(button.message.guild.iconURL())
-					.setTimestamp()
-					.setColor(options.embedColor || '#075FFF')
-					.setFooter(foot)
-
 				button.message.edit({
 					content: `${button.user}`,
-					embeds: [emb],
 					components: [row]
 				})
 			}
 
 			if (button.customId === 'open_ticket') {
+				button.deferUpdate()
 				button.channel.permissionOverwrites
 					.edit(button.user.id, {
 						SEND_MESSAGES: true,
 						VIEW_CHANNEL: true
 					})
 					.catch((err) => {})
-
-				let emb = new Discord.MessageEmbed()
-					.setTitle(options.embedTitle || 'Ticket Created')
-					.setDescription(
-						options.embedDesc ||
-							`Ticket has been raised by ${button.user}. We ask the Admins to summon here` +
-								`This channel will be deleted after 10 minutes to reduce the clutter`
-					)
-					.setThumbnail(button.message.guild.iconURL())
-					.setTimestamp()
-					.setColor(options.embedColor || '#075FFF')
-					.setFooter(foot)
 
 				let close_btn = new MessageButton()
 					.setStyle(options.closeColor || 'PRIMARY')
@@ -366,13 +433,13 @@ async function clickBtn(button, options = []) {
 
 				button.message.edit({
 					content: `${button.user}`,
-					embedDesc: [emb],
 					components: [closerow]
 				})
-				button.reply({ content: 'Reopened the ticket ;)', ephemeral: true })
+				button.followUp({ content: 'Reopened the ticket ;)', ephemeral: true })
 			}
 
 			if (button.customId === 'delete_ticket') {
+				button.deferUpdate()
 				let surebtn = new MessageButton()
 					.setStyle('DANGER')
 					.setLabel('Sure')
@@ -394,13 +461,80 @@ async function clickBtn(button, options = []) {
 					.setColor('#c90000')
 					.setFooter(foot)
 
-				button.reply({ embeds: [emb], components: [row1] })
+				button.followUp({
+					embeds: [options.confirmEmb || emb],
+					components: [row1]
+				})
 			}
 
 			if (button.customId === 's_ticket') {
 				button.reply({
 					content: 'Deleting the ticket and channel.. Please wait.'
 				})
+
+				let logch = button.message.guild.channels.cache.get(options.logChannel)
+
+				if (logch) {
+					let messagecollection = await button.channel.messages.fetch({
+						limit: 100
+					})
+					let response = []
+
+					messagecollection = messagecollection.sort(
+						(a, b) => a.createdTimestamp - b.createdTimestamp
+					)
+
+					messagecollection.forEach((m) => {
+						if (m.author.bot) return
+						const attachment = m.attachments.first()
+						const url = attachment ? attachment.url : null
+						if (url !== null) {
+							m.content = url
+						}
+
+						response.push(`| ${m.author.tag} | => ${m.content}`)
+					})
+
+					let attach = new Discord.MessageAttachment(
+						Buffer.from(response.toString().replaceAll(',', '\n'), 'utf-8'),
+						`${button.channel.topic}.txt`
+					)
+
+					let embbb = new Discord.MessageEmbed()
+						.setTitle('Ticket Deleted !')
+						.setDescription(
+							`Ticket just got deleted by *<@${button.user.id}>* | Tag: ***${button.user.tag}***\n\nTicket Name: \`${button.channel.name}\` | Ticket ID: \`${button.channel.id}\`\n${button.channel.topic}`
+						)
+						.setTimestamp()
+						.setColor('#cc0000')
+						.setFooter(foot)
+
+					let ek = button.channel.name
+
+					if (options.logembed) {
+						options.logembed.description = options.logembed.description
+							.replaceAll('{username}', button.user.username)
+							.replaceAll('{id}', button.user.id)
+							.replaceAll('{tag}', button.user.tag)
+							.replaceAll('{chname}', button.channel.name)
+							.replaceAll('{chtopic}', button.channel.topic)
+							.replaceAll('{chid}', button.channel.id)
+					}
+
+					setTimeout(async () => {
+						logch
+							.send({
+								embeds: [options.logembed || embbb],
+								components: []
+							})
+							.then((c) => {
+								c.channel.send({
+									content: `***Transcript:*** \`#${ek}\``,
+									files: [attach]
+								})
+							})
+					}, 3000)
+				}
 
 				setTimeout(() => {
 					let delch = button.message.guild.channels.cache.get(
@@ -416,21 +550,25 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'no_ticket') {
-				button.message.delete()
-				button.reply({
+				button.deferUpdate()
+
+				button.followUp({
 					content: 'Ticket Deletion got canceled',
 					ephemeral: true
 				})
+
+				button.message.delete()
 			}
 			let db = options.db
 			if (button.customId === 'reroll-giveaway') {
+				button.deferUpdate()
 				if (!button.member.permissions.has('ADMINISTRATOR')) {
-					button.reply({
+					button.followUp({
 						content: 'Only Admins can Reroll the giveaway..',
 						ephemeral: true
 					})
 				} else {
-					button.reply({
+					button.followUp({
 						content: 'Rerolling the giveaway ⚙️',
 						ephemeral: true
 					})
@@ -468,7 +606,7 @@ async function clickBtn(button, options = []) {
 
 					let entero = await db.get(`giveaway_entered_${button.message.id}`)
 					if (!entero) {
-						button.reply({
+						button.followUp({
 							content: 'An Error Occured. Please try again.',
 							ephemeral: true
 						})
@@ -617,13 +755,17 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'end-giveaway') {
+				button.deferUpdate()
 				if (!button.member.permissions.has('ADMINISTRATOR')) {
-					button.reply({
+					button.followUp({
 						content: 'Only Admins can End the giveaway..',
 						ephemeral: true
 					})
 				} else {
-					button.reply({ content: 'Ending the giveaway ⚙️', ephemeral: true })
+					button.followUp({
+						content: 'Ending the giveaway ⚙️',
+						ephemeral: true
+					})
 
 					let wino = []
 					let oldembed = button.message.embeds[0]

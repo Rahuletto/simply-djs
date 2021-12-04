@@ -82,6 +82,12 @@ export type clickBtnOptions = {
 	embedColor?: HexColorString
 	credit?: boolean
 
+	embed?: MessageEmbed
+	logembed?: MessageEmbed
+	confirmEmb?: MessageEmbed
+
+	logChannel?: string
+
 	closeColor?: BtnColor
 	closeEmoji?: EmojiResolvable
 
@@ -107,6 +113,11 @@ export declare function clickBtn(
 
 export type embedCreateOptions = {
 	slash?: boolean
+
+	embed?: MessageEmbed
+
+	embedFoot?: string
+	credit?: boolean
 }
 export declare function embedCreate(
 	message: Message | CommandInteraction,
@@ -226,6 +237,9 @@ export type modmailOptions = {
 	content?: string
 	/** Support Role ID (also mentions when creating if there is no options.content) */
 	role?: string
+	pingRole?: string
+
+	mailname?: string
 	/** Toggle ON/OFF the dm modmail feature, default: true */
 	dmToggle?: boolean
 	/** Blacklist users if they are spamming */
@@ -239,6 +253,9 @@ export type modmailOptions = {
 	delColor?: BtnColor
 	/** Emoji that the button has.. (Emoji ID), default: '❌' */
 	delEmoji?: EmojiResolvable
+
+	trColor?: BtnColor
+	trEmoji?: EmojiResolvable
 	/** Give credits to the package by making it true */
 	credit?: boolean
 }
@@ -247,30 +264,6 @@ export declare function modmail(
 	message: Message,
 	options?: modmailOptions
 ): Promise<any>
-
-export type rankCardOptions = {
-	/**Provide a member into the system (Identifies the member automatically if not provided) */
-	member?: GuildMember
-	level: string
-	currentXP: string
-	/** Required XP for the next level of the user */
-	neededXP: string
-	rank: string
-	/** Slash support */
-	slash?: boolean
-	/** Background Image of the rank card (URL) */
-	background?: string
-}
-export declare function rankCard(
-	client: Client,
-	message: Message,
-	options?: rankCardOptions
-): Promise<void>
-export declare function rankCard(
-	client: Client,
-	interaction: CommandInteraction,
-	options?: rankCardOptions
-): Promise<void>
 
 export type rpsOptions = {
 	embedColor?: HexColorString // default: #075FFF
@@ -346,6 +339,7 @@ export type stealStickerOptions = {
 	embedFoot?: string
 	/** The message sent when emoji id is invalid (or) emoji not found, default: "Couldn't find an emoji from it", */
 	credit?: boolean
+	slash?: boolean
 }
 export declare function stealSticker(
 	message: Message,
@@ -413,6 +407,8 @@ export type ticketSystemOptions = {
 	embedFoot?: string
 	/** Give credits to this package(Boolean[true / false]) Default: true */
 	credit?: boolean
+
+	embed?: MessageEmbed
 	//Buttons
 	/** The Emoji for the Ticket Button which opens a ticket */
 	emoji?: EmojiResolvable
@@ -444,6 +440,8 @@ export type tictactoeOptions = {
 	idleEmoji: EmojiResolvable
 
 	userSlash?: string
+
+	resultBtn?: boolean
 }
 export declare function tictactoe(
 	message: Message,
