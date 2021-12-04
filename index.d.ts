@@ -265,30 +265,6 @@ export declare function modmail(
 	options?: modmailOptions
 ): Promise<any>
 
-export type rankCardOptions = {
-	/**Provide a member into the system (Identifies the member automatically if not provided) */
-	member?: GuildMember
-	level: string
-	currentXP: string
-	/** Required XP for the next level of the user */
-	neededXP: string
-	rank: string
-	/** Slash support */
-	slash?: boolean
-	/** Background Image of the rank card (URL) */
-	background?: string
-}
-export declare function rankCard(
-	client: Client,
-	message: Message,
-	options?: rankCardOptions
-): Promise<void>
-export declare function rankCard(
-	client: Client,
-	interaction: CommandInteraction,
-	options?: rankCardOptions
-): Promise<void>
-
 export type rpsOptions = {
 	embedColor?: HexColorString // default: #075FFF
 	timeoutEmbedColor?: HexColorString // default: #c90000

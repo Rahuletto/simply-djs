@@ -29,17 +29,8 @@ yarn add simply-djs
 <br>
  
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
-- ### Package has become 90% customizable. Suggest more Customizability at our [Support Server](https://discord.gg/3JzDV9T5Fn)
-- ### 95% Slash Support on entire package
-- ### TicTacToe Redefined ! Results can be shown in buttons, Changed stuff to embed, etc..
-- ### embedCreate is customizable finally !
-- ### rankCard being deprecated !
-- ### ticketSystem Redefined ! Custom Embeds, Log Channels, etc..
-- ### stealSticker got Slash Support
-- ### clickBtn and suggestBtn rewritten. 50% Less Errors
-- ### embedPages Rewritten !
-- ### modmail Redefined ! Bug Fixes, Transcript, etc..
-- ### Bug Fixes
+- ### Insane Big Bug Fixes
+- ### Removed rankCard
 
 <br>
 

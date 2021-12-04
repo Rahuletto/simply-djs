@@ -255,12 +255,14 @@ async function giveawaySystem(client, db, message, options = []) {
 						}
 					}
 					if (button.customId === 'enter-giveaway') {
+						await button.deferUpdate({ ephemeral: true })
+
 						let rualive = await db.get(
 							`giveaway_${button.message.id}_${button.user.id}`
 						)
 
 						if (rualive === button.user.id) {
-							button.reply({
+							button.followUp({
 								content:
 									'You have already entered the giveaway... Removing you from giveaways. Enter again if this is unintentional.',
 								ephemeral: true
@@ -295,7 +297,7 @@ async function giveawaySystem(client, db, message, options = []) {
 
 							m.edit({ embeds: [embed] })
 						} else {
-							button.reply({
+							button.followUp({
 								content: 'You have entered to the giveaway.',
 								ephemeral: true
 							})
