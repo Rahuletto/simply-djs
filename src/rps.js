@@ -196,10 +196,9 @@ async function rps(msgOrInter, options = {}) {
 
 					if (b.user.id === opponent.id) op = b.customId
 					if (b.user.id === interaction.user.id) auth = b.customId
-
-					if (ids.size == 0) btnCollector.stop()
-
-					console.log(op, auth)
+					setTimeout(() => {
+						if (ids.size == 0) btnCollector.stop()
+					}, 500)
 				})
 
 				btnCollector.on('end', async (coll, reason) => {
@@ -215,24 +214,31 @@ async function rps(msgOrInter, options = {}) {
 							scissors: 'paper',
 							paper: 'rock'
 						}
-
 						if (op === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							await interaction.editReply({
 								content: '** **',
 								embeds: [
 									new Discord.MessageEmbed()
 										.setTitle('Draw!')
 										.setColor(options.drawEmbedColor)
-										.setDescription(
-											`Both players chose **${
-												op.charAt(0).toUpperCase() + op.slice(1)
-											}**`
-										)
+										.setDescription(`Both players chose **${op}**`)
 										.setFooter(foot)
 								],
 								components: []
 							})
 						} else if (winnerMap[op] === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//op - won
 							await interaction.editReply({
 								content: '** **',
@@ -240,18 +246,20 @@ async function rps(msgOrInter, options = {}) {
 									new Discord.MessageEmbed()
 										.setTitle(`${opponent.tag} Wins!`)
 										.setColor(options.winEmbedColor)
-										.setDescription(
-											`**${
-												op.charAt(0).toUpperCase() + op.slice(1)
-											}** defeats **${
-												auth.charAt(0).toUpperCase() + auth.slice(1)
-											}**`
-										)
+										.setDescription(`**${op}** defeats **${auth}**`)
 										.setFooter(foot)
 								],
 								components: []
 							})
 						} else {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//auth - won
 							await interaction.editReply({
 								content: '** **',
@@ -259,13 +267,7 @@ async function rps(msgOrInter, options = {}) {
 									new Discord.MessageEmbed()
 										.setTitle(`${interaction.user.tag} Wins!`)
 										.setColor(options.winEmbedColor)
-										.setDescription(
-											`**${
-												auth.charAt(0).toUpperCase() + auth.slice(1)
-											}** defeats **${
-												op.charAt(0).toUpperCase() + op.slice(1)
-											}**`
-										)
+										.setDescription(`**${auth}** defeats **${op}**`)
 										.setFooter(foot)
 								],
 								components: []
@@ -407,6 +409,11 @@ async function rps(msgOrInter, options = {}) {
 						}
 
 						if (op === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+
 							await m.edit({
 								content: '** **',
 								embeds: [
@@ -419,6 +426,14 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else if (winnerMap[op] === auth) {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//op - won
 							await m.edit({
 								content: '** **',
@@ -432,6 +447,14 @@ async function rps(msgOrInter, options = {}) {
 								components: []
 							})
 						} else {
+							op = op
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
+							auth = auth
+								.replace('scissors', '✂️ Scissors')
+								.replace('paper', '📄 Paper')
+								.replace('rock', '🪨 Rock')
 							//auth - won
 							await m.edit({
 								content: '** **',

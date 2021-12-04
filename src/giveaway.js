@@ -256,7 +256,6 @@ async function giveawaySystem(client, db, message, options = []) {
 					}
 					if (button.customId === 'enter-giveaway') {
 						await button.deferUpdate({ ephemeral: true })
-
 						let rualive = await db.get(
 							`giveaway_${button.message.id}_${button.user.id}`
 						)
