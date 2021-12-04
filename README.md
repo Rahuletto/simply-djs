@@ -30,7 +30,7 @@ yarn add simply-djs
  
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 - ### Insane Big Bug Fixes
-- ### Removed rankCard
+- ### Removed `rankCard`
 
 <br>
 
