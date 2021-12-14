@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.Client} client
@@ -20,19 +21,23 @@ async function starboard(client, reaction, options = []) {
 		let minno = options.min || 2
 		let min = Number(minno)
 		if (!min || min === NaN)
-			throw new Error(
-				'MIN_IS_NAN | Minimum stars number is Not A Number. Try again.'
+			throw new SimplyError(
+				'MIN_IS_NAN | Minimum stars number is Not A Number.',
+				`You specified ${min || 'undefined'}. Expected a integer`
 			)
 		if (min === 0)
-			throw new Error('MIN_IS_ZERO | Minimum stars number should not be 0..')
+			throw new SimplyError(
+				'MIN_IS_ZERO | Minimum stars number should not be 0..'
+			)
 
 		let event = options.event
 
 		if (event === 'messageReactionAdd') {
 			await reaction.fetch()
 			if (!options)
-				throw new Error(
-					'Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageReactionAdd'
+				throw new SimplyError(
+					'Starboard requires you to specify what event.',
+					'Available events: messageReactionAdd | messageReactionRemove | messageDelete'
 				)
 			if (
 				reaction.emoji.id === options.emoji ||
@@ -45,7 +50,11 @@ async function starboard(client, reaction, options = []) {
 				const starboard = client.channels.cache.get(options.chid)
 
 				const fetchMsg = await reaction.message.fetch()
-				if (!starboard) throw new Error('INVALID_CHANNEL_ID')
+				if (!starboard)
+					throw new SimplyError(
+						`INVALID_CHANNEL_ID: ${options.chid}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+						'Check my permissions (or) Try using another Channel ID'
+					)
 
 				const attachment = fetchMsg.attachments.first()
 				const url = attachment ? attachment.url : null
@@ -101,8 +110,9 @@ async function starboard(client, reaction, options = []) {
 		} else if (event === 'messageReactionRemove') {
 			await reaction.fetch()
 			if (!options)
-				throw new Error(
-					'Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageReactionRemove'
+				throw new SimplyError(
+					'Starboard requires you to specify what event.',
+					'Available events: messageReactionAdd | messageReactionRemove | messageDelete'
 				)
 
 			if (
@@ -113,7 +123,11 @@ async function starboard(client, reaction, options = []) {
 				const starboard = client.channels.cache.get(options.chid)
 
 				const fetchMsg = await reaction.message.fetch()
-				if (!starboard) throw new Error('INVALID_CHANNEL_ID')
+				if (!starboard)
+					throw new SimplyError(
+						`INVALID_CHANNEL_ID: ${options.chid}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+						'Check my permissions (or) Try using another Channel ID'
+					)
 
 				const attachment = fetchMsg.attachments.first()
 				const url = attachment ? attachment.url : null
@@ -154,10 +168,15 @@ async function starboard(client, reaction, options = []) {
 		} else if (event === 'messageDelete') {
 			const starboard = client.channels.cache.get(options.chid)
 			if (!options)
-				throw new Error(
-					'Sorry but starboard got a update which changed everything. Please check out the examples now. | Event: messageDelete'
+				throw new SimplyError(
+					'Starboard requires you to specify what event.',
+					'Available events: messageReactionAdd | messageReactionRemove | messageDelete'
 				)
-			if (!starboard) throw new Error('INVALID_CHANNEL_ID')
+			if (!starboard)
+				throw new SimplyError(
+					`INVALID_CHANNEL_ID: ${options.chid}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+					'Check my permissions (or) Try using another Channel ID'
+				)
 
 			const msgs = await starboard.messages.fetch({ limit: 100 })
 

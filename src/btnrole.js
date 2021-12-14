@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.Client} client
@@ -22,7 +23,7 @@ embed => Embed
 async function btnrole(client, message, options = []) {
 	try {
 		if (!options.data)
-			throw new Error(
+			throw new SimplyError(
 				'NO_DATA_PROVIDED. You didnt specify any data to make buttons..'
 			)
 
@@ -52,7 +53,10 @@ async function btnrole(client, message, options = []) {
 			button = new Array([], [], [], [], [])
 			btnroleengin(data, button, row)
 		} else if (data.length > 25) {
-			throw new Error('Max 25 roles accepted.. Exceeding it will cause errors.')
+			throw new SimplyError(
+				'Max 25 roles accepted.. Exceeding it will cause errors.',
+				'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
+			)
 		}
 		async function btnroleengin(data, button, row) {
 			let current = 0
@@ -84,16 +88,24 @@ async function btnrole(client, message, options = []) {
 			}
 
 			if (!options.embed)
-				throw new Error(
-					'NO_EMBED_SPECIFIED. You didnt specify any embed to me to send..'
+				throw new SimplyError(
+					'NO_EMBED_SPECIFIED. You didnt specify any embed to me to send..',
+					'Create a new embed and specify.'
 				)
 
 			let emb = options.embed
 
-			message.channel.send({
-				embeds: [emb],
-				components: row
-			})
+			if (message.commandId) {
+				message.followUp({
+					embeds: [emb],
+					components: row
+				})
+			} else if (!message.commandId) {
+				message.channel.send({
+					embeds: [emb],
+					components: row
+				})
+			}
 
 			function addRow(btns) {
 				let row1 = new MessageActionRow()

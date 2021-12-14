@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
-
+let SimplyError = require('./Error/Error.js')
 /**
  --- options ---
  
@@ -31,8 +31,9 @@ async function chatbot(client, message, options = {}) {
 		for (let channelID of channels) {
 			const ch = client.channels.cache.get(channelID)
 			if (!ch)
-				throw new Error(
-					`INVALID_CHANNEL_ID: ${channelID}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support`
+				throw new SimplyError(
+					`INVALID_CHANNEL_ID: ${channelID}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+					'Check my permissions (or) Try using another Channel ID'
 				)
 		}
 

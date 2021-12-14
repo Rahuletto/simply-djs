@@ -284,7 +284,8 @@ export type rpsOptions = {
 export declare function rps(
 	message: Message,
 	options?: rpsOptions
-): Promise<any>
+): Promise<User>
+
 export declare function rps(
 	interaction: CommandInteraction,
 	options?: rpsOptions

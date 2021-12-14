@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const fs = require('fs')
 
+let { MessageButton, MessageActionRow } = require('discord.js')
+
 /**
  * @param {Discord.ButtonInteraction} button
  * @param {import('../index').clickBtnOptions} options
@@ -73,7 +75,7 @@ async function clickBtn(button, options = []) {
 							)
 					} else {
 						button.followUp({
-							content: `Gave you the role ${real} | Name: ${real.name} | ID: ${real.id}`,
+							content: `Gave you the role ${real} | ID: ${real.id}`,
 							ephemeral: true
 						})
 
@@ -87,8 +89,6 @@ async function clickBtn(button, options = []) {
 					}
 				}
 			}
-
-			let { MessageButton, MessageActionRow } = require('discord.js')
 
 			if (button.customId === 'create_ticket') {
 				button.deferUpdate()
@@ -324,7 +324,9 @@ async function clickBtn(button, options = []) {
 									})
 
 									setTimeout(() => {
-										ch.delete()
+										if (!ch.deleted) {
+											ch.delete()
+										} else return
 									}, 10000)
 								}, 600000)
 							}
@@ -540,12 +542,14 @@ async function clickBtn(button, options = []) {
 					let delch = button.message.guild.channels.cache.get(
 						button.message.channel.id
 					)
-					delch.delete().catch((err) => {
-						button.message.channel.send({
-							content: 'An Error Occured. ' + err,
-							ephemeral: true
+					if (!delch.deleted) {
+						delch.delete().catch((err) => {
+							button.message.channel.send({
+								content: 'An Error Occured. ' + err,
+								ephemeral: true
+							})
 						})
-					})
+					} else return
 				}, 2000)
 			}
 

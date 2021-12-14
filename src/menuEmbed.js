@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.CommandInteraction} message
@@ -32,8 +33,9 @@ async function dropdownPages(message, options = []) {
 	let typ = options.type || 1
 	let type = Number(typ)
 	if (type > 2)
-		throw new Error(
-			'There is no Type more than 2.. TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
+		throw new SimplyError(
+			'There is no Type more than 2..',
+			'TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
 		)
 
 	let data = options.data

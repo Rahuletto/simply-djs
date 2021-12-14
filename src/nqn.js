@@ -33,8 +33,6 @@ async function nqn(message) {
 
 		if ((emo = emoteRegex.exec(emoj))) {
 			if (emoji !== undefined && emoji.id !== emo[1]) return
-			console.log(emoji.id)
-			console.log(emo[1])
 		}
 
 		let temp = emoji.toString()

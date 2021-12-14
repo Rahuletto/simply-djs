@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.Client} client
@@ -10,7 +11,6 @@ const Discord = require('discord.js')
 /**
  --- options ---
  
-  slash => Boolean
   credit => Boolean
   
   chid => (Channel ID) String
@@ -27,7 +27,7 @@ const Discord = require('discord.js')
 
 async function suggestSystem(client, message, args, options = []) {
 	try {
-		if (options.slash === true) {
+		if (message.commandId) {
 			let interaction = message
 
 			let channel = options.chid
@@ -36,8 +36,9 @@ async function suggestSystem(client, message, args, options = []) {
 
 			const ch = client.channels.cache.get(channel)
 			if (!ch)
-				throw new Error(
-					'INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support'
+				throw new SimplyError(
+					`INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+					'Check my permissions (or) Try using another Channel ID'
 				)
 
 			let suggestion = interaction.options.getString(
@@ -141,7 +142,7 @@ async function suggestSystem(client, message, args, options = []) {
 						}
 					})
 				})
-		} else if (!options.slash || options.slash === false) {
+		} else if (!message.commandId) {
 			let channel = options.chid
 			let { MessageButton, MessageActionRow } = require('discord.js')
 
@@ -150,8 +151,9 @@ async function suggestSystem(client, message, args, options = []) {
 
 			const ch = client.channels.cache.get(channel)
 			if (!ch)
-				throw new Error(
-					'INVALID_CHANNEL_ID. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission. Go to https://discord.com/invite/3JzDV9T5Fn to get support'
+				throw new SimplyError(
+					`INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+					'Check my permissions (or) Try using another Channel ID'
 				)
 
 			let suggestion = args.join(' ')
