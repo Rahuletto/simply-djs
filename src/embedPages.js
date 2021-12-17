@@ -132,7 +132,7 @@ async function embedPages(client, message, pages, style = {}) {
 					components: comps,
 					allowedMentions: { repliedUser: false }
 				})
-			} else if (!message.commandId) {
+			} else {
 				await message.followUp({
 					embeds: [pages[0]],
 					components: comps,
@@ -140,7 +140,7 @@ async function embedPages(client, message, pages, style = {}) {
 				})
 			}
 			m = await message.fetchReply()
-		} else {
+		} else if (!message.commandId) {
 			if (style.pgCount) {
 				m = await message.reply({
 					content: `***Page: 1/${pages.length}***`,

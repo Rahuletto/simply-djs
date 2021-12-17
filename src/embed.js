@@ -158,8 +158,8 @@ async function embed(message, options = []) {
 						if (button.customId && button.customId === 'setDelete') {
 							button.reply({ content: 'Deleting...', ephemeral: true })
 
-							membed.delete()
-							e.delete()
+							membed.delete().catch(() => {})
+							e.delete().catch(() => {})
 						} else if (button.customId && button.customId === 'setDone') {
 							if (
 								(interaction ? interaction : message).member.permissions.has(
@@ -189,9 +189,9 @@ async function embed(message, options = []) {
 											content: membed.content,
 											embeds: [membed.embeds[0]]
 										})
-										membed.delete()
-										e.delete()
-										m.delete()
+										membed.delete().catch(() => {})
+										e.delete().catch(() => {})
+										m.delete().catch(() => {})
 
 										resolve(membed.embeds[0].toJSON())
 									}
@@ -207,8 +207,8 @@ async function embed(message, options = []) {
 									content: membed.content,
 									embeds: [membed.embeds[0]]
 								})
-								membed.delete()
-								e.delete()
+								membed.delete().catch(() => {})
+								e.delete().catch(() => {})
 
 								resolve(membed.embeds[0].toJSON())
 							}
@@ -273,7 +273,9 @@ async function embed(message, options = []) {
 										content: 'Enabled Timestamp on the embed'
 									})
 
-									membed.edit({ content: membed.content, embeds: [msg] })
+									membed
+										.edit({ content: membed.content, embeds: [msg] })
+										.catch(() => {})
 								}
 
 								if (btn.customId === 'timestamp-no') {
@@ -311,7 +313,9 @@ async function embed(message, options = []) {
 										content: 'Disabled Timestamp on the embed'
 									})
 
-									membed.edit({ content: membed.content, embeds: [msg] })
+									membed
+										.edit({ content: membed.content, embeds: [msg] })
+										.catch(() => {})
 								}
 							})
 						} else if (button.values[0] === 'setAuthor') {
@@ -399,9 +403,11 @@ async function embed(message, options = []) {
 											)
 
 										titleclr.stop()
-										m.delete()
+										m.delete().catch(() => {})
 
-										membed.edit({ content: membed.content, embeds: [msg] })
+										membed
+											.edit({ content: membed.content, embeds: [msg] })
+											.catch(() => {})
 									})
 								}
 
@@ -462,9 +468,11 @@ async function embed(message, options = []) {
 											)
 
 										titleclr.stop()
-										m.delete()
+										m.delete().catch(() => {})
 
-										membed.edit({ content: membed.content, embeds: [msg] })
+										membed
+											.edit({ content: membed.content, embeds: [msg] })
+											.catch(() => {})
 									})
 								}
 
@@ -487,7 +495,7 @@ async function embed(message, options = []) {
 											: ''
 
 										if (!m.content.startsWith('http')) {
-											m.delete()
+											m.delete().catch(() => {})
 											return button.editReply(
 												'A URL should start with http protocol. Please give a valid URL.'
 											)
@@ -518,9 +526,11 @@ async function embed(message, options = []) {
 												)
 
 											titleclr.stop()
-											m.delete()
+											m.delete().catch(() => {})
 
-											membed.edit({ content: membed.content, embeds: [msg] })
+											membed
+												.edit({ content: membed.content, embeds: [msg] })
+												.catch(() => {})
 										}
 									})
 								}
@@ -571,9 +581,11 @@ async function embed(message, options = []) {
 									)
 
 								titleclr.stop()
-								m.delete()
+								m.delete().catch(() => {})
 
-								membed.edit({ content: m.content, embeds: [msg] })
+								membed
+									.edit({ content: m.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setThumbnail') {
 							button.reply({
@@ -630,9 +642,11 @@ async function embed(message, options = []) {
 									.setTimestamp(membed.embeds[0].timestamp ? new Date() : false)
 
 								titleclr.stop()
-								m.delete()
+								m.delete().catch(() => {})
 
-								membed.edit({ content: membed.content, embeds: [msg] })
+								membed
+									.edit({ content: membed.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setColor') {
 							button.reply({
@@ -680,9 +694,11 @@ async function embed(message, options = []) {
 												: ''
 										)
 
-									m.delete()
+									m.delete().catch(() => {})
 									titleclr.stop()
-									membed.edit({ content: membed.content, embeds: [msg] })
+									membed
+										.edit({ content: membed.content, embeds: [msg] })
+										.catch(() => {})
 								} else {
 									message.reply('Please give me a valid hex code')
 								}
@@ -704,7 +720,7 @@ async function embed(message, options = []) {
 
 							titleclr.on('collect', async (m) => {
 								if (!m.content.startsWith('http')) {
-									m.delete()
+									m.delete().catch(() => {})
 									return button.editReply(
 										'A URL should start with http protocol. Please give a valid URL.'
 									)
@@ -739,9 +755,11 @@ async function embed(message, options = []) {
 												: ''
 										)
 
-									m.delete()
+									m.delete().catch(() => {})
 									titleclr.stop()
-									membed.edit({ content: membed.content, embeds: [msg] })
+									membed
+										.edit({ content: membed.content, embeds: [msg] })
+										.catch(() => {})
 								}
 							})
 						} else if (button.values[0] === 'setImage') {
@@ -795,9 +813,11 @@ async function embed(message, options = []) {
 									)
 									.setTimestamp(membed.embeds[0].timestamp ? new Date() : false)
 
-								m.delete()
+								m.delete().catch(() => {})
 								titleclr.stop()
-								membed.edit({ content: membed.content, embeds: [msg] })
+								membed
+									.edit({ content: membed.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setTitle') {
 							button.reply({
@@ -841,10 +861,12 @@ async function embed(message, options = []) {
 									.setTimestamp(membed.embeds[0].timestamp ? new Date() : false)
 									.setImage(url || '')
 									.setFooter(membed.embeds[0].footer.text || '')
-								m.delete()
+								m.delete().catch(() => {})
 								titleclr.stop()
 
-								membed.edit({ content: membed.content, embeds: [msg] })
+								membed
+									.edit({ content: membed.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setDescription') {
 							button.reply({
@@ -889,9 +911,11 @@ async function embed(message, options = []) {
 									.setColor(membed.embeds[0].color || '#2F3136')
 									.setImage(url || '')
 									.setFooter(membed.embeds[0].footer.text || '')
-								m.delete()
+								m.delete().catch(() => {})
 								titleclr.stop()
-								membed.edit({ content: membed.content, embeds: [msg] })
+								membed
+									.edit({ content: membed.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setFooter') {
 							button.reply({
@@ -937,11 +961,13 @@ async function embed(message, options = []) {
 											: ''
 									)
 
-								m.delete()
+								m.delete().catch(() => {})
 
 								titleclr.stop()
 
-								membed.edit({ content: membed.content, embeds: [msg] })
+								membed
+									.edit({ content: membed.content, embeds: [msg] })
+									.catch(() => {})
 							})
 						}
 					})

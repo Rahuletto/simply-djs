@@ -59,7 +59,7 @@ async function suggestBtn(button, users, options = []) {
 							if (btn.member.permissions.has('ADMINISTRATOR')) {
 								button.editReply({
 									content:
-										'Reason ?? if not, Ill give it as `No Reason` Timeout: 15 Seconds..',
+										'Reason ?? if not, Ill give it as `No Reason` Timeout: 2 minutes.. | You can cancel by saying `Cancel`',
 									ephemeral: true,
 									components: []
 								})
@@ -220,7 +220,7 @@ async function suggestBtn(button, users, options = []) {
 							if (btn.member.permissions.has('ADMINISTRATOR')) {
 								button.editReply({
 									content:
-										'Tell me the reason.. if not, Ill give it as `No Reason` Timeout: 15 Seconds..',
+										'Reason ?? if not, Ill give it as `No Reason` Timeout: 2 minutes.. | You can cancel by saying `Cancel`',
 									ephemeral: true,
 									components: []
 								})
