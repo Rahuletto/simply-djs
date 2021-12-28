@@ -1480,7 +1480,7 @@ async function tictactoe(message, options = []) {
 										tictactoe(m)
 									}
 								})
-								collector.on('end', (collected) => {
+								collector.on('end', (collected, reason) => {
 									if (collected.size === 0 && reason == 'time')
 										m.edit({
 											content: `<@${Args.userid}> didn\'t react in time! (30s)`,
