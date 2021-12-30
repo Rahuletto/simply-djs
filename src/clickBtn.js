@@ -54,7 +54,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId.startsWith('role-')) {
-				button.deferReply({ ephemeral: true })
+				await button.deferUpdate({ ephemeral: true })
 				let rle = button.customId.replace('role-', '')
 
 				let real = button.guild.roles.cache.find((r) => r.id === rle)
@@ -417,7 +417,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'open_ticket') {
-				button.deferUpdate()
+				await button.deferUpdate()
 				button.channel.permissionOverwrites
 					.edit(button.user.id, {
 						SEND_MESSAGES: true,
@@ -441,7 +441,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'delete_ticket') {
-				button.deferUpdate()
+				await button.deferUpdate()
 				let surebtn = new MessageButton()
 					.setStyle('DANGER')
 					.setLabel('Sure')
@@ -554,7 +554,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'no_ticket') {
-				button.deferUpdate()
+				await button.deferUpdate({ ephemeral: true })
 
 				button.followUp({
 					content: 'Ticket Deletion got canceled',
@@ -565,7 +565,7 @@ async function clickBtn(button, options = []) {
 			}
 			let db = options.db
 			if (button.customId === 'reroll-giveaway') {
-				button.deferUpdate()
+				await button.deferUpdate()
 				if (!button.member.permissions.has('ADMINISTRATOR')) {
 					button.followUp({
 						content: 'Only Admins can Reroll the giveaway..',
@@ -759,7 +759,7 @@ async function clickBtn(button, options = []) {
 			}
 
 			if (button.customId === 'end-giveaway') {
-				button.deferUpdate()
+				await button.deferUpdate()
 				if (!button.member.permissions.has('ADMINISTRATOR')) {
 					button.followUp({
 						content: 'Only Admins can End the giveaway..',

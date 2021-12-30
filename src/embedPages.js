@@ -167,9 +167,8 @@ async function embedPages(client, message, pages, style = {}) {
 
 			b.deferUpdate()
 
-			if (b.user.id !== (message.user ? message.user : message.author).id) {
+			if (b.user.id !== (message.user ? message.user : message.author).id)
 				return
-			}
 
 			if (b.customId == 'back_button_embed') {
 				if (currentPage - 1 < 0) currentPage = pages.length - 1

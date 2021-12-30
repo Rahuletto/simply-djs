@@ -38,6 +38,13 @@ async function tictactoe(message, options = []) {
 						content: 'No opponent mentioned!',
 						ephemeral: true
 					})
+
+				if (opponent.bot)
+					return message.followUp({
+						content: "You can't play with bots !",
+						ephemeral: true
+					})
+
 				if (opponent.id == (message.user ? message.user : message.author).id)
 					return message.followUp({
 						content: 'You cannot play by yourself!',
@@ -49,6 +56,12 @@ async function tictactoe(message, options = []) {
 				if (!opponent)
 					return message.channel.send({
 						content: 'Please provide the user to challenge!'
+					})
+
+				if (opponent.bot)
+					return message.followUp({
+						content: "You can't play with bots !",
+						ephemeral: true
 					})
 
 				if (opponent.id === message.member.id)

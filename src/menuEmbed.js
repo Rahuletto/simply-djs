@@ -107,6 +107,10 @@ async function dropdownPages(message, options = []) {
 		collector.on('collect', async (menu) => {
 			let selet = menu.values[0]
 
+			if (type === 2) {
+				if (message.author.id !== menu.user.id) return
+			}
+
 			if (selet === 'delete_menuemb') {
 				if (message.user.id !== menu.user.id)
 					return menu.reply({
@@ -116,12 +120,11 @@ async function dropdownPages(message, options = []) {
 					})
 				else if (message.user.id === menu.user.id) return menu.message.delete()
 			}
-			menu.deferUpdate()
 
 			for (let i = 0; i < data.length; i++) {
 				if (selet === data[i].label) {
 					if (type === 1) {
-						menu.followUp({ embeds: [data[i].embed], ephemeral: true })
+						menu.reply({ embeds: [data[i].embed], ephemeral: true })
 					} else if (type === 2) {
 						menu.message.edit({ embeds: [data[i].embed] })
 					}
@@ -142,6 +145,10 @@ async function dropdownPages(message, options = []) {
 					idle: 600000
 				})
 				collector.on('collect', async (menu) => {
+					if (type === 2) {
+						if (message.author.id !== menu.user.id) return
+					}
+
 					let selet = menu.values[0]
 
 					if (selet === 'delete_menuemb') {
@@ -155,12 +162,10 @@ async function dropdownPages(message, options = []) {
 							return menu.message.delete()
 					}
 
-					menu.deferUpdate()
-
 					for (let i = 0; i < data.length; i++) {
 						if (selet === data[i].label) {
 							if (type === 1) {
-								menu.followUp({ embeds: [data[i].embed], ephemeral: true })
+								menu.reply({ embeds: [data[i].embed], ephemeral: true })
 							} else if (type === 2) {
 								menu.message.edit({ embeds: [data[i].embed] })
 							}
