@@ -55,11 +55,13 @@ async function suggestBtn(button, users, options = []) {
 						time: 30000
 					})
 					coll.on('collect', async (btn) => {
+						await btn.deferUpdate({ ephemeral: true })
+
 						if (btn.customId === 'deny-sug') {
 							if (btn.member.permissions.has('ADMINISTRATOR')) {
 								button.editReply({
 									content:
-										'Reason ?? if not, Ill give it as `No Reason` Timeout: 15 Seconds..',
+										'Reason ?? if not, Ill give it as `No Reason` Timeout: 2 minutes.. | You can cancel by saying `Cancel`',
 									ephemeral: true,
 									components: []
 								})
@@ -73,11 +75,11 @@ async function suggestBtn(button, users, options = []) {
 
 								collector.on('collect', (m) => {
 									if (m.content.toLowerCase() === 'cancel') {
-										m.delete()
+										m.delete().catch(() => {})
 										button.editReply('Refusal Cancelled')
 										collector.stop()
 									} else {
-										m.delete()
+										m.delete().catch(() => {})
 										dec(m.content, oldemb, button.user)
 										collector.stop()
 									}
@@ -220,7 +222,7 @@ async function suggestBtn(button, users, options = []) {
 							if (btn.member.permissions.has('ADMINISTRATOR')) {
 								button.editReply({
 									content:
-										'Tell me the reason.. if not, Ill give it as `No Reason` Timeout: 15 Seconds..',
+										'Reason ?? if not, Ill give it as `No Reason` Timeout: 2 minutes.. | You can cancel by saying `Cancel`',
 									ephemeral: true,
 									components: []
 								})
@@ -234,11 +236,11 @@ async function suggestBtn(button, users, options = []) {
 
 								collector.on('collect', (m) => {
 									if (m.content.toLowerCase() === 'cancel') {
-										m.delete()
+										m.delete().catch(() => {})
 										button.editReply('Approval Cancelled')
 										collector.stop()
 									} else {
-										m.delete()
+										m.delete().catch(() => {})
 										aprov(m.content, oldemb, button.user)
 										collector.stop()
 									}
@@ -290,7 +292,7 @@ async function suggestBtn(button, users, options = []) {
 								`${button.message.id}-${button.user.id}-dislike`
 							)
 
-							button.deferUpdate()
+							await button.deferUpdate()
 							users.set(
 								`${button.message.id}-${button.user.id}-dislike`,
 								button.user.id
@@ -333,7 +335,7 @@ async function suggestBtn(button, users, options = []) {
 
 							removedislike(oldemb)
 						} else {
-							button.deferUpdate()
+							await button.deferUpdate()
 							users.set(
 								`${button.message.id}-${button.user.id}-like`,
 								button.user.id

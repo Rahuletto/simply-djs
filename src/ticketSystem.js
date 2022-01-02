@@ -13,7 +13,6 @@ const Discord = require('discord.js')
   emoji => (Emoji ID) String
 
   credit => Boolean
-  slash => Boolean
 
   embed => Embed
   
@@ -73,10 +72,10 @@ async function ticketSystem(message, channel, options = []) {
 			.setFooter(foot)
 
 		try {
-			if (options.slash === true || message.commandId) {
+			if (message.commandId) {
 				message.followUp('Done. Setting Ticket to that channel')
 				channel.send({ embeds: [options.embed || embed], components: [a] })
-			} else if (options.slash === false || !message.commandId) {
+			} else if (!message.commandId) {
 				channel.send({ embeds: [options.embed || embed], components: [a] })
 			}
 		} catch (err) {

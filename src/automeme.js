@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.Client} client
@@ -43,7 +44,10 @@ async function automeme(client, options = []) {
 	let interv
 	if (options.interval) {
 		if (options.interval <= 60000)
-			throw new Error(`Interval Time should be above 60000 (1 minute).`)
+			throw new SimplyError(
+				`Interval Time should be above 60000 (1 minute).`,
+				'Interval should not be less than 60000'
+			)
 		interv = options.interval
 	} else {
 		interv = 120000
@@ -52,17 +56,19 @@ async function automeme(client, options = []) {
 	setInterval(() => {
 		const channel = client.channels.cache.get(ch)
 		if (!channel)
-			throw new Error(
-				"Invalid channel id has been provided (OR) I don't have permissions to View the Channel"
+			throw new SimplyError(
+				"Invalid channel id has been provided (OR) I don't have permissions to View the Channel",
+				'Check my permissions (or) Try using other Channel ID'
 			)
 
 		fetch(`https://www.reddit.com/r/${sub[random]}/random/.json`)
 			.then((res) => res.json())
 			.then((response) => {
+				if (!response) return
+				if (!response[0].data) return
 
-				if(!response) return;
-				if(!response[0].data) return;
-				
+				if (response[0].data.children[0].data.over_18 === true) return
+
 				let perma = response[0].data.children[0].data.permalink
 				let url = `https://reddit.com${perma}`
 				let memeImage =

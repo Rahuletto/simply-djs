@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 let ms = require('ms')
+let SimplyError = require('./Error/Error.js')
 
+const { MessageButton, MessageActionRow } = Discord
 /**
  * @param {Discord.Client} client
  * @param {import('../index').DB} db
@@ -10,8 +12,6 @@ let ms = require('ms')
 
 /**
  --- options ---
- 
-  slash => Boolean
 
   chSlash => String
   timeSlash => String 
@@ -31,7 +31,7 @@ let ms = require('ms')
 
 async function giveawaySystem(client, db, message, options = []) {
 	try {
-		if (options.slash === true) {
+		if (message.commandId) {
 			var timeForStart = Date.now()
 
 			let interaction = message
@@ -93,7 +93,7 @@ async function giveawaySystem(client, db, message, options = []) {
 					{ name: '💝 People Entered', value: `***0***` }
 				)
 			ch.send({ embeds: [embed], components: [row] }).then(async (m) => {
-				const link = new MessageButton()
+				const link = new Discord.MessageButton()
 					.setLabel('View Giveaway.')
 					.setStyle('LINK')
 					.setURL(m.url)
@@ -336,7 +336,7 @@ async function giveawaySystem(client, db, message, options = []) {
 					}
 				})
 			})
-		} else if (!options.slash || options.slash === false) {
+		} else if (!message.commandId) {
 			let interaction = message
 			var timeForStart = Date.now()
 
@@ -346,8 +346,9 @@ async function giveawaySystem(client, db, message, options = []) {
 				})
 			let args = options.args
 			if (!args)
-				throw new Error(
-					'Specify args in options.. When using slash: false | If you are trying to use it in slash commands.. Have slash: true in options'
+				throw new SimplyError(
+					'Specify args in options.. When using slash: false',
+					'If you are trying to use it in slash commands.. Have slash: true in options'
 				)
 			let ch = options.channel || interaction.channel
 			let time = options.time || args[0]
@@ -398,7 +399,7 @@ async function giveawaySystem(client, db, message, options = []) {
 					{ name: '💝 People Entered', value: `***0***` }
 				)
 			ch.send({ embeds: [embed], components: [row] }).then(async (m) => {
-				const link = new MessageButton()
+				const link = new Discord.MessageButton()
 					.setLabel('View Giveaway.')
 					.setStyle('LINK')
 					.setURL(m.url)

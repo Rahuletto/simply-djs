@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-
+let ms = require('ms')
 /**
  * @param {Discord.CommandInteraction} interaction
  * @param {import('../index').calculatorOptions} options
@@ -66,169 +66,106 @@ async function calculator(interaction, options = []) {
 			.setFooter(foot)
 			.setDescription('```0```')
 
+		let msg
+
 		if (interaction.commandId) {
-			await interaction
-				.followUp({
-					embeds: [emb],
-					components: row
-				})
-				.then(async (mssg) => {
-					/** @type {Discord.Message} */
-					const msg = await interaction.fetchReply()
+			await interaction.followUp({
+				embeds: [emb],
+				components: row
+			})
 
-					let isWrong = false
-					let time = 600000
-					let value = ''
-					let emb1 = new Discord.MessageEmbed()
-						.setFooter(foot)
-						.setColor(options.embedColor || 0x075fff)
-
-					function createCollector(val, result = false) {
-						const filter = (button) =>
-							button.user.id === interaction.user.id &&
-							button.customId === 'cal' + val
-
-						/** @type {Discord.InteractionCollector<Discord.ButtonInteraction>}*/
-						let collect = msg.createMessageComponentCollector({
-							filter,
-							componentType: 'BUTTON',
-							time: time
-						})
-
-						collect.on('collect', async (x) => {
-							if (x.user.id !== interaction.user.id) return
-
-							x.deferUpdate()
-
-							if (result === 'new') value = '0'
-							else if (isWrong) {
-								value = val
-								isWrong = false
-							} else if (value === '0') value = val
-							else if (result) {
-								isWrong = true
-								value = mathEval(
-									value
-										.replaceAll('^', '**')
-										.replaceAll('%', '/100')
-										.replace(' ', '')
-								)
-							} else value += val
-							if (value.includes('⌫')) {
-								value = value.slice(0, -2)
-								if (value === '') value = ' '
-								emb1.setDescription('```' + value + '```')
-								await msg.edit({
-									embeds: [emb1],
-									components: row
-								})
-							} else if (value.includes('Delete'))
-								return interaction.deleteReply().catch(() => {})
-							else if (value.includes('Clear')) return (value = '0')
-							emb1.setDescription('```' + value + '```')
-							await msg.edit({
-								embeds: [emb1],
-								components: row
-							})
-						})
-					}
-
-					for (let txt of text) {
-						let result
-
-						if (txt === 'Clear') result = 'new'
-						else if (txt === '=') result = true
-						else result = false
-						createCollector(txt, result)
-					}
-					setTimeout(async () => {
-						emb1.setDescription(
-							'Your Time for using the calculator ran out (10 minutes)'
-						)
-						emb1.setColor(0xc90000)
-						await msg.edit({ embeds: [emb1], components: [] })
-					}, time)
-				})
+			msg = await interaction.fetchReply()
 		} else if (!interaction.commandId) {
-			await interaction
-				.reply({
-					embeds: [emb],
-					components: row
-				})
-				.then((msg) => {
-					let isWrong = false
-					let time = 600000
-					let value = ''
-					let emb1 = new Discord.MessageEmbed()
-						.setFooter(foot)
-						.setColor(options.embedColor || 0x075fff)
-
-					function createCollector(val, result = false) {
-						const filter = (button) =>
-							button.user.id === interaction.author.id &&
-							button.customId === 'cal' + val
-						let collect = msg.createMessageComponentCollector({
-							filter,
-							componentType: 'BUTTON',
-							time: time
-						})
-
-						collect.on('collect', async (x) => {
-							if (x.user.id !== interaction.author.id) return
-
-							x.deferUpdate()
-
-							if (result === 'new') value = '0'
-							else if (isWrong) {
-								value = val
-								isWrong = false
-							} else if (value === '0') value = val
-							else if (result) {
-								isWrong = true
-								value = mathEval(
-									value
-										.replaceAll('^', '**')
-										.replaceAll('%', '/100')
-										.replace(' ', '')
-								)
-							} else value += val
-							if (value.includes('⌫')) {
-								value = value.slice(0, -2)
-								if (value === '') value = ' '
-								emb1.setDescription('```' + value + '```')
-								await msg.edit({
-									embeds: [emb1],
-									components: row
-								})
-							} else if (value.includes('Delete')) {
-								msg.delete()
-								return interaction.delete().catch(() => {})
-							} else if (value.includes('Clear')) return (value = '0')
-							emb1.setDescription('```' + value + '```')
-							await msg.edit({
-								embeds: [emb1],
-								components: row
-							})
-						})
-					}
-
-					for (let txt of text) {
-						let result
-
-						if (txt === 'Clear') result = 'new'
-						else if (txt === '=') result = true
-						else result = false
-						createCollector(txt, result)
-					}
-					setTimeout(async () => {
-						emb1.setDescription(
-							'Your Time for using the calculator ran out (10 minutes)'
-						)
-						emb1.setColor(0xc90000)
-						await msg.edit({ embeds: [emb1], components: [] })
-					}, time)
-				})
+			msg = await interaction.reply({
+				embeds: [emb],
+				components: row
+			})
 		}
+
+		let isWrong = false
+		let time = 600000
+		let value = ''
+		let emb1 = new Discord.MessageEmbed()
+			.setFooter(foot)
+			.setColor(options.embedColor || 0x075fff)
+
+		function createCollector(val, result = false) {
+			const filter = (button) =>
+				button.user.id ===
+					(interaction.user ? interaction.user : interaction.author).id &&
+				button.customId === 'cal' + val
+
+			/** @type {Discord.InteractionCollector<Discord.ButtonInteraction>}*/
+			let collect = msg.createMessageComponentCollector({
+				filter,
+				componentType: 'BUTTON',
+				time: time
+			})
+
+			collect.on('collect', async (x) => {
+				if (
+					x.user.id !==
+					(interaction.user ? interaction.user : interaction.author).id
+				)
+					return
+
+				x.deferUpdate()
+
+				if (result === 'new') value = '0'
+				else if (isWrong) {
+					value = val
+					isWrong = false
+				} else if (value === '0') value = val
+				else if (result) {
+					isWrong = true
+					value = mathEval(
+						value.replaceAll('^', '**').replaceAll('%', '/100').replace(' ', '')
+					)
+				} else value += val
+				if (value.includes('⌫')) {
+					value = value.slice(0, -2)
+					if (value === '') value = ' '
+					emb1.setDescription('```' + value + '```')
+					await msg
+						.edit({
+							embeds: [emb1],
+							components: row
+						})
+						.catch(() => {})
+				} else if (value.includes('Delete')) return msg.delete().catch(() => {})
+				else if (value.includes('Clear')) return (value = '0')
+				emb1.setDescription('```' + value + '```')
+				await msg
+					.edit({
+						embeds: [emb1],
+						components: row
+					})
+					.catch(() => {})
+			})
+		}
+
+		for (let txt of text) {
+			let result
+
+			if (txt === 'Clear') result = 'new'
+			else if (txt === '=') result = true
+			else result = false
+			createCollector(txt, result)
+		}
+		setTimeout(async () => {
+			if (!msg) return
+			if (!msg.editable) return
+
+			if (msg) {
+				if (msg.editable) {
+					emb1.setDescription(
+						'Your Time for using the calculator ran out ' + ms(time)
+					)
+					emb1.setColor(0xc90000)
+					await msg.edit({ embeds: [emb1], components: [] }).catch(() => {})
+				}
+			}
+		}, time)
 
 		function addRow(btns) {
 			let row1 = new MessageActionRow()

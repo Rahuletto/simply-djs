@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { MessageButton, MessageActionRow } = Discord
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.CommandInteraction | Message} message
@@ -46,14 +47,18 @@ async function embedPages(client, message, pages, style = {}) {
 
 	try {
 		if (!pages)
-			throw new Error('PAGES_NOT_FOUND. You didnt specify any pages to me.')
+			throw new SimplyError(
+				'PAGES_NOT_FOUND. You didnt specify any pages to me.',
+				'pages option should be Array of embeds.'
+			)
 
 		let comps
 
 		if (style.rows) {
 			if (!Array.isArray(style.rows))
-				throw new Error(
-					'ARR_NOT_FOUND. The custom rows (style.rows) you specified is not a Array.'
+				throw new SimplyError(
+					'ARR_NOT_FOUND. The custom rows (style.rows) you specified is not a Array.',
+					'Please specify a Array of custom rows. like [row1, row2]'
 				)
 			comps = rows
 		} else {
@@ -119,7 +124,7 @@ async function embedPages(client, message, pages, style = {}) {
 		/** @type {Discord.Message} */
 		var m
 
-		if (style.slash === true) {
+		if (message.commandId) {
 			if (style.pgCount) {
 				await message.followUp({
 					content: `***Page: 1/${pages.length}***`,
@@ -135,7 +140,7 @@ async function embedPages(client, message, pages, style = {}) {
 				})
 			}
 			m = await message.fetchReply()
-		} else {
+		} else if (!message.commandId) {
 			if (style.pgCount) {
 				m = await message.reply({
 					content: `***Page: 1/${pages.length}***`,
@@ -162,15 +167,8 @@ async function embedPages(client, message, pages, style = {}) {
 
 			b.deferUpdate()
 
-			if (style.slash === true) {
-				if (b.user.id !== message.user.id) {
-					return
-				}
-			} else {
-				if (b.user.id !== message.author.id) {
-					return
-				}
-			}
+			if (b.user.id !== (message.user ? message.user : message.author).id)
+				return
 
 			if (b.customId == 'back_button_embed') {
 				if (currentPage - 1 < 0) currentPage = pages.length - 1
@@ -199,72 +197,74 @@ async function embedPages(client, message, pages, style = {}) {
 						allowedMentions: { repliedUser: false }
 					})
 				}
-			} else {
-				try {
-					b.message.delete()
-				} catch {}
+			} else if (b.customId === 'delete_embed') {
+				collector.stop('del')
 			}
 		})
 
-		collector.on('end', async (collected) => {
-			firstBtn = new MessageButton()
-				.setCustomId('first_embed')
-				.setEmoji(style.firstEmoji)
-				.setStyle(style.skipcolor)
-				.setDisabled(true)
-
-			forwardBtn = new MessageButton()
-				.setCustomId('forward_button_embed')
-				.setEmoji(style.forwardEmoji)
-				.setStyle(style.btncolor)
-				.setDisabled(true)
-
-			backBtn = new MessageButton()
-				.setCustomId('back_button_embed')
-				.setEmoji(style.backEmoji)
-				.setStyle(style.btncolor)
-				.setDisabled(true)
-
-			lastBtn = new MessageButton()
-				.setCustomId('last_embed')
-				.setEmoji(style.lastEmoji)
-				.setStyle(style.skipcolor)
-				.setDisabled(true)
-
-			deleteBtn = new MessageButton()
-				.setCustomId('delete_embed')
-				.setEmoji(style.delEmoji)
-				.setStyle(style.delcolor)
-				.setDisabled(true)
-
-			//Creating the MessageActionRow
-			pageMovingButtons = new MessageActionRow()
-			if (style.skipBtn == true) {
-				if (style.delBtn) {
-					pageMovingButtons.addComponents([
-						firstBtn,
-						backBtn,
-						deleteBtn,
-						forwardBtn,
-						lastBtn
-					])
-				} else {
-					pageMovingButtons.addComponents([
-						firstBtn,
-						backBtn,
-						forwardBtn,
-						lastBtn
-					])
-				}
+		collector.on('end', async (coll, reason) => {
+			if (reason === 'del') {
+				await m.delete().catch(() => {})
 			} else {
-				if (style.delBtn) {
-					pageMovingButtons.addComponents([backBtn, deleteBtn, forwardBtn])
-				} else {
-					pageMovingButtons.addComponents([backBtn, forwardBtn])
-				}
-			}
+				firstBtn = new MessageButton()
+					.setCustomId('first_embed')
+					.setEmoji(style.firstEmoji)
+					.setStyle(style.skipcolor)
+					.setDisabled(true)
 
-			m.edit({ components: [pageMovingButtons] })
+				forwardBtn = new MessageButton()
+					.setCustomId('forward_button_embed')
+					.setEmoji(style.forwardEmoji)
+					.setStyle(style.btncolor)
+					.setDisabled(true)
+
+				backBtn = new MessageButton()
+					.setCustomId('back_button_embed')
+					.setEmoji(style.backEmoji)
+					.setStyle(style.btncolor)
+					.setDisabled(true)
+
+				lastBtn = new MessageButton()
+					.setCustomId('last_embed')
+					.setEmoji(style.lastEmoji)
+					.setStyle(style.skipcolor)
+					.setDisabled(true)
+
+				deleteBtn = new MessageButton()
+					.setCustomId('delete_embed')
+					.setEmoji(style.delEmoji)
+					.setStyle(style.delcolor)
+					.setDisabled(true)
+
+				//Creating the MessageActionRow
+				pageMovingButtons = new MessageActionRow()
+				if (style.skipBtn == true) {
+					if (style.delBtn) {
+						pageMovingButtons.addComponents([
+							firstBtn,
+							backBtn,
+							deleteBtn,
+							forwardBtn,
+							lastBtn
+						])
+					} else {
+						pageMovingButtons.addComponents([
+							firstBtn,
+							backBtn,
+							forwardBtn,
+							lastBtn
+						])
+					}
+				} else {
+					if (style.delBtn) {
+						pageMovingButtons.addComponents([backBtn, deleteBtn, forwardBtn])
+					} else {
+						pageMovingButtons.addComponents([backBtn, forwardBtn])
+					}
+				}
+
+				m.edit({ components: [pageMovingButtons] })
+			}
 		})
 	} catch (err) {
 		console.log(`Error Occured. | embedPages | Error: ${err.stack}`)

@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+let SimplyError = require('./Error/Error.js')
 
 /**
  * @param {Discord.Client} client
@@ -77,7 +78,11 @@ async function bumpSys(client, db, options = []) {
 					} else return
 				}
 			}, 5000)
-		} else throw new Error('Unknown Event.. Please provide me a valid event..')
+		} else
+			throw new SimplyError(
+				'Unknown Event.. Please provide me a valid event..',
+				'Available Events: ready | messageCreate'
+			)
 	} catch (err) {
 		console.log(`Error Occured. | bumpSystem | Error: ${err.stack}`)
 	}
