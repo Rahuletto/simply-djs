@@ -108,7 +108,7 @@ async function dropdownPages(message, options = []) {
 			let selet = menu.values[0]
 
 			if (type === 2) {
-				if (message.author.id !== menu.user.id) return
+				if (message.user.id !== menu.user.id) return
 			}
 
 			if (selet === 'delete_menuemb') {
