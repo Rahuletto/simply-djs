@@ -1,4 +1,8 @@
-.github
+# Folders
+lib
+typings
 node_modules
-package-lock.json
-*.tgz
+
+
+# Other
+**/*.tgz

@@ -1,10 +1,17 @@
-.github
+# Configs
 .gitignore
-.husky
-.vscode
 .prettierrc.json
 **/*.tgz
+
+# Folders
 Examples
+src
+node_modules
+.husky
+.vscode
+.github
+
+# Other
 FUNDING.yml
 README.md
 FUNDING.yml
