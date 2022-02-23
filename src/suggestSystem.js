@@ -1,10 +1,13 @@
 const Discord = require('discord.js')
-let SimplyError = require('./Error/Error.js')
+let SimplyError = require('./Error/Error')
+let { MessageButton, MessageActionRow } = require('discord.js')
+
+const { join } = require('path')
+const db = require(join(__dirname, 'model', 'suggestion.js'))
 
 /**
  * @param {Discord.Client} client
  * @param {Discord.CommandInteraction} interaction
- * @param {string[]} args
  * @param {import('../index').suggestSystemOptions} options
  */
 
@@ -13,275 +16,247 @@ let SimplyError = require('./Error/Error.js')
  
   credit => Boolean
   
-  chid => (Channel ID) String
-  sugSlash => String
+  channel => (Channel ID) String
+  suggestion => String
   
-  embedFoot => String
-  embedColor => HexColor
+  embed => Object
+  {
+	  footer: Object,
+	  { text: String, iconURL: URL }
+	  color: Hex Code,
+	  credit => Boolean
+  }
 
-  yesEmoji => (Emoji ID) String
-  yesColor => (ButtonColor) String
-  noEmoji => (Emoji ID) String
-  noColor => (ButtonColor) String
+  buttons => Object
+  {
+	  yesBtn: { emoji: (Emoji ID) String, color: (ButtonColor) String },
+	  noBtn: { emoji: (Emoji ID) String, color: (ButtonColor) String },
+  }
  */
 
-async function suggestSystem(client, message, args, options = []) {
+async function suggestSystem(client, message, options = []) {
 	try {
+		let interaction
+		let url
+		let suggestion
+
 		if (message.commandId) {
-			let interaction = message
+			interaction = message
 
-			let channel = options.chid
+			suggestion =
+				options.suggestion || interaction.options.getString('suggestion')
 
-			let { MessageButton, MessageActionRow } = require('discord.js')
-
-			const ch = client.channels.cache.get(channel)
-			if (!ch)
-				throw new SimplyError(
-					`INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
-					'Check my permissions (or) Try using another Channel ID'
-				)
-
-			let suggestion = interaction.options.getString(
-				options.sugSlash || 'suggestion'
-			)
-
-			if (options.credit === false) {
-				foot = options.embedFoot || 'Suggestion arrived'
-			} else {
-				foot = '©️ Simply Develop. npm i simply-djs'
-			}
-
-			let surebtn = new MessageButton()
-				.setStyle('SUCCESS')
-				.setLabel('Sure')
-				.setCustomId('send-sug')
-
-			let nobtn = new MessageButton()
-				.setStyle('DANGER')
-				.setLabel('Cancel')
-				.setCustomId('nope-sug')
-
-			let row1 = new MessageActionRow().addComponents([surebtn, nobtn])
-
-			if (options.credit === false) {
-				;(foot = interaction.guild.name), interaction.guild.iconURL()
-			} else {
-				foot = '©️ Simply Develop. npm i simply-djs'
-			}
-
-			let embedo = new Discord.MessageEmbed()
-				.setTitle('Are you sure ?')
-				.setDescription(`Is this your suggestion ? \`${suggestion}\``)
-				.setTimestamp()
-				.setColor(options.embedColor || '#075FFF')
-				.setFooter(foot)
-
-			interaction
-				.followUp({ embeds: [embedo], components: [row1], ephemeral: true })
-				.then(async (m) => {
-					const filter = (button) => button.user.id === interaction.user.id
-					const collect = m.createMessageComponentCollector({
-						filter,
-						componentType: 'BUTTON',
-						max: 1,
-						time: 15000
-					})
-
-					collect.on('collect', async (b) => {
-						if (b.customId === 'send-sug') {
-							b.reply({ content: 'Ok Suggested.', ephemeral: true })
-							b.message.delete()
-
-							const emb = new Discord.MessageEmbed()
-								.setDescription(suggestion)
-								.setAuthor(
-									interaction.user.tag,
-									interaction.user.displayAvatarURL()
-								)
-								.setColor(options.embedColor || '#075FFF')
-								.setFooter(foot)
-								.addFields(
-									{
-										name: 'Status:',
-										value: `\`\`\`Waiting for the response..\`\`\``
-									},
-									{
-										name: 'Reactions',
-										value: `*Likes:* \`0\` \n*Dislikes:* \`0\``
-									}
-								)
-
-							let approve = new MessageButton()
-								.setEmoji(options.yesEmoji || '☑️')
-								.setStyle(options.yesColor || 'SUCCESS')
-								.setCustomId('agree-sug')
-
-							let no = new MessageButton()
-								.setEmoji(options.noEmoji || '🇽')
-								.setStyle(options.noColor || 'DANGER')
-								.setCustomId('no-sug')
-
-							let row = new MessageActionRow().addComponents([approve, no])
-
-							ch.send({ embeds: [emb], components: [row] })
-						} else if (b.customId === 'nope-sug') {
-							b.message.delete()
-							b.reply({
-								content: 'Ok i am not sending the suggestion',
-								ephemeral: true
-							})
-						}
-					})
-
-					collect.on('end', async (b) => {
-						if (b.size == 0) {
-							m.delete()
-							m.channel.send({
-								content: 'Timeout.. So I didnt send the suggestion.'
-							})
-						}
-					})
-				})
+			if (suggestion === '' || !suggestion)
+				return interaction.followUp('Give me a suggestion to post.')
 		} else if (!message.commandId) {
-			let channel = options.chid
-			let { MessageButton, MessageActionRow } = require('discord.js')
-
 			const attachment = message.attachments.first()
-			const url = attachment ? attachment.url : null
+			url = attachment ? attachment.url : null
 
-			const ch = client.channels.cache.get(channel)
-			if (!ch)
+			suggestion = options.suggestion
+
+			if (!options.suggestion)
 				throw new SimplyError(
-					`INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
-					'Check my permissions (or) Try using another Channel ID'
+					`You didnt specify a suggestion option on suggestSystem..`,
+					'Check the docs. v3 has changed alot.'
 				)
 
-			let suggestion = args.join(' ')
-
-			if (options.credit === false) {
-				foot = options.embedFoot || 'Suggestion'
-			} else if (options.credit === true || !options.credit) {
-				foot = '©️ Simply Develop. npm i simply-djs'
-			}
 			if (suggestion === '' || !suggestion)
 				return message.reply('Give me a suggestion to post.')
-			let surebtn = new MessageButton()
-				.setStyle('SUCCESS')
-				.setLabel('Sure')
-				.setCustomId('send-sug')
-
-			let nobtn = new MessageButton()
-				.setStyle('DANGER')
-				.setLabel('Cancel')
-				.setCustomId('nope-sug')
-
-			let row1 = new MessageActionRow().addComponents([surebtn, nobtn])
-
-			let embedo = new Discord.MessageEmbed()
-				.setTitle('Are you sure ?')
-				.setDescription(`Is this your suggestion ? \`${suggestion}\``)
-				.setTimestamp()
-				.setImage(url)
-				.setColor(options.embedColor || '#075FFF')
-				.setFooter(foot)
-
-			message.channel
-				.send({ embeds: [embedo], components: [row1] })
-				.then((m) => {
-					message.delete()
-					const filter = (button) => button.user.id === message.author.id
-					const collect = m.createMessageComponentCollector({
-						filter,
-						componentType: 'BUTTON',
-						max: 1,
-						time: 15000
-					})
-
-					collect.on('collect', async (b) => {
-						if (b.customId === 'send-sug') {
-							b.reply({ content: 'Ok Suggested.', ephemeral: true })
-							b.message.delete()
-
-							if (options.credit === false) {
-								foot = options.embedFoot || 'Suggestion'
-							} else if (options.credit === true || !options.credit) {
-								foot = '©️ Simply Develop. npm i simply-djs'
-							}
-
-							const emb = new Discord.MessageEmbed()
-								.setDescription(suggestion)
-								.setAuthor(
-									message.author.tag,
-									message.author.displayAvatarURL()
-								)
-								.setColor(options.embedColor || '#075FFF')
-								.setFooter(foot)
-								.setImage(url)
-								.addFields(
-									{
-										name: 'Status:',
-										value: `\`\`\`Waiting for the response..\`\`\``
-									},
-									{
-										name: 'Reactions',
-										value: `*Likes:* \`0\` \n*Dislikes:* \`0\``
-									}
-								)
-
-							if (options.yesColor === 'grey') {
-								options.yesColor = 'SECONDARY'
-							} else if (options.yesColor === 'red') {
-								options.yesColor = 'DANGER'
-							} else if (options.yesColor === 'green') {
-								options.yesColor = 'SUCCESS'
-							} else if (options.yesColor === 'blurple') {
-								options.yesColor = 'PRIMARY'
-							}
-
-							let approve = new MessageButton()
-								.setEmoji(options.yesEmoji || '☑️')
-								.setStyle(options.yesColor || 'SUCCESS')
-								.setCustomId('agree-sug')
-
-							if (options.noColor === 'grey') {
-								options.noColor = 'SECONDARY'
-							} else if (options.noColor === 'red') {
-								options.noColor = 'DANGER'
-							} else if (options.noColor === 'green') {
-								options.noColor = 'SUCCESS'
-							} else if (options.noColor === 'blurple') {
-								options.noColor = 'PRIMARY'
-							}
-
-							let no = new MessageButton()
-								.setEmoji(options.noEmoji || '🇽')
-								.setStyle(options.noColor || 'DANGER')
-								.setCustomId('no-sug')
-
-							let row = new MessageActionRow().addComponents([approve, no])
-
-							ch.send({ embeds: [emb], components: [row] })
-						} else if (b.customId === 'nope-sug') {
-							b.message.delete()
-							b.reply({
-								content: 'Ok i am not sending the suggestion',
-								ephemeral: true
-							})
-						}
-					})
-
-					collect.on('end', async (b) => {
-						if (b.size == 0) {
-							m.delete()
-							m.channel.send({
-								content: 'Timeout.. So I didnt send the suggestion.'
-							})
-						}
-					})
-				})
 		}
+
+		let channel = options.channel
+
+		if (!options.embed) {
+			options.embed = {
+				footer: { text: options.embedFoot, iconURL: null } || {
+					text: '©️ Simply Develop. npm i simply-djs',
+					iconURL:
+						'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+				},
+				color: options.embedColor || '#075FFF',
+				credit: true
+			}
+		}
+
+		if (!options.buttons) {
+			options.buttons = {
+				yesBtn: { color: 'SUCCESS' },
+				noBtn: { color: 'DANGER' }
+			}
+		}
+
+		if (options.embedFoot !== undefined || options.embedColor !== undefined) {
+			console.log(
+				'Deprecation Warning! Do not use the old options (options.embedColor). v3 has changed alot. Please refer docs..'
+			)
+		}
+
+		if (options.credit !== undefined) {
+			console.log(
+				'Deprecation Warning! Do not use the old options (options.credit). v3 has changed alot. Please refer docs..'
+			)
+			options.embed.credit = options.credit
+		}
+
+		if (options.embed.credit === undefined) {
+			options.embed.credit = true
+		}
+
+		options.embed = {
+			footer: options.embed.footer,
+			color: options.embed.color || '#075FFF',
+			credit: options.embed.credit
+		}
+
+		options.buttons = {
+			yesBtn: options.buttons.yesBtn || { color: 'SUCCESS' },
+			noBtn: options.buttons.noBtn || { color: 'DANGER' }
+		}
+
+		let ch = client.channels.cache.get(channel)
+		if (!ch)
+			throw new SimplyError(
+				`INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
+				'Check my permissions (or) Try using another Channel ID'
+			)
+
+		let surebtn = new MessageButton()
+			.setStyle('SUCCESS')
+			.setLabel('Sure')
+			.setCustomId('send-sug')
+
+		let nobtn = new MessageButton()
+			.setStyle('DANGER')
+			.setLabel('Cancel')
+			.setCustomId('nope-sug')
+
+		let row1 = new MessageActionRow().addComponents([surebtn, nobtn])
+
+		let icon = 'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+
+		if (options.embed.credit === false) {
+			foot = options.embed.footer?.text || message.guild.name
+			icon = options.embed.footer?.iconURL || message.guild.iconURL()
+		} else if (
+			options.embed.credit === undefined ||
+			options.embed.credit !== false
+		) {
+			foot = '©️ Simply Develop. npm i simply-djs'
+			icon = 'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+		}
+
+		let embedo = new Discord.MessageEmbed()
+			.setTitle('Are you sure ?')
+			.setDescription(`Is this your suggestion ? \`${suggestion}\``)
+			.setTimestamp()
+			.setColor(options.embed.color || '#075FFF')
+			.setFooter({ text: foot, iconURL: icon })
+
+		let m
+
+		if (message.commandId) {
+			m = await interaction.followUp({
+				embeds: [embedo],
+				components: [row1],
+				ephemeral: true
+			})
+		} else if (!message.commandId) {
+			m = await message.reply({
+				embeds: [embedo],
+				components: [row1],
+				ephemeral: true
+			})
+		}
+
+		const filter = (button) =>
+			button.user.id === (message.user ? message.user : message.author).id
+		const collect = m.createMessageComponentCollector({
+			filter,
+			componentType: 'BUTTON',
+			max: 1,
+			time: 15000
+		})
+
+		collect.on('collect', async (b) => {
+			if (b.customId === 'send-sug') {
+				b.reply({ content: 'Ok Suggested.', ephemeral: true })
+				b.message.delete()
+
+				if (options.embed.credit === false) {
+					foot =
+						options.embedFoot || options.embed.footer.text || message.guild.name
+					icon = options.embed.footer.iconURL || message.guild.iconURL()
+				} else if (
+					options.embed.credit === undefined ||
+					options.embed.credit !== false
+				) {
+					foot = '©️ Simply Develop. npm i simply-djs'
+					icon =
+						'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+				}
+
+				const emb = new Discord.MessageEmbed()
+					.setDescription(suggestion)
+					.setAuthor({
+						name: (message.user ? message.user : message.author).tag,
+						iconURL: (message.user
+							? message.user
+							: message.author
+						).displayAvatarURL()
+					})
+					.setColor(options.embed.color || '#075FFF')
+					.setFooter({ text: foot, iconURL: icon })
+					.addFields(
+						{
+							name: 'Status:',
+							value: `\`\`\`\nWaiting for the response..\n\`\`\``
+						},
+						{
+							name: 'Reactions',
+							value: `*Likes:* \`0\` \n*Dislikes:* \`0\``
+						}
+					)
+
+				let approve = new MessageButton()
+					.setEmoji(options.buttons.yesBtn.emoji || '☑️')
+					.setStyle(options.buttons.yesBtn.color || 'SUCCESS')
+					.setCustomId('agree-sug')
+
+				let no = new MessageButton()
+					.setEmoji(options.buttons.noBtn.emoji || '🇽')
+					.setStyle(options.buttons.noBtn.color || 'DANGER')
+					.setCustomId('no-sug')
+
+				let row = new MessageActionRow().addComponents([approve, no])
+
+				ch.send({ embeds: [emb], components: [row] }).then(async (ms) => {
+					let cr = new db({
+						message: ms.id,
+						author: message.user.id
+					})
+
+					await cr.save()
+				})
+			} else if (b.customId === 'nope-sug') {
+				b.message.delete()
+				b.reply({
+					content: 'Ok i am not sending the suggestion',
+					ephemeral: true
+				})
+			}
+		})
+
+		collect.on('end', async (b) => {
+			if (b.size == 0) {
+				m.delete()
+				m.channel.send({
+					content: 'Timeout.. So I didnt send the suggestion.'
+				})
+			}
+		})
 	} catch (err) {
 		console.log(`Error Occured. | suggestSystem | Error: ${err.stack}`)
 	}
 }
+
 module.exports = suggestSystem

@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-let SimplyError = require('./Error/Error.js')
+let SimplyError = require('./Error/Error')
 
 /**
  * @param {Discord.Client} client
