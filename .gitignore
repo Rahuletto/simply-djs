@@ -1,7 +1,7 @@
 # Folders
-lib
-typings
-node_modules
+lib/
+typings/
+node_modules/
 
 
 # Other

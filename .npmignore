@@ -5,11 +5,16 @@
 
 # Folders
 Examples
-src
-node_modules
+src/
+node_modules/
 .husky
 .vscode
 .github
+
+# Files
+/tsconfig.json
+/simplydjs.js
+/simplydjs.ts
 
 # Other
 FUNDING.yml
