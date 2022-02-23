@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 let ms = require('ms')
-let SimplyError = require('./Error/Error.js')
+let SimplyError = require('./Error/Error')
 
 const { MessageButton, MessageActionRow } = Discord
 /**

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { MessageButton, MessageActionRow } = Discord
-let SimplyError = require('./Error/Error.js')
+let SimplyError = require('./Error/Error')
 
 /**
  * @param {Discord.CommandInteraction | Message} message
