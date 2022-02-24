@@ -1,10 +1,22 @@
-.github
+# Configs
 .gitignore
-.husky
-.vscode
 .prettierrc.json
 **/*.tgz
+
+# Folders
 Examples
+src/
+node_modules/
+.husky
+.vscode
+.github
+
+# Files
+/tsconfig.json
+/simplydjs.js
+/simplydjs.ts
+
+# Other
 FUNDING.yml
 README.md
 FUNDING.yml
