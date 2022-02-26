@@ -17,18 +17,6 @@ import {
 
 import chalk from 'chalk'
 
-/**
- --- options ---
- 
-embedTitle => String
-embedColor => String 
-
-embed => Embed
-
-embedFoot => String
-credit => Boolean
- */
-
 interface Custopreview {
 	author?: MessageEmbedAuthor
 	title?: string
@@ -45,7 +33,7 @@ export type embOptions = {
 export async function embed(
 	message: Message | CommandInteraction,
 	options: embOptions = {}
-) {
+): Promise<MessageEmbed | any> {
 	return new Promise(async (resolve) => {
 		try {
 			const done = new MessageButton()
@@ -65,50 +53,50 @@ export async function embed(
 					value: 'setMessage'
 				},
 				{
-					name: "Author",
+					name: 'Author',
 					desc: 'Set author in the embed',
-					value: "setAuthor"
+					value: 'setAuthor'
 				},
 				{
-					name: "Title",
+					name: 'Title',
 					desc: 'Set title in the embed',
-					value: "setTitle"
+					value: 'setTitle'
 				},
 				{
-					name: "URL",
-					desc: "Set an URL for the Title in the embed",
-					value: "setURL"
+					name: 'URL',
+					desc: 'Set an URL for the Title in the embed',
+					value: 'setURL'
 				},
 				{
-					name: "Description",
-					desc: "Set description in the embed",
-					value: "setDescription"
+					name: 'Description',
+					desc: 'Set description in the embed',
+					value: 'setDescription'
 				},
 				{
-					name: "Color",
-					desc: "Set color of the embed",
-					value: "setColor"
+					name: 'Color',
+					desc: 'Set color of the embed',
+					value: 'setColor'
 				},
-				
+
 				{
-					name: "Image",
-					desc: "Set an image for the embed",
-					value: "setImage"
-				},
-				{
-					name: "Thumbnail",
-					desc: "Set an thumbnail image in the embed",
-					value: "setThumbnail"
+					name: 'Image',
+					desc: 'Set an image for the embed',
+					value: 'setImage'
 				},
 				{
-					name: "Footer",
-					desc: "Set an footer in the embed",
-					value: "setFooter"
+					name: 'Thumbnail',
+					desc: 'Set an thumbnail image in the embed',
+					value: 'setThumbnail'
 				},
 				{
-					name: "Timestamp",
-					desc: "Turn on the Timestamp of the embed",
-					value: "setTimestamp"
+					name: 'Footer',
+					desc: 'Set an footer in the embed',
+					value: 'setFooter'
+				},
+				{
+					name: 'Timestamp',
+					desc: 'Turn on the Timestamp of the embed',
+					value: 'setTimestamp'
 				}
 			]
 
@@ -118,8 +106,7 @@ export async function embed(
 				options.embed = {
 					footer: {
 						text: '©️ Simply Develop. npm i simply-djs',
-						iconURL:
-							'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+						iconURL: 'https://i.imgur.com/u8VlLom.png'
 					},
 					color: '#075FFF',
 					credit: true
@@ -160,8 +147,7 @@ export async function embed(
 						? options.embed?.footer
 						: {
 								text: '©️ Simply Develop. npm i simply-djs',
-								iconURL:
-									'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
 				)
 
@@ -204,14 +190,15 @@ export async function embed(
 					) => m.user.id === (message.user ? message.user : message.author).id
 					let collector = msg.createMessageComponentCollector({
 						filter,
-						type: 'SELECT_MENU',
+						componentType: 'SELECT_MENU',
 						idle: 600000
 					})
 
 					collector.on('collect', async (button: any) => {
 						let fitler = (
 							m: any // @ts-ignore
-						) => (message.user ? message.user : message.author).id === m.author.id
+						) =>
+							(message.user ? message.user : message.author).id === m.author.id
 
 						let btnfilt = (
 							m: any // @ts-ignore
@@ -226,7 +213,8 @@ export async function embed(
 							preview.delete().catch(() => {})
 							msg.delete().catch(() => {})
 						} else if (button.customId && button.customId === 'setDone') {
-							if ( // @ts-ignore
+							if (
+								// @ts-ignore
 								message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 							) {
 								button.reply({
@@ -256,7 +244,8 @@ export async function embed(
 										resolve(preview.embeds[0].toJSON())
 									}
 								})
-							} else if ( // @ts-ignore
+							} else if (
+								// @ts-ignore
 								!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 							) {
 								button.reply({ content: 'Done 👍', ephemeral: true })
@@ -523,7 +512,6 @@ export async function embed(
 							})
 
 							titleclr.on('collect', async (m: any) => {
-								
 								let isthumb =
 									m.content.match(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
@@ -541,7 +529,14 @@ export async function embed(
 								m.delete().catch(() => {})
 
 								preview
-									.edit({ content: preview.content, embeds: [preview.embeds[0].setThumbnail(m.content || m.attachments.first().url || '')] })
+									.edit({
+										content: preview.content,
+										embeds: [
+											preview.embeds[0].setThumbnail(
+												m.content || m.attachments.first().url || ''
+											)
+										]
+									})
 									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setColor') {
@@ -549,7 +544,7 @@ export async function embed(
 								content: 'Tell me the color you need for embed',
 								ephemeral: true
 							})
-							
+
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000
@@ -557,14 +552,24 @@ export async function embed(
 
 							titleclr.on('collect', async (m: any) => {
 								if (/^#[0-9A-F]{6}$/i.test(m.content)) {
-									
 									m.delete().catch(() => {})
 									titleclr.stop()
 									preview
-										.edit({ content: preview.content, embeds: [preview.embeds[0].setColor(m.content)] })
-										.catch(() => { button.followUp({ content: 'Please provide me a valid hex code', ephemeral: true}) })
+										.edit({
+											content: preview.content,
+											embeds: [preview.embeds[0].setColor(m.content)]
+										})
+										.catch(() => {
+											button.followUp({
+												content: 'Please provide me a valid hex code',
+												ephemeral: true
+											})
+										})
 								} else {
-									await button.followUp({ content: 'Please provide me a valid hex code', ephemeral: true})
+									await button.followUp({
+										content: 'Please provide me a valid hex code',
+										ephemeral: true
+									})
 								}
 							})
 						} else if (button.values[0] === 'setURL') {
@@ -573,7 +578,7 @@ export async function embed(
 									'Tell me what URL you want for embed title (hyperlink for embed title)',
 								ephemeral: true
 							})
-							
+
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
@@ -587,11 +592,13 @@ export async function embed(
 										'A URL should start with http protocol. Please give a valid URL.'
 									)
 								} else {
-
 									m.delete().catch(() => {})
 									titleclr.stop()
 									preview
-										.edit({ content: preview.content, embeds: [preview.embeds[0].setURL(m.content)] })
+										.edit({
+											content: preview.content,
+											embeds: [preview.embeds[0].setURL(m.content)]
+										})
 										.catch(() => {})
 								}
 							})
@@ -600,7 +607,7 @@ export async function embed(
 								content: 'Send me the image you need for embed',
 								ephemeral: true
 							})
-						
+
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
@@ -619,11 +626,17 @@ export async function embed(
 										'That is not a image url/image attachment. Please provide me a image url or attachment.'
 									)
 
-
 								m.delete().catch(() => {})
 								titleclr.stop()
 								preview
-									.edit({ content: preview.content, embeds: [preview.embeds[0].setImage(m.content || m.attachments.first().url)] })
+									.edit({
+										content: preview.content,
+										embeds: [
+											preview.embeds[0].setImage(
+												m.content || m.attachments.first().url
+											)
+										]
+									})
 									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setTitle') {
@@ -631,7 +644,7 @@ export async function embed(
 								content: 'Tell me what text you want for embed title',
 								ephemeral: true
 							})
-							
+
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
@@ -639,12 +652,14 @@ export async function embed(
 							})
 
 							titleclr.on('collect', async (m: any) => {
-								
 								m.delete().catch(() => {})
 								titleclr.stop()
 
 								preview
-									.edit({ content: preview.content, embeds: [preview.embeds[0].setTitle(m.content)] })
+									.edit({
+										content: preview.content,
+										embeds: [preview.embeds[0].setTitle(m.content)]
+									})
 									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setDescription') {
@@ -652,7 +667,7 @@ export async function embed(
 								content: 'Tell me what text you need for the embed description',
 								ephemeral: true
 							})
-							
+
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
@@ -660,11 +675,13 @@ export async function embed(
 							})
 
 							titleclr.on('collect', async (m: any) => {
-								
 								m.delete().catch(() => {})
 								titleclr.stop()
 								preview
-									.edit({ content: preview.content, embeds: [preview.embeds[0].setDescription(m.content)] })
+									.edit({
+										content: preview.content,
+										embeds: [preview.embeds[0].setDescription(m.content)]
+									})
 									.catch(() => {})
 							})
 						} else if (button.values[0] === 'setFooter') {
@@ -682,8 +699,7 @@ export async function embed(
 										label: 'Footer icon',
 										description: 'Set the footer icon',
 										value: 'footer-icon'
-									},
-								
+									}
 								])
 
 							button.reply({
@@ -726,7 +742,7 @@ export async function embed(
 														text: m.content, // @ts-ignore
 														iconURL: preview.embeds[0].footer?.iconURL // @ts-ignore
 															? preview.embeds[0].footer?.iconURL
-															: '',
+															: ''
 													})
 												]
 											})
@@ -773,13 +789,11 @@ export async function embed(
 														iconURL:
 															m.content || m.attachments.first().url || ''
 													})
-
 												]
 											})
 											.catch(() => {})
 									})
 								}
-
 							})
 						}
 					})

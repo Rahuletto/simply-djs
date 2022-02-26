@@ -8,13 +8,6 @@ import {
 import chalk from 'chalk'
 
 // ------------------------------
-
-/**
- * @param {Message} message
- * @param {import('../index').ghostOptions} options
- */
-
-// ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
@@ -43,7 +36,7 @@ export async function ghostPing(
 	return new Promise(async (resolve) => {
 		if (message.mentions.users.first()) {
 			try {
-				if (message.author.bot) return;
+				if (message.author.bot) return
 
 				if (
 					message.content.includes(
@@ -53,13 +46,11 @@ export async function ghostPing(
 						`<@!${message.mentions.members.first()?.user.id}>`
 					)
 				) {
-
 					if (!options.embed) {
 						options.embed = {
 							footer: {
 								text: '©️ Simply Develop. npm i simply-djs',
-								iconURL:
-									'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+								iconURL: 'https://i.imgur.com/u8VlLom.png'
 							},
 							color: '#075FFF',
 							credit: true
@@ -88,8 +79,7 @@ export async function ghostPing(
 								? options.embed?.footer
 								: {
 										text: '©️ Simply Develop. npm i simply-djs',
-										iconURL:
-											'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+										iconURL: 'https://i.imgur.com/u8VlLom.png'
 								  }
 						)
 						.setTimestamp()

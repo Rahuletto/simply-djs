@@ -32,13 +32,16 @@ if (discordJSVersion.slice(0, 2) !== '13')
 // ------- E X P O R T S --------
 // ------------------------------
 
-export let version = '3.0.0';
+export let version = '3.0.0'
 
-export * from './src/ghostPing';
-export * from './src/connect';
-export * from './src/automeme';
-export * from './src/bumpSys';
-export * from './src/betterBtnRole';
+export * from './src/ghostPing'
+export * from './src/connect'
+export * from './src/automeme'
+export * from './src/bumpSys'
+export * from './src/betterBtnRole'
+export * from './src/chatbot'
+export * from './src/calc'
+export * from './src/embed'
 /*
 module.exports.embedPages = require('./src/embedPages')
 
@@ -91,7 +94,9 @@ module.exports.giveawaySystem = require('./src/giveaway')
 // ------------------------------
 
 ;(async () => {
-	let json = await axios.get('https://api.npms.io/v2/search?q=simply-djs').then((res) => res.data)
+	let json = await axios
+		.get('https://api.npms.io/v2/search?q=simply-djs')
+		.then((res) => res.data)
 	let v = json.results[0].package.version
 
 	if (v !== version) {
@@ -103,4 +108,4 @@ module.exports.giveawaySystem = require('./src/giveaway')
 			)}] to update\n`
 		)
 	}
-})();
+})()

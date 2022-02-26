@@ -20,24 +20,28 @@
       
 </p>
 
---------------------------
+---
 
 <br>
 
 ## 🖥️ <b>How to install ?
-   (Use any one command)
+
+(Use any one command)
 
 ```
 npm install simply-djs
 ```
+
 ```
 yarn add simply-djs
 ```
+
 ```
 pnpm add simply-djs
 ```
+
 ```ts
-import simplyDjs from 'https://cdn.skypack.dev/simply-djs';
+import sdjs from 'https://cdn.skypack.dev/simply-djs'
 ```
 
 <br>
@@ -45,13 +49,15 @@ import simplyDjs from 'https://cdn.skypack.dev/simply-djs';
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 
 ## Breaking Changes !
+
 - Read Docs before updating the bot ;)
 - One of the Biggest Updates ever !
 
 ## Update 2/2 (v3)
+
 - Package redefined.. Conversion to Typescript and Mongoose
 - New Dependencies. No more vulnerabilities !
-- Using [Simply-API](https://simplyapi.ml) for chatbot !
+- Using [Simply-API](https://simplyapi.js.org) for chatbot !
 - Removal of `modmail` and `rankCard` | Addition of `connect`
 - Documentation redefined !
 - Easier yet cleaner new options.
@@ -72,7 +78,7 @@ import simplyDjs from 'https://cdn.skypack.dev/simply-djs';
 - Open source project !
 - Simple & Understandable **[Documentation](https://simplyd.js.org)**
 
--------------------------
+---
 
 <br>
 

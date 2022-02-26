@@ -74,8 +74,7 @@ export async function calculator(
 			options.embed = {
 				footer: {
 					text: '©️ Simply Develop. npm i simply-djs',
-					iconURL:
-						'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+					iconURL: 'https://i.imgur.com/u8VlLom.png'
 				},
 				color: '#075FFF',
 				credit: true
@@ -97,8 +96,7 @@ export async function calculator(
 					? options.embed?.footer
 					: {
 							text: '©️ Simply Develop. npm i simply-djs',
-							iconURL:
-								'https://i.imgur.com/kGAUCNo_d.webp?maxwidth=128&fidelity=grand'
+							iconURL: 'https://i.imgur.com/u8VlLom.png'
 					  }
 			)
 			.setDescription('```0```')
