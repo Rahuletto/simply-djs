@@ -1,14 +1,33 @@
-const Discord = require('discord.js')
-const fs = require('fs')
+// UNDER DEVELOPMENT !
 
-let { MessageButton, MessageActionRow } = require('discord.js')
+/*
+import {
+	MessageEmbed,
+	Message,
+	MessageEmbedFooter,
+	MessageEmbedAuthor,
+	ColorResolvable,
+	CommandInteraction,
+	MessageActionRow,
+	MessageButton,
+	ButtonInteraction
+} from 'discord.js'
+import chalk from 'chalk'
+import gsys from './model/gSys'
 
-/**
- * @param {Discord.ButtonInteraction} button
- * @param {import('../index').clickBtnOptions} options
- */
+interface ticket {
+	ticketname: string
+} 
 
-/**
+interface embed {
+	rawEmbed: MessageEmbed
+	logEmbed: MessageEmbed
+}
+
+export type manageBtnOptions = {
+	embed: embed
+}
+
  --- options ---
  
 credit => Boolean
@@ -42,9 +61,9 @@ timeout => Boolean
 pingRole => (Role ID) String
 
 db => Database
- */
 
-async function clickBtn(button, options = []) {
+
+export async function manageBtn(button: ButtonInteraction, options = {}) {
 	if (button.isButton()) {
 		try {
 			if (options.credit === false) {
@@ -922,10 +941,13 @@ async function clickBtn(button, options = []) {
 					}, 5000)
 				}
 			}
-		} catch (err) {
-			console.log(`Error Occured. | clickBtn | Error: ${err.stack}`)
+		} catch (err: any) {
+			console.log(
+				`${chalk.red('Error Occured.')} | ${chalk.magenta(
+					'manageBtn'
+				)} | Error: ${err.stack}`
+			)
 		}
 	}
 }
-
-module.exports = clickBtn
+*/

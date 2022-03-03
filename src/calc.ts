@@ -26,8 +26,15 @@ interface CustomEmbed {
 	credit?: boolean
 }
 
+interface BtnStyle {
+	numbers?: MessageButtonStyle
+	symbols?: MessageButtonStyle
+	delete?: MessageButtonStyle
+}
+
 export type calcOptions = {
 	embed?: CustomEmbed
+	buttons?: BtnStyle
 }
 
 // ------------------------------
@@ -36,7 +43,9 @@ export type calcOptions = {
 
 export async function calculator(
 	interaction: Message | CommandInteraction,
-	options: calcOptions = {}
+	options: calcOptions = {
+		buttons: { numbers: 'SECONDARY', symbols: 'PRIMARY', delete: 'DANGER' }
+	}
 ): Promise<void> {
 	try {
 		let button = new Array([], [], [], [], [])
@@ -80,6 +89,12 @@ export async function calculator(
 				credit: true
 			}
 		}
+		let message
+
+		// @ts-ignore
+		if (!interaction.commandId) {
+			message = interaction
+		}
 
 		for (let i = 0; i < text.length; i++) {
 			if (button[current].length === 5) current++
@@ -113,16 +128,14 @@ export async function calculator(
 		let int = interaction as CommandInteraction
 		let ms = interaction as Message
 
-		//@ts-ignore
-		if (interaction.commandId) {
+		if (!message) {
 			await int.followUp({
 				embeds: [emb1],
 				components: row
 			})
 
 			msg = await int.fetchReply()
-			//@ts-ignore
-		} else if (!interaction.commandId) {
+		} else if (message) {
 			msg = await ms.reply({
 				embeds: [emb1],
 				components: row
@@ -218,16 +231,19 @@ export async function calculator(
 			return row1
 		}
 
-		function createButton(label: any, style: MessageButtonStyle = 'SECONDARY') {
-			if (label === 'Clear') style = 'DANGER'
-			else if (label === 'Delete') style = 'DANGER'
-			else if (label === '⌫') style = 'DANGER'
-			else if (label === 'π') style = 'SECONDARY'
-			else if (label === '%') style = 'SECONDARY'
-			else if (label === '^') style = 'SECONDARY'
-			else if (label === '.') style = 'PRIMARY'
+		function createButton(
+			label: any,
+			style: MessageButtonStyle = options.buttons.numbers
+		) {
+			if (label === 'Clear') style = options.buttons.delete
+			else if (label === 'Delete') style = options.buttons.delete
+			else if (label === '⌫') style = options.buttons.delete
+			else if (label === 'π') style = options.buttons.numbers
+			else if (label === '%') style = options.buttons.numbers
+			else if (label === '^') style = options.buttons.numbers
+			else if (label === '.') style = options.buttons.symbols
 			else if (label === '=') style = 'SUCCESS'
-			else if (isNaN(label)) style = 'PRIMARY'
+			else if (isNaN(label)) style = options.buttons.symbols
 			const btn = new MessageButton()
 				.setLabel(label)
 				.setStyle(style)

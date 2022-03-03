@@ -17,6 +17,10 @@ import {
 
 import chalk from 'chalk'
 
+// ------------------------------
+// ------- T Y P I N G S --------
+// ------------------------------
+
 interface Custopreview {
 	author?: MessageEmbedAuthor
 	title?: string
@@ -29,6 +33,10 @@ export type embOptions = {
 	embed?: Custopreview
 	rawEmbed?: MessageEmbed
 }
+
+// ------------------------------
+// ------ F U N C T I O N -------
+// ------------------------------
 
 export async function embed(
 	message: Message | CommandInteraction,
@@ -151,21 +159,25 @@ export async function embed(
 						  }
 				)
 
+			let interaction
+			//@ts-ignore
+			if (message.commandId) {
+				interaction = message
+			}
+
 			let msg: any
 
 			let int = message as CommandInteraction
 			let ms = message as Message
 
-			//@ts-ignore
-			if (message.commandId) {
+			if (interaction) {
 				await int.followUp({
 					embeds: [options.rawEmbed || embed],
 					components: [row2, row]
 				})
 
 				msg = await int.fetchReply()
-				//@ts-ignore
-			} else if (!message.commandId) {
+			} else if (!interaction) {
 				msg = await ms.reply({
 					embeds: [options.rawEmbed || embed],
 					components: [row2, row]
@@ -195,9 +207,8 @@ export async function embed(
 					})
 
 					collector.on('collect', async (button: any) => {
-						let fitler = (
-							m: any // @ts-ignore
-						) =>
+						let fitler = (m: any) =>
+							// @ts-ignore
 							(message.user ? message.user : message.author).id === m.author.id
 
 						let btnfilt = (

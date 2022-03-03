@@ -1,6 +1,3 @@
-import axios from 'axios'
-import chalk from 'chalk'
-
 // ------------------------------
 // -------- E R R O R S ---------
 // ------------------------------
@@ -31,7 +28,6 @@ if (discordJSVersion.slice(0, 2) !== '13')
 // ------------------------------
 // ------- E X P O R T S --------
 // ------------------------------
-
 export let version = '3.0.0'
 
 export * from './src/ghostPing'
@@ -42,6 +38,10 @@ export * from './src/betterBtnRole'
 export * from './src/chatbot'
 export * from './src/calc'
 export * from './src/embed'
+export * from './src/embedPages'
+export * from './src/giveaway'
+// export * from './src/manageBtn'
+
 /*
 module.exports.embedPages = require('./src/embedPages')
 
@@ -88,24 +88,3 @@ module.exports.bumpSystem = require('./src/bumpSys')
 
 module.exports.giveawaySystem = require('./src/giveaway')
 */
-
-// ------------------------------
-// ------- U P D A T E R --------
-// ------------------------------
-
-;(async () => {
-	let json = await axios
-		.get('https://api.npms.io/v2/search?q=simply-djs')
-		.then((res) => res.data)
-	let v = json.results[0].package.version
-
-	if (v !== version) {
-		console.log(
-			`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
-				'→'
-			)} ${chalk.green(v)}\n\t\tRun [${chalk.blue(
-				'npm install simply-djs'
-			)}] to update\n`
-		)
-	}
-})()

@@ -10,6 +10,10 @@ import {
 import chalk from 'chalk'
 import SimplyError from './Error/Error'
 
+// ------------------------------
+// ------- T Y P I N G S --------
+// ------------------------------
+
 interface emoji {
 	firstBtn?: string
 	nextBtn?: string
@@ -36,6 +40,10 @@ export type pagesOption = {
 	rows?: MessageActionRow[]
 	timeout?: number
 }
+
+// ------------------------------
+// ------ F U N C T I O N -------
+// ------------------------------
 
 export async function embedPages(
 	message: Message | CommandInteraction,
@@ -133,13 +141,19 @@ export async function embedPages(
 
 		comps.push(pageMovingButtons)
 
+		let interaction
+
+		//@ts-ignore
+		if (message.commandId) {
+			interaction = message
+		}
+
 		var m: any
 
 		let int = message as CommandInteraction
 		let ms = message as Message
 
-		//@ts-ignore
-		if (message.commandId) {
+		if (interaction) {
 			if (options.count) {
 				await int.followUp({
 					embeds: [pages[0].setFooter({ text: `Page 1/${pages.length}` })],
@@ -154,10 +168,9 @@ export async function embedPages(
 				})
 			}
 			m = await int.fetchReply()
-			// @ts-ignore
-		} else if (!message.commandId) {
+		} else if (!interaction) {
 			if (options.count) {
-				m = await message.reply({
+				m = await ms.reply({
 					embeds: [pages[0].setFooter({ text: `Page 1/${pages.length}` })],
 					components: comps,
 					allowedMentions: { repliedUser: false }

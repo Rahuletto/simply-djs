@@ -1,11 +1,16 @@
 import mongoose from 'mongoose'
 import SimplyError from './Error/Error'
+import axios from 'axios'
+import chalk from 'chalk'
 
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
 
-export default async function connect(db: string, notify: boolean): Promise<boolean> {
+export default async function connect(
+	db: string,
+	notify: boolean
+): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db)
 			throw new SimplyError(
@@ -15,8 +20,25 @@ export default async function connect(db: string, notify: boolean): Promise<bool
 
 		mongoose
 			.connect(db)
-			.then(() => {
+			.then(async () => {
 				if (notify !== false) {
+					let version = '3.0.0'
+
+					let json = await axios
+						.get('https://api.npms.io/v2/search?q=simply-djs')
+						.then((res) => res.data)
+					let v = json.results[0].package.version
+
+					if (v !== version) {
+						console.log(
+							`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
+								'→'
+							)} ${chalk.green(v)}\n\t\tRun [${chalk.blue(
+								'npm install simply-djs'
+							)}] to update\n`
+						)
+					}
+
 					console.log('{ S-DJS } Database Connected')
 				}
 				resolve(true)
