@@ -33,7 +33,7 @@ export let version = '3.0.0'
 // ------------------------------
 // ------- G E N E R A L --------
 // ------------------------------
-
+	
 export * from './src/connect'
 export * from './src/ghostPing'
 export * from './src/embedPages'

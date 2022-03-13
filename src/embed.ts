@@ -21,7 +21,7 @@ import chalk from 'chalk'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface Custopreview {
+interface Custompreview {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
@@ -30,7 +30,7 @@ interface Custopreview {
 }
 
 export type embOptions = {
-	embed?: Custopreview
+	embed?: Custompreview
 	rawEmbed?: MessageEmbed
 }
 

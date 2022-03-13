@@ -60,9 +60,27 @@ export type giveawayOptions = {
 	embed?: CustomEmbed
 }
 
+interface returns {
+	message: string
+	winners: number
+	prize: string
+	endsAt: number
+	req: string
+}
+
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
+
+/**
+ * giveawaySystem
+ * @description A Powerful yet simple giveawaySystem | Required: **manageBtn()**
+ * @param client
+ * @param message
+ * @param options
+ * @example giveawaySystem(client, message)
+ * @returns {returns}
+ */
 
 export async function giveawaySystem(
 	client: Client,
@@ -75,7 +93,7 @@ export async function giveawaySystem(
 			reroll: { style: 'PRIMARY', text: 'Reroll', emoji: '🔁' }
 		}
 	}
-): Promise<Object> {
+): Promise<returns> {
 	return new Promise(async (resolve) => {
 		try {
 			let interaction

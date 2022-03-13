@@ -1,14 +1,19 @@
 import mongoose from 'mongoose'
 
+interface cts {
+	user: string
+	count: number
+}
+
 export type bumpSysData = {
 	channel: string
 	nxtBump: any
 	guild: string
-	checkId: number
+	counts: cts[]
 }
 
 const bump = new mongoose.Schema<bumpSysData>({
-	checkId: { type: Number }, // Hello
+	counts: { type: Array<cts>() }, // Hello
 	channel: { type: String }, // Bump Channel (Auto updates)
 	nxtBump: { type: String }, // Next Bump time
 	guild: { type: String } // Guild

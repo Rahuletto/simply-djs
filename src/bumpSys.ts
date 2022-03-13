@@ -29,31 +29,30 @@ export type bumpOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ *
+ * @param client
+ * @param message
+ * @param options
+ * @returns {boolean}
+ */
+
 export async function bumpSys(
 	client: Client,
 	message: Message | bumpOptions,
 	options: bumpOptions = {}
 ): Promise<boolean> {
 	try {
-		const bumpo = new MessageEmbed()
-			.setTitle('Its Bump Time !')
+		let bumpo = new MessageEmbed()
+			.setTitle('Its time to Bump !')
 			.setDescription(
 				'Its been 2 hours since last bump. Could someone please bump the server again ?'
 			)
 			.setTimestamp()
 			.setColor('#075FFF')
-			.setFooter({ text: 'Do !d bump to bump the server ;)' })
+			.setFooter({ text: 'Do /bump to bump the server ;)' })
 
-		const bumpoo = new MessageEmbed()
-			.setTitle('Thank you')
-			.setDescription(
-				'Thank you for bumping the server. Your support means a lot. Will notify you after 2 hours'
-			)
-			.setTimestamp()
-			.setColor('#06bf00')
-			.setFooter({ text: 'Now its time to wait for 120 minutes. (2 hours)' })
-
-		let chid: string[] = []
+		let bumpoo = new MessageEmbed()
 
 		if (options && (message as Message).channel) {
 			return new Promise(async (resolve, reject) => {
@@ -71,21 +70,31 @@ export async function bumpSys(
 						(message as Message).embeds[0].description &&
 						(message as Message).embeds[0].description.includes('Bump done')
 					) {
+						let usew: string[] | string = (
+							message as Message
+						).embeds[0].description.split(/ +/g)
+
+						usew = usew[0]
+						usew = usew.replace('<@', '').replace('>', '')
+
 						let timeout = 7200000
 						let time = Date.now() + timeout
 
 						let data = await db.findOne({
 							guild: guild
 						})
+
 						if (!data) {
 							data = new db({
-								checkId: 1,
+								counts: [],
 								guild: guild,
 								channel: chid,
 								nxtBump: undefined
 							})
 							await data.save().catch(() => {})
 						}
+
+						let rl = data.counts.find((a) => a.user === usew)
 
 						data.nxtBump = time
 						data.channel = chid
@@ -107,14 +116,10 @@ export async function bumpSys(
 			return new Promise(async (resolve, reject) => {
 				setInterval(async () => {
 					let data = await db.find({
-						checkId: 1
+						nxtBump: Date.now()
 					})
 
-					data.forEach(async (g) => {
-						let dt = await db.findOne({
-							guild: g.guild
-						})
-
+					data.forEach(async (dt) => {
 						if (dt.nxtBump && dt.nxtBump < Date.now()) {
 							dt.nxtBump = undefined
 							await dt.save().catch(() => {})

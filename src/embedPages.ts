@@ -14,21 +14,21 @@ import SimplyError from './Error/Error'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface btnTemp {
+interface btnTemplate {
 	style?: MessageButtonStyle
 	emoji?: string
 }
 
-interface btnz {
-	firstBtn?: btnTemp
-	nextBtn?: btnTemp
-	backBtn?: btnTemp
-	lastBtn?: btnTemp
-	deleteBtn?: btnTemp
+interface buttons {
+	firstBtn?: btnTemplate
+	nextBtn?: btnTemplate
+	backBtn?: btnTemplate
+	lastBtn?: btnTemplate
+	deleteBtn?: btnTemplate
 }
 
 export type pagesOption = {
-	buttons?: btnz
+	buttons?: buttons
 
 	skips?: boolean
 	delete?: boolean
