@@ -30,14 +30,14 @@ export type bumpOptions = {
 // ------------------------------
 
 /**
- *
+ * @description *An reliable bump remainder for Disboard*
  * @param client
  * @param message
  * @param options
- * @returns {boolean}
+ * @example simplydjs.bumpSystem(client, message)
  */
 
-export async function bumpSys(
+export async function bumpSystem(
 	client: Client,
 	message: Message | bumpOptions,
 	options: bumpOptions = {}
@@ -147,5 +147,3 @@ export async function bumpSys(
 		)
 	}
 }
-
-module.exports = bumpSys

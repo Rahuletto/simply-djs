@@ -48,7 +48,7 @@ interface btn {
 
 export type giveawayOptions = {
 	prize?: string
-	winners: string | number
+	winners?: string | number
 	channel?: MessageChannel
 	time?: string
 
@@ -73,26 +73,17 @@ interface returns {
 // ------------------------------
 
 /**
- * giveawaySystem
- * @description A Powerful yet simple giveawaySystem | Required: **manageBtn()**
+ * @description *A Powerful yet simple giveawaySystem* | Required: **manageBtn()**
  * @param client
  * @param message
  * @param options
- * @example giveawaySystem(client, message)
- * @returns {returns}
+ * @example simplydjs.giveawaySystem(client, message)
  */
 
 export async function giveawaySystem(
 	client: Client,
 	message: Message | CommandInteraction,
-	options: giveawayOptions = {
-		winners: 1,
-		buttons: {
-			enter: { style: 'SUCCESS', text: 'Enter', emoji: '🎁' },
-			end: { style: 'DANGER', text: 'End', emoji: '⛔' },
-			reroll: { style: 'PRIMARY', text: 'Reroll', emoji: '🔁' }
-		}
-	}
+	options: giveawayOptions = {}
 ): Promise<returns> {
 	return new Promise(async (resolve) => {
 		try {
@@ -119,6 +110,8 @@ export async function giveawaySystem(
 				}
 			}
 			*/
+
+			options.winners ??= 1
 
 			options.buttons = {
 				enter: {

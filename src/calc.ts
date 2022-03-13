@@ -41,6 +41,13 @@ export type calcOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *An Unique calculator which can be used inside Discord*
+ * @param interaction
+ * @param options
+ * @example simplydjs.calculator(interaction)
+ */
+
 export async function calculator(
 	interaction: Message | CommandInteraction,
 	options: calcOptions = {

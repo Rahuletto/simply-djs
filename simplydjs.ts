@@ -33,29 +33,29 @@ export let version = '3.0.0'
 // ------------------------------
 // ------- G E N E R A L --------
 // ------------------------------
-	
-export * from './src/connect'
-export * from './src/ghostPing'
-export * from './src/embedPages'
-export * from './src/chatbot'
-export * from './src/automeme'
+
+export { connect } from './src/connect'
+export { ghostPing } from './src/ghostPing'
+export { embedPages } from './src/embedPages'
+export { chatbot } from './src/chatbot'
+export { automeme } from './src/automeme'
 
 // ------------------------------
 // ------- S Y S T E M S --------
 // ------------------------------
 
-export * from './src/betterBtnRole'
-export * from './src/btnrole'
-export * from './src/manageBtn'
-export * from './src/giveaway'
-export * from './src/bumpSys'
+export { betterBtnRole } from './src/betterBtnRole'
+export { btnRole } from './src/btnrole'
+export { manageBtn } from './src/manageBtn'
+export { giveawaySystem } from './src/giveaway'
+export { bumpSystem } from './src/bumpSys'
 
 // ------------------------------
 // ----------- F U N ------------
 // ------------------------------
 
-export * from './src/calc'
-export * from './src/embed'
+export { calculator } from './src/calc'
+export { embedCreate } from './src/embed'
 
 /*
 module.exports.embedPages = require('./src/embedPages')

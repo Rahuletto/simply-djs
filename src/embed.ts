@@ -38,7 +38,14 @@ export type embOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
-export async function embed(
+/**
+ * @description *Lets you create embeds with interactive builder*
+ * @param message
+ * @param options
+ * @example simplydjs.embedCreate(message)
+ */
+
+export async function embedCreate(
 	message: Message | CommandInteraction,
 	options: embOptions = {}
 ): Promise<MessageEmbed | any> {

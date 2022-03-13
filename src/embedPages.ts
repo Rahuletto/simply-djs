@@ -43,6 +43,14 @@ export type pagesOption = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *An powerful yet customizable Embed Paginator*
+ * @param message
+ * @param pages
+ * @param options
+ * @example simplydjs.embedPages(message, [embed1, embed2] )
+ */
+
 export async function embedPages(
 	message: Message | CommandInteraction,
 	pages: MessageEmbed[],

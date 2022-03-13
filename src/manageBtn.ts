@@ -77,23 +77,32 @@ type rerolly = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *An Button Handler for simplydjs package purposes.*
+ * @param interaction
+ * @param options
+ * @example simplydjs.manageBtn(interaction)
+ */
+
 export async function manageBtn(
-	button: ButtonInteraction,
+	interaction: ButtonInteraction,
 	options: manageBtnOptions = {}
 ): Promise<ticketDelete | rerolly> {
 	return new Promise(async (resolve, reject) => {
-		if (button.isButton()) {
+		if (interaction.isButton()) {
 			try {
-				let member = button.member
+				let member = interaction.member
 
 				// ------------------------------
 				// ------ B T N - R O L E -------
 				// ------------------------------
 
-				if (button.customId.startsWith('role-')) {
-					let roleId = button.customId.replace('role-', '')
+				if (interaction.customId.startsWith('role-')) {
+					let roleId = interaction.customId.replace('role-', '')
 
-					let role = await button.guild.roles.fetch(roleId, { force: true })
+					let role = await interaction.guild.roles.fetch(roleId, {
+						force: true
+					})
 					if (!role) return
 					else {
 						// @ts-ignore
@@ -101,13 +110,13 @@ export async function manageBtn(
 							member.roles // @ts-ignore
 								.remove(role)
 								.catch((err: any) =>
-									button.channel.send({
+									interaction.channel.send({
 										content:
 											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
 									})
 								)
 
-							button.reply({
+							interaction.reply({
 								content: `Removing ${role.toString()} from you.`,
 								ephemeral: true
 							})
@@ -115,13 +124,13 @@ export async function manageBtn(
 							member.roles // @ts-ignore
 								.add(role)
 								.catch((err: any) =>
-									button.channel.send({
+									interaction.channel.send({
 										content:
 											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
 									})
 								)
 
-							button.reply({
+							interaction.reply({
 								content: `Added ${role.toString()} to you.`,
 								ephemeral: true
 							})
@@ -133,10 +142,10 @@ export async function manageBtn(
 				// ------ G I V E A W A Y -------
 				// ------------------------------
 
-				if (button.customId === 'enter_giveaway') {
-					await button.deferUpdate()
+				if (interaction.customId === 'enter_giveaway') {
+					await interaction.deferUpdate()
 					let data = await gsys.findOne({
-						message: button.message.id
+						message: interaction.message.id
 					})
 
 					if (Number(data.endTime) < Date.now()) return
@@ -144,22 +153,22 @@ export async function manageBtn(
 						if (data.requirements.type === 'role') {
 							if (
 								// @ts-ignore
-								!button.member.roles.cache.find(
+								!interaction.member.roles.cache.find(
 									(r: any) => r.id === data.requirements.id
 								)
 							)
-								return button.followUp({
+								return interaction.followUp({
 									content:
 										'You do not fall under the requirements. | You dont have the role',
 									ephemeral: true
 								})
 						}
 						if (data.requirements.type === 'guild') {
-							let g = button.client.guilds.cache.get(data.requirements.id)
-							let mem = await g.members.fetch(button.member.user.id)
+							let g = interaction.client.guilds.cache.get(data.requirements.id)
+							let mem = await g.members.fetch(interaction.member.user.id)
 
 							if (!mem)
-								return button.followUp({
+								return interaction.followUp({
 									content:
 										'You do not fall under the requirements. | Join the server.',
 									ephemeral: true
@@ -171,49 +180,49 @@ export async function manageBtn(
 						if (entris) {
 							await gsys.findOneAndUpdate(
 								{
-									message: button.message.id
+									message: interaction.message.id
 								},
 								{
 									$pull: { entry: { userID: member.user.id } }
 								}
 							)
 
-							await button.followUp({
+							await interaction.followUp({
 								content: 'Left the giveaway ;(',
 								ephemeral: true
 							})
 						} else if (!entris) {
 							data.entry.push({
 								userID: member.user.id,
-								guildID: button.guild.id,
-								messageID: button.message.id
+								guildID: interaction.guild.id,
+								messageID: interaction.message.id
 							})
 
 							data.entered = data.entered + 1
 
 							await data.save().then(async (a) => {
-								await button.followUp({
+								await interaction.followUp({
 									content: 'Entered the giveaway !',
 									ephemeral: true
 								})
 							})
 						}
 
-						let eem = button.message.embeds[0]
+						let eem = interaction.message.embeds[0]
 
 						eem.fields[2].value = `***${data.entered.toString()}***`
 
-						let mes = button.message as Message
+						let mes = interaction.message as Message
 						mes.edit({ embeds: [eem] })
 					}
 				}
 
 				if (
-					button.customId === 'end_giveaway' ||
-					button.customId === 'reroll_giveaway'
+					interaction.customId === 'end_giveaway' ||
+					interaction.customId === 'reroll_giveaway'
 				) {
-					let allComp = await button.message.components[0]
-					let ftr = await button.message.embeds[0].footer
+					let allComp = await interaction.message.components[0]
+					let ftr = await interaction.message.embeds[0].footer
 
 					const embeded = new MessageEmbed()
 						.setTitle('Processing Data...')
@@ -225,7 +234,7 @@ export async function manageBtn(
 							text: 'Ending the Giveaway, Scraping the ticket..'
 						})
 
-					let msg = button.message as Message
+					let msg = interaction.message as Message
 
 					await msg.edit({ embeds: [embeded], components: [] }).catch(() => {})
 
@@ -250,7 +259,7 @@ export async function manageBtn(
 
 					setTimeout(() => {
 						winArr.forEach(async (name) => {
-							await button.guild.members
+							await interaction.guild.members
 								.fetch(name.userID)
 								.then((user) => {
 									dispWin.push(`<@${user.user.id}>`)
@@ -337,7 +346,7 @@ export async function manageBtn(
 									`${dispWin.join(', ')} won the prize !\n` +
 										(dt.desc
 											? dt.desc
-											: `Reroll the giveaway using the button.\n\n**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
+											: `Reroll the giveaway using the interaction.\n\n**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
 								)
 								.addFields(
 									{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
@@ -348,7 +357,7 @@ export async function manageBtn(
 							//@ts-ignore
 							await msg.edit({ embeds: [em], components: [allComp] })
 
-							if (button.customId === 'reroll_giveaway') {
+							if (interaction.customId === 'reroll_giveaway') {
 								resolve({
 									type: 'Reroll',
 									msgURL: msg.url,

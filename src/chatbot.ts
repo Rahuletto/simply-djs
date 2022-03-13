@@ -11,18 +11,26 @@ import chalk from 'chalk'
 export type chatbotOptions = {
 	channelId?: string | string[]
 	toggle?: boolean
-	name: string
-	developer: string
+	name?: string
+	developer?: string
 }
 
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *A made from scratch chatbot that is smarter yet friendly*
+ * @param client
+ * @param message
+ * @param options
+ * @example simplydjs.chatbot(client, message)
+ */
+
 export async function chatbot(
 	client: Client,
 	message: Message,
-	options: chatbotOptions = { name: 'Simply-DJS', developer: 'Rahuletto' }
+	options: chatbotOptions = {}
 ): Promise<Message> {
 	if (message.author.bot) return
 	if (options && options.toggle === false) return

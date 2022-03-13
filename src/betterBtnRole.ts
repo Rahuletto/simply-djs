@@ -43,6 +43,14 @@ export type betterbtnOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *An Button Role builder that lets admins create button roles.* | Requires: **manageBtn()**
+ * @param client
+ * @param interaction
+ * @param options
+ * @example simplydjs.betterBtnRole(client, interaction)
+ */
+
 export async function betterBtnRole(
 	client: Client,
 	interaction: CommandInteraction,

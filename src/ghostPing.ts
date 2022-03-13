@@ -29,6 +29,13 @@ export type ghostOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *A Great system to see who ghost pinged*
+ * @param message
+ * @param options
+ * @example simplydjs.ghostPing(message)
+ */
+
 export async function ghostPing(
 	message: Message,
 	options: ghostOptions = {}

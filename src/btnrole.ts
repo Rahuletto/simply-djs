@@ -35,6 +35,13 @@ export type btnOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *A faster button role system* | Requires: **manageBtn()**
+ * @param message
+ * @param options
+ * @example simplydjs.btnRole(message, { data: {...} })
+ */
+
 export async function btnRole(
 	message: Message | CommandInteraction,
 	options: btnOptions = {}
@@ -122,7 +129,7 @@ export async function btnRole(
 			let emb = options.embed
 
 			if ((message as CommandInteraction).commandId) {
-				(message as CommandInteraction).followUp({
+				;(message as CommandInteraction).followUp({
 					embeds: [emb],
 					components: row
 				})

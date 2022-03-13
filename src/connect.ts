@@ -7,6 +7,13 @@ import chalk from 'chalk'
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * @description *An mongoose connector which is used in many functions*
+ * @param db mongodbUri
+ * @param notify
+ * @example simplydjs.connect('mongoURI')
+ */
+
 export async function connect(db: string, notify?: boolean): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db)
