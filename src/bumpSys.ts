@@ -4,7 +4,8 @@ import {
 	ColorResolvable,
 	TextChannel,
 	Message,
-	CommandInteraction
+	CommandInteraction,
+	GuildMember
 } from 'discord.js'
 
 import chalk from 'chalk'
@@ -20,7 +21,6 @@ interface TypeEmbed {
 }
 
 export type bumpOptions = {
-	channelId?: string[] | string
 	content?: string
 	embed?: TypeEmbed
 }
@@ -57,84 +57,70 @@ export async function bumpSys(
 
 		if (options && (message as Message).channel) {
 			return new Promise(async (resolve, reject) => {
-				if (Array.isArray(options.channelId)) {
-					chid = options.channelId
-				} else if (!Array.isArray(options.channelId)) {
-					chid.push(options.channelId)
-				}
-
-				if (!options.embed) {
-					options.embed = {
-						bumpEmb: bumpo,
-						thankEmb: bumpoo
-					}
-				}
-
 				if ((message as Message).author.id === '302050872383242240') {
-					for (let i = 0; i < chid.length; i++) {
-						if ((message as Message).channel.id === chid[i]) {
-							if (
-								(message as Message).embeds[0] &&
-								(message as Message).embeds[0].description &&
-								(message as Message).embeds[0].description.includes('Bump done')
-							) {
-								let timeout = 7200000
-								let time = Date.now() + timeout
+					let chid = (message as Message).channel.id
+					let guild = (message as Message).guild.id
 
-								let data = await db.findOne({
-									channel: options.channelId[i]
-								})
-								if (!data) {
-									data = new db({
-										channel: options.channelId[i],
-										nxtBump: undefined
-									})
-									await data.save().catch(() => {})
-								}
-
-								data.nxtBump = time
-								await data.save().catch(() => {})
-
-								await (message as Message).channel.send({
-									content: options.content || '\u200b',
-									embeds: [options.embed?.thankEmb || bumpoo]
-								})
-
-								resolve(true)
-							}
-						}
+					options.embed = {
+						bumpEmb: options.embed?.bumpEmb || bumpo,
+						thankEmb: options.embed?.thankEmb || bumpoo
 					}
-				}
-			})
-		} else if (!options && message.channelId) {
-			return new Promise(async (resolve, reject) => {
-				if (Array.isArray(message.channelId)) {
-					chid = message.channelId
-				} else if (!Array.isArray(message.channelId)) {
-					chid.push(message.channelId)
-				}
-				setInterval(async () => {
-					for (let i = 0; i < chid.length; i++) {
+
+					if (
+						(message as Message).embeds[0] &&
+						(message as Message).embeds[0].description &&
+						(message as Message).embeds[0].description.includes('Bump done')
+					) {
+						let timeout = 7200000
+						let time = Date.now() + timeout
+
 						let data = await db.findOne({
-							channel: chid[i]
+							guild: guild
 						})
 						if (!data) {
 							data = new db({
-								channel: chid[i],
+								checkId: 1,
+								guild: guild,
+								channel: chid,
 								nxtBump: undefined
 							})
 							await data.save().catch(() => {})
 						}
 
-						let time = data.nxtBump
+						data.nxtBump = time
+						data.channel = chid
+						await data.save().catch(() => {})
 
-						if (time && time !== undefined && Date.now() > time) {
-							data.nxtBump = undefined
+						await (message as Message).channel.send({
+							content: options.content || '\u200b',
+							embeds: [options.embed?.thankEmb || bumpoo]
+						})
 
-							await data.save().catch(() => {})
+						resolve(true)
+					}
+				}
+			})
+		} else if (
+			(!options && (message as bumpOptions)) ||
+			(!options && !message)
+		) {
+			return new Promise(async (resolve, reject) => {
+				setInterval(async () => {
+					let data = await db.find({
+						checkId: 1
+					})
 
-							let cho = await client.channels.fetch(chid[i], {
-								cache: true
+					data.forEach(async (g) => {
+						let dt = await db.findOne({
+							guild: g.guild
+						})
+
+						if (dt.nxtBump && dt.nxtBump < Date.now()) {
+							dt.nxtBump = undefined
+							await dt.save().catch(() => {})
+
+							let cho = await client.channels.fetch(dt.channel, {
+								force: true
 							})
 
 							await (cho as TextChannel).send({
@@ -144,8 +130,8 @@ export async function bumpSys(
 
 							resolve(true)
 						} else return
-					}
-				}, 5000)
+					})
+				}, 10000)
 			})
 		}
 	} catch (err: any) {

@@ -89,6 +89,13 @@ export async function calculator(
 				credit: true
 			}
 		}
+
+		options.buttons = {
+			numbers: options.buttons?.numbers || 'SECONDARY',
+			symbols: options.buttons?.symbols || 'PRIMARY',
+			delete: options.buttons?.delete || 'DANGER'
+		}
+
 		let message
 
 		// @ts-ignore
@@ -114,7 +121,7 @@ export async function calculator(
 							iconURL: 'https://i.imgur.com/u8VlLom.png'
 					  }
 			)
-			.setDescription('```0```')
+			.setDescription('```js\n0\n// Result: 0\n```')
 
 		if (options.embed.author) {
 			emb1.setAuthor(options.embed.author)
@@ -142,72 +149,79 @@ export async function calculator(
 			})
 		}
 
-		let isWrong = false
 		let time = 300000
-		let value = ''
 
-		function createCollector(val: string, result: any = false) {
-			const filter = (button: ButtonInteraction) =>
-				button.user.id === //@ts-ignore
-					(interaction.user ? interaction.user : interaction.author).id &&
-				button.customId === 'cal' + val
+		let elem = '0'
 
-			let collect = msg.createMessageComponentCollector({
-				filter,
-				componentType: 'BUTTON',
-				time: time
-			})
+		const filter = (button: ButtonInteraction) =>
+			button.user.id === //@ts-ignore
+				(interaction.user ? interaction.user : interaction.author).id &&
+			button.customId.startsWith('cal-')
 
-			collect.on('collect', async (x: ButtonInteraction) => {
-				if (
-					x.user.id !== //@ts-ignore
-					(interaction.user ? interaction.user : interaction.author).id
-				)
-					return
+		let collect = msg.createMessageComponentCollector({
+			filter,
+			componentType: 'BUTTON',
+			time: time
+		})
 
-				await x.deferUpdate()
+		collect.on('collect', async (button: ButtonInteraction) => {
+			await button.deferUpdate()
 
-				if (result === 'new') value = '0'
-				else if (isWrong) {
-					value = val
-					isWrong = false
-				} else if (value === '0') value = val
-				else if (result) {
-					isWrong = true
-					value = mathEval(
-						value.replaceAll('^', '**').replaceAll('%', '/100').replace(' ', '')
-					)
-				} else value += val
-				if (value.includes('⌫')) {
-					value = value.slice(0, -2)
-					if (value === '') value = ' '
-					emb1.setDescription('```' + value + '```')
-					await msg
-						.edit({
-							embeds: [emb1],
-							components: row
-						})
-						.catch(() => {})
-				} else if (value.includes('Delete')) return msg.delete().catch(() => {})
-				else if (value.includes('Clear')) return (value = '0')
-				emb1.setDescription('```' + value + '```')
-				await msg
+			let btnName: any = button.customId.replace('cal-', '')
+
+			if (elem === '0') elem = ''
+
+			if (btnName === '=') {
+				elem = mathEval(elem, true)
+
+				emb1.setDescription(`\`\`\`js\n${elem}\n\`\`\``)
+
+				elem = '0'
+
+				return await msg
 					.edit({
 						embeds: [emb1],
 						components: row
 					})
 					.catch(() => {})
-			})
-		}
+			}
 
-		for (let txt of text) {
-			let result
+			elem = elem + btnName.toString()
 
-			if (txt === 'Clear') result = 'new'
-			else if (txt === '=') result = true
-			else result = false
-			createCollector(txt, result)
-		}
+			if (btnName === 'Delete') return await msg.delete().catch(() => {})
+			else if (btnName === 'Clear') elem = '0'
+			if (btnName === '⌫') elem = elem.slice(0, -2)
+
+			if (isNaN(btnName) && btnName !== '⌫') {
+				emb1.setDescription(
+					`\`\`\`js\n${elem
+						.replaceAll('+', ' + ')
+						.replaceAll('*', ' * ')}\n\t\n\`\`\``
+				)
+				return await msg
+					.edit({
+						embeds: [emb1],
+						components: row
+					})
+					.catch(() => {})
+			}
+
+			emb1.setDescription(
+				`\`\`\`js\n${elem
+					.replaceAll('+', ' + ')
+					.replaceAll('*', ' * ')}\n// Result: ${mathEval(elem)
+					.replaceAll('^', '**')
+					.replaceAll('%', '/100')
+					.replace(' ', '')}\n\`\`\``
+			)
+			await msg
+				.edit({
+					embeds: [emb1],
+					components: row
+				})
+				.catch(() => {})
+		})
+
 		setTimeout(async () => {
 			if (!msg) return
 			if (!msg.editable) return
@@ -247,21 +261,24 @@ export async function calculator(
 			const btn = new MessageButton()
 				.setLabel(label)
 				.setStyle(style)
-				.setCustomId('cal' + label)
+				.setCustomId('cal-' + label)
 			return btn
 		}
 
 		const evalRegex = /^[0-9π\+\%\^\-*\/\.\(\)]*$/
-		function mathEval(input: any) {
+		function mathEval(input: string, result = false, symbol = false) {
 			try {
 				const matched = evalRegex.exec(input)
-				if (!matched) return 'Wrong Input'
+				if (!matched) return 'Invalid'
 
-				return `${input
-					.replaceAll('**', '^')
-					.replaceAll('/100', '%')} = ${Function(
-					`"use strict";let π=Math.PI;return (${input})`
-				)()}`
+				if (result === false) {
+					return `${Function(`"use strict";let π=Math.PI;return (${input})`)()}`
+				} else
+					return `${input
+						.replaceAll('**', '^')
+						.replaceAll('/100', '%')} = ${Function(
+						`"use strict";let π=Math.PI;return (${input})`
+					)()}`
 			} catch {
 				return 'Wrong Input'
 			}

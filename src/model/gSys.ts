@@ -1,9 +1,5 @@
 import mongoose from 'mongoose'
 
-/**
- * @type {mongoose.Schema<{ message: string, entry: string[], entered: number, winCount: number, requirements: object, endTime: string }>}
- */
-
 interface Entri {
 	userID: string
 	guildID: string
@@ -11,28 +7,30 @@ interface Entri {
 }
 
 interface req {
-	type: 'guild' | 'role'
+	type: 'guild' | 'role' | 'none'
 	id?: string
 }
 
 export type gwData = {
-	message: string
-	entry: Entri[]
-	entered: number
-	winCount: number
-	requirements: req
-	endTime: string
-	desc: string
-	started: number
+	message?: string
+	entry?: Entri[]
+	entered?: number
+	winCount?: number
+	requirements?: req
+	endTime?: string
+	desc?: string
+	started?: number
+	prize?: string
 }
 
 const gw = new mongoose.Schema<gwData>({
 	message: { type: String }, // Message ID
-	started: { type: Number }, // GSys started MS
+	prize: { type: String }, // Prize go brr
+	started: { type: Number }, // GSys started in ms
 	entry: { type: Array<Entri>() }, // Array of Objects
 	entered: { type: Number }, // Useless but ok lol
-	winCount: { type: Number },
-	requirements: { type: Object }, // { type: String, role: 'If type: role', guild: 'If type: guild' }
+	winCount: { type: Number }, // How many winners
+	requirements: { type: Object }, // Requirements ;)
 	endTime: { type: String }, // in ms
 	desc: { type: String } // Giveaway Embed Desc
 })

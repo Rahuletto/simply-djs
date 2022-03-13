@@ -5,7 +5,7 @@
 	"main": "lib/simplydjs.js",
 	"typings": "typings/simplydjs.d.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "node test",
 		"prepare": "husky install"
 	},
 	"keywords": [

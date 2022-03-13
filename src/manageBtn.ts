@@ -1,114 +1,376 @@
-// UNDER DEVELOPMENT !
-
-/*
 import {
 	MessageEmbed,
 	Message,
 	MessageEmbedFooter,
 	MessageEmbedAuthor,
 	ColorResolvable,
-	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
-	ButtonInteraction
+	ButtonInteraction,
+	MessageButtonStyle,
+	User,
+	MessageAttachment,
+	GuildMember
 } from 'discord.js'
 import chalk from 'chalk'
 import gsys from './model/gSys'
 
-interface ticket {
-	ticketname: string
-} 
+// ------------------------------
+// ----- I N T E R F A C E ------
+// ------------------------------
 
-interface embed {
-	rawEmbed: MessageEmbed
-	logEmbed: MessageEmbed
+interface btnTemp {
+	style?: MessageButtonStyle
+	emoji?: string
 }
+interface ticketBtn {
+	close: btnTemp
+	reopen: btnTemp
+	delete: btnTemp
+	transcript: btnTemp
+}
+
+interface CustomEmbed {
+	author?: MessageEmbedAuthor
+	title?: string
+	footer?: MessageEmbedFooter
+	color?: ColorResolvable
+
+	credit?: boolean
+}
+
+interface ticketSys {
+	ticketname?: string
+	buttons?: ticketBtn
+	pingRole?: string
+	category?: string
+	timed?: boolean
+	embed?: CustomEmbed
+}
+
+// ------------------------------
+// ------- T Y P I N G S --------
+// ------------------------------
 
 export type manageBtnOptions = {
-	embed: embed
+	ticketSys?: ticketSys
 }
 
- --- options ---
- 
-credit => Boolean
-ticketname => (Options {username} | {id} | {tag} ) String
+// ------------------------------
+// ------- P R O M I S E --------
+// ------------------------------
 
-embed => Embed
-logembed => Embed
-confirmEmb => Embed
+type ticketDelete = {
+	type?: 'Delete'
+	channelId?: string
+	user?: User
+	data?: MessageAttachment
+}
 
-logChannel => (Channel ID) String
+type rerolly = {
+	type?: 'Reroll'
+	user?: GuildMember | GuildMember[]
+	msgURL?: string
+}
 
-closeColor => (ButtonColor) String
-openColor => (ButtonColor) String
-delColor => (ButtonColor) String
-trColor => (ButtonColor) String
+// ------------------------------
+// ------ F U N C T I O N -------
+// ------------------------------
 
-cooldownMsg => String
-role => (Role ID) String
-categoryID => String
+export async function manageBtn(
+	button: ButtonInteraction,
+	options: manageBtnOptions = {}
+): Promise<ticketDelete | rerolly> {
+	return new Promise(async (resolve, reject) => {
+		if (button.isButton()) {
+			try {
+				let member = button.member
 
-embedDesc => String
-embedColor => HexColor
-embedTitle => String
+				// ------------------------------
+				// ------ B T N - R O L E -------
+				// ------------------------------
 
-delEmoji => (Emoji ID) String
-closeEmoji => (Emoji ID) String
-openEmoji => (Emoji ID) String
-trEmoji => (Emoji ID) String
+				if (button.customId.startsWith('role-')) {
+					let roleId = button.customId.replace('role-', '')
 
-timeout => Boolean
-pingRole => (Role ID) String
-
-db => Database
-
-
-export async function manageBtn(button: ButtonInteraction, options = {}) {
-	if (button.isButton()) {
-		try {
-			if (options.credit === false) {
-				;(foot = button.message.guild.name), button.message.guild.iconURL()
-			} else {
-				foot = '©️ Simply Develop. npm i simply-djs'
-			}
-
-			if (button.customId.startsWith('role-')) {
-				await button.deferUpdate({ ephemeral: true })
-				let rle = button.customId.replace('role-', '')
-
-				let real = button.guild.roles.cache.find((r) => r.id === rle)
-				if (!real) return
-				else {
-					if (button.member.roles.cache.find((r) => r.id === real.id)) {
-						button.followUp({
-							content: 'You already have the role. Removing it now',
-							ephemeral: true
-						})
-
-						button.member.roles
-							.remove(real)
-							.catch((err) =>
-								button.message.channel.send(
-									'ERROR: Role is higher than me. MISSING_PERMISSIONS'
+					let role = await button.guild.roles.fetch(roleId, { force: true })
+					if (!role) return
+					else {
+						// @ts-ignore
+						if (member.roles.cache.find((r) => r.id === role.id)) {
+							member.roles // @ts-ignore
+								.remove(role)
+								.catch((err: any) =>
+									button.channel.send({
+										content:
+											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
+									})
 								)
-							)
-					} else {
-						button.followUp({
-							content: `Gave you the role ${real} | ID: ${real.id}`,
-							ephemeral: true
-						})
 
-						button.member.roles
-							.add(real)
-							.catch((err) =>
-								button.message.channel.send(
-									'ERROR: Role is higher than me. MISSING_PERMISSIONS'
+							button.reply({
+								content: `Removing ${role.toString()} from you.`,
+								ephemeral: true
+							})
+						} else {
+							member.roles // @ts-ignore
+								.add(role)
+								.catch((err: any) =>
+									button.channel.send({
+										content:
+											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
+									})
 								)
-							)
+
+							button.reply({
+								content: `Added ${role.toString()} to you.`,
+								ephemeral: true
+							})
+						}
 					}
 				}
-			}
 
+				// ------------------------------
+				// ------ G I V E A W A Y -------
+				// ------------------------------
+
+				if (button.customId === 'enter_giveaway') {
+					await button.deferUpdate()
+					let data = await gsys.findOne({
+						message: button.message.id
+					})
+
+					if (Number(data.endTime) < Date.now()) return
+					else {
+						if (data.requirements.type === 'role') {
+							if (
+								// @ts-ignore
+								!button.member.roles.cache.find(
+									(r: any) => r.id === data.requirements.id
+								)
+							)
+								return button.followUp({
+									content:
+										'You do not fall under the requirements. | You dont have the role',
+									ephemeral: true
+								})
+						}
+						if (data.requirements.type === 'guild') {
+							let g = button.client.guilds.cache.get(data.requirements.id)
+							let mem = await g.members.fetch(button.member.user.id)
+
+							if (!mem)
+								return button.followUp({
+									content:
+										'You do not fall under the requirements. | Join the server.',
+									ephemeral: true
+								})
+						}
+
+						let entris = data.entry.find((id) => id.userID === member.user.id)
+
+						if (entris) {
+							await gsys.findOneAndUpdate(
+								{
+									message: button.message.id
+								},
+								{
+									$pull: { entry: { userID: member.user.id } }
+								}
+							)
+
+							await button.followUp({
+								content: 'Left the giveaway ;(',
+								ephemeral: true
+							})
+						} else if (!entris) {
+							data.entry.push({
+								userID: member.user.id,
+								guildID: button.guild.id,
+								messageID: button.message.id
+							})
+
+							data.entered = data.entered + 1
+
+							await data.save().then(async (a) => {
+								await button.followUp({
+									content: 'Entered the giveaway !',
+									ephemeral: true
+								})
+							})
+						}
+
+						let eem = button.message.embeds[0]
+
+						eem.fields[2].value = `***${data.entered.toString()}***`
+
+						let mes = button.message as Message
+						mes.edit({ embeds: [eem] })
+					}
+				}
+
+				if (
+					button.customId === 'end_giveaway' ||
+					button.customId === 'reroll_giveaway'
+				) {
+					let allComp = await button.message.components[0]
+					let ftr = await button.message.embeds[0].footer
+
+					const embeded = new MessageEmbed()
+						.setTitle('Processing Data...')
+						.setColor(0xcc0000)
+						.setDescription(
+							`Please wait.. We are Processing the winner with some magiks`
+						)
+						.setFooter({
+							text: 'Ending the Giveaway, Scraping the ticket..'
+						})
+
+					let msg = button.message as Message
+
+					await msg.edit({ embeds: [embeded], components: [] }).catch(() => {})
+
+					let dispWin: string[] = []
+
+					let dt = await gsys.findOne({ message: msg.id })
+
+					dt.endTime = undefined
+					await dt.save().catch(() => {})
+
+					let winArr: any[] = []
+
+					let winCt = dt.winCount
+
+					let entries = dt.entry
+
+					for (let i = 0; i < winCt; i++) {
+						let winno = Math.floor(Math.random() * dt.entered)
+
+						winArr.push(entries[winno])
+					}
+
+					setTimeout(() => {
+						winArr.forEach(async (name) => {
+							await button.guild.members
+								.fetch(name.userID)
+								.then((user) => {
+									dispWin.push(`<@${user.user.id}>`)
+
+									let embod = new MessageEmbed()
+										.setTitle('You.. Won the Giveaway !')
+										.setDescription(
+											`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
+										)
+										.setColor(0x075fff)
+										.setFooter(ftr)
+
+									let gothe = new MessageButton()
+										.setLabel('View Giveaway')
+										.setStyle('LINK')
+										.setURL(msg.url)
+
+									let entrow = new MessageActionRow().addComponents([gothe])
+
+									return user
+										.send({ embeds: [embod], components: [entrow] })
+										.catch(() => {})
+								})
+								.catch(() => {})
+						})
+					}, 2000)
+
+					setTimeout(async () => {
+						if (!dt) return await msg.delete()
+						if (dt) {
+							let tim = Number(dt.endTime.slice(0, -3))
+
+							if (dt.entered <= 0 || !winArr[0]) {
+								let emed = new MessageEmbed()
+									.setTitle('No one entered')
+									.setDescription(
+										`Oops.. No one entered the giveaway.\n\n` +
+											(dt.desc
+												? dt.desc
+														.replaceAll('{prize}', dt.prize)
+														.replaceAll('{endsAt}', `<t:${tim}:R>`)
+														.replaceAll(
+															'{requirements}',
+															dt.requirements.type === 'none'
+																? 'None'
+																: dt.requirements.type +
+																		' | ' +
+																		(dt.requirements.type === 'role'
+																			? `${dt.requirements.id}`
+																			: dt.requirements.id)
+														)
+														.replaceAll('{winCount}', dt.winCount.toString())
+														.replaceAll('{entered}', '0')
+												: `**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
+									)
+									.addFields(
+										{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
+										{ name: '🎫 Entered', value: `***${dt.entered}***` }
+									)
+									.setColor('RED')
+									.setFooter({
+										text: 'No one entered..'
+									})
+
+								allComp.components[0].disabled = true
+								allComp.components[1].disabled = true
+								allComp.components[2].disabled = true
+
+								return await msg.edit({
+									embeds: [emed], //@ts-ignore
+									components: [allComp]
+								})
+							}
+
+							let resWin: GuildMember[] = []
+
+							allComp.components[0].disabled = true
+							allComp.components[1].disabled = false
+							allComp.components[2].disabled = true
+
+							let em = new MessageEmbed()
+								.setTitle('We got the winner !')
+								.setDescription(
+									`${dispWin.join(', ')} won the prize !\n` +
+										(dt.desc
+											? dt.desc
+											: `Reroll the giveaway using the button.\n\n**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
+								)
+								.addFields(
+									{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
+									{ name: '🎫 Entered', value: `***${dt.entered}***` }
+								)
+								.setColor(0x3bb143)
+								.setFooter(ftr)
+							//@ts-ignore
+							await msg.edit({ embeds: [em], components: [allComp] })
+
+							if (button.customId === 'reroll_giveaway') {
+								resolve({
+									type: 'Reroll',
+									msgURL: msg.url,
+									user: resWin
+								})
+							}
+						}
+					}, 5200)
+				}
+			} catch (err: any) {
+				console.log(
+					`${chalk.red('Error Occured.')} | ${chalk.magenta(
+						'manageBtn'
+					)} | Error: ${err.stack}`
+				)
+			}
+		} else return
+	})
+}
+/** 
+	if (button.isButton()) {
+		try {
 			if (button.customId === 'create_ticket') {
 				button.deferUpdate()
 				let ticketname = `ticket_${button.user.id}`

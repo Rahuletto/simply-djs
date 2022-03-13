@@ -1,18 +1,17 @@
 import mongoose from 'mongoose'
 
-/**
- * @type {mongoose.Schema<{ channel: string, nxtBump: string }>}
- */
-
-
- export type bumpSysData = {
-		channel: string
-		nxtBump: any
- }
+export type bumpSysData = {
+	channel: string
+	nxtBump: any
+	guild: string
+	checkId: number
+}
 
 const bump = new mongoose.Schema<bumpSysData>({
-	channel: { type: String }, // Bump Channel
-	nxtBump: { type: String } // Next Bump time
+	checkId: { type: Number }, // Hello
+	channel: { type: String }, // Bump Channel (Auto updates)
+	nxtBump: { type: String }, // Next Bump time
+	guild: { type: String } // Guild
 })
 
 export default mongoose.model('Bump-System', bump)

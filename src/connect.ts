@@ -7,10 +7,7 @@ import chalk from 'chalk'
 // ------ F U N C T I O N -------
 // ------------------------------
 
-export default async function connect(
-	db: string,
-	notify: boolean
-): Promise<boolean> {
+export async function connect(db: string, notify?: boolean): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db)
 			throw new SimplyError(
@@ -34,7 +31,7 @@ export default async function connect(
 							`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
 								'→'
 							)} ${chalk.green(v)}\n\t\tRun [${chalk.blue(
-								'npm install simply-djs'
+								'npm i simply-djs@latest'
 							)}] to update\n`
 						)
 					}

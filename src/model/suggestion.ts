@@ -1,10 +1,9 @@
 import mongoose from 'mongoose'
 
-/**
- * @type {mongoose.Schema<{ message: string, author: string, votes: string[] }>}
- */
-
-type votz = { user: number, vote: string }
+interface votz {
+	user: number
+	vote: string
+}
 
 export type sugData = {
 	message: string
@@ -14,8 +13,8 @@ export type sugData = {
 
 const suggest = new mongoose.Schema<sugData>({
 	message: { type: String }, // Message ID
-	author: { type: String }, // Author of Suggestion
-	votes: { type: Array<votz>() } // Array of Objects
+	author: { type: String }, // Author of Suggestion to wave
+	votes: { type: Array<votz>() } // Array of votes
 })
 
 export default mongoose.model('Suggest-System', suggest)

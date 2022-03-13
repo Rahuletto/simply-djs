@@ -30,17 +30,32 @@ if (discordJSVersion.slice(0, 2) !== '13')
 // ------------------------------
 export let version = '3.0.0'
 
-export * from './src/ghostPing'
+// ------------------------------
+// ------- G E N E R A L --------
+// ------------------------------
+
 export * from './src/connect'
-export * from './src/automeme'
-export * from './src/bumpSys'
-export * from './src/betterBtnRole'
+export * from './src/ghostPing'
+export * from './src/embedPages'
 export * from './src/chatbot'
+export * from './src/automeme'
+
+// ------------------------------
+// ------- S Y S T E M S --------
+// ------------------------------
+
+export * from './src/betterBtnRole'
+export * from './src/btnrole'
+export * from './src/manageBtn'
+export * from './src/giveaway'
+export * from './src/bumpSys'
+
+// ------------------------------
+// ----------- F U N ------------
+// ------------------------------
+
 export * from './src/calc'
 export * from './src/embed'
-export * from './src/embedPages'
-export * from './src/giveaway'
-// export * from './src/manageBtn'
 
 /*
 module.exports.embedPages = require('./src/embedPages')

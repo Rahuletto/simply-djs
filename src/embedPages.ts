@@ -14,23 +14,21 @@ import SimplyError from './Error/Error'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface emoji {
-	firstBtn?: string
-	nextBtn?: string
-	backBtn?: string
-	lastBtn?: string
-	deleteBtn?: string
+interface btnTemp {
+	style?: MessageButtonStyle
+	emoji?: string
 }
 
-interface style {
-	skipBtn?: MessageButtonStyle
-	deleteBtn?: MessageButtonStyle
-	pageBtn?: MessageButtonStyle
+interface btnz {
+	firstBtn?: btnTemp
+	nextBtn?: btnTemp
+	backBtn?: btnTemp
+	lastBtn?: btnTemp
+	deleteBtn?: btnTemp
 }
 
 export type pagesOption = {
-	emoji?: emoji
-	style?: style
+	buttons?: btnz
 
 	skips?: boolean
 	delete?: boolean
@@ -48,27 +46,14 @@ export type pagesOption = {
 export async function embedPages(
 	message: Message | CommandInteraction,
 	pages: MessageEmbed[],
-	options: pagesOption = {
-		emoji: {
-			firstBtn: '⏪',
-			nextBtn: '▶️',
-			backBtn: '◀️',
-			lastBtn: '⏩',
-
-			deleteBtn: '🗑'
-		},
-		style: {
-			skipBtn: 'PRIMARY',
-			deleteBtn: 'DANGER',
-			pageBtn: 'SUCCESS'
-		},
-		skips: true,
-		delete: true,
-		dynamic: false,
-		count: false
-	}
+	options: pagesOption = {}
 ): Promise<any> {
 	try {
+		options.skips ??= true
+		options.delete ??= true
+		options.dynamic ??= false
+		options.count ??= false
+
 		if (!pages)
 			throw new SimplyError(
 				'PAGES_NOT_FOUND. You didnt specify any pages to me.',
@@ -87,16 +72,41 @@ export async function embedPages(
 		} else {
 			comps = []
 		}
+
+		options.buttons = {
+			firstBtn: {
+				style: options.buttons?.firstBtn?.style || 'PRIMARY',
+				emoji: options.buttons?.firstBtn?.emoji || '⏪'
+			},
+			nextBtn: {
+				style: options.buttons?.nextBtn?.style || 'SUCCESS',
+				emoji: options.buttons?.nextBtn?.emoji || '▶️'
+			},
+			backBtn: {
+				style: options.buttons?.backBtn?.style || 'SUCCESS',
+				emoji: options.buttons?.backBtn?.emoji || '◀️'
+			},
+			lastBtn: {
+				style: options.buttons?.lastBtn?.style || 'PRIMARY',
+				emoji: options.buttons?.lastBtn?.emoji || '⏩'
+			},
+
+			deleteBtn: {
+				style: options.buttons?.deleteBtn?.style || 'DANGER',
+				emoji: options.buttons?.deleteBtn?.emoji || '🗑'
+			}
+		}
+
 		//Defining all buttons
 		let firstBtn = new MessageButton()
 			.setCustomId('first_embed')
-			.setEmoji(options.emoji.firstBtn)
-			.setStyle(options.style.skipBtn)
+			.setEmoji(options.buttons.firstBtn.emoji)
+			.setStyle(options.buttons.firstBtn.style)
 
 		let forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
-			.setEmoji(options.emoji.nextBtn)
-			.setStyle(options.style.pageBtn)
+			.setEmoji(options.buttons.nextBtn.emoji)
+			.setStyle(options.buttons.nextBtn.style)
 
 		if (options.dynamic) {
 			firstBtn.setDisabled(true)
@@ -105,18 +115,18 @@ export async function embedPages(
 
 		let backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
-			.setEmoji(options.emoji.backBtn)
-			.setStyle(options.style.pageBtn)
+			.setEmoji(options.buttons.backBtn.emoji)
+			.setStyle(options.buttons.backBtn.style)
 
 		let lastBtn = new MessageButton()
 			.setCustomId('last_embed')
-			.setEmoji(options.emoji.lastBtn)
-			.setStyle(options.style.skipBtn)
+			.setEmoji(options.buttons.lastBtn.emoji)
+			.setStyle(options.buttons.lastBtn.style)
 
 		let deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
-			.setEmoji(options.emoji.deleteBtn)
-			.setStyle(options.style.deleteBtn)
+			.setEmoji(options.buttons.deleteBtn.emoji)
+			.setStyle(options.buttons.deleteBtn.style)
 
 		let btnCollection: any[] = []
 		//Creating the MessageActionRow

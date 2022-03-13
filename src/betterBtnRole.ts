@@ -5,6 +5,8 @@ import {
 	TextChannel,
 	Role,
 	Message,
+	MessageButton,
+	MessageActionRow
 } from 'discord.js'
 
 import chalk from 'chalk'
@@ -47,8 +49,6 @@ export async function betterBtnRole(
 	options: betterbtnOptions = { custom: false }
 ): Promise<string> {
 	return new Promise(async (resolve, reject) => {
-		let { MessageButton, MessageActionRow } = require('discord.js')
-
 		let ch = options.channel || interaction.options.getChannel('channel')
 		let msgid = options.messageId || interaction.options.getString('message')
 		let role = options.role || interaction.options.getRole('role')
@@ -120,12 +120,12 @@ export async function betterBtnRole(
 					if (!emoji || emoji === null) {
 						const btn = new MessageButton()
 							.setLabel(label)
-							.setStyle(color)
+							.setStyle(color as MessageButtonStyle)
 							.setCustomId('role-' + role.id)
 
 						let rowe = new MessageActionRow().addComponents([btn])
 
-						msg
+						await msg
 							.edit({
 								content: msg.content || '\u200b',
 								embeds: msg.embeds,
@@ -153,13 +153,13 @@ export async function betterBtnRole(
 					} else if (emoji && emoji !== null) {
 						const btn = new MessageButton()
 							.setLabel(label)
-							.setStyle(color)
+							.setStyle(color as MessageButtonStyle)
 							.setCustomId('role-' + role.id)
 							.setEmoji(emoji)
 
 						let rowe = new MessageActionRow().addComponents([btn])
 
-						msg
+						await msg
 							.edit({
 								content: msg.content || '\u200b',
 								embeds: msg.embeds,
@@ -200,7 +200,7 @@ export async function betterBtnRole(
 						if (!emoji || emoji === null) {
 							const btn = new MessageButton()
 								.setLabel(label)
-								.setStyle(color)
+								.setStyle(color as MessageButtonStyle)
 								.setCustomId('role-' + role.id)
 
 							rowgap.push(btn)
@@ -233,7 +233,7 @@ export async function betterBtnRole(
 						} else if (emoji && emoji !== null) {
 							const btn = new MessageButton()
 								.setLabel(label)
-								.setStyle(color)
+								.setStyle(color as MessageButtonStyle)
 								.setCustomId('role-' + role.id)
 								.setEmoji(emoji)
 
@@ -269,7 +269,7 @@ export async function betterBtnRole(
 						if (!emoji || emoji === null) {
 							const btn = new MessageButton()
 								.setLabel(label)
-								.setStyle(color)
+								.setStyle(color as MessageButtonStyle)
 								.setCustomId('role-' + role.id)
 
 							let rowe = new MessageActionRow().addComponents([btn])
@@ -304,7 +304,7 @@ export async function betterBtnRole(
 						} else if (emoji && emoji !== null) {
 							const btn = new MessageButton()
 								.setLabel(label)
-								.setStyle(color)
+								.setStyle(color as MessageButtonStyle)
 								.setCustomId('role-' + role.id)
 								.setEmoji(emoji)
 

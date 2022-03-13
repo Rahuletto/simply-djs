@@ -9,7 +9,8 @@ import {
 	MessageActionRow,
 	MessageButton,
 	Client,
-	MessageButtonStyle
+	MessageButtonStyle,
+	Permissions
 } from 'discord.js'
 import chalk from 'chalk'
 import model from './model/gSys'
@@ -29,8 +30,8 @@ interface CustomEmbed {
 }
 
 interface requirement {
-	type?: 'Role' | 'Guild'
-	value?: string
+	type: 'Role' | 'Guild' | 'None'
+	id: string
 }
 
 interface btnTemplate {
@@ -74,7 +75,7 @@ export async function giveawaySystem(
 			reroll: { style: 'PRIMARY', text: 'Reroll', emoji: '🔁' }
 		}
 	}
-): Promise<null> {
+): Promise<Object> {
 	return new Promise(async (resolve) => {
 		try {
 			let interaction
@@ -86,8 +87,8 @@ export async function giveawaySystem(
 			let int = message as CommandInteraction
 			let mes = message as Message
 
-			// @ts-ignore
-			if (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			/*
+			if (message.member.permissions.has('MANAGE_GUILD')) {
 				if (interaction) {
 					return await int.followUp({
 						content: 'You are not a admin to start a giveaway',
@@ -97,6 +98,25 @@ export async function giveawaySystem(
 					return await message.reply({
 						content: 'You are not a admin to start a giveaway'
 					})
+				}
+			}
+			*/
+
+			options.buttons = {
+				enter: {
+					style: options.buttons?.enter?.style || 'SUCCESS',
+					text: options.buttons?.enter?.text || 'Enter',
+					emoji: options.buttons?.enter?.emoji || '🎁'
+				},
+				end: {
+					style: options.buttons?.end?.style || 'DANGER',
+					text: options.buttons?.end?.text || 'End',
+					emoji: options.buttons?.end?.emoji || '⛔'
+				},
+				reroll: {
+					style: options.buttons?.end?.style || 'PRIMARY',
+					text: options.buttons?.end?.text || 'Reroll',
+					emoji: options.buttons?.end?.emoji || '🔁'
 				}
 			}
 
@@ -117,25 +137,35 @@ export async function giveawaySystem(
 			let winners: any
 			let prize: any
 			let req = 'None'
+			let gid: string
 
 			let content = '** **'
 
 			if (options.ping) {
-				content = message.guild.roles.cache
-					.find((r: any) => r.id === options.ping)
+				content = message.guild.roles
+					.fetch(options.ping, { force: true })
 					.toString()
 			}
 			let val: any
 
 			if (options.req?.type === 'Role') {
-				val = await message.guild.roles.fetch(options.req?.value, {
+				val = await message.guild.roles.fetch(options.req?.id, {
 					force: true
 				})
+
 				req = 'Role'
 			} else if (options.req?.type === 'Guild') {
-				val = client.guilds.cache.get(options.req?.value)
+				val = client.guilds.cache.get(options.req?.id)
+
+				if (!val)
+					return message.channel.send({
+						content:
+							'Please add me to that server so i can set the requirement.'
+					})
+				gid = val.id
+
 				await val.invites.fetch().then((a: any) => {
-					val = a.first()
+					val = `[${val.name}](https://discord.gg/${a.first()})`
 				})
 				req = 'Guild'
 			}
@@ -158,22 +188,22 @@ export async function giveawaySystem(
 			}
 
 			let enter = new MessageButton()
-				.setLabel(options.buttons.enter.text)
-				.setEmoji(options.buttons.enter.emoji)
+				.setLabel(options.buttons.enter.text || 'Enter')
+				.setEmoji(options.buttons.enter.emoji || '🎁')
 				.setCustomId('enter_giveaway')
-				.setStyle(options.buttons.enter.style)
+				.setStyle(options.buttons.enter.style || 'SUCCESS')
 
 			let end = new MessageButton()
-				.setLabel('End')
-				.setEmoji('⛔')
+				.setLabel(options.buttons.end.text || 'End')
+				.setEmoji(options.buttons.end.emoji || '⛔')
 				.setCustomId('end_giveaway')
-				.setStyle('DANGER')
+				.setStyle(options.buttons.end.style || 'DANGER')
 
 			let reroll = new MessageButton()
-				.setLabel('Reroll')
-				.setEmoji('🔁')
+				.setLabel(options.buttons.reroll.text || 'Reroll')
+				.setEmoji(options.buttons.reroll.emoji || '🔁')
 				.setCustomId('reroll_giveaway')
-				.setStyle('PRIMARY')
+				.setStyle(options.buttons.reroll.style || 'SUCCESS')
 				.setDisabled(true)
 
 			let row = new MessageActionRow().addComponents([enter, reroll, end])
@@ -194,27 +224,46 @@ export async function giveawaySystem(
 				)
 				.setDescription(
 					options.embed?.description
-						.replaceAll('{prize}', prize)
-						.replaceAll('{endsAt}', endtime.toString())
-						.replaceAll(
-							'{requirements}',
-							req === 'None' ? 'None' : req + ' | ' + val
-						)
-						.replaceAll('{winCount}', winners)
-						.replaceAll('{entered}', '0') ||
-						`Interact with the giveaway using the buttons. \n\n**🎁 Prize**: *${prize}*\n**⏰ Ends:** ${endtime}`
+						? options.embed?.description
+								.replaceAll('{prize}', prize)
+								.replaceAll('{endsAt}', `<t:${endtime}:R>`)
+								.replaceAll(
+									'{requirements}',
+									req === 'None'
+										? 'None'
+										: req + ' | ' + (req === 'Role' ? `${val}` : val)
+								)
+								.replaceAll('{winCount}', winners)
+								.replaceAll('{entered}', '0')
+						: `Interact with the giveaway using the buttons. \n\n**🎁 Prize**: *${prize}*\n\n**⏰ Ends:** <t:${endtime}:R>`
 				)
 				.addFields(
 					{
 						name: '🤔 Requirements:',
-						value: `${req === 'None' ? 'None' : req + ' | ' + val}`
+						value: `${
+							req === 'None'
+								? 'None'
+								: req + ' | ' + (req === 'Role' ? `${val}` : val)
+						}`
 					},
 					{ name: '🏆 Winner(s):', value: `\`${winners}\`` },
 					{ name: '🎫 Entered', value: `***0***` }
 				)
 
-			ch.send({ content: content, embeds: [embed], components: [row] }).then(
-				async (msg: any) => {
+			await ch
+				.send({ content: content, embeds: [embed], components: [row] })
+				.then(async (msg: any) => {
+					resolve({
+						message: msg.id,
+						winners: winners,
+						prize: prize,
+						endsAt: endtime,
+						req:
+							req === 'None'
+								? 'None'
+								: req + ' | ' + (req === 'Role' ? val : gid)
+					})
+
 					const link = new MessageButton()
 						.setLabel('View Giveaway.')
 						.setStyle('LINK')
@@ -233,10 +282,15 @@ export async function giveawaySystem(
 						message: msg.id,
 						entered: 0,
 						winCount: winners,
-						desc: options.embed?.description || '',
-						requirements: {},
+						desc: options.embed?.description || null,
+						requirements: {
+							type: req === 'None' ? 'none' : req.toLowerCase(),
+							id: req === 'Role' ? val : gid
+						},
 						started: timeStart,
-						endTime: Number(Date.now() + ms(time))
+						prize: prize,
+						entry: [],
+						endTime: tim
 					})
 
 					await crete.save()
@@ -244,7 +298,9 @@ export async function giveawaySystem(
 					let timer = setInterval(async () => {
 						if (!msg) return
 
-						if (tim < Date.now()) {
+						let dt = await model.findOne({ message: msg.id })
+
+						if (dt.endTime && Number(dt.endTime) < Date.now()) {
 							const embeded = new MessageEmbed()
 								.setTitle('Processing Data...')
 								.setColor(0xcc0000)
@@ -255,89 +311,173 @@ export async function giveawaySystem(
 									text: 'Ending the Giveaway, Scraping the ticket..'
 								})
 
+							clearInterval(timer)
+
 							await msg
 								.edit({ embeds: [embeded], components: [] })
 								.catch(() => {})
 
+							let dispWin: string[] = []
+
+							let winArr: any[] = []
+
+							let winCt = dt.winCount
+
+							let entries = dt.entry
+
+							for (let i = 0; i < winCt; i++) {
+								let winno = Math.floor(Math.random() * dt.entered)
+
+								winArr.push(entries[winno])
+							}
+
+							setTimeout(() => {
+								winArr.forEach(async (name) => {
+									await message.guild.members
+										.fetch(name?.userID)
+										.then((user) => {
+											dispWin.push(`<@${user.user.id}>`)
+
+											let embod = new MessageEmbed()
+												.setTitle('You.. Won the Giveaway !')
+												.setDescription(
+													`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
+												)
+												.setColor(0x075fff)
+												.setFooter(
+													options.embed?.credit
+														? options.embed?.footer
+														: {
+																text: '©️ Simply Develop. npm i simply-djs',
+																iconURL: 'https://i.imgur.com/u8VlLom.png'
+														  }
+												)
+
+											let gothe = new MessageButton()
+												.setLabel('View Giveaway')
+												.setStyle('LINK')
+												.setURL(msg.url)
+
+											let entrow = new MessageActionRow().addComponents([gothe])
+
+											return user
+												.send({ embeds: [embod], components: [entrow] })
+												.catch(() => {})
+										})
+										.catch(() => {})
+								})
+							}, 2000)
+
 							setTimeout(async () => {
-								clearInterval(timer)
-
-								let dt = await model.findOne({ message: msg.id })
-
 								if (!dt) return await msg.delete()
 								if (dt) {
-									let winCt = dt.winCount
+									if (dt.entered <= 0 || !winArr[0]) {
+										let emed = new MessageEmbed()
+											.setTitle('No one entered')
+											.setDescription(
+												`Oops.. No one entered the giveaway.\n\n` +
+													(options.embed?.description
+														? options.embed?.description
+																.replaceAll('{prize}', prize)
+																.replaceAll('{endsAt}', `<t:${endtime}:R>`)
+																.replaceAll(
+																	'{requirements}',
+																	req === 'None'
+																		? 'None'
+																		: req +
+																				' | ' +
+																				(req === 'Role' ? `${val}` : val)
+																)
+																.replaceAll('{winCount}', winners)
+																.replaceAll('{entered}', '0')
+														: `**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${endtime}:R>\n`)
+											)
+											.addFields(
+												{
+													name: '🤔 Requirements:',
+													value: `${
+														req === 'None'
+															? 'None'
+															: req + ' | ' + (req === 'Role' ? `${val}` : val)
+													}`
+												},
+												{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
+												{ name: '🎫 Entered', value: `***${dt.entered}***` }
+											)
+											.setColor('RED')
+											.setFooter(
+												options.embed?.credit
+													? options.embed?.footer
+													: {
+															text: '©️ Simply Develop. npm i simply-djs',
+															iconURL: 'https://i.imgur.com/u8VlLom.png'
+													  }
+											)
 
-									let entries = dt.entry
+										let enteree = new MessageButton()
+											.setLabel(options.buttons?.enter?.text || 'Enter')
+											.setEmoji(options.buttons?.enter?.emoji || '🎁')
+											.setCustomId('enter_giveaway')
+											.setStyle(options.buttons?.enter?.style || 'SUCCESS')
+											.setDisabled(true)
 
-									let winArr = []
+										let endee = new MessageButton()
+											.setLabel(options.buttons?.end?.text || 'End')
+											.setEmoji(options.buttons?.end?.emoji || '⛔')
+											.setCustomId('end_giveaway')
+											.setStyle(options.buttons?.end?.style || 'DANGER')
+											.setDisabled(true)
 
-									for (let i = 0; i < winCt; i++) {
-										let winno = Math.floor(Math.random() * dt.entered)
+										let rerollee = new MessageButton()
+											.setLabel(options.buttons?.reroll?.text || 'Reroll')
+											.setEmoji(options.buttons?.reroll?.emoji || '🔁')
+											.setCustomId('reroll_giveaway')
+											.setStyle(options.buttons?.reroll?.style || 'SUCCESS')
+											.setDisabled(true)
 
-										winArr.push(entries[winno])
+										let rowwee = new MessageActionRow().addComponents([
+											enteree,
+											rerollee,
+											endee
+										])
+
+										return await msg.edit({
+											embeds: [emed],
+											components: [rowwee]
+										})
 									}
-
-									let dispWin: string[] = []
-
-									winArr.forEach(async (name) => {
-										await message.guild.members
-											.fetch(name.userID)
-											.then((user) => {
-												let embod = new MessageEmbed()
-													.setTitle('You.. Won the Giveaway !')
-													.setDescription(
-														`You just won \`${prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
-													)
-													.setColor(0x075fff)
-													.setFooter(
-														options.embed?.credit
-															? options.embed?.footer
-															: {
-																	text: '©️ Simply Develop. npm i simply-djs',
-																	iconURL: 'https://i.imgur.com/u8VlLom.png'
-															  }
-													)
-
-												let gothe = new MessageButton()
-													.setLabel('View Giveaway')
-													.setStyle('LINK')
-													.setURL(msg.url)
-
-												let entrow = new MessageActionRow().addComponents([
-													gothe
-												])
-
-												user
-													.send({ embeds: [embod], components: [entrow] })
-													.catch(() => {})
-											})
-
-										dispWin.push(`<@${name.userID}>`)
-									})
 
 									let em = new MessageEmbed()
 										.setTitle('We got the winner !')
 										.setDescription(
-											`${dispWin.join(', ')} won all the prize !\n\n` +
-												options.embed?.description
-													.replaceAll('{prize}', prize)
-													.replaceAll('{endsAt}', endtime.toString())
-													.replaceAll(
-														'{requirements}',
-														req === 'None' ? 'None' : req + ' | ' + val
-													)
-													.replaceAll('{winCount}', winners)
-													.replaceAll('{entered}', '0') ||
-												`Reroll the giveaway using the button. \n\n**🎁 Prize**: *${prize}*\n**⏰ Ends:** ${endtime}`
+											`${dispWin.join(', ')} got the prize !\n\n` +
+												(options.embed?.description
+													? options.embed?.description
+															.replaceAll('{prize}', prize)
+															.replaceAll('{endsAt}', `<t:${endtime}:R>`)
+															.replaceAll(
+																'{requirements}',
+																req === 'None'
+																	? 'None'
+																	: req +
+																			' | ' +
+																			(req === 'Role' ? `${val}` : val)
+															)
+															.replaceAll('{winCount}', winners)
+															.replaceAll('{entered}', '0')
+													: `Reroll the giveaway using the button. \n\n**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${endtime}:R>`)
 										)
 										.addFields(
 											{
 												name: '🤔 Requirements:',
-												value: `${req === 'None' ? 'None' : req + ' | ' + val}`
+												value: `${
+													req === 'None'
+														? 'None'
+														: req + ' | ' + (req === 'Role' ? `${val}` : val)
+												}`
 											},
-											{ name: '🏆 Winner(s):', value: `\`${winners}\`` },
-											{ name: '🎫 Entered', value: `***0***` }
+											{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
+											{ name: '🎫 Entered', value: `***${dt.entered}***` }
 										)
 										.setColor(0x3bb143)
 										.setFooter(
@@ -350,24 +490,24 @@ export async function giveawaySystem(
 										)
 
 									let entere = new MessageButton()
-										.setLabel('Enter')
-										.setEmoji('🎁')
+										.setLabel(options.buttons.enter.text || 'Enter')
+										.setEmoji(options.buttons.enter.emoji || '🎁')
 										.setCustomId('enter_giveaway')
-										.setStyle('SUCCESS')
+										.setStyle(options.buttons.enter.style || 'SUCCESS')
 										.setDisabled(true)
 
 									let ende = new MessageButton()
-										.setLabel('End')
-										.setEmoji('⛔')
+										.setLabel(options.buttons.end.text || 'End')
+										.setEmoji(options.buttons.end.emoji || '⛔')
 										.setCustomId('end_giveaway')
-										.setStyle('DANGER')
+										.setStyle(options.buttons.end.style || 'DANGER')
 										.setDisabled(true)
 
 									let rerolle = new MessageButton()
-										.setLabel('Reroll')
-										.setEmoji('🔁')
+										.setLabel(options.buttons.reroll.text || 'Reroll')
+										.setEmoji(options.buttons.reroll.emoji || '🔁')
 										.setCustomId('reroll_giveaway')
-										.setStyle('PRIMARY')
+										.setStyle(options.buttons.reroll.style || 'SUCCESS')
 										.setDisabled(false)
 
 									let rowwe = new MessageActionRow().addComponents([
@@ -376,13 +516,12 @@ export async function giveawaySystem(
 										ende
 									])
 
-									msg.edit({ embeds: [em], components: [rowwe] })
+									await msg.edit({ embeds: [em], components: [rowwe] })
 								}
 							}, 5200)
 						}
 					}, 5000)
-				}
-			)
+				})
 		} catch (err: any) {
 			console.log(
 				`${chalk.red('Error Occured.')} | ${chalk.magenta(
