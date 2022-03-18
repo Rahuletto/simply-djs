@@ -9,8 +9,7 @@ import {
 	MessageActionRow,
 	MessageButton,
 	Client,
-	MessageButtonStyle,
-	Permissions
+	MessageButtonStyle
 } from 'discord.js'
 import chalk from 'chalk'
 import model from './model/gSys'
@@ -19,7 +18,11 @@ import model from './model/gSys'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface CustomEmbed {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
@@ -36,11 +39,15 @@ interface requirement {
 
 interface btnTemplate {
 	style?: MessageButtonStyle
-	text?: string
+	label?: string
 	emoji?: string
 }
 
-interface btn {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/giveawaySystem*
+ */
+
+interface gSysButtons {
 	enter?: btnTemplate
 	end?: btnTemplate
 	reroll?: btnTemplate
@@ -52,12 +59,14 @@ export type giveawayOptions = {
 	channel?: MessageChannel
 	time?: string
 
-	buttons?: btn
+	buttons?: gSysButtons
 
 	req?: requirement
 	ping?: string
 
-	embed?: CustomEmbed
+	embed?: CustomizableEmbed
+
+	disable?: 'Label' | 'Emoji'
 }
 
 interface returns {
@@ -73,7 +82,7 @@ interface returns {
 // ------------------------------
 
 /**
- * @description *A Powerful yet simple giveawaySystem* | Required: **manageBtn()**
+ * A **Powerful** yet simple giveawaySystem | *Required: **manageBtn()***
  * @param client
  * @param message
  * @param options
@@ -116,17 +125,17 @@ export async function giveawaySystem(
 			options.buttons = {
 				enter: {
 					style: options.buttons?.enter?.style || 'SUCCESS',
-					text: options.buttons?.enter?.text || 'Enter',
+					label: options.buttons?.enter?.label || 'Enter',
 					emoji: options.buttons?.enter?.emoji || '🎁'
 				},
 				end: {
 					style: options.buttons?.end?.style || 'DANGER',
-					text: options.buttons?.end?.text || 'End',
+					label: options.buttons?.end?.label || 'End',
 					emoji: options.buttons?.end?.emoji || '⛔'
 				},
 				reroll: {
 					style: options.buttons?.end?.style || 'PRIMARY',
-					text: options.buttons?.end?.text || 'Reroll',
+					label: options.buttons?.end?.label || 'Reroll',
 					emoji: options.buttons?.end?.emoji || '🔁'
 				}
 			}
@@ -199,23 +208,32 @@ export async function giveawaySystem(
 			}
 
 			let enter = new MessageButton()
-				.setLabel(options.buttons.enter.text || 'Enter')
-				.setEmoji(options.buttons.enter.emoji || '🎁')
 				.setCustomId('enter_giveaway')
 				.setStyle(options.buttons.enter.style || 'SUCCESS')
 
+			if (options.disable === 'Label')
+				enter.setEmoji(options.buttons.enter.emoji || '🎁')
+			else if (options.disable === 'Emoji')
+				enter.setLabel(options.buttons.enter.label || 'Enter')
+
 			let end = new MessageButton()
-				.setLabel(options.buttons.end.text || 'End')
-				.setEmoji(options.buttons.end.emoji || '⛔')
 				.setCustomId('end_giveaway')
 				.setStyle(options.buttons.end.style || 'DANGER')
 
+			if (options.disable === 'Label')
+				end.setEmoji(options.buttons.end.emoji || '⛔')
+			else if (options.disable === 'Emoji')
+				end.setLabel(options.buttons.end.label || 'End')
+
 			let reroll = new MessageButton()
-				.setLabel(options.buttons.reroll.text || 'Reroll')
-				.setEmoji(options.buttons.reroll.emoji || '🔁')
 				.setCustomId('reroll_giveaway')
 				.setStyle(options.buttons.reroll.style || 'SUCCESS')
 				.setDisabled(true)
+
+			if (options.disable === 'Label')
+				reroll.setEmoji(options.buttons.reroll.emoji || '🔁')
+			else if (options.disable === 'Emoji')
+				reroll.setLabel(options.buttons.reroll.label || 'Reroll')
 
 			let row = new MessageActionRow().addComponents([enter, reroll, end])
 
@@ -425,31 +443,10 @@ export async function giveawaySystem(
 													  }
 											)
 
-										let enteree = new MessageButton()
-											.setLabel(options.buttons?.enter?.text || 'Enter')
-											.setEmoji(options.buttons?.enter?.emoji || '🎁')
-											.setCustomId('enter_giveaway')
-											.setStyle(options.buttons?.enter?.style || 'SUCCESS')
-											.setDisabled(true)
-
-										let endee = new MessageButton()
-											.setLabel(options.buttons?.end?.text || 'End')
-											.setEmoji(options.buttons?.end?.emoji || '⛔')
-											.setCustomId('end_giveaway')
-											.setStyle(options.buttons?.end?.style || 'DANGER')
-											.setDisabled(true)
-
-										let rerollee = new MessageButton()
-											.setLabel(options.buttons?.reroll?.text || 'Reroll')
-											.setEmoji(options.buttons?.reroll?.emoji || '🔁')
-											.setCustomId('reroll_giveaway')
-											.setStyle(options.buttons?.reroll?.style || 'SUCCESS')
-											.setDisabled(true)
-
 										let rowwee = new MessageActionRow().addComponents([
-											enteree,
-											rerollee,
-											endee
+											enter.setDisabled(true),
+											reroll.setDisabled(true),
+											end.setDisabled(true)
 										])
 
 										return await msg.edit({
@@ -500,31 +497,10 @@ export async function giveawaySystem(
 												  }
 										)
 
-									let entere = new MessageButton()
-										.setLabel(options.buttons.enter.text || 'Enter')
-										.setEmoji(options.buttons.enter.emoji || '🎁')
-										.setCustomId('enter_giveaway')
-										.setStyle(options.buttons.enter.style || 'SUCCESS')
-										.setDisabled(true)
-
-									let ende = new MessageButton()
-										.setLabel(options.buttons.end.text || 'End')
-										.setEmoji(options.buttons.end.emoji || '⛔')
-										.setCustomId('end_giveaway')
-										.setStyle(options.buttons.end.style || 'DANGER')
-										.setDisabled(true)
-
-									let rerolle = new MessageButton()
-										.setLabel(options.buttons.reroll.text || 'Reroll')
-										.setEmoji(options.buttons.reroll.emoji || '🔁')
-										.setCustomId('reroll_giveaway')
-										.setStyle(options.buttons.reroll.style || 'SUCCESS')
-										.setDisabled(false)
-
 									let rowwe = new MessageActionRow().addComponents([
-										entere,
-										rerolle,
-										ende
+										enter.setDisabled(true),
+										reroll.setDisabled(false),
+										end.setDisabled(true)
 									])
 
 									await msg.edit({ embeds: [em], components: [rowwe] })

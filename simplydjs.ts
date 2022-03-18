@@ -28,7 +28,8 @@ if (discordJSVersion.slice(0, 2) !== '13')
 // ------------------------------
 // ------- E X P O R T S --------
 // ------------------------------
-export let version = '3.0.0'
+export const version: string = '3.0.0'
+export { SimplyError } from './src/Error/Error'
 
 // ------------------------------
 // ------- G E N E R A L --------
@@ -47,6 +48,7 @@ export { automeme } from './src/automeme'
 export { betterBtnRole } from './src/betterBtnRole'
 export { btnRole } from './src/btnrole'
 export { manageBtn } from './src/manageBtn'
+export { clickBtn } from './src/clickBtn'
 export { giveawaySystem } from './src/giveaway'
 export { bumpSystem } from './src/bumpSys'
 
@@ -54,52 +56,6 @@ export { bumpSystem } from './src/bumpSys'
 // ----------- F U N ------------
 // ------------------------------
 
+export { tictactoe } from './src/tictactoe'
 export { calculator } from './src/calc'
 export { embedCreate } from './src/embed'
-
-/*
-module.exports.embedPages = require('./src/embedPages')
-
-module.exports.calculator = require('./src/calc')
-
-module.exports.rankCard = require('./src/rankCard')
-
-module.exports.automeme = require('./src/automeme')
-
-module.exports.stealEmoji = require('./src/stealEmoji')
-
-module.exports.stealSticker = require('./src/stealSticker')
-
-module.exports.menuPages = require('./src/menuEmbed')
-
-module.exports.dropdownPages = require('./src/menuEmbed')
-
-module.exports.nqn = require('./src/nqn')
-
-// Games (Fun)
-module.exports.tictactoe = require('./src/tictactoe')
-
-module.exports.rps = require('./src/rps')
-
-module.exports.chatbot = require('./src/chatbot')
-// Systems
-module.exports.ticketSystem = require('./src/ticketSystem')
-module.exports.clickBtn = require('./src/clickBtn')
-
-module.exports.embedCreate = require('./src/embed')
-
-module.exports.modmail = require('./src/modmail')
-
-module.exports.suggestSystem = require('./src/suggestSystem')
-module.exports.suggestBtn = require('./src/suggestBtn')
-
-module.exports.btnrole = require('./src/btnrole')
-
-module.exports.betterBtnRole = require('./src/betterBtnRole')
-
-module.exports.starboard = require('./src/starboard')
-
-module.exports.bumpSystem = require('./src/bumpSys')
-
-module.exports.giveawaySystem = require('./src/giveaway')
-*/

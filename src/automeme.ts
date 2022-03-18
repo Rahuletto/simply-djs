@@ -3,25 +3,34 @@ import {
 	MessageEmbed,
 	MessageEmbedAuthor,
 	ColorResolvable,
-	TextChannel
+	TextChannel,
+	MessageEmbedFooter
 } from 'discord.js'
 
 import axios from 'axios'
-import SimplyError from './Error/Error'
+import { SimplyError } from './Error/Error'
 import chalk from 'chalk'
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface CustomEmbed {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
-	description?: string
+	title?: string
+	footer?: MessageEmbedFooter
 	color?: ColorResolvable
+	description?: string
+
+	credit?: boolean
 }
 
 export type memeOptions = {
-	embed?: CustomEmbed
+	embed?: CustomizableEmbed
 	channelId: string
 	interval?: number
 	sub?: string[] | string
@@ -31,6 +40,13 @@ export type memeOptions = {
 // ------ F U N C T I O N -------
 // ------------------------------
 
+/**
+ * Auto meme sender so others would laugh at jokes
+ * @param client
+ * @param options
+ * @example simplydjs.automeme(client, { channelId: '1234567890123' })
+ */
+
 export async function automeme(
 	client: Client,
 	options: memeOptions = { channelId: '' }
@@ -38,7 +54,11 @@ export async function automeme(
 	try {
 		let ch = options.channelId
 
-		if (ch === '') throw new SimplyError('Provide a Channel ID')
+		if (ch === '')
+			throw new SimplyError({
+				name: 'Expected channelId as string in options.. | Received [undefined]',
+				tip: 'Provide an channel id'
+			})
 
 		let sub = [
 			'meme',
@@ -70,10 +90,10 @@ export async function automeme(
 		let interv
 		if (options.interval) {
 			if (options.interval <= 60000)
-				throw new SimplyError(
-					`Interval Time should be above 60000 (1 minute).`,
-					'Interval should not be less than 60000'
-				)
+				throw new SimplyError({
+					name: `Expected Interval Time above 60000ms (1 minute).`,
+					tip: 'You provided an Interval Time which is below 60000ms'
+				})
 			interv = options.interval
 		} else {
 			interv = 240000
@@ -85,10 +105,10 @@ export async function automeme(
 			})
 
 			if (!channel)
-				throw new SimplyError(
-					"Invalid channel id has been provided (OR) I don't have permissions to View the Channel",
-					'Check my permissions (or) Try using other Channel ID'
-				)
+				throw new SimplyError({
+					name: "Invalid channel id has been provided (OR) I don't have permissions to View the Channel",
+					tip: 'Check my permissions (or) Try using other Channel ID (or) Use the bot command in that channel to cache.'
+				})
 
 			let response = await axios
 				.get(`https://www.reddit.com/r/${sub[random]}/random/.json`)
@@ -109,16 +129,16 @@ export async function automeme(
 			let ratio = response[0].data.children[0].data.upvote_ratio
 
 			const embed = new MessageEmbed()
-				.setTitle(`${title}`)
+				.setTitle(options.embed?.title || `${title}`)
 				.setURL(`${url}`)
 				.setImage(memeImage)
 				.setColor(options.embed?.color || '#075FFF')
 				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` })
 
-			if (options.embed.author) {
+			if (options.embed?.author) {
 				embed.setAuthor(options.embed.author)
 			}
-			if (options.embed.description) {
+			if (options.embed?.description) {
 				embed.setDescription(options.embed.description)
 			}
 

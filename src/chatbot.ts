@@ -1,7 +1,7 @@
 import { Client, Message } from 'discord.js'
 
 import axios from 'axios'
-import SimplyError from './Error/Error'
+import { SimplyError } from './Error/Error'
 import chalk from 'chalk'
 
 // ------------------------------
@@ -20,7 +20,9 @@ export type chatbotOptions = {
 // ------------------------------
 
 /**
- * @description *A made from scratch chatbot that is smarter yet friendly*
+ * A made from scratch **chatbot** which is *smarter yet friendly*
+ *
+ * **URL** of the api: *https://simplyapi.js.org*
  * @param client
  * @param message
  * @param options
@@ -45,10 +47,10 @@ export async function chatbot(
 				cache: true
 			})
 			if (!ch)
-				throw new SimplyError(
-					`INVALID_CHANNEL_ID: ${chan}. The channel id you specified is not valid (or) I dont have VIEW_CHANNEL permission.`,
-					'Check my permissions (or) Try using another Channel ID'
-				)
+				throw new SimplyError({
+					name: "Invalid channel id has been provided (OR) I don't have permissions to View the Channel",
+					tip: 'Check my permissions (or) Try using other Channel ID (or) Use the bot command in that channel to cache.'
+				})
 		}
 
 		//Return if the channel of the message is not a chatbot channel

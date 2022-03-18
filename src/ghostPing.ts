@@ -11,7 +11,11 @@ import chalk from 'chalk'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface CustomEmbed {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
@@ -22,7 +26,8 @@ interface CustomEmbed {
 }
 
 export type ghostOptions = {
-	embed?: CustomEmbed
+	embed?: CustomizableEmbed
+	custom?: boolean
 }
 
 // ------------------------------
@@ -30,7 +35,7 @@ export type ghostOptions = {
 // ------------------------------
 
 /**
- * @description *A Great system to see who ghost pinged*
+ * A Great system to see **who ghost pinged**
  * @param message
  * @param options
  * @example simplydjs.ghostPing(message)
@@ -53,54 +58,56 @@ export async function ghostPing(
 						`<@!${message.mentions.members.first()?.user.id}>`
 					)
 				) {
-					if (!options.embed) {
-						options.embed = {
-							footer: {
-								text: '©️ Simply Develop. npm i simply-djs',
-								iconURL: 'https://i.imgur.com/u8VlLom.png'
-							},
-							color: '#075FFF',
-							credit: true
+					if (!options.custom) {
+						if (!options.embed) {
+							options.embed = {
+								footer: {
+									text: '©️ Simply Develop. npm i simply-djs',
+									iconURL: 'https://i.imgur.com/u8VlLom.png'
+								},
+								color: '#075FFF',
+								credit: true
+							}
 						}
+
+						const chembed: MessageEmbed = new MessageEmbed()
+							.setAuthor(
+								options.embed?.author || {
+									name: message.author.tag,
+									iconURL: message.author.displayAvatarURL({ format: 'gif' })
+								}
+							)
+							.setTitle(options.embed?.title || 'Ghost Ping Detected')
+							.setDescription(
+								options.embed?.description ||
+									`${message.author} **(${
+										message.author.tag
+									})** just ghost pinged ${message.mentions.members.first()} **(${
+										message.mentions.users.first().tag
+									})**\n\nContent: **${message.content}**`
+							)
+							.setColor(options.embed?.color || '#075FFF')
+							.setFooter(
+								options.embed?.credit
+									? options.embed?.footer
+									: {
+											text: '©️ Simply Develop. npm i simply-djs',
+											iconURL: 'https://i.imgur.com/u8VlLom.png'
+									  }
+							)
+							.setTimestamp()
+
+						message.channel
+							.send({ embeds: [chembed] })
+							.then(async (msg: Message) => {
+								setTimeout(() => {
+									msg.delete()
+								}, 10000)
+							})
 					}
 
-					const chembed: MessageEmbed = new MessageEmbed()
-						.setAuthor(
-							options.embed?.author || {
-								name: message.author.tag,
-								iconURL: message.author.displayAvatarURL({ format: 'gif' })
-							}
-						)
-						.setTitle(options.embed?.title || 'Ghost Ping Detected')
-						.setDescription(
-							options.embed?.description ||
-								`${message.author} **(${
-									message.author.tag
-								})** just ghost pinged ${message.mentions.members.first()} **(${
-									message.mentions.users.first().tag
-								})**\n\nContent: **${message.content}**`
-						)
-						.setColor(options.embed?.color || '#075FFF')
-						.setFooter(
-							options.embed?.credit
-								? options.embed?.footer
-								: {
-										text: '©️ Simply Develop. npm i simply-djs',
-										iconURL: 'https://i.imgur.com/u8VlLom.png'
-								  }
-						)
-						.setTimestamp()
-
-					message.channel
-						.send({ embeds: [chembed] })
-						.then(async (msg: Message) => {
-							setTimeout(() => {
-								msg.delete()
-							}, 10000)
-						})
-
 					resolve(true)
-				}
+				} else resolve(false)
 			} catch (err: any) {
 				console.log(
 					`${chalk.red('Error Occured.')} | ${chalk.magenta(

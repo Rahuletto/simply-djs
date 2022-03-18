@@ -11,7 +11,7 @@ import {
 	GuildMember
 } from 'discord.js'
 
-import SimplyError from './Error/Error'
+import { SimplyError } from './Error/Error'
 import chalk from 'chalk'
 
 // ------------------------------
@@ -28,6 +28,7 @@ interface dataObj {
 
 export type btnOptions = {
 	embed?: MessageEmbed
+	content?: string
 	data?: dataObj[]
 }
 
@@ -36,7 +37,7 @@ export type btnOptions = {
 // ------------------------------
 
 /**
- * @description *A faster button role system* | Requires: **manageBtn()**
+ * A faster **button role system** | *Requires: **manageBtn()***
  * @param message
  * @param options
  * @example simplydjs.btnRole(message, { data: {...} })
@@ -48,9 +49,10 @@ export async function btnRole(
 ): Promise<Message> {
 	try {
 		if (!options.data)
-			throw new SimplyError(
-				'NO_DATA_PROVIDED. You didnt specify any data to make buttons..'
-			)
+			throw new SimplyError({
+				name: 'Expected data object in options.. Received [undefined]',
+				tip: 'Provide an Data option to make buttons'
+			})
 
 		let msg = message as Message
 		let int = message as CommandInteraction
@@ -90,10 +92,10 @@ export async function btnRole(
 			let button = new Array([], [], [], [], [])
 			btnEngine(data, button, row)
 		} else if (data.length > 25) {
-			throw new SimplyError(
-				'Max 25 roles accepted.. Exceeding it will cause errors.',
-				'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
-			)
+			throw new SimplyError({
+				name: 'Reached the limit of 25 buttons..',
+				tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
+			})
 		}
 		async function btnEngine(data: dataObj[], button: any[], row: any[]) {
 			let current = 0
@@ -120,11 +122,11 @@ export async function btnRole(
 				}
 			}
 
-			if (!options.embed)
-				throw new SimplyError(
-					'NO_EMBED_SPECIFIED. You didnt specify any embed to me to send..',
-					'Create a new embed and specify.'
-				)
+			if (!options.embed && !options.content)
+				throw new SimplyError({
+					name: 'Expected embed (or) content options to send. Received [undefined]',
+					tip: 'Provide an embed (or) content in the options.'
+				})
 
 			let emb = options.embed
 

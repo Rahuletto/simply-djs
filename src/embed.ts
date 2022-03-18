@@ -21,16 +21,22 @@ import chalk from 'chalk'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface Custompreview {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
+	description?: string
 	color?: ColorResolvable
+
 	credit?: boolean
 }
 
 export type embOptions = {
-	embed?: Custompreview
+	embed?: CustomizableEmbed
 	rawEmbed?: MessageEmbed
 }
 
@@ -39,7 +45,7 @@ export type embOptions = {
 // ------------------------------
 
 /**
- * @description *Lets you create embeds with interactive builder*
+ * Lets you create embeds with **an interactive builder**
  * @param message
  * @param options
  * @example simplydjs.embedCreate(message)
@@ -151,7 +157,8 @@ export async function embedCreate(
 			const embed = new MessageEmbed()
 				.setTitle(options.embed?.title || 'Embed Creator')
 				.setDescription(
-					'Select any ***option*** from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
+					options.embed?.description ||
+						'Select any ***option*** from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
 				)
 				.setImage(
 					'https://user-images.githubusercontent.com/71836991/145395922-311bb29a-a45b-476a-b55e-73cd4717f401.png'
@@ -165,6 +172,10 @@ export async function embedCreate(
 								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
 				)
+
+			if (options.embed?.author) {
+				embed.setAuthor(options.embed.author)
+			}
 
 			let interaction
 			//@ts-ignore

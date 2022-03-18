@@ -8,7 +8,7 @@ import {
 } from 'discord.js'
 
 import chalk from 'chalk'
-import SimplyError from './Error/Error'
+import { SimplyError } from './Error/Error'
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -16,10 +16,15 @@ import SimplyError from './Error/Error'
 
 interface btnTemplate {
 	style?: MessageButtonStyle
+	label?: string
 	emoji?: string
 }
 
-interface buttons {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/embedPages*
+ */
+
+interface Pagebuttons {
 	firstBtn?: btnTemplate
 	nextBtn?: btnTemplate
 	backBtn?: btnTemplate
@@ -28,7 +33,7 @@ interface buttons {
 }
 
 export type pagesOption = {
-	buttons?: buttons
+	buttons?: Pagebuttons
 
 	skips?: boolean
 	delete?: boolean
@@ -37,6 +42,8 @@ export type pagesOption = {
 
 	rows?: MessageActionRow[]
 	timeout?: number
+
+	disable?: 'Label' | 'Emoji'
 }
 
 // ------------------------------
@@ -44,7 +51,7 @@ export type pagesOption = {
 // ------------------------------
 
 /**
- * @description *An powerful yet customizable Embed Paginator*
+ * Description: An *powerful yet customizable* **Embed Paginator**
  * @param message
  * @param pages
  * @param options
@@ -63,19 +70,19 @@ export async function embedPages(
 		options.count ??= false
 
 		if (!pages)
-			throw new SimplyError(
-				'PAGES_NOT_FOUND. You didnt specify any pages to me.',
-				'pages option should be Array of MessageEmbeds.'
-			)
+			throw new SimplyError({
+				name: 'Expected an array of MessageEmbed. Received [undefined]',
+				tip: 'Provide an array for the pages option'
+			})
 
 		let comps: MessageActionRow[]
 
 		if (options.rows) {
 			if (!Array.isArray(options.rows))
-				throw new SimplyError(
-					'ARR_NOT_FOUND. The custom rows (options.rows) you specified is not a Array.',
-					'Please specify a Array of custom rows. like [row1, row2]'
-				)
+				throw new SimplyError({
+					name: `Expected an array of MessageActionRows.`,
+					tip: 'Provide an array for the rows option instead of single MessageActionRow'
+				})
 			comps = options.rows
 		} else {
 			comps = []
@@ -84,57 +91,83 @@ export async function embedPages(
 		options.buttons = {
 			firstBtn: {
 				style: options.buttons?.firstBtn?.style || 'PRIMARY',
-				emoji: options.buttons?.firstBtn?.emoji || '⏪'
+				emoji: options.buttons?.firstBtn?.emoji || '⏪',
+				label: options.buttons?.firstBtn?.label || 'First'
 			},
 			nextBtn: {
 				style: options.buttons?.nextBtn?.style || 'SUCCESS',
-				emoji: options.buttons?.nextBtn?.emoji || '▶️'
+				emoji: options.buttons?.nextBtn?.emoji || '▶️',
+				label: options.buttons?.nextBtn?.label || 'Next'
 			},
 			backBtn: {
 				style: options.buttons?.backBtn?.style || 'SUCCESS',
-				emoji: options.buttons?.backBtn?.emoji || '◀️'
+				emoji: options.buttons?.backBtn?.emoji || '◀️',
+				label: options.buttons?.backBtn?.label || 'Back'
 			},
 			lastBtn: {
 				style: options.buttons?.lastBtn?.style || 'PRIMARY',
-				emoji: options.buttons?.lastBtn?.emoji || '⏩'
+				emoji: options.buttons?.lastBtn?.emoji || '⏩',
+				label: options.buttons?.lastBtn?.label || 'Last'
 			},
 
 			deleteBtn: {
 				style: options.buttons?.deleteBtn?.style || 'DANGER',
-				emoji: options.buttons?.deleteBtn?.emoji || '🗑'
+				emoji: options.buttons?.deleteBtn?.emoji || '🗑',
+				label: options.buttons?.deleteBtn?.label || 'Delete'
 			}
 		}
 
 		//Defining all buttons
 		let firstBtn = new MessageButton()
 			.setCustomId('first_embed')
-			.setEmoji(options.buttons.firstBtn.emoji)
+
 			.setStyle(options.buttons.firstBtn.style)
+
+		if (options.disable === 'Label')
+			firstBtn.setEmoji(options.buttons.firstBtn.emoji)
+		else if (options.disable === 'Emoji')
+			firstBtn.setLabel(options.buttons?.firstBtn?.label)
 
 		let forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
-			.setEmoji(options.buttons.nextBtn.emoji)
 			.setStyle(options.buttons.nextBtn.style)
 
-		if (options.dynamic) {
-			firstBtn.setDisabled(true)
-			forwardBtn.setDisabled(true)
-		}
+		if (options.disable === 'Label')
+			forwardBtn.setEmoji(options.buttons.nextBtn.emoji)
+		else if (options.disable === 'Emoji')
+			forwardBtn.setLabel(options.buttons?.nextBtn?.label)
 
 		let backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
-			.setEmoji(options.buttons.backBtn.emoji)
 			.setStyle(options.buttons.backBtn.style)
+
+		if (options.disable === 'Label')
+			backBtn.setEmoji(options.buttons.backBtn.emoji)
+		else if (options.disable === 'Emoji')
+			backBtn.setLabel(options.buttons?.backBtn?.label)
+
+		if (options.dynamic) {
+			firstBtn.setDisabled(true)
+			backBtn.setDisabled(true)
+		}
 
 		let lastBtn = new MessageButton()
 			.setCustomId('last_embed')
-			.setEmoji(options.buttons.lastBtn.emoji)
 			.setStyle(options.buttons.lastBtn.style)
+
+		if (options.disable === 'Label')
+			lastBtn.setEmoji(options.buttons.lastBtn.emoji)
+		else if (options.disable === 'Emoji')
+			lastBtn.setLabel(options.buttons?.lastBtn?.label)
 
 		let deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
-			.setEmoji(options.buttons.deleteBtn.emoji)
 			.setStyle(options.buttons.deleteBtn.style)
+
+		if (options.disable === 'Label')
+			deleteBtn.setEmoji(options.buttons.deleteBtn.emoji)
+		else if (options.disable === 'Emoji')
+			deleteBtn.setLabel(options.buttons?.deleteBtn?.label)
 
 		let btnCollection: any[] = []
 		//Creating the MessageActionRow

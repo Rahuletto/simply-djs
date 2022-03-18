@@ -17,24 +17,33 @@ import chalk from 'chalk'
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface CustomEmbed {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
 	color?: ColorResolvable
+	description?: string
 
 	credit?: boolean
 }
 
-interface BtnStyle {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/calculator*
+ */
+
+interface calcBtnStyle {
 	numbers?: MessageButtonStyle
 	symbols?: MessageButtonStyle
 	delete?: MessageButtonStyle
 }
 
 export type calcOptions = {
-	embed?: CustomEmbed
-	buttons?: BtnStyle
+	embed?: CustomizableEmbed
+	buttons?: calcBtnStyle
 }
 
 // ------------------------------
@@ -42,7 +51,7 @@ export type calcOptions = {
 // ------------------------------
 
 /**
- * @description *An Unique calculator which can be used inside Discord*
+ * An Unique **calculator** which can be *used inside Discord*
  * @param interaction
  * @param options
  * @example simplydjs.calculator(interaction)
@@ -128,7 +137,10 @@ export async function calculator(
 							iconURL: 'https://i.imgur.com/u8VlLom.png'
 					  }
 			)
-			.setDescription('```js\n0\n// Result: 0\n```')
+			.setDescription(
+				'```js\n0\n// Result: 0\n```' +
+					(options.embed?.description ? `\n${options.embed?.description}` : '')
+			)
 
 		if (options.embed.author) {
 			emb1.setAuthor(options.embed.author)
@@ -181,7 +193,12 @@ export async function calculator(
 			if (btnName === '=') {
 				elem = mathEval(elem, true)
 
-				emb1.setDescription(`\`\`\`js\n${elem}\n\`\`\``)
+				emb1.setDescription(
+					`\`\`\`js\n${elem}\n\`\`\`` +
+						(options.embed?.description
+							? `\n${options.embed?.description}`
+							: '')
+				)
 
 				elem = '0'
 
@@ -203,7 +220,10 @@ export async function calculator(
 				emb1.setDescription(
 					`\`\`\`js\n${elem
 						.replaceAll('+', ' + ')
-						.replaceAll('*', ' * ')}\n\t\n\`\`\``
+						.replaceAll('*', ' * ')}\n\t\n\`\`\`` +
+						(options.embed?.description
+							? `\n${options.embed?.description}`
+							: '')
 				)
 				return await msg
 					.edit({
@@ -219,7 +239,8 @@ export async function calculator(
 					.replaceAll('*', ' * ')}\n// Result: ${mathEval(elem)
 					.replaceAll('^', '**')
 					.replaceAll('%', '/100')
-					.replace(' ', '')}\n\`\`\``
+					.replace(' ', '')}\n\`\`\`` +
+					(options.embed?.description ? `\n${options.embed?.description}` : '')
 			)
 			await msg
 				.edit({

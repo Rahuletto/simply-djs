@@ -30,7 +30,7 @@ export type bumpOptions = {
 // ------------------------------
 
 /**
- * @description *An reliable bump remainder for Disboard*
+ * An reliable bump remainder for **Disboard**
  * @param client
  * @param message
  * @param options

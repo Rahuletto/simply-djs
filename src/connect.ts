@@ -1,33 +1,31 @@
 import mongoose from 'mongoose'
-import SimplyError from './Error/Error'
+import { SimplyError } from './Error/Error'
 import axios from 'axios'
 import chalk from 'chalk'
-
+import { version } from '../simplydjs'
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
 
 /**
- * @description *An mongoose connector which is used in many functions*
- * @param db mongodbUri
+ * An **mongoose connector** which is used in many functions
+ * @param db mongoDbUri
  * @param notify
- * @example simplydjs.connect('mongoURI')
+ * @example simplydjs.connect('mongoURI', true)
  */
 
 export async function connect(db: string, notify?: boolean): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db)
-			throw new SimplyError(
-				'Database URL was not provided',
-				'This may be because of the new v3 update which requires you to have simplydjs.connect() function'
-			)
+			throw new SimplyError({
+				name: 'Expected an MongoDB URI. Received [undefined]',
+				tip: 'Provide an valid mongodb uri string to connect'
+			})
 
 		mongoose
 			.connect(db)
 			.then(async () => {
 				if (notify !== false) {
-					let version = '3.0.0'
-
 					let json = await axios
 						.get('https://api.npms.io/v2/search?q=simply-djs')
 						.then((res) => res.data)

@@ -23,6 +23,11 @@ interface btnTemp {
 	style?: MessageButtonStyle
 	emoji?: string
 }
+
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/manageBtn#ticketSystem*
+ */
+
 interface ticketBtn {
 	close: btnTemp
 	reopen: btnTemp
@@ -30,10 +35,15 @@ interface ticketBtn {
 	transcript: btnTemp
 }
 
-interface CustomEmbed {
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ */
+
+interface CustomizableEmbed {
 	author?: MessageEmbedAuthor
 	title?: string
 	footer?: MessageEmbedFooter
+	description?: string
 	color?: ColorResolvable
 
 	credit?: boolean
@@ -45,7 +55,7 @@ interface ticketSys {
 	pingRole?: string
 	category?: string
 	timed?: boolean
-	embed?: CustomEmbed
+	embed?: CustomizableEmbed
 }
 
 // ------------------------------
@@ -78,7 +88,7 @@ type rerolly = {
 // ------------------------------
 
 /**
- * @description *An Button Handler for simplydjs package purposes.*
+ * An Button Handler for **simplydjs package functions.**
  * @param interaction
  * @param options
  * @example simplydjs.manageBtn(interaction)

@@ -44,7 +44,7 @@ export type betterbtnOptions = {
 // ------------------------------
 
 /**
- * @description *An Button Role builder that lets admins create button roles.* | Requires: **manageBtn()**
+ * An **Button Role builder** that lets **admins create** button roles. | *Requires: **manageBtn()***
  * @param client
  * @param interaction
  * @param options
