@@ -41,7 +41,7 @@ pnpm add simply-djs
 ```
 
 ```ts
-import sdjs from 'https://cdn.skypack.dev/simply-djs'
+import sdjs from 'https://cdn.skypack.dev/simply-djs';
 ```
 
 <br>
@@ -50,8 +50,8 @@ import sdjs from 'https://cdn.skypack.dev/simply-djs'
 
 ## Breaking Changes !
 
-- Read Docs before updating the bot ;)
 - One of the Biggest Updates ever !
+- Every function got overhauled.
 
 ## Update 2/2 (v3)
 
@@ -61,7 +61,7 @@ import sdjs from 'https://cdn.skypack.dev/simply-djs'
 - Removal of `modmail` and `rankCard` | Addition of `connect`
 - Documentation redefined !
 - Easier yet cleaner new options.
-- 80% Promise based !
+- Promise based !
 - Massive Bug Fixes
 
 <br>
