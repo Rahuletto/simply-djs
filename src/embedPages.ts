@@ -43,7 +43,7 @@ export type pagesOption = {
 	rows?: MessageActionRow[]
 	timeout?: number
 
-	disable?: 'Label' | 'Emoji'
+	disable?: 'Label' | 'Emoji' | 'None'
 }
 
 // ------------------------------
@@ -68,6 +68,7 @@ export async function embedPages(
 		options.delete ??= true
 		options.dynamic ??= false
 		options.count ??= false
+		options.disable ||= 'Label'
 
 		if (!pages)
 			throw new SimplyError({
@@ -123,27 +124,27 @@ export async function embedPages(
 
 			.setStyle(options.buttons.firstBtn.style)
 
-		if (options.disable === 'Label')
+		if (options.disable === 'Label' || options.disable === 'None')
 			firstBtn.setEmoji(options.buttons.firstBtn.emoji)
-		else if (options.disable === 'Emoji')
+		else if (options.disable === 'Emoji' || options.disable === 'None')
 			firstBtn.setLabel(options.buttons?.firstBtn?.label)
 
 		let forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
 			.setStyle(options.buttons.nextBtn.style)
 
-		if (options.disable === 'Label')
+		if (options.disable === 'Label' || options.disable === 'None')
 			forwardBtn.setEmoji(options.buttons.nextBtn.emoji)
-		else if (options.disable === 'Emoji')
+		else if (options.disable === 'Emoji' || options.disable === 'None')
 			forwardBtn.setLabel(options.buttons?.nextBtn?.label)
 
 		let backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
 			.setStyle(options.buttons.backBtn.style)
 
-		if (options.disable === 'Label')
+		if (options.disable === 'Label' || options.disable === 'None')
 			backBtn.setEmoji(options.buttons.backBtn.emoji)
-		else if (options.disable === 'Emoji')
+		else if (options.disable === 'Emoji' || options.disable === 'None')
 			backBtn.setLabel(options.buttons?.backBtn?.label)
 
 		if (options.dynamic) {
@@ -155,18 +156,18 @@ export async function embedPages(
 			.setCustomId('last_embed')
 			.setStyle(options.buttons.lastBtn.style)
 
-		if (options.disable === 'Label')
+		if (options.disable === 'Label' || options.disable === 'None')
 			lastBtn.setEmoji(options.buttons.lastBtn.emoji)
-		else if (options.disable === 'Emoji')
+		else if (options.disable === 'Emoji' || options.disable === 'None')
 			lastBtn.setLabel(options.buttons?.lastBtn?.label)
 
 		let deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
 			.setStyle(options.buttons.deleteBtn.style)
 
-		if (options.disable === 'Label')
+		if (options.disable === 'Label' || options.disable === 'None')
 			deleteBtn.setEmoji(options.buttons.deleteBtn.emoji)
-		else if (options.disable === 'Emoji')
+		else if (options.disable === 'Emoji' || options.disable === 'None')
 			deleteBtn.setLabel(options.buttons?.deleteBtn?.label)
 
 		let btnCollection: any[] = []

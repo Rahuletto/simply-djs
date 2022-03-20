@@ -1,12 +1,7 @@
-export type options = {
+export type Erroptions = {
 	name?: string
 	tip?: string
 }
-
-/**
- * Emit Errors like Simply DJS does
- * @example simplydjs.error({ name: "Test", tip: "This is just to test" })
- */
 
 export class SimplyError extends Error {
 	/**
@@ -16,7 +11,7 @@ export class SimplyError extends Error {
 	 */
 
 	constructor(
-		options: options = {
+		options: Erroptions = {
 			tip: 'Join the Support Server [https://discord.gg/3JzDV9T5Fn]'
 		}
 	) {

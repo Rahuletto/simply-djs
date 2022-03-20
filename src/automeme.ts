@@ -89,7 +89,7 @@ export async function automeme(
 
 		let interv
 		if (options.interval) {
-			if (options.interval <= 60000)
+			if (options.interval < 60000)
 				throw new SimplyError({
 					name: `Expected Interval Time above 60000ms (1 minute).`,
 					tip: 'You provided an Interval Time which is below 60000ms'
@@ -113,6 +113,7 @@ export async function automeme(
 			let response = await axios
 				.get(`https://www.reddit.com/r/${sub[random]}/random/.json`)
 				.then((res) => res.data)
+				.catch(() => {})
 
 			if (!response) return
 			if (!response[0].data) return

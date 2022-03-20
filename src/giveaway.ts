@@ -9,7 +9,9 @@ import {
 	MessageActionRow,
 	MessageButton,
 	Client,
-	MessageButtonStyle
+	MessageButtonStyle,
+	Role,
+	Permissions
 } from 'discord.js'
 import chalk from 'chalk'
 import model from './model/gSys'
@@ -61,6 +63,8 @@ export type giveawayOptions = {
 
 	buttons?: gSysButtons
 
+	manager?: Role | string
+
 	req?: requirement
 	ping?: string
 
@@ -105,8 +109,23 @@ export async function giveawaySystem(
 			let int = message as CommandInteraction
 			let mes = message as Message
 
-			/*
-			if (message.member.permissions.has('MANAGE_GUILD')) {
+			let roly
+
+			if (options.manager as Role)
+				// @ts-ignore
+				roly = await message.member.roles.cache.find(
+					(r: Role) => r.id === (options.manager as Role).id
+				)
+			else if (options.manager as string)
+				// @ts-ignore
+				roly = await message.member.roles.cache.find(
+					(r: Role) => r.id === (options.manager as string)
+				)
+
+			if (
+				!roly || // @ts-ignore
+				!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+			) {
 				if (interaction) {
 					return await int.followUp({
 						content: 'You are not a admin to start a giveaway',
@@ -118,7 +137,6 @@ export async function giveawaySystem(
 					})
 				}
 			}
-			*/
 
 			options.winners ??= 1
 

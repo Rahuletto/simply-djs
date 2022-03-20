@@ -161,7 +161,7 @@ export async function embedCreate(
 						'Select any ***option*** from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
 				)
 				.setImage(
-					'https://user-images.githubusercontent.com/71836991/145395922-311bb29a-a45b-476a-b55e-73cd4717f401.png'
+					'https://media.discordapp.net/attachments/885411032128978955/955066865347076226/unknown.png'
 				)
 				.setColor(options.embed?.color || '#075FFF')
 				.setFooter(
@@ -221,7 +221,7 @@ export async function embedCreate(
 					let collector = msg.createMessageComponentCollector({
 						filter,
 						componentType: 'SELECT_MENU',
-						idle: 600000
+						idle: 1000 * 60 * 3
 					})
 
 					collector.on('collect', async (button: any) => {
@@ -836,7 +836,7 @@ export async function embedCreate(
 
 							const row = new MessageActionRow().addComponents([content])
 
-							msg.edit({ embeds: [msg.embeds[0]], components: [row] })
+							await msg.edit({ embeds: [msg.embeds[0]], components: [row] })
 						}
 					})
 				})

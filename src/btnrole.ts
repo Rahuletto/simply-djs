@@ -1,8 +1,6 @@
 import {
-	Client,
 	CommandInteraction,
 	MessageButtonStyle,
-	TextChannel,
 	Role,
 	Message,
 	MessageEmbed,
@@ -77,19 +75,19 @@ export async function btnRole(
 		let data = options.data
 
 		if (data.length <= 5) {
-			let button = new Array([])
+			let button: any[][] = [[]]
 			btnEngine(data, button, row)
 		} else if (data.length > 5 && data.length <= 10) {
-			let button = new Array([], [])
+			let button: any[][] = [[], []]
 			btnEngine(data, button, row)
 		} else if (data.length > 11 && data.length <= 15) {
-			let button = new Array([], [], [])
+			let button: any[][] = [[], [], []]
 			btnEngine(data, button, row)
 		} else if (data.length > 16 && data.length <= 20) {
-			let button = new Array([], [], [], [])
+			let button: any[][] = [[], [], [], []]
 			btnEngine(data, button, row)
 		} else if (data.length > 21 && data.length <= 25) {
-			let button = new Array([], [], [], [], [])
+			let button: any[][] = [[], [], [], [], []]
 			btnEngine(data, button, row)
 		} else if (data.length > 25) {
 			throw new SimplyError({
@@ -97,7 +95,7 @@ export async function btnRole(
 				tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
 			})
 		}
-		async function btnEngine(data: dataObj[], button: any[], row: any[]) {
+		async function btnEngine(data: dataObj[], button: any[][], row: any[]) {
 			let current = 0
 
 			for (let i = 0; i < data.length; i++) {
@@ -113,12 +111,14 @@ export async function btnRole(
 
 				if (!role && clr === 'LINK') {
 					url = data[i].url
-					button[current].push(createLink(label, url, clr, emoji))
+					button[current].push(createLink(label, url, emoji))
 				} else {
 					button[current].push(createButton(label, role, clr, emoji))
 				}
+
 				if (i === data.length - 1) {
-					for (let btn of button) row.push(addRow(btn))
+					let rero = addRow(button[current])
+					row.push(rero)
 				}
 			}
 
@@ -131,67 +131,73 @@ export async function btnRole(
 			let emb = options.embed
 
 			if ((message as CommandInteraction).commandId) {
-				;(message as CommandInteraction).followUp({
-					embeds: [emb],
-					components: row
-				})
+				if (!options.embed) {
+					;(message as CommandInteraction).followUp({
+						content: options.content || '** **',
+						components: row
+					})
+				} else
+					(message as CommandInteraction).followUp({
+						content: options.content || '** **',
+						embeds: [emb],
+						components: row
+					})
 			} else if (!(message as CommandInteraction).commandId) {
-				message.channel.send({
-					embeds: [emb],
-					components: row
-				})
+				if (!options.embed) {
+					message.channel.send({
+						content: options.content || '** **',
+						components: row
+					})
+				} else
+					message.channel.send({
+						content: options.content || '** **',
+						embeds: [emb],
+						components: row
+					})
 			}
 
-			function addRow(btns: any) {
+			function addRow(btns: any[]): MessageActionRow {
 				let row1 = new MessageActionRow()
-				for (let btn of btns) {
-					row1.addComponents(btn)
-				}
+
+				row1.addComponents(btns)
+
 				return row1
 			}
 
-			async function createLink(
+			function createLink(
 				label: string,
 				url: string,
-				color: string,
 				emoji: string
-			) {
+			): MessageButton {
+				let btn = new MessageButton()
 				if (!emoji || emoji === null) {
-					const btn = new MessageButton()
-						.setLabel(label)
-						.setStyle('LINK')
-						.setURL(url)
-					return btn
+					btn.setLabel(label).setStyle('LINK').setURL(url)
 				} else if (emoji && emoji !== null) {
-					const btn = new MessageButton()
-						.setLabel(label)
-						.setStyle('LINK')
-						.setURL(url)
-						.setEmoji(emoji)
-					return btn
+					btn.setLabel(label).setStyle('LINK').setURL(url).setEmoji(emoji)
 				}
+				return btn
 			}
 
-			async function createButton(
+			function createButton(
 				label: string,
 				role: Role,
 				color: MessageButtonStyle,
 				emoji: string
-			) {
+			): MessageButton {
+				let btn = new MessageButton()
 				if (!emoji || emoji === null) {
-					const btn = new MessageButton()
+					btn
 						.setLabel(label)
 						.setStyle(color)
 						.setCustomId('role-' + role.id)
-					return btn
 				} else if (emoji && emoji !== null) {
-					const btn = new MessageButton()
+					btn
 						.setLabel(label)
 						.setStyle(color)
 						.setCustomId('role-' + role.id)
 						.setEmoji(emoji)
-					return btn
 				}
+				return btn
 			}
 		}
 	} catch (err: any) {

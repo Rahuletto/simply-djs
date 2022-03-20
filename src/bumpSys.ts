@@ -1,12 +1,4 @@
-import {
-	Client,
-	MessageEmbed,
-	ColorResolvable,
-	TextChannel,
-	Message,
-	CommandInteraction,
-	GuildMember
-} from 'discord.js'
+import { Client, MessageEmbed, TextChannel, Message } from 'discord.js'
 
 import chalk from 'chalk'
 import db from './model/bumpSys'
@@ -23,6 +15,7 @@ interface TypeEmbed {
 export type bumpOptions = {
 	content?: string
 	embed?: TypeEmbed
+	toggle?: boolean
 }
 
 // ------------------------------
@@ -43,6 +36,7 @@ export async function bumpSystem(
 	options: bumpOptions = {}
 ): Promise<boolean> {
 	try {
+		if (!options.toggle) return
 		let bumpo = new MessageEmbed()
 			.setTitle('Its time to Bump !')
 			.setDescription(

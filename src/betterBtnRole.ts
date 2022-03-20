@@ -81,7 +81,7 @@ export async function betterBtnRole(
 			else
 				return interaction.followUp({
 					content:
-						"I cannot make anyone's message as button roles. I can only make button-roles for the message i send",
+						"Cannot make other user's message a button role ! Provide a message which I sent.",
 					ephemeral: true
 				})
 		}

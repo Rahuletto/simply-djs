@@ -36,6 +36,9 @@ export type ghostOptions = {
 
 /**
  * A Great system to see **who ghost pinged**
+ *
+ * **Important!**: Use it in `messageDelete` event
+ *
  * @param message
  * @param options
  * @example simplydjs.ghostPing(message)
