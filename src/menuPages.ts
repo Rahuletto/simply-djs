@@ -1,0 +1,191 @@
+import {
+	MessageEmbed,
+	Message,
+	CommandInteraction,
+	MessageActionRow,
+	MessageSelectMenu
+} from 'discord.js';
+import chalk from 'chalk';
+import { SimplyError } from './Error/Error';
+
+// ------------------------------
+// ----- I N T E R F A C E ------
+// ------------------------------
+
+interface deleteOpt {
+	enable?: boolean;
+	label?: string;
+	description?: string;
+	emoji?: string;
+}
+
+interface dataObj {
+	label?: string;
+	description?: string;
+	embed?: MessageEmbed;
+	emoji?: string;
+}
+
+export type menuEmbOptions = {
+	type?: 1 | 2;
+	rows?: MessageActionRow[];
+	embed?: MessageEmbed;
+
+	delete?: deleteOpt;
+
+	data?: dataObj[];
+
+	placeHolder?: string;
+};
+
+// ------------------------------
+// ------ F U N C T I O N -------
+// ------------------------------
+
+/**
+ * An Embed Paginator using Select menus
+ * @param message
+ * @param options
+ * @example simplydjs.menuPages(interaction, { ... })
+ */
+
+export async function menuPages(
+	message: Message | CommandInteraction,
+	options: menuEmbOptions = {}
+) {
+	try {
+		let type: number = options.type || 1;
+		type = Number(type);
+		if (type > 2)
+			throw new SimplyError({
+				name: 'There are only two types. You provided a type which doesnt exist',
+				tip: 'TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
+			});
+
+		let data = options.data;
+		let rowz = options.rows;
+		let menuOptions = [];
+
+		for (let i = 0; i < data.length; i++) {
+			if (data[i].emoji) {
+				let dataopt = {
+					label: data[i].label,
+					description: data[i].description,
+					value: data[i].label,
+					emoji: data[i].emoji
+				};
+
+				menuOptions.push(dataopt);
+			} else if (!data[i].emoji) {
+				let dataopt = {
+					label: data[i].label,
+					description: data[i].description,
+					value: data[i].label
+				};
+
+				menuOptions.push(dataopt);
+			}
+		}
+		let delopt;
+
+		if (
+			options.delete?.enable === undefined ||
+			(options.delete?.enable !== false && options.delete?.enable === true)
+		) {
+			delopt = {
+				label: options.delete?.label || 'Delete',
+				description:
+					options.delete?.description || 'Delete the Select Menu Embed',
+				value: 'delete_menuemb',
+				emoji: options.delete?.emoji || '❌'
+			};
+
+			menuOptions.push(delopt);
+		}
+
+		let slct = new MessageSelectMenu()
+			.setMaxValues(1)
+			.setCustomId('menuPages')
+			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
+			.addOptions(menuOptions);
+
+		let row = new MessageActionRow().addComponents(slct);
+
+		let rows = [];
+
+		rows.push(row);
+
+		if (rowz) {
+			for (let i = 0; i < rowz.length; i++) {
+				rows.push(rowz[i]);
+			}
+		}
+
+		let interaction;
+		// @ts-ignore
+		if (message.commandId) {
+			interaction = message;
+		}
+
+		let int = message as CommandInteraction;
+		let mes = message as Message;
+
+		let m: any;
+
+		if (interaction) {
+			m = await int.followUp({
+				embeds: [options.embed],
+				components: rows,
+				fetchReply: true
+			});
+		} else if (!interaction) {
+			m = await mes.reply({ embeds: [options.embed], components: rows });
+		}
+
+		const collector = (m as Message).createMessageComponentCollector({
+			componentType: 'SELECT_MENU',
+			idle: 600000
+		});
+		collector.on('collect', async (menu: any) => {
+			let selected = menu.values[0];
+
+			if (type === 2) {
+				await menu.deferUpdate();
+				if (message.member.user.id !== menu.user.id)
+					return menu.followUp({
+						content: "You cannot access other's pagination."
+					});
+			} else await menu.deferReply({ ephemeral: true });
+
+			if (selected === 'delete_menuemb') {
+				if (message.member.user.id !== menu.user.id)
+					return menu.editReply({
+						content: "You cannot access other's pagination."
+					});
+				else collector.stop('decline');
+			}
+
+			for (let i = 0; i < data.length; i++) {
+				if (selected === data[i].label) {
+					if (type === 1) {
+						menu.editReply({ embeds: [data[i].embed], ephemeral: true });
+					} else if (type === 2) {
+						menu.message.edit({ embeds: [data[i].embed] });
+					}
+				}
+			}
+		});
+		collector.on('end', async (collected: any, reason: string) => {
+			if (reason === 'delete') return await m.delete();
+			if (collected.size === 0) {
+				m.edit({ embeds: [options.embed], components: [] });
+			}
+		});
+	} catch (err: any) {
+		console.log(
+			`${chalk.red('Error Occured.')} | ${chalk.magenta(
+				'menuPages'
+			)} | Error: ${err.stack}`
+		);
+	}
+}
