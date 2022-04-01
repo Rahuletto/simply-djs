@@ -9,96 +9,88 @@
    Developed by Rahuletto#0243</h2>
 
 <br>
-<p align="center">
-   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge" /></a>
- <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs?style=for-the-badge" /></a>
+<div align="center">
+
+   <h3>We are under <span style='color: #007acc'>Typescript</span> and <span style="color: #3fa037">Mongoose</span> Conversion !</h3>
+
+We need alot of people to contribute to the community to provide an best experience to every user !
+
    <br>
-   <a href="https://simplyd.js.org"><img src="https://img.shields.io/badge/Simply--DJS-Documentation-075FFF?style=for-the-badge"/>
-      <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord"/>
-      <br>
-   <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
-      
-</p>
 
----
+Format:
 
-<br>
-
-## 🖥️ <b>How to install ?
-
-(Use any one command)
-
-```
-npm install simply-djs
+```diff
+- Getting Removed from Original
++ Converted to TS
+! Under Conversion
+@@ New File @@
+## Sub Folder
 ```
 
+</div>
+
+## Pending Files
+
+```diff
+! starboard.js
+! stealEmoji.js
+! suggestBtn.js
+! suggestSystem.js
 ```
-yarn add simply-djs
+
+## Deprecated/Removed Files
+
+```diff
+- clickBtn.js
+- stealSticker.js
 ```
 
+## New Files
+
+```diff
+@@ Deprecate.ts @@
+
+@@ bumpSys.ts @@
+@@ gSys.ts @@
+@@ suggestion.ts @@
+
+@@ connect.ts @@
+@@ manageBtn.ts @@
 ```
-pnpm add simply-djs
+
+## Total state of the files
+
+```diff
+## - Error
++ Error.ts
+@@ Deprecate.ts @@
+
+## - model
+@@ bumpSys.ts @@
+@@ gSys.ts @@
+@@ suggestion.ts @@
+
++ automeme.ts
++ betterBtnRole.ts
++ btnrole.ts
++ bumpSys.ts
++ calc.ts
++ chatbot.ts
+- clickBtn.js (Renamed to manageBtn)
+@@ connect.ts @@
++ embed.ts
++ embedPages.ts
++ ghostPing.ts
++ giveaway.ts
++ menuPages.ts
+@@ manageBtn.ts @@
++ nqn.ts
++ rps.ts
+- stealSticker.js
+! starboard.js
+! stealEmoji.js
+! suggestBtn.js
+! suggestSystem.js
++ ticketSystem.ts
++ tictactoe.ts
 ```
-
-```ts
-import sdjs from 'https://cdn.skypack.dev/simply-djs';
-```
-
-<br>
- 
-# 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
-
-## Breaking Changes !
-
-- One of the Biggest Updates ever !
-- Every function got overhauled.
-
-## Update 2/2 (v3)
-
-- Package redefined.. Conversion to Typescript and Mongoose
-- New Dependencies. No more vulnerabilities !
-- Using [Simply-API](https://simplyapi.js.org) for chatbot !
-- Removal of `modmail` and `rankCard` | Addition of `connect`
-- Documentation redefined !
-- Easier yet cleaner new options.
-- Promise based !
-- Massive Bug Fixes
-
-<br>
-
-# 🤔 But Why ?
-
-- Simplifies things in discord.js
-- Fastest Support ever
-- Easier yet Flexible.
-- Beginner Friendly
-- Easier than any other package
-- 100% Slash Support
-- 20 Functions
-- Open source project !
-- Simple & Understandable **[Documentation](https://simplyd.js.org)**
-
----
-
-<br>
-
-# 📄 [License](https://creativecommons.org/licenses/by-nc-nd/4.0/)
-
-## You are free to:
-
-- **Share:** Copy and redistribute the material in any medium or format
-
-## Under the following terms:
-
-- **Attribution:** You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-
-- **NonCommercial:** You may not use the material for commercial purposes.
-
-- **NoDerivatives:** If you remix, transform, or build upon the material, you may not distribute the _modified_ material.
-
-<img style="margin-bottom:-6px; width: 100px" src="https://mirrors.creativecommons.org/presskit/logos/cc.logo.large.png">
-
-<br>
-
- <h1>👥 Contact us | Support</h1>
-<a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
