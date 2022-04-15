@@ -65,12 +65,12 @@ Format:
 ```diff
 ## - Error
 + Error.ts
-@@ Deprecate.ts @@
++ Deprecate.ts [new]
 
 ## - model
-@@ bumpSys.ts @@
-@@ gSys.ts @@
-@@ suggestion.ts @@
++ bumpSys.ts [new]
++ gSys.ts [new]
++ suggestion.ts [new]
 
 + automeme.ts
 + betterBtnRole.ts
@@ -79,20 +79,20 @@ Format:
 + calc.ts
 + chatbot.ts
 - clickBtn.js (Renamed to manageBtn)
-@@ connect.ts @@
++ connect.ts [new]
 + embed.ts
 + embedPages.ts
 + ghostPing.ts
 + giveaway.ts
 + menuPages.ts
-@@ manageBtn.ts @@
++ manageBtn.ts [new]
++ manageSug.ts [new]
 + nqn.ts
 + rps.ts
 - stealSticker.js
 ! starboard.js (Still deciding..)
 ! stealEmoji.js
 - suggestBtn.js (Renamed to manageSug)
-@@ manageSug.ts @@
 + suggest.ts
 + ticketSystem.ts
 + tictactoe.ts
