@@ -1,27 +1,28 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 interface Entri {
-	userID: string
-	guildID: string
-	messageID: string
+	userID: string;
+	guildID: string;
+	messageID: string;
 }
 
 interface req {
-	type: 'guild' | 'role' | 'none'
-	id?: string
+	type: 'guild' | 'role' | 'none';
+	id?: string;
 }
 
 export type gwData = {
-	message?: string
-	entry?: Entri[]
-	entered?: number
-	winCount?: number
-	requirements?: req
-	endTime?: string
-	desc?: string
-	started?: number
-	prize?: string
-}
+	message?: string;
+	entry?: Entri[];
+	entered?: number;
+	winCount?: number;
+	requirements?: req;
+	endTime?: string;
+	desc?: string;
+	started?: number;
+	prize?: string;
+	host?: string;
+};
 
 const gw = new mongoose.Schema<gwData>({
 	message: { type: String }, // Message ID
@@ -32,7 +33,8 @@ const gw = new mongoose.Schema<gwData>({
 	winCount: { type: Number }, // How many winners
 	requirements: { type: Object }, // Requirements ;)
 	endTime: { type: String }, // in ms
+	host: { type: String },
 	desc: { type: String } // Giveaway Embed Desc
-})
+});
 
-export default mongoose.model('Giveaway-System', gw)
+export default mongoose.model('Giveaway-System', gw);

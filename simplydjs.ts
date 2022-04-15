@@ -2,7 +2,6 @@
 // -------- E R R O R S ---------
 // ------------------------------
 
-import { resolve } from 'path';
 import { Erroptions, SimplyError } from './src/Error/Error';
 
 if (+process.version.slice(1, 3) - 0 < 16)
@@ -60,33 +59,25 @@ export function toRgb(
 	if (type === 'Array') return [red, green, blue];
 	else if (type === 'String') return `rgb(${red}, ${green}, ${blue})`;
 }
-// ------------------------------
-// ------- G E N E R A L --------
-// ------------------------------
 
-export { connect } from './src/connect';
-export { ghostPing } from './src/ghostPing';
-export { embedPages } from './src/embedPages';
-export { chatbot } from './src/chatbot';
 export { automeme } from './src/automeme';
-
-// ------------------------------
-// ------- S Y S T E M S --------
-// ------------------------------
-
 export { betterBtnRole } from './src/betterBtnRole';
 export { btnRole } from './src/btnrole';
-export { manageBtn } from './src/manageBtn';
-export { clickBtn } from './src/clickBtn';
-export { giveawaySystem } from './src/giveaway';
 export { bumpSystem } from './src/bumpSys';
-export { ticketSystem } from './src/ticketSystem';
-export { nqn } from './src/nqn';
-
-// ------------------------------
-// ----------- F U N ------------
-// ------------------------------
-
-export { tictactoe } from './src/tictactoe';
 export { calculator } from './src/calc';
+export { connect } from './src/connect';
+export { clickBtn } from './src/clickBtn';
+export { chatbot } from './src/chatbot';
 export { embedCreate } from './src/embed';
+export { embedPages } from './src/embedPages';
+export { ghostPing } from './src/ghostPing';
+export { giveawaySystem } from './src/giveaway';
+export { manageBtn } from './src/manageBtn';
+export { manageSug } from './src/manageSug';
+export { menuPages } from './src/menuPages';
+export { nqn } from './src/nqn';
+export { rps } from './src/rps';
+export { suggestSystem } from './src/suggest';
+export { suggestBtn } from './src/suggestBtn';
+export { ticketSystem } from './src/ticketSystem';
+export { tictactoe } from './src/tictactoe';

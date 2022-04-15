@@ -11,6 +11,8 @@
 <br>
 <div align="center">
 
+<h1>~90% Completion</h1>
+
    <h3>We are under <span style='color: #007acc'>Typescript</span> and <span style="color: #3fa037">Mongoose</span> Conversion !</h3>
 
 We need alot of people to contribute to the community to provide an best experience to every user !
@@ -32,10 +34,8 @@ Format:
 ## Pending Files
 
 ```diff
-! starboard.js
 ! stealEmoji.js
-! suggestBtn.js
-! suggestSystem.js
+! starboard.js (Still deciding..)
 ```
 
 ## Deprecated/Removed Files
@@ -43,6 +43,7 @@ Format:
 ```diff
 - clickBtn.js
 - stealSticker.js
+- suggestBtn.js
 ```
 
 ## New Files
@@ -56,6 +57,7 @@ Format:
 
 @@ connect.ts @@
 @@ manageBtn.ts @@
+@@ manageSug.ts @@
 ```
 
 ## Total state of the files
@@ -87,10 +89,11 @@ Format:
 + nqn.ts
 + rps.ts
 - stealSticker.js
-! starboard.js
+! starboard.js (Still deciding..)
 ! stealEmoji.js
-! suggestBtn.js
-! suggestSystem.js
+- suggestBtn.js (Renamed to manageSug)
+@@ manageSug.ts @@
++ suggest.ts
 + ticketSystem.ts
 + tictactoe.ts
 ```

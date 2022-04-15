@@ -12,19 +12,20 @@ import {
 	MessageAttachment,
 	GuildMember,
 	TextChannel,
-	Role
-} from 'discord.js'
-import chalk from 'chalk'
-import gsys from './model/gSys'
+	Role,
+	EmbedFieldData
+} from 'discord.js';
+import chalk from 'chalk';
+import gsys from './model/gSys';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
 // ------------------------------
 
 interface btnTemplate {
-	style?: MessageButtonStyle
-	label?: string
-	emoji?: string
+	style?: MessageButtonStyle;
+	label?: string;
+	emoji?: string;
 }
 
 /**
@@ -32,10 +33,10 @@ interface btnTemplate {
  */
 
 interface ticketBtn {
-	close: btnTemplate
-	reopen: btnTemplate
-	delete: btnTemplate
-	transcript: btnTemplate
+	close: btnTemplate;
+	reopen: btnTemplate;
+	delete: btnTemplate;
+	transcript: btnTemplate;
 }
 
 /**
@@ -43,53 +44,53 @@ interface ticketBtn {
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor
-	title?: string
-	footer?: MessageEmbedFooter
-	description?: string
-	color?: ColorResolvable
+	author?: MessageEmbedAuthor;
+	title?: string;
+	footer?: MessageEmbedFooter;
+	description?: string;
+	color?: ColorResolvable;
 
-	credit?: boolean
+	credit?: boolean;
 }
 
 interface ticketSys {
-	ticketname?: string
-	buttons?: ticketBtn
-	pingRole?: string | string[]
-	category?: string
-	timed?: boolean
-	embed?: CustomizableEmbed
+	ticketname?: string;
+	buttons?: ticketBtn;
+	pingRole?: string | string[];
+	category?: string;
+	timed?: boolean;
+	embed?: CustomizableEmbed;
 }
 
 interface btnRole {
-	addedMsg: string
-	removedMsg: string
+	addedMsg: string;
+	removedMsg: string;
 }
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
 export type manageBtnOptions = {
-	ticketSys?: ticketSys
-	btnRole?: btnRole
-}
+	ticketSys?: ticketSys;
+	btnRole?: btnRole;
+};
 
 // ------------------------------
 // ------- P R O M I S E --------
 // ------------------------------
 
 type ticketDelete = {
-	type?: 'Delete'
-	channelId?: string
-	user?: User
-	data?: MessageAttachment
-}
+	type?: 'Delete';
+	channelId?: string;
+	user?: User;
+	data?: MessageAttachment;
+};
 
 type rerolly = {
-	type?: 'Reroll'
-	user?: GuildMember | GuildMember[]
-	msgURL?: string
-}
+	type?: 'Reroll';
+	user?: GuildMember | GuildMember[];
+	msgURL?: string;
+};
 
 // ------------------------------
 // ------ F U N C T I O N -------
@@ -109,21 +110,21 @@ export async function manageBtn(
 	return new Promise(async (resolve, reject) => {
 		if (interaction.isButton()) {
 			try {
-				let member = interaction.member
+				let member = interaction.member;
 
 				// ------------------------------
 				// ------ B T N - R O L E -------
 				// ------------------------------
 
 				if (interaction.customId.startsWith('role-')) {
-					let roleId = interaction.customId.replace('role-', '')
+					let roleId = interaction.customId.replace('role-', '');
 
 					let role = await interaction.guild.roles.fetch(roleId, {
 						force: true
-					})
-					if (!role) return
+					});
+					if (!role) return;
 					else {
-						await interaction.deferReply({ ephemeral: true })
+						await interaction.deferReply({ ephemeral: true });
 						// @ts-ignore
 						if (!member.roles.cache.find((r) => r.id === role.id)) {
 							member.roles // @ts-ignore
@@ -133,13 +134,13 @@ export async function manageBtn(
 										content:
 											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
 									})
-								)
+								);
 
 							await interaction.editReply({
 								content:
 									options?.btnRole?.addedMsg ||
 									`✅ Added the ${role.toString()} role to you.`
-							})
+							});
 							// @ts-ignore
 						} else if (member.roles.cache.find((r) => r.id === role.id)) {
 							member.roles // @ts-ignore
@@ -149,13 +150,13 @@ export async function manageBtn(
 										content:
 											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
 									})
-								)
+								);
 
 							await interaction.editReply({
 								content:
 									options?.btnRole?.removedMsg ||
 									`❌ Removed the ${role.toString()} role from you.`
-							})
+							});
 						}
 					}
 				}
@@ -164,31 +165,31 @@ export async function manageBtn(
 				// ---- T I C K E T - S Y S -----
 				// ------------------------------
 				else if (interaction.customId === 'create_ticket') {
-					await interaction.deferReply({ ephemeral: true })
+					await interaction.deferReply({ ephemeral: true });
 
-					let name = options.ticketSys?.ticketname || `ticket_{tag}`
+					let name = options.ticketSys?.ticketname || `ticket_{tag}`;
 					name = name
 						.replaceAll('{username}', member.user.username)
 						.replaceAll('{tag}', (member.user as User).tag)
-						.replaceAll('{id}', member.user.id)
+						.replaceAll('{id}', member.user.id);
 
-					let topic = `Ticket has been opened by <@${member.user.id}>`
+					let topic = `Ticket has been opened by <@${member.user.id}>`;
 
 					let check = await interaction.guild.channels.cache.find(
 						(ch) => (ch as TextChannel).topic === topic
-					)
+					);
 
 					if (check) {
 						await interaction.editReply({
 							content: `You have an pre-existing ticket opened (${check.toString()}). Close it before creating a new one.`
-						})
+						});
 					} else if (!check) {
-						let chparent = options.ticketSys?.category || null
+						let chparent = options.ticketSys?.category || null;
 						let category = interaction.guild.channels.cache.get(
 							options.ticketSys?.category
-						)
+						);
 						if (!category) {
-							chparent = null
+							chparent = null;
 						}
 
 						let ch = await interaction.guild.channels.create(name, {
@@ -213,30 +214,30 @@ export async function manageBtn(
 									]
 								}
 							]
-						})
-						let rlz: Role[] = []
+						});
+						let rlz: Role[] = [];
 
 						if (options.ticketSys?.pingRole) {
 							if (Array.isArray(options.ticketSys?.pingRole)) {
 								options.ticketSys?.pingRole.forEach(async (e) => {
 									let roler = await interaction.guild.roles.fetch(e, {
 										force: true
-									})
+									});
 
 									if (roler) {
-										rlz.push(roler)
+										rlz.push(roler);
 									}
-								})
+								});
 							} else if (!Array.isArray(options.ticketSys?.pingRole)) {
 								let roler = await interaction.guild.roles.fetch(
 									options.ticketSys?.pingRole,
 									{
 										force: true
 									}
-								)
+								);
 
 								if (roler) {
-									rlz.push(roler)
+									rlz.push(roler);
 								}
 							}
 
@@ -247,15 +248,15 @@ export async function manageBtn(
 										SEND_MESSAGES: true,
 										READ_MESSAGE_HISTORY: true
 									})
-									.catch((e) => {})
-							})
+									.catch((e) => {});
+							});
 						}
 
 						let str =
-							'\n\nThis channel will be deleted after 30 minutes to prevent spams.'
+							'\n\nThis channel will be deleted after 30 minutes to prevent spams.';
 
 						if (options.ticketSys.timed == false) {
-							str = ''
+							str = '';
 						}
 
 						let emb = new MessageEmbed()
@@ -282,15 +283,15 @@ export async function manageBtn(
 											text: '©️ Simply Develop. npm i simply-djs',
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
-							)
+							);
 
 						let close = new MessageButton()
 							.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
 							.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
 							.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
-							.setCustomId('close_ticket')
+							.setCustomId('close_ticket');
 
-						let closerow = new MessageActionRow().addComponents([close])
+						let closerow = new MessageActionRow().addComponents([close]);
 
 						ch.send({
 							content: `Here is your ticket ${member.user.toString()}. | ${rlz.join(
@@ -299,34 +300,34 @@ export async function manageBtn(
 							embeds: [emb],
 							components: [closerow]
 						}).then(async (msg) => {
-							await msg.pin()
-						})
+							await msg.pin();
+						});
 
 						setTimeout(async () => {
-							await ch.delete().catch(() => {})
-						}, 1000 * 60 * 30)
+							await ch.delete().catch(() => {});
+						}, 1000 * 60 * 30);
 					}
 				} else if (interaction.customId === 'close_ticket') {
-					await interaction.deferReply({ ephemeral: true })
+					await interaction.deferReply({ ephemeral: true });
 
-					interaction.editReply({ content: 'Locking the channel.' })
-					;(interaction.channel as TextChannel).permissionOverwrites
+					interaction.editReply({ content: 'Locking the channel.' });
+					(interaction.channel as TextChannel).permissionOverwrites
 						.edit(interaction.guild.roles.everyone, {
 							SEND_MESSAGES: false
 						})
-						.catch((err) => {})
+						.catch((err) => {});
 
 					let X_btn = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.delete?.style || 'DANGER')
 						.setEmoji(options.ticketSys?.buttons?.delete?.emoji || '❌')
 						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Delete')
-						.setCustomId('delete_ticket')
+						.setCustomId('delete_ticket');
 
 					let open_btn = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.reopen?.style || 'SUCCESS')
 						.setEmoji(options.ticketSys?.buttons?.reopen?.emoji || '🔓')
 						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Reopen')
-						.setCustomId('open_ticket')
+						.setCustomId('open_ticket');
 
 					let tr_btn = new MessageButton()
 						.setStyle(
@@ -336,160 +337,160 @@ export async function manageBtn(
 						.setLabel(
 							options.ticketSys?.buttons?.transcript?.style || 'Transcript'
 						)
-						.setCustomId('tr_ticket')
+						.setCustomId('tr_ticket');
 
 					let row = new MessageActionRow().addComponents([
 						open_btn,
 						X_btn,
 						tr_btn
-					])
+					]);
 
 					await (interaction.message as Message).edit({
 						components: [row]
-					})
+					});
 				} else if (interaction.customId === 'tr_ticket') {
-					await interaction.deferReply({ ephemeral: true })
+					await interaction.deferReply({ ephemeral: true });
 
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100
-					})
-					let response: string[] = []
+					});
+					let response: string[] = [];
 
 					messagecollection = messagecollection.sort(
 						(a, b) => a.createdTimestamp - b.createdTimestamp
-					)
+					);
 
 					messagecollection.forEach((m) => {
-						if (m.author.bot) return
-						const attachment = m.attachments.first()
-						const url = attachment ? attachment.url : null
+						if (m.author.bot) return;
+						const attachment = m.attachments.first();
+						const url = attachment ? attachment.url : null;
 						if (url !== null) {
-							m.content = url
+							m.content = url;
 						}
 
 						response.push(
 							`[${m.author.tag} | ${m.author.id}] => \`${m.content}\``
-						)
-					})
+						);
+					});
 
 					let tr = await interaction.editReply({
 						content: 'Collecting messages to create logs'
-					})
+					});
 
 					let use: GuildMember | string = (
 						interaction.channel as TextChannel
 					).topic
 						.replace(`Ticket has been opened by <@`, '')
-						.replace('>', '')
+						.replace('>', '');
 
-					use = await interaction.guild.members.fetch(use)
+					use = await interaction.guild.members.fetch(use);
 
 					let attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						`${(use.user as User).tag}.md`
-					)
+					);
 
 					setTimeout(async () => {
 						await interaction.editReply({
 							content: 'Done. Generated the logs',
 							files: [attach],
 							embeds: []
-						})
-					}, 2300)
+						});
+					}, 2300);
 				} else if (interaction.customId === 'delete_ticket') {
-					await interaction.deferReply({ ephemeral: true })
+					await interaction.deferReply({ ephemeral: true });
 
 					let yes = new MessageButton()
 						.setCustomId('yea_del')
 						.setLabel('Delete')
-						.setStyle('DANGER')
+						.setStyle('DANGER');
 
 					let no = new MessageButton()
 						.setCustomId('dont_del')
 						.setLabel('Cancel')
-						.setStyle('SUCCESS')
+						.setStyle('SUCCESS');
 
-					let row = new MessageActionRow().addComponents([yes, no])
+					let row = new MessageActionRow().addComponents([yes, no]);
 
 					interaction.editReply({
 						content: 'Are you sure ?? This process is not reversible !',
 						components: [row]
-					})
+					});
 				} else if (interaction.customId === 'yea_del') {
-					await interaction.deferUpdate()
+					await interaction.deferUpdate();
 
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100
-					})
-					let response: string[] = []
+					});
+					let response: string[] = [];
 
 					messagecollection = messagecollection.sort(
 						(a, b) => a.createdTimestamp - b.createdTimestamp
-					)
+					);
 
 					messagecollection.forEach((m) => {
-						if (m.author.bot) return
-						const attachment = m.attachments.first()
-						const url = attachment ? attachment.url : null
+						if (m.author.bot) return;
+						const attachment = m.attachments.first();
+						const url = attachment ? attachment.url : null;
 						if (url !== null) {
-							m.content = url
+							m.content = url;
 						}
 
 						response.push(
 							`[${m.author.tag} | ${m.author.id}] => \`${m.content}\``
-						)
-					})
+						);
+					});
 
 					let attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						`${(interaction.channel as TextChannel).topic}.md`
-					)
+					);
 
 					let use: GuildMember | string = (
 						interaction.channel as TextChannel
 					).topic
 						.replace(`Ticket has been opened by <@`, '')
-						.replace('>', '')
+						.replace('>', '');
 
-					use = await interaction.guild.members.fetch(use)
+					use = await interaction.guild.members.fetch(use);
 
 					resolve({
 						type: 'Delete',
 						channelId: interaction.channel.id,
 						user: use.user,
 						data: attach
-					})
+					});
 
 					setTimeout(async () => {
-						await interaction.channel.delete()
-					}, 2000)
+						await interaction.channel.delete();
+					}, 2000);
 				} else if (interaction.customId === 'dont_del') {
-					await interaction.deferUpdate()
-					;(interaction.message as Message).edit({
+					await interaction.deferUpdate();
+					(interaction.message as Message).edit({
 						content: 'You cancelled the deletion',
 						components: []
-					})
+					});
 				} else if (interaction.customId === 'open_ticket') {
-					await interaction.deferReply({ ephemeral: true })
+					await interaction.deferReply({ ephemeral: true });
 
-					interaction.editReply({ content: 'Unlocking the channel.' })
-					;(interaction.channel as TextChannel).permissionOverwrites
+					interaction.editReply({ content: 'Unlocking the channel.' });
+					(interaction.channel as TextChannel).permissionOverwrites
 						.edit(interaction.guild.roles.everyone, {
 							SEND_MESSAGES: true
 						})
-						.catch((err) => {})
+						.catch((err) => {});
 
 					let close = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
 						.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
 						.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
-						.setCustomId('close_ticket')
+						.setCustomId('close_ticket');
 
 					let closerow: MessageActionRow = new MessageActionRow().addComponents(
 						[close]
-					)
+					);
 
-					;(interaction.message as Message).edit({ components: [closerow] })
+					(interaction.message as Message).edit({ components: [closerow] });
 				}
 				// ------------------------------
 				// ------ G I V E A W A Y -------
@@ -497,9 +498,9 @@ export async function manageBtn(
 				else if (interaction.customId === 'enter_giveaway') {
 					let data = await gsys.findOne({
 						message: interaction.message.id
-					})
+					});
 
-					if (Number(data.endTime) < Date.now()) return
+					if (Number(data.endTime) < Date.now()) return;
 					else {
 						if (data.requirements.type === 'role') {
 							if (
@@ -512,21 +513,21 @@ export async function manageBtn(
 									content:
 										'You do not fall under the requirements. | You dont have the role',
 									ephemeral: true
-								})
+								});
 						}
 						if (data.requirements.type === 'guild') {
-							let g = interaction.client.guilds.cache.get(data.requirements.id)
-							let mem = await g.members.fetch(interaction.member.user.id)
+							let g = interaction.client.guilds.cache.get(data.requirements.id);
+							let mem = await g.members.fetch(interaction.member.user.id);
 
 							if (!mem)
 								return interaction.followUp({
 									content:
 										'You do not fall under the requirements. | Join the server.',
 									ephemeral: true
-								})
+								});
 						}
 
-						let entris = data.entry.find((id) => id.userID === member.user.id)
+						let entris = data.entry.find((id) => id.userID === member.user.id);
 
 						if (entris) {
 							await gsys.findOneAndUpdate(
@@ -536,35 +537,45 @@ export async function manageBtn(
 								{
 									$pull: { entry: { userID: member.user.id } }
 								}
-							)
+							);
 
 							await interaction.followUp({
 								content: 'Left the giveaway ;(',
 								ephemeral: true
-							})
+							});
 						} else if (!entris) {
 							data.entry.push({
 								userID: member.user.id,
 								guildID: interaction.guild.id,
 								messageID: interaction.message.id
-							})
+							});
 
-							data.entered = data.entered + 1
+							data.entered = data.entered + 1;
 
 							await data.save().then(async (a) => {
 								await interaction.followUp({
 									content: 'Entered the giveaway !',
 									ephemeral: true
-								})
-							})
+								});
+							});
 						}
+						let allComp = await interaction.message.components[0];
 
-						let eem = interaction.message.embeds[0]
-
-						eem.fields[2].value = `***${data.entered.toString()}***`
-
-						let mes = interaction.message as Message
-						mes.edit({ embeds: [eem] })
+						let eem = interaction.message.embeds[0];
+						let ento = eem.fields.find((a) => Number(a.value));
+						let inde = eem.fields.findIndex((a) => Number(a.value));
+						if (!ento || Number(interaction.component.label)) {
+							interaction.component.label = data.entered.toString();
+							allComp.components[0] = interaction.component;
+						} else {
+							ento.value = `${data.entered.toString()}`;
+							eem.fields[inde] = ento;
+						}
+						let mes = interaction.message as Message;
+						mes.edit({
+							embeds: [eem],
+							components: [allComp as MessageActionRow]
+						});
 					}
 				}
 
@@ -572,8 +583,8 @@ export async function manageBtn(
 					interaction.customId === 'end_giveaway' ||
 					interaction.customId === 'reroll_giveaway'
 				) {
-					let allComp = await interaction.message.components[0]
-					let ftr = await interaction.message.embeds[0].footer
+					let allComp = await interaction.message.components[0];
+					let ftr = await interaction.message.embeds[0].footer;
 
 					const embeded = new MessageEmbed()
 						.setTitle('Processing Data...')
@@ -583,29 +594,29 @@ export async function manageBtn(
 						)
 						.setFooter({
 							text: 'Ending the Giveaway, Scraping the ticket..'
-						})
+						});
 
-					let msg = interaction.message as Message
+					let msg = interaction.message as Message;
 
-					await msg.edit({ embeds: [embeded], components: [] }).catch(() => {})
+					await msg.edit({ embeds: [embeded], components: [] }).catch(() => {});
 
-					let dispWin: string[] = []
+					let dispWin: string[] = [];
 
-					let dt = await gsys.findOne({ message: msg.id })
+					let dt = await gsys.findOne({ message: msg.id });
 
-					dt.endTime = undefined
-					await dt.save().catch(() => {})
+					dt.endTime = undefined;
+					await dt.save().catch(() => {});
 
-					let winArr: any[] = []
+					let winArr: any[] = [];
 
-					let winCt = dt.winCount
+					let winCt = dt.winCount;
 
-					let entries = dt.entry
+					let entries = dt.entry;
 
 					for (let i = 0; i < winCt; i++) {
-						let winno = Math.floor(Math.random() * dt.entered)
+						let winno = Math.floor(Math.random() * dt.entered);
 
-						winArr.push(entries[winno])
+						winArr.push(entries[winno]);
 					}
 
 					setTimeout(() => {
@@ -613,7 +624,7 @@ export async function manageBtn(
 							await interaction.guild.members
 								.fetch(name.userID)
 								.then((user) => {
-									dispWin.push(`<@${user.user.id}>`)
+									dispWin.push(`<@${user.user.id}>`);
 
 									let embod = new MessageEmbed()
 										.setTitle('You.. Won the Giveaway !')
@@ -621,110 +632,93 @@ export async function manageBtn(
 											`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
 										)
 										.setColor(0x075fff)
-										.setFooter(ftr)
+										.setFooter(ftr);
 
 									let gothe = new MessageButton()
 										.setLabel('View Giveaway')
 										.setStyle('LINK')
-										.setURL(msg.url)
+										.setURL(msg.url);
 
-									let entrow = new MessageActionRow().addComponents([gothe])
+									let entrow = new MessageActionRow().addComponents([gothe]);
 
 									return user
 										.send({ embeds: [embod], components: [entrow] })
-										.catch(() => {})
+										.catch(() => {});
 								})
-								.catch(() => {})
-						})
-					}, 2000)
+								.catch(() => {});
+						});
+					}, 2000);
 
 					setTimeout(async () => {
-						if (!dt) return await msg.delete()
+						if (!dt) return await msg.delete();
 						if (dt) {
-							let tim = Number(dt.endTime.slice(0, -3))
+							let embed = interaction.message.embeds[0];
+
+							let tim = Number(dt.endTime.slice(0, -3));
+							let f: EmbedFieldData[] = [];
+							embed.fields.forEach((a) => {
+								if (a.name === 'Requirements') return;
+								a.value = a.value
+									.replaceAll('{hosted}', `<@${dt.host}>`)
+									.replaceAll('{endsAt}', `<t:${tim}:f>`)
+									.replaceAll('{prize}', dt.prize.toString())
+
+									.replaceAll('{winCount}', dt.winCount.toString())
+									.replaceAll('{entered}', dt.entered.toString());
+
+								f.push(a);
+							});
 
 							if (dt.entered <= 0 || !winArr[0]) {
-								let emed = new MessageEmbed()
+								(embed as MessageEmbed)
 									.setTitle('No one entered')
-									.setDescription(
-										`Oops.. No one entered the giveaway.\n\n` +
-											(dt.desc
-												? dt.desc
-														.replaceAll('{prize}', dt.prize)
-														.replaceAll('{endsAt}', `<t:${tim}:R>`)
-														.replaceAll(
-															'{requirements}',
-															dt.requirements.type === 'none'
-																? 'None'
-																: dt.requirements.type +
-																		' | ' +
-																		(dt.requirements.type === 'role'
-																			? `${dt.requirements.id}`
-																			: dt.requirements.id)
-														)
-														.replaceAll('{winCount}', dt.winCount.toString())
-														.replaceAll('{entered}', '0')
-												: `**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
-									)
-									.addFields(
-										{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
-										{ name: '🎫 Entered', value: `***${dt.entered}***` }
-									)
-									.setColor('RED')
-									.setFooter({
-										text: 'No one entered..'
-									})
 
-								allComp.components[0].disabled = true
-								allComp.components[1].disabled = true
-								allComp.components[2].disabled = true
+									.addFields(f)
+									.setColor('RED')
+									.setFooter(ftr);
+
+								allComp.components[0].disabled = true;
+								allComp.components[1].disabled = true;
+								allComp.components[2].disabled = true;
 
 								return await msg.edit({
-									embeds: [emed], //@ts-ignore
+									embeds: [embed], //@ts-ignore
 									components: [allComp]
-								})
+								});
 							}
 
-							let resWin: GuildMember[] = []
+							let resWin: GuildMember[] = [];
 
-							allComp.components[0].disabled = true
-							allComp.components[1].disabled = false
-							allComp.components[2].disabled = true
+							allComp.components[0].disabled = true;
+							allComp.components[1].disabled = false;
+							allComp.components[2].disabled = true;
 
-							let em = new MessageEmbed()
+							(embed as MessageEmbed)
 								.setTitle('We got the winner !')
-								.setDescription(
-									`${dispWin.join(', ')} won the prize !\n` +
-										(dt.desc
-											? dt.desc
-											: `Reroll the giveaway using the interaction.\n\n**🎁 Prize**: *${dt.prize}*\n\n**⏰ Ends:** <t:${tim}:R>\n`)
-								)
-								.addFields(
-									{ name: '🏆 Winner(s):', value: `\`${dt.winCount}\`` },
-									{ name: '🎫 Entered', value: `***${dt.entered}***` }
-								)
+								.setDescription(`${dispWin.join(', ')} won the prize !\n`)
+								.addFields(f)
 								.setColor(0x3bb143)
-								.setFooter(ftr)
+								.setFooter(ftr);
 							//@ts-ignore
-							await msg.edit({ embeds: [em], components: [allComp] })
+							await msg.edit({ embeds: [embed], components: [allComp] });
 
 							if (interaction.customId === 'reroll_giveaway') {
 								resolve({
 									type: 'Reroll',
 									msgURL: msg.url,
 									user: resWin
-								})
+								});
 							}
 						}
-					}, 5200)
+					}, 5200);
 				}
 			} catch (err: any) {
 				console.log(
 					`${chalk.red('Error Occured.')} | ${chalk.magenta(
 						'manageBtn'
 					)} | Error: ${err.stack}`
-				)
+				);
 			}
-		} else return
-	})
+		} else return;
+	});
 }
