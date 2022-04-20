@@ -7,28 +7,28 @@ import {
 	MessageButton,
 	MessageActionRow,
 	GuildMember
-} from 'discord.js'
+} from 'discord.js';
 
-import { SimplyError } from './Error/Error'
-import chalk from 'chalk'
+import { SimplyError } from './Error/Error';
+import chalk from 'chalk';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
 interface dataObj {
-	role?: string
-	label?: string
-	emoji?: string
-	style?: MessageButtonStyle
-	url?: `https://${string}`
+	role?: string;
+	label?: string;
+	emoji?: string;
+	style?: MessageButtonStyle;
+	url?: `https://${string}`;
 }
 
 export type btnOptions = {
-	embed?: MessageEmbed
-	content?: string
-	data?: dataObj[]
-}
+	embed?: MessageEmbed;
+	content?: string;
+	data?: dataObj[];
+};
 
 // ------------------------------
 // ------ F U N C T I O N -------
@@ -48,120 +48,124 @@ export async function btnRole(
 	try {
 		if (!options.data)
 			throw new SimplyError({
-				name: 'Expected data object in options.. Received [undefined]',
-				tip: 'Provide an Data option to make buttons'
-			})
+				name: 'NOT_SPECIFIED | Provide an data option to make buttons.',
+				tip: `Expected data object in options.. Received ${
+					options.data || 'undefined'
+				}`
+			});
 
-		let msg = message as Message
-		let int = message as CommandInteraction
+		let msg = message as Message;
+		let int = message as CommandInteraction;
 
 		//@ts-ignore
 		if (message.commandId) {
 			//@ts-ignore
-			const member = interaction.member as GuildMember
+			const member = interaction.member as GuildMember;
 			if (!member.permissions.has('ADMINISTRATOR'))
 				int.followUp({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
-				})
-			return //@ts-ignore
+				});
+			return; //@ts-ignore
 		} else if (!message.customId) {
 			if (!msg.member.permissions.has('ADMINISTRATOR'))
 				return await msg.reply({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
-				})
+				});
 		}
 
-		let row: any[] = []
-		let data = options.data
+		let row: any[] = [];
+		let data = options.data;
 
 		if (data.length <= 5) {
-			let button: any[][] = [[]]
-			btnEngine(data, button, row)
+			let button: any[][] = [[]];
+			btnEngine(data, button, row);
 		} else if (data.length > 5 && data.length <= 10) {
-			let button: any[][] = [[], []]
-			btnEngine(data, button, row)
+			let button: any[][] = [[], []];
+			btnEngine(data, button, row);
 		} else if (data.length > 11 && data.length <= 15) {
-			let button: any[][] = [[], [], []]
-			btnEngine(data, button, row)
+			let button: any[][] = [[], [], []];
+			btnEngine(data, button, row);
 		} else if (data.length > 16 && data.length <= 20) {
-			let button: any[][] = [[], [], [], []]
-			btnEngine(data, button, row)
+			let button: any[][] = [[], [], [], []];
+			btnEngine(data, button, row);
 		} else if (data.length > 21 && data.length <= 25) {
-			let button: any[][] = [[], [], [], [], []]
-			btnEngine(data, button, row)
+			let button: any[][] = [[], [], [], [], []];
+			btnEngine(data, button, row);
 		} else if (data.length > 25) {
 			throw new SimplyError({
 				name: 'Reached the limit of 25 buttons..',
 				tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
-			})
+			});
 		}
 		async function btnEngine(data: dataObj[], button: any[][], row: any[]) {
-			let current = 0
+			let current = 0;
 
 			for (let i = 0; i < data.length; i++) {
-				if (button[current].length === 5) current++
+				if (button[current].length === 5) current++;
 
-				let emoji = data[i].emoji || null
-				let clr = data[i].style || 'SECONDARY'
-				let url = ''
+				let emoji = data[i].emoji || null;
+				let clr = data[i].style || 'SECONDARY';
+				let url = '';
 				let role: Role | null = message.guild.roles.cache.find(
 					(r) => r.id === data[i].role
-				)
-				let label = data[i].label || role?.name
+				);
+				let label = data[i].label || role?.name;
 
 				if (!role && clr === 'LINK') {
-					url = data[i].url
-					button[current].push(createLink(label, url, emoji))
+					url = data[i].url;
+					button[current].push(createLink(label, url, emoji));
 				} else {
-					button[current].push(createButton(label, role, clr, emoji))
+					button[current].push(createButton(label, role, clr, emoji));
 				}
 
 				if (i === data.length - 1) {
-					let rero = addRow(button[current])
-					row.push(rero)
+					let rero = addRow(button[current]);
+					row.push(rero);
 				}
 			}
 
 			if (!options.embed && !options.content)
 				throw new SimplyError({
-					name: 'Expected embed (or) content options to send. Received [undefined]',
-					tip: 'Provide an embed (or) content in the options.'
-				})
+					name: 'NOT_SPECIFIED | Provide an embed (or) content in the options.',
+					tip: `Expected embed (or) content options to send. Received ${
+						options.embed || options.content || 'undefined'
+					}`
+				});
 
-			let emb = options.embed
+			let emb = options.embed;
 
 			if ((message as CommandInteraction).commandId) {
 				if (!options.embed) {
-					;(message as CommandInteraction).followUp({
+					(message as CommandInteraction).followUp({
 						content: options.content || '** **',
 						components: row
-					})
+					});
 				} else
 					(message as CommandInteraction).followUp({
 						content: options.content || '** **',
 						embeds: [emb],
 						components: row
-					})
+					});
 			} else if (!(message as CommandInteraction).commandId) {
 				if (!options.embed) {
 					message.channel.send({
 						content: options.content || '** **',
 						components: row
-					})
+					});
 				} else
 					message.channel.send({
 						content: options.content || '** **',
 						embeds: [emb],
 						components: row
-					})
+					});
 			}
 
 			function addRow(btns: any[]): MessageActionRow {
-				let row1 = new MessageActionRow()
+				let row1 = new MessageActionRow();
 
-				row1.addComponents(btns)
+				row1.addComponents(btns);
 
-				return row1
+				return row1;
 			}
 
 			function createLink(
@@ -169,13 +173,13 @@ export async function btnRole(
 				url: string,
 				emoji: string
 			): MessageButton {
-				let btn = new MessageButton()
+				let btn = new MessageButton();
 				if (!emoji || emoji === null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url)
+					btn.setLabel(label).setStyle('LINK').setURL(url);
 				} else if (emoji && emoji !== null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url).setEmoji(emoji)
+					btn.setLabel(label).setStyle('LINK').setURL(url).setEmoji(emoji);
 				}
-				return btn
+				return btn;
 			}
 
 			function createButton(
@@ -184,20 +188,20 @@ export async function btnRole(
 				color: MessageButtonStyle,
 				emoji: string
 			): MessageButton {
-				let btn = new MessageButton()
+				let btn = new MessageButton();
 				if (!emoji || emoji === null) {
 					btn
 						.setLabel(label)
 						.setStyle(color)
-						.setCustomId('role-' + role.id)
+						.setCustomId('role-' + role.id);
 				} else if (emoji && emoji !== null) {
 					btn
 						.setLabel(label)
 						.setStyle(color)
 						.setCustomId('role-' + role.id)
-						.setEmoji(emoji)
+						.setEmoji(emoji);
 				}
-				return btn
+				return btn;
 			}
 		}
 	} catch (err: any) {
@@ -205,6 +209,6 @@ export async function btnRole(
 			`${chalk.red('Error Occured.')} | ${chalk.magenta('btnRole')} | Error: ${
 				err.stack
 			}`
-		)
+		);
 	}
 }

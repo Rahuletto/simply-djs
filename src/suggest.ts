@@ -6,6 +6,7 @@ import {
 	TextChannel,
 	MessageEmbedFooter,
 	Channel,
+	Permissions,
 	MessageActionRow,
 	MessageButton,
 	MessageButtonStyle,
@@ -88,9 +89,14 @@ export async function suggestSystem(
 		// @ts-ignore
 		else if (!message.commandId) {
 			const attachment = (message as Message).attachments.first();
+
 			url = attachment ? attachment.url : null;
 
 			suggestion = options.suggestion;
+
+			if (url) {
+				suggestion = suggestion + ' ' + url;
+			}
 
 			if (!options.suggestion) {
 				const [...args] = (message as Message).content.split(/ +/g);
@@ -117,12 +123,12 @@ export async function suggestSystem(
 
 		options.buttons = {
 			upvote: {
-				style: options.buttons.upvote.style || 'PRIMARY',
-				emoji: options.buttons.upvote.emoji || '☑️'
+				style: options.buttons?.upvote?.style || 'PRIMARY',
+				emoji: options.buttons?.upvote?.emoji || '☑️'
 			},
 			downvote: {
-				style: options.buttons.downvote.style || 'DANGER',
-				emoji: options.buttons.downvote.emoji || '🇽'
+				style: options.buttons?.downvote?.style || 'DANGER',
+				emoji: options.buttons?.downvote?.emoji || '🇽'
 			}
 		};
 
@@ -130,7 +136,7 @@ export async function suggestSystem(
 			client.channels.cache.get(channel as string) || (channel as TextChannel);
 		if (!ch)
 			throw new SimplyError({
-				name: `INVALID_CHANNEL_ID: ${channel}. The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
+				name: `INVALID_CHID - ${channel} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
 				tip: 'Check the permissions (or) Try using another Channel ID'
 			});
 
@@ -182,21 +188,21 @@ export async function suggestSystem(
 		const collect = (m as Message).createMessageComponentCollector({
 			filter,
 			max: 1,
-			componentType: 'SELECT_MENU',
+			componentType: 'BUTTON',
 			time: 1000 * 15
 		});
 
 		collect.on('collect', async (b) => {
 			if (b.customId === 'send-sug') {
-				b.reply({ content: 'Ok Suggested.', ephemeral: true });
-				(b.message as Message).delete();
+				await b.reply({ content: 'Ok Suggested.', ephemeral: true });
+				await (b.message as Message).delete();
 
 				const emb = new MessageEmbed()
 					.setDescription(suggestion)
 					.setAuthor({
 						name: (message.member.user as User).tag,
 						iconURL: (message.member.user as User).displayAvatarURL({
-							format: 'gif'
+							dynamic: true
 						})
 					})
 					.setColor(options.embed.color || '#075FFF')
@@ -215,7 +221,7 @@ export async function suggestSystem(
 						},
 						{
 							name: 'Percentage',
-							value: `\`⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛\` [0% - 0%]`
+							value: `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ [0% - 0%]`
 						}
 					);
 
@@ -250,7 +256,6 @@ export async function suggestSystem(
 
 		collect.on('end', async (b) => {
 			if (b.size == 0) {
-				(m as Message).delete();
 				(m as Message).edit({
 					content: 'Timeout.. Cancelled the suggestion',
 					embeds: [],

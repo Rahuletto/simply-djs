@@ -13,6 +13,7 @@ import {
 	GuildMember,
 	TextChannel,
 	Role,
+	Permissions,
 	EmbedFieldData
 } from 'discord.js';
 import chalk from 'chalk';
@@ -496,6 +497,7 @@ export async function manageBtn(
 				// ------ G I V E A W A Y -------
 				// ------------------------------
 				else if (interaction.customId === 'enter_giveaway') {
+					await interaction.deferReply({ ephemeral: true });
 					let data = await gsys.findOne({
 						message: interaction.message.id
 					});
@@ -509,10 +511,9 @@ export async function manageBtn(
 									(r: any) => r.id === data.requirements.id
 								)
 							)
-								return interaction.followUp({
+								return interaction.editReply({
 									content:
-										'You do not fall under the requirements. | You dont have the role',
-									ephemeral: true
+										'You do not fall under the requirements. | You dont have the role'
 								});
 						}
 						if (data.requirements.type === 'guild') {
@@ -520,10 +521,9 @@ export async function manageBtn(
 							let mem = await g.members.fetch(interaction.member.user.id);
 
 							if (!mem)
-								return interaction.followUp({
+								return interaction.editReply({
 									content:
-										'You do not fall under the requirements. | Join the server.',
-									ephemeral: true
+										'You do not fall under the requirements. | Join the server.'
 								});
 						}
 
@@ -539,9 +539,8 @@ export async function manageBtn(
 								}
 							);
 
-							await interaction.followUp({
-								content: 'Left the giveaway ;(',
-								ephemeral: true
+							await interaction.editReply({
+								content: 'Left the giveaway ;('
 							});
 						} else if (!entris) {
 							data.entry.push({
@@ -553,28 +552,22 @@ export async function manageBtn(
 							data.entered = data.entered + 1;
 
 							await data.save().then(async (a) => {
-								await interaction.followUp({
-									content: 'Entered the giveaway !',
-									ephemeral: true
+								await interaction.editReply({
+									content: 'Entered the giveaway !'
 								});
 							});
 						}
-						let allComp = await interaction.message.components[0];
 
 						let eem = interaction.message.embeds[0];
-						let ento = eem.fields.find((a) => Number(a.value));
-						let inde = eem.fields.findIndex((a) => Number(a.value));
-						if (!ento || Number(interaction.component.label)) {
-							interaction.component.label = data.entered.toString();
-							allComp.components[0] = interaction.component;
-						} else {
-							ento.value = `${data.entered.toString()}`;
-							eem.fields[inde] = ento;
-						}
+
+						(
+							interaction.message.components[0].components[0] as MessageButton
+						).label = data.entered.toString();
+
 						let mes = interaction.message as Message;
 						mes.edit({
 							embeds: [eem],
-							components: [allComp as MessageActionRow]
+							components: interaction.message.components as MessageActionRow[]
 						});
 					}
 				}
@@ -673,7 +666,7 @@ export async function manageBtn(
 								(embed as MessageEmbed)
 									.setTitle('No one entered')
 
-									.addFields(f)
+									.setFields(f)
 									.setColor('RED')
 									.setFooter(ftr);
 
@@ -696,7 +689,7 @@ export async function manageBtn(
 							(embed as MessageEmbed)
 								.setTitle('We got the winner !')
 								.setDescription(`${dispWin.join(', ')} won the prize !\n`)
-								.addFields(f)
+								.setFields(f)
 								.setColor(0x3bb143)
 								.setFooter(ftr);
 							//@ts-ignore

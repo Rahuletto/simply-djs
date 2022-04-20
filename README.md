@@ -11,11 +11,12 @@
 <br>
 <div align="center">
 
-<h1>~90% Completion</h1>
+<h1>~97% Completion</h1>
 
    <h3>We are under <span style='color: #007acc'>Typescript</span> and <span style="color: #3fa037">Mongoose</span> Conversion !</h3>
 
-We need alot of people to contribute to the community to provide an best experience to every user !
+⚠ We are under testing the package ! ⚠
+We want others to fork it and compile it to test with us ;)
 
    <br>
 
@@ -34,8 +35,7 @@ Format:
 ## Pending Files
 
 ```diff
-! stealEmoji.js
-! starboard.js (Still deciding..)
+## We are done converting ;D
 ```
 
 ## Deprecated/Removed Files
@@ -90,8 +90,8 @@ Format:
 + nqn.ts
 + rps.ts
 - stealSticker.js
-! starboard.js (Still deciding..)
-! stealEmoji.js
++ starboard.ts
++ stealEmoji.ts
 - suggestBtn.js (Renamed to manageSug)
 + suggest.ts
 + ticketSystem.ts

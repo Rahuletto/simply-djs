@@ -77,6 +77,8 @@ export { manageSug } from './src/manageSug';
 export { menuPages } from './src/menuPages';
 export { nqn } from './src/nqn';
 export { rps } from './src/rps';
+export { starboard } from './src/starboard';
+export { stealEmoji } from './src/stealEmoji';
 export { suggestSystem } from './src/suggest';
 export { suggestBtn } from './src/suggestBtn';
 export { ticketSystem } from './src/ticketSystem';

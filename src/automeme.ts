@@ -5,11 +5,11 @@ import {
 	ColorResolvable,
 	TextChannel,
 	MessageEmbedFooter
-} from 'discord.js'
+} from 'discord.js';
 
-import axios from 'axios'
-import { SimplyError } from './Error/Error'
-import chalk from 'chalk'
+import axios from 'axios';
+import { SimplyError } from './Error/Error';
+import chalk from 'chalk';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -20,21 +20,21 @@ import chalk from 'chalk'
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor
-	title?: string
-	footer?: MessageEmbedFooter
-	color?: ColorResolvable
-	description?: string
+	author?: MessageEmbedAuthor;
+	title?: string;
+	footer?: MessageEmbedFooter;
+	color?: ColorResolvable;
+	description?: string;
 
-	credit?: boolean
+	credit?: boolean;
 }
 
 export type memeOptions = {
-	embed?: CustomizableEmbed
-	channelId: string
-	interval?: number
-	sub?: string[] | string
-}
+	embed?: CustomizableEmbed;
+	channelId: string;
+	interval?: number;
+	sub?: string[] | string;
+};
 
 // ------------------------------
 // ------ F U N C T I O N -------
@@ -52,13 +52,15 @@ export async function automeme(
 	options: memeOptions = { channelId: '' }
 ): Promise<void> {
 	try {
-		let ch = options.channelId
+		let ch = options.channelId;
 
-		if (ch === '')
+		if (!ch || ch == '')
 			throw new SimplyError({
-				name: 'Expected channelId as string in options.. | Received [undefined]',
-				tip: 'Provide an channel id'
-			})
+				name: 'NOT_SPECIFIED | Provide an channel id to send memes.',
+				tip: `Expected channelId as string in options.. | Received ${
+					ch || 'undefined'
+				}`
+			});
 
 		let sub = [
 			'meme',
@@ -69,87 +71,89 @@ export async function automeme(
 			'ComedyCemetery',
 			'terriblefacebookmemes',
 			'funny'
-		]
+		];
 
 		if (Array.isArray(options.sub)) {
 			options.sub.forEach((subb) => {
-				sub.push(subb)
-			})
+				sub.push(subb);
+			});
 		} else if (!Array.isArray(options.sub)) {
-			sub.push(options.sub)
+			sub.push(options.sub);
 		}
 
 		if (!options.embed) {
 			options.embed = {
 				color: '#075FFF'
-			}
+			};
 		}
 
-		let random = Math.floor(Math.random() * sub.length)
+		let random = Math.floor(Math.random() * sub.length);
 
-		let interv
+		let interv;
 		if (options.interval) {
 			if (options.interval < 60000)
 				throw new SimplyError({
-					name: `Expected Interval Time above 60000ms (1 minute).`,
-					tip: 'You provided an Interval Time which is below 60000ms'
-				})
-			interv = options.interval
+					name: 'Provide an interval time above 60000ms',
+					tip: `Expected Interval time above 60000ms (1 minute) | Received ${
+						options.interval || 'undefined'
+					}`
+				});
+			interv = options.interval;
 		} else {
-			interv = 240000
+			interv = 240000;
 		}
 
 		setInterval(async () => {
 			let channel = await client.channels.fetch(ch, {
 				cache: true
-			})
+			});
 
 			if (!channel)
 				throw new SimplyError({
-					name: "Invalid channel id has been provided (OR) I don't have permissions to View the Channel",
-					tip: 'Check my permissions (or) Try using other Channel ID (or) Use the bot command in that channel to cache.'
-				})
+					name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
+					tip: 'Check the permissions (or) Try using another Channel ID'
+				});
 
 			let response = await axios
 				.get(`https://www.reddit.com/r/${sub[random]}/random/.json`)
 				.then((res) => res.data)
-				.catch(() => {})
+				.catch(() => {});
 
-			if (!response) return
-			if (!response[0].data) return
+			if (!response) return;
+			if (!response[0].data) return;
 
-			if (response[0].data.children[0].data.over_18 === true) return
+			if (response[0].data.children[0].data.over_18 === true) return;
 
-			let perma = response[0].data.children[0].data.permalink
-			let url = `https://reddit.com${perma}`
+			let perma = response[0].data.children[0].data.permalink;
+			let url = `https://reddit.com${perma}`;
 			let memeImage =
 				response[0].data.children[0].data.url ||
-				response[0].data.children[0].data.url_overridden_by_dest
-			let title = response[0].data.children[0].data.title
-			let upp = response[0].data.children[0].data.ups
-			let ratio = response[0].data.children[0].data.upvote_ratio
+				response[0].data.children[0].data.url_overridden_by_dest;
+			let title = response[0].data.children[0].data.title;
+			let upp = response[0].data.children[0].data.ups;
+			let ratio = response[0].data.children[0].data.upvote_ratio;
 
 			const embed = new MessageEmbed()
 				.setTitle(options.embed?.title || `${title}`)
 				.setURL(`${url}`)
 				.setImage(memeImage)
 				.setColor(options.embed?.color || '#075FFF')
-				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` })
+				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
 
 			if (options.embed?.author) {
-				embed.setAuthor(options.embed.author)
+				embed.setAuthor(options.embed.author);
 			}
 			if (options.embed?.description) {
-				embed.setDescription(options.embed.description)
+				embed.setDescription(options.embed.description);
 			}
 
-			await (channel as TextChannel).send({ embeds: [embed] })
-		}, interv)
+			await (channel as TextChannel).send({ embeds: [embed] });
+		}, interv);
 	} catch (err: any) {
 		console.log(
 			`${chalk.red('Error Occured.')} | ${chalk.magenta('automeme')} | Error: ${
 				err.stack
 			}`
-		)
+		);
 	}
 }

@@ -3,6 +3,7 @@ import {
 	MessageActionRow,
 	MessageButton,
 	ButtonInteraction,
+	Permissions,
 	Message,
 	MessageEmbed,
 	User
@@ -37,11 +38,11 @@ export async function manageSug(
 	if (button.isButton()) {
 		try {
 			options.deny = {
-				color: options.deny.color || 'RED'
+				color: options?.deny?.color || 'RED'
 			};
 
 			options.accept = {
-				color: options.accept.color || 'GREEN'
+				color: options?.accept?.color || 'GREEN'
 			};
 
 			if (button.customId === 'no-sug') {
@@ -87,8 +88,6 @@ export async function manageSug(
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
-						btn.deferReply({ ephemeral: true });
-
 						if (btn.customId === 'no-vote') {
 							let vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
@@ -168,14 +167,14 @@ export async function manageSug(
 									msgCl.stop();
 								} else {
 									m.delete();
-									dec(m.content, oldemb, button.user);
+									dec(m.content, oldemb, button.message, button.user);
 									msgCl.stop();
 								}
 							});
 
 							msgCl.on('end', (collected) => {
 								if (collected.size === 0) {
-									dec('No Reason', oldemb, button.user);
+									dec('No Reason', oldemb, button.message, button.user);
 								}
 							});
 						}
@@ -279,8 +278,6 @@ export async function manageSug(
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
-						btn.deferReply({ ephemeral: true });
-
 						if (btn.customId === 'yes-vote') {
 							let vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
@@ -358,14 +355,14 @@ export async function manageSug(
 									msgCl.stop();
 								} else {
 									m.delete();
-									aprov(m.content, oldemb, button.user);
+									aprov(m.content, oldemb, button.message, button.user);
 									msgCl.stop();
 								}
 							});
 
 							msgCl.on('end', (collected) => {
 								if (collected.size === 0) {
-									aprov('No Reason', oldemb, button.user);
+									aprov('No Reason', oldemb, button.message, button.user);
 								}
 							});
 						}
@@ -436,22 +433,39 @@ export async function manageSug(
 				let l: any[] = [];
 				let d: any[] = [];
 
-				data.votes.forEach((v) => {
-					if (v.vote === 'up') {
-						l.push(v);
-					} else if (v.vote === 'down') {
-						d.push(v);
-					}
-				});
+				if (data.votes === [] || !data.votes) {
+					l.length = 0;
+					d.length = 0;
+				} else {
+					data.votes.forEach((v) => {
+						if (v.vote === 'up') {
+							l.push(v);
+						} else if (v.vote === 'down') {
+							d.push(v);
+						}
+					});
+				}
 
 				let dislik = d.length;
 				let lik = l.length;
-				if (lik < 0) {
+
+				if (lik <= 0) {
 					lik = 0;
 				}
-				if (dislik < 0) {
+				if (dislik <= 0) {
 					dislik = 0;
 				}
+
+				let total = data.votes.length;
+
+				let uPercent = (100 * lik) / total;
+
+				let dPercent = (dislik * 100) / total;
+
+				let st = '⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛';
+
+				if (uPercent / 10 + dPercent / 10 != 0 || total != 0)
+					st = '🟩'.repeat(uPercent / 10) + '🟥'.repeat(dPercent / 10);
 
 				(msg.components[0].components[0] as MessageButton).label =
 					lik.toString();
@@ -459,11 +473,7 @@ export async function manageSug(
 				(msg.components[0].components[1] as MessageButton).label =
 					dislik.toString();
 
-				oldemb.fields[1].value = `\`${'🟩'.repeat(
-					((100 * lik) / lik + dislik) / 10
-				)}${'🟥'.repeat(((100 * dislik) / lik + dislik) / 10)}\` [${
-					(100 * lik) / lik + dislik
-				}% - ${(100 * dislik) / lik + dislik}%]`;
+				oldemb.fields[1].value = `${st} [${uPercent}% - ${dPercent}%]`;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
@@ -474,29 +484,43 @@ export async function manageSug(
 			async function dec(
 				reason: string,
 				oldemb: MessageEmbed | APIEmbed,
+				msg: Message | APIMessage,
 				user: User
 			) {
 				oldemb = oldemb as MessageEmbed;
 
-				oldemb.fields[0].value = `Declined\n**Reason:** \`${reason}\``;
+				oldemb.fields[0].value = `Declined\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.deny?.color || 'RED');
 				oldemb.setFooter({ text: `Declined by ${user.tag}` });
 
-				(button.message as Message).edit({ embeds: [oldemb], components: [] });
+				msg.components[0].components[0].disabled = true;
+				msg.components[0].components[1].disabled = true;
+
+				(button.message as Message).edit({
+					embeds: [oldemb],
+					components: msg.components as MessageActionRow[]
+				});
 			}
 
 			async function aprov(
 				reason: string,
 				oldemb: MessageEmbed | APIEmbed,
+				msg: Message | APIMessage,
 				user: User
 			) {
 				oldemb = oldemb as MessageEmbed;
 
-				oldemb.fields[0].value = `Accepted\n**Reason:** \`${reason}\``;
+				oldemb.fields[0].value = `Accepted\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.accept?.color || 'GREEN');
 				oldemb.setFooter({ text: `Accepted by ${user.tag}` });
 
-				(button.message as Message).edit({ embeds: [oldemb], components: [] });
+				msg.components[0].components[0].disabled = true;
+				msg.components[0].components[1].disabled = true;
+
+				(button.message as Message).edit({
+					embeds: [oldemb],
+					components: msg.components as MessageActionRow[]
+				});
 			}
 		} catch (err: any) {
 			console.log(

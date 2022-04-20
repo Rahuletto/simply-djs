@@ -1,8 +1,8 @@
-import mongoose from 'mongoose'
-import { SimplyError } from './Error/Error'
-import axios from 'axios'
-import chalk from 'chalk'
-import { version } from '../simplydjs'
+import mongoose from 'mongoose';
+import { SimplyError } from './Error/Error';
+import axios from 'axios';
+import chalk from 'chalk';
+import { version } from '../simplydjs';
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
@@ -18,9 +18,9 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db)
 			throw new SimplyError({
-				name: 'Expected an MongoDB URI. Received [undefined]',
-				tip: 'Provide an valid mongodb uri string to connect'
-			})
+				name: 'NOT_SPECIFIED | Provide an valid mongodb uri string.',
+				tip: `Expected an MongoDB URI. Received ${db || 'undefined'}`
+			});
 
 		mongoose
 			.connect(db)
@@ -28,8 +28,8 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 				if (notify !== false) {
 					let json = await axios
 						.get('https://api.npms.io/v2/search?q=simply-djs')
-						.then((res) => res.data)
-					let v = json.results[0].package.version
+						.then((res) => res.data);
+					let v = json.results[0].package.version;
 
 					if (v !== version) {
 						console.log(
@@ -38,15 +38,15 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 							)} ${chalk.green(v)}\n\t\tRun [${chalk.blue(
 								'npm i simply-djs@latest'
 							)}] to update\n`
-						)
+						);
 					}
 
-					console.log('{ S-DJS } Database Connected')
+					console.log('{ S-DJS } Database Connected');
 				}
-				resolve(true)
+				resolve(true);
 			})
 			.catch((err) => {
-				reject(err.stack)
-			})
-	})
+				reject(err.stack);
+			});
+	});
 }

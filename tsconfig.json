@@ -1,21 +1,15 @@
 {
 	"files": ["simplydjs.ts"],
 	"exclude": ["node_modules"],
-	"include": [
-		"./src/**/*",
-		"simplydjs.ts",
-	],
+	"include": ["./src/**/*", "simplydjs.ts"],
 	"compilerOptions": {
 		"target": "es2016",
 		"module": "commonjs",
-		"lib": [
-			"DOM",
-			"ESNext"
-		],
+		"lib": ["DOM", "ESNext"],
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"skipLibCheck": true,
+		"skipLibCheck": false,
 		"outDir": "lib",
 		"allowUnusedLabels": false,
 		"moduleResolution": "node",

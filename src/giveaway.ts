@@ -124,22 +124,6 @@ export async function giveawaySystem(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
-			if (
-				!roly || // @ts-ignore
-				!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
-			) {
-				if (interaction) {
-					return await int.followUp({
-						content: 'You are not a admin to start a giveaway',
-						ephemeral: true
-					});
-				} else if (!interaction) {
-					return await message.reply({
-						content: 'You are not a admin to start a giveaway'
-					});
-				}
-			}
-
 			options.winners ??= 1;
 
 			options.buttons = {
@@ -235,6 +219,11 @@ export async function giveawaySystem(
 				enter.setEmoji(options.buttons.enter.emoji || '🎁');
 			else if (options.disable === 'Emoji')
 				enter.setLabel(options.buttons.enter.label || '0');
+			else {
+				enter
+					.setEmoji(options.buttons.enter.emoji || '🎁')
+					.setLabel(options.buttons.enter.label || '0');
+			}
 
 			let end = new MessageButton()
 				.setCustomId('end_giveaway')
@@ -244,6 +233,11 @@ export async function giveawaySystem(
 				end.setEmoji(options.buttons.end.emoji || '⛔');
 			else if (options.disable === 'Emoji')
 				end.setLabel(options.buttons.end.label || 'End');
+			else {
+				end
+					.setEmoji(options.buttons.end.emoji || '⛔')
+					.setLabel(options.buttons.end.label || 'End');
+			}
 
 			let reroll = new MessageButton()
 				.setCustomId('reroll_giveaway')
@@ -254,17 +248,17 @@ export async function giveawaySystem(
 				reroll.setEmoji(options.buttons.reroll.emoji || '🔁');
 			else if (options.disable === 'Emoji')
 				reroll.setLabel(options.buttons.reroll.label || 'Reroll');
+			else {
+				reroll
+					.setEmoji(options.buttons.reroll.emoji || '🔁')
+					.setLabel(options.buttons.reroll.label || 'Reroll');
+			}
 
 			let row = new MessageActionRow().addComponents([enter, reroll, end]);
 
 			let endtime = Number((Date.now() + ms(time)).toString().slice(0, -3));
 
-			let entom;
-
-			if (!options.buttons.enter.label)
-				entom = { name: 'Entered', value: `{entered}` };
-
-			options.fields ||= [
+			options.fields = options.fields || [
 				{
 					name: 'Hosted By',
 					value: `{hosted}`,
@@ -276,7 +270,6 @@ export async function giveawaySystem(
 					inline: true
 				},
 				{ name: 'Winner(s)', value: `{winCount}`, inline: true },
-				entom,
 				{
 					name: 'Requirements',
 					value: `{requirements}`
@@ -284,7 +277,7 @@ export async function giveawaySystem(
 			];
 
 			options.fields.forEach((a) => {
-				a.value = a.value
+				a.value = a?.value
 					.replaceAll('{hosted}', `<@${message.member.user.id}>`)
 					.replaceAll('{endsAt}', `<t:${endtime}:f>`)
 					.replaceAll('{prize}', prize)
@@ -467,28 +460,30 @@ export async function giveawaySystem(
 								if (dt) {
 									let tim = Number(dt.endTime.slice(0, -3));
 									let f: EmbedFieldData[] = [];
-									options.fields.forEach((a) => {
-										a.value = a.value
-											.replaceAll('{hosted}', `<@${dt.host}>`)
-											.replaceAll('{endsAt}', `<t:${tim}:f>`)
-											.replaceAll('{prize}', dt.prize.toString())
-											.replaceAll(
-												'{requirements}',
-												req === 'None'
-													? 'None'
-													: req + ' | ' + (req === 'Role' ? `${val}` : val)
-											)
-											.replaceAll('{winCount}', dt.winCount.toString())
-											.replaceAll('{entered}', dt.entered.toString());
+									if (options.fields) {
+										options.fields.forEach((a) => {
+											a.value = a.value
+												.replaceAll('{hosted}', `<@${dt.host}>`)
+												.replaceAll('{endsAt}', `<t:${tim}:f>`)
+												.replaceAll('{prize}', dt.prize.toString())
+												.replaceAll(
+													'{requirements}',
+													req === 'None'
+														? 'None'
+														: req + ' | ' + (req === 'Role' ? `${val}` : val)
+												)
+												.replaceAll('{winCount}', dt.winCount.toString())
+												.replaceAll('{entered}', dt.entered.toString());
 
-										f.push(a);
-									});
+											f.push(a);
+										});
+									}
 
 									if (dt.entered <= 0 || !winArr[0]) {
 										embed
 											.setTitle('No one entered')
 
-											.addFields(f)
+											.setFields(f)
 											.setColor('RED')
 											.setFooter(
 												options.embed?.credit
@@ -499,15 +494,19 @@ export async function giveawaySystem(
 													  }
 											);
 
-										let rowwee = new MessageActionRow().addComponents([
-											enter.setDisabled(true),
-											reroll.setDisabled(true),
-											end.setDisabled(true)
-										]);
+										(
+											msg.components[0].components[0] as MessageButton
+										).setDisabled(true);
+										(
+											msg.components[0].components[1] as MessageButton
+										).setDisabled(true);
+										(
+											msg.components[0].components[2] as MessageButton
+										).setDisabled(true);
 
 										return await msg.edit({
 											embeds: [embed],
-											components: [rowwee]
+											components: msg.components as MessageActionRow[]
 										});
 									}
 
@@ -532,7 +531,7 @@ export async function giveawaySystem(
 															.replaceAll('{entered}', dt.entered.toString())
 													: `Reroll the giveaway using the button.`)
 										)
-										.addFields(options.fields)
+										.setFields(options.fields)
 										.setColor(0x3bb143)
 										.setFooter(
 											options.embed?.credit
@@ -543,13 +542,20 @@ export async function giveawaySystem(
 												  }
 										);
 
-									let rowwe = new MessageActionRow().addComponents([
-										enter.setDisabled(true),
-										reroll.setDisabled(false),
-										end.setDisabled(true)
-									]);
+									(
+										msg.components[0].components[0] as MessageButton
+									).setDisabled(true);
+									(
+										msg.components[0].components[1] as MessageButton
+									).setDisabled(false);
+									(
+										msg.components[0].components[2] as MessageButton
+									).setDisabled(true);
 
-									await msg.edit({ embeds: [embed], components: [rowwe] });
+									await msg.edit({
+										embeds: [embed],
+										components: msg.components as MessageActionRow[]
+									});
 								}
 							}, 5200);
 						}
