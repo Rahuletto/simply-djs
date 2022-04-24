@@ -14,21 +14,18 @@ import {
 import { SimplyError } from './Error/Error';
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/StarboardEmbed*
  */
 
-interface CustomizableEmbed {
+interface StarboardEmbed {
 	author?: MessageEmbedAuthor;
 	title?: string;
-	footer?: MessageEmbedFooter;
 	description?: string;
 	color?: ColorResolvable;
-
-	credit?: boolean;
 }
 
 export type starboardOption = {
-	embed?: CustomizableEmbed;
+	embed?: StarboardEmbed;
 	channelId?: string;
 	min?: number | string;
 	emoji?: string;
@@ -98,8 +95,8 @@ export async function starboard(
 						}
 					)
 					.setColor(options.embed?.color || '#FFC83D')
-					.setDescription(fetch.content)
-					.setTitle(`Jump to message`)
+					.setDescription(options.embed?.description || fetch.content)
+					.setTitle(options.embed?.title || `Jump to message`)
 					.setURL(fetch.url)
 					.setImage(url)
 					.setFooter({ text: '⭐ | ID: ' + fetch.id });
