@@ -13,9 +13,9 @@ import {
 	ButtonInteraction,
 	MessageSelectOptionData,
 	Permissions
-} from 'discord.js'
+} from 'discord.js';
 
-import chalk from 'chalk'
+import chalk from 'chalk';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -26,19 +26,19 @@ import chalk from 'chalk'
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor
-	title?: string
-	footer?: MessageEmbedFooter
-	description?: string
-	color?: ColorResolvable
+	author?: MessageEmbedAuthor;
+	title?: string;
+	footer?: MessageEmbedFooter;
+	description?: string;
+	color?: ColorResolvable;
 
-	credit?: boolean
+	credit?: boolean;
 }
 
 export type embOptions = {
-	embed?: CustomizableEmbed
-	rawEmbed?: MessageEmbed
-}
+	embed?: CustomizableEmbed;
+	rawEmbed?: MessageEmbed;
+};
 
 // ------------------------------
 // ------ F U N C T I O N -------
@@ -48,6 +48,7 @@ export type embOptions = {
  * Lets you create embeds with **an interactive builder**
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/embedCreate***
  * @example simplydjs.embedCreate(message)
  */
 
@@ -60,12 +61,12 @@ export async function embedCreate(
 			const done = new MessageButton()
 				.setLabel('Finish')
 				.setStyle('SUCCESS')
-				.setCustomId('setDone')
+				.setCustomId('setDone');
 
 			const reject = new MessageButton()
 				.setLabel('Cancel')
 				.setStyle('DANGER')
-				.setCustomId('setDelete')
+				.setCustomId('setDelete');
 
 			let menuOp = [
 				{
@@ -119,9 +120,9 @@ export async function embedCreate(
 					desc: 'Turn on the Timestamp of the embed',
 					value: 'setTimestamp'
 				}
-			]
+			];
 
-			let menuOptions: MessageSelectOptionData[] = []
+			let menuOptions: MessageSelectOptionData[] = [];
 
 			if (!options.embed) {
 				options.embed = {
@@ -131,7 +132,7 @@ export async function embedCreate(
 					},
 					color: '#075FFF',
 					credit: true
-				}
+				};
 			}
 
 			for (let i = 0; i < menuOp.length; i++) {
@@ -139,20 +140,20 @@ export async function embedCreate(
 					label: menuOp[i].name,
 					description: menuOp[i].desc,
 					value: menuOp[i].value
-				}
+				};
 
-				menuOptions.push(dataopt)
+				menuOptions.push(dataopt);
 			}
 
 			let slct = new MessageSelectMenu()
 				.setMaxValues(1)
 				.setCustomId('embed-creator')
 				.setPlaceholder('Embed Creator')
-				.addOptions(menuOptions)
+				.addOptions(menuOptions);
 
-			const row = new MessageActionRow().addComponents([done, reject])
+			const row = new MessageActionRow().addComponents([done, reject]);
 
-			const row2 = new MessageActionRow().addComponents([slct])
+			const row2 = new MessageActionRow().addComponents([slct]);
 
 			const embed = new MessageEmbed()
 				.setTitle(options.embed?.title || 'Embed Creator')
@@ -171,35 +172,35 @@ export async function embedCreate(
 								text: '©️ Simply Develop. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
-				)
+				);
 
 			if (options.embed?.author) {
-				embed.setAuthor(options.embed.author)
+				embed.setAuthor(options.embed.author);
 			}
 
-			let interaction
+			let interaction;
 			//@ts-ignore
 			if (message.commandId) {
-				interaction = message
+				interaction = message;
 			}
 
-			let msg: any
+			let msg: any;
 
-			let int = message as CommandInteraction
-			let ms = message as Message
+			let int = message as CommandInteraction;
+			let ms = message as Message;
 
 			if (interaction) {
 				await int.followUp({
 					embeds: [options.rawEmbed || embed],
 					components: [row2, row]
-				})
+				});
 
-				msg = await int.fetchReply()
+				msg = await int.fetchReply();
 			} else if (!interaction) {
 				msg = await ms.reply({
 					embeds: [options.rawEmbed || embed],
 					components: [row2, row]
-				})
+				});
 			}
 
 			const emb = new MessageEmbed()
@@ -210,37 +211,36 @@ export async function embedCreate(
 								text: 'Preview Embed'
 						  }
 				)
-				.setColor('#2F3136')
+				.setColor('#2F3136');
 
 			message.channel
 				.send({ content: '** **', embeds: [emb] })
 				.then(async (preview) => {
 					let filter = (
 						m: any //@ts-ignore
-					) => m.user.id === (message.user ? message.user : message.author).id
+					) => m.user.id === message.member.user.id;
 					let collector = msg.createMessageComponentCollector({
 						filter,
-						componentType: 'SELECT_MENU',
 						idle: 1000 * 60 * 3
-					})
+					});
 
 					collector.on('collect', async (button: any) => {
 						let fitler = (m: any) =>
 							// @ts-ignore
-							(message.user ? message.user : message.author).id === m.author.id
+							message.member.user.id === m.author.id;
 
 						let btnfilt = (
 							m: any // @ts-ignore
-						) => (message.user ? message.user : message.author).id === m.user.id
+						) => message.member.user.id === m.user.id;
 
 						if (button.customId && button.customId === 'setDelete') {
 							button.reply({
 								content: 'Cancelling the Creation.',
 								ephemeral: true
-							})
+							});
 
-							preview.delete().catch(() => {})
-							msg.delete().catch(() => {})
+							preview.delete().catch(() => {});
+							msg.delete().catch(() => {});
 						} else if (button.customId && button.customId === 'setDone') {
 							if (
 								// @ts-ignore
@@ -249,96 +249,96 @@ export async function embedCreate(
 								button.reply({
 									content: 'Provide me the channel to send the embed.',
 									ephemeral: true
-								})
+								});
 
 								let titleclr = button.channel.createMessageCollector({
 									fitler,
 									time: 30000,
 									max: 1
-								})
+								});
 
 								titleclr.on('collect', async (m: any) => {
 									if (m.mentions.channels.first()) {
-										let ch = m.mentions.channels.first()
-										button.editReply({ content: 'Done 👍', ephemeral: true })
+										let ch = m.mentions.channels.first();
+										button.editReply({ content: 'Done 👍', ephemeral: true });
 
 										ch.send({
 											content: preview.content,
 											embeds: [preview.embeds[0]]
-										})
-										preview.delete().catch(() => {})
-										msg.delete().catch(() => {})
-										m.delete().catch(() => {})
+										});
+										preview.delete().catch(() => {});
+										msg.delete().catch(() => {});
+										m.delete().catch(() => {});
 
-										resolve(preview.embeds[0].toJSON())
+										resolve(preview.embeds[0].toJSON());
 									}
-								})
+								});
 							} else if (
 								// @ts-ignore
 								!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 							) {
-								button.reply({ content: 'Done 👍', ephemeral: true })
+								button.reply({ content: 'Done 👍', ephemeral: true });
 
 								message.channel.send({
 									content: preview.content,
 									embeds: [preview.embeds[0]]
-								})
-								preview.delete().catch(() => {})
-								msg.delete().catch(() => {})
+								});
+								preview.delete().catch(() => {});
+								msg.delete().catch(() => {});
 
-								resolve(preview.embeds[0].toJSON())
+								resolve(preview.embeds[0].toJSON());
 							}
 						} else if (button.values[0] === 'setTimestamp') {
 							let btn = new MessageButton()
 								.setLabel('Enable')
 								.setCustomId('timestamp-yes')
-								.setStyle('SUCCESS')
+								.setStyle('SUCCESS');
 
 							let btn2 = new MessageButton()
 								.setLabel('Disable')
 								.setCustomId('timestamp-no')
-								.setStyle('DANGER')
+								.setStyle('DANGER');
 
 							button.reply({
 								content: 'Do you want a Timestamp in the embed ?',
 								ephemeral: true,
 								components: [new MessageActionRow().addComponents([btn, btn2])]
-							})
+							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
 								btnfilt,
 								idle: 60000
-							})
+							});
 
 							titleclr.on('collect', async (btn: any) => {
 								if (btn.customId === 'timestamp-yes') {
 									button.editReply({
 										components: [],
 										content: 'Enabled Timestamp on the embed'
-									})
+									});
 
 									preview
 										.edit({
 											content: preview.content,
 											embeds: [preview.embeds[0].setTimestamp(new Date())]
 										})
-										.catch(() => {})
+										.catch(() => {});
 								}
 
 								if (btn.customId === 'timestamp-no') {
 									button.editReply({
 										components: [],
 										content: 'Disabled Timestamp on the embed'
-									})
+									});
 
 									preview
 										.edit({
 											content: preview.content,
 											embeds: [preview.embeds[0].setTimestamp(null)]
 										})
-										.catch(() => {})
+										.catch(() => {});
 								}
-							})
+							});
 						} else if (button.values[0] === 'setAuthor') {
 							let autsel = new MessageSelectMenu()
 								.setMaxValues(1)
@@ -360,39 +360,39 @@ export async function embedCreate(
 										description: 'Set the author url',
 										value: 'author-url'
 									}
-								])
+								]);
 
 							button.reply({
 								content: 'Select one from the "Author" options',
 								ephemeral: true,
 								components: [new MessageActionRow().addComponents([autsel])]
-							})
+							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
 								btnfilt,
 								idle: 60000
-							})
+							});
 
 							titleclr.on('collect', async (menu: any) => {
-								await menu.deferUpdate()
-								if (menu.customId !== 'author-selct') return
+								await menu.deferUpdate();
+								if (menu.customId !== 'author-selct') return;
 
 								if (menu.values[0] === 'author-name') {
 									button.editReply({
 										content: 'Send me an Author name',
 										ephemeral: true,
 										components: []
-									})
+									});
 
 									let authclr = button.channel.createMessageCollector({
 										fitler,
 										time: 30000,
 										max: 1
-									})
+									});
 
 									authclr.on('collect', async (m: any) => {
-										titleclr.stop()
-										m.delete().catch(() => {})
+										titleclr.stop();
+										m.delete().catch(() => {});
 
 										preview
 											.edit({
@@ -409,8 +409,8 @@ export async function embedCreate(
 													})
 												]
 											})
-											.catch(() => {})
-									})
+											.catch(() => {});
+									});
 								}
 
 								if (menu.values[0] === 'author-icon') {
@@ -418,13 +418,13 @@ export async function embedCreate(
 										content: 'Send me the Author icon (Attachment/Image URL)',
 										ephemeral: true,
 										components: []
-									})
+									});
 
 									let authclr = button.channel.createMessageCollector({
 										fitler,
 										time: 30000,
 										max: 1
-									})
+									});
 
 									authclr.on('collect', async (m: any) => {
 										let isthumb =
@@ -432,16 +432,16 @@ export async function embedCreate(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||
 											m.attachments.first().url ||
-											''
+											'';
 										if (!isthumb)
 											return button.followUp({
 												content:
 													'This is not a Image URL/Image Attachment. Please provide a valid image.',
 												ephemeral: true
-											})
+											});
 
-										titleclr.stop()
-										m.delete().catch(() => {})
+										titleclr.stop();
+										m.delete().catch(() => {});
 
 										preview
 											.edit({
@@ -459,8 +459,8 @@ export async function embedCreate(
 													})
 												]
 											})
-											.catch(() => {})
-									})
+											.catch(() => {});
+									});
 								}
 
 								if (menu.values[0] === 'author-url') {
@@ -468,23 +468,23 @@ export async function embedCreate(
 										content: 'Send me a Author HTTPS Url',
 										ephemeral: true,
 										components: []
-									})
+									});
 
 									let authclr = button.channel.createMessageCollector({
 										fitler,
 										time: 30000,
 										max: 1
-									})
+									});
 
 									authclr.on('collect', async (m: any) => {
 										if (!m.content.startsWith('http')) {
-											m.delete().catch(() => {})
+											m.delete().catch(() => {});
 											return button.editReply(
 												'A URL should start with http protocol. Please give a valid URL.'
-											)
+											);
 										} else {
-											titleclr.stop()
-											m.delete().catch(() => {})
+											titleclr.stop();
+											m.delete().catch(() => {});
 
 											preview
 												.edit({
@@ -501,44 +501,44 @@ export async function embedCreate(
 														})
 													]
 												})
-												.catch(() => {})
+												.catch(() => {});
 										}
-									})
+									});
 								}
-							})
-						} else if (button.values[0] === 'setContent') {
+							});
+						} else if (button.values[0] === 'setMessage') {
 							button.reply({
 								content:
 									'Tell me the text you want for message outside the embed',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
-								titleclr.stop()
-								m.delete().catch(() => {})
+								titleclr.stop();
+								m.delete().catch(() => {});
 
 								preview
 									.edit({ content: m.content, embeds: [preview.embeds[0]] })
-									.catch(() => {})
-							})
+									.catch(() => {});
+							});
 						} else if (button.values[0] === 'setThumbnail') {
 							button.reply({
 								content:
 									'Send me an image for the embed thumbnail (small image at top right)',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
 								let isthumb =
@@ -546,16 +546,16 @@ export async function embedCreate(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
 									m.attachments.first().url ||
-									''
+									'';
 								if (!isthumb)
 									return button.followUp({
 										content:
 											'This is not a image url. Please provide a image url or attachment.',
 										ephemeral: true
-									})
+									});
 
-								titleclr.stop()
-								m.delete().catch(() => {})
+								titleclr.stop();
+								m.delete().catch(() => {});
 
 								preview
 									.edit({
@@ -566,23 +566,23 @@ export async function embedCreate(
 											)
 										]
 									})
-									.catch(() => {})
-							})
+									.catch(() => {});
+							});
 						} else if (button.values[0] === 'setColor') {
 							button.reply({
 								content: 'Tell me the color you need for embed',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
 								if (/^#[0-9A-F]{6}$/i.test(m.content)) {
-									m.delete().catch(() => {})
-									titleclr.stop()
+									m.delete().catch(() => {});
+									titleclr.stop();
 									preview
 										.edit({
 											content: preview.content,
@@ -592,56 +592,56 @@ export async function embedCreate(
 											button.followUp({
 												content: 'Please provide me a valid hex code',
 												ephemeral: true
-											})
-										})
+											});
+										});
 								} else {
 									await button.followUp({
 										content: 'Please provide me a valid hex code',
 										ephemeral: true
-									})
+									});
 								}
-							})
+							});
 						} else if (button.values[0] === 'setURL') {
 							button.reply({
 								content:
 									'Tell me what URL you want for embed title (hyperlink for embed title)',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
 								if (!m.content.startsWith('http')) {
-									m.delete().catch(() => {})
+									m.delete().catch(() => {});
 									return button.editReply(
 										'A URL should start with http protocol. Please give a valid URL.'
-									)
+									);
 								} else {
-									m.delete().catch(() => {})
-									titleclr.stop()
+									m.delete().catch(() => {});
+									titleclr.stop();
 									preview
 										.edit({
 											content: preview.content,
 											embeds: [preview.embeds[0].setURL(m.content)]
 										})
-										.catch(() => {})
+										.catch(() => {});
 								}
-							})
+							});
 						} else if (button.values[0] === 'setImage') {
 							button.reply({
 								content: 'Send me the image you need for embed',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
 								let isthumb =
@@ -649,14 +649,14 @@ export async function embedCreate(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
 									m.attachments.first().url ||
-									''
+									'';
 								if (!isthumb)
 									return message.reply(
 										'That is not a image url/image attachment. Please provide me a image url or attachment.'
-									)
+									);
 
-								m.delete().catch(() => {})
-								titleclr.stop()
+								m.delete().catch(() => {});
+								titleclr.stop();
 								preview
 									.edit({
 										content: preview.content,
@@ -666,53 +666,53 @@ export async function embedCreate(
 											)
 										]
 									})
-									.catch(() => {})
-							})
+									.catch(() => {});
+							});
 						} else if (button.values[0] === 'setTitle') {
 							button.reply({
 								content: 'Tell me what text you want for embed title',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
-								m.delete().catch(() => {})
-								titleclr.stop()
+								m.delete().catch(() => {});
+								titleclr.stop();
 
 								preview
 									.edit({
 										content: preview.content,
 										embeds: [preview.embeds[0].setTitle(m.content)]
 									})
-									.catch(() => {})
-							})
+									.catch(() => {});
+							});
 						} else if (button.values[0] === 'setDescription') {
 							button.reply({
 								content: 'Tell me what text you need for the embed description',
 								ephemeral: true
-							})
+							});
 
 							let titleclr = button.channel.createMessageCollector({
 								fitler,
 								time: 30000,
 								max: 1
-							})
+							});
 
 							titleclr.on('collect', async (m: any) => {
-								m.delete().catch(() => {})
-								titleclr.stop()
+								m.delete().catch(() => {});
+								titleclr.stop();
 								preview
 									.edit({
 										content: preview.content,
 										embeds: [preview.embeds[0].setDescription(m.content)]
 									})
-									.catch(() => {})
-							})
+									.catch(() => {});
+							});
 						} else if (button.values[0] === 'setFooter') {
 							let autsel = new MessageSelectMenu()
 								.setMaxValues(1)
@@ -729,39 +729,39 @@ export async function embedCreate(
 										description: 'Set the footer icon',
 										value: 'footer-icon'
 									}
-								])
+								]);
 
 							button.reply({
 								content: 'Select one from the "Footer" options',
 								ephemeral: true,
 								components: [new MessageActionRow().addComponents([autsel])]
-							})
+							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
 								btnfilt,
 								idle: 60000
-							})
+							});
 
 							titleclr.on('collect', async (menu: any) => {
-								await menu.deferUpdate()
-								if (menu.customId !== 'footer-selct') return
+								await menu.deferUpdate();
+								if (menu.customId !== 'footer-selct') return;
 
 								if (menu.values[0] === 'footer-name') {
 									button.editReply({
 										content: 'Send me an Footer name',
 										ephemeral: true,
 										components: []
-									})
+									});
 
 									let authclr = button.channel.createMessageCollector({
 										fitler,
 										time: 30000,
 										max: 1
-									})
+									});
 
 									authclr.on('collect', async (m: any) => {
-										titleclr.stop()
-										m.delete().catch(() => {})
+										titleclr.stop();
+										m.delete().catch(() => {});
 
 										preview
 											.edit({
@@ -775,8 +775,8 @@ export async function embedCreate(
 													})
 												]
 											})
-											.catch(() => {})
-									})
+											.catch(() => {});
+									});
 								}
 
 								if (menu.values[0] === 'footer-icon') {
@@ -784,13 +784,13 @@ export async function embedCreate(
 										content: 'Send me the Footer icon (Attachment/Image URL)',
 										ephemeral: true,
 										components: []
-									})
+									});
 
 									let authclr = button.channel.createMessageCollector({
 										fitler,
 										time: 30000,
 										max: 1
-									})
+									});
 
 									authclr.on('collect', async (m: any) => {
 										let isthumb =
@@ -798,16 +798,16 @@ export async function embedCreate(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||
 											m.attachments.first().url ||
-											''
+											'';
 										if (!isthumb)
 											return button.followUp({
 												content:
 													'This is not a Image URL/Image Attachment. Please provide a valid image.',
 												ephemeral: true
-											})
+											});
 
-										titleclr.stop()
-										m.delete().catch(() => {})
+										titleclr.stop();
+										m.delete().catch(() => {});
 
 										preview
 											.edit({
@@ -820,32 +820,32 @@ export async function embedCreate(
 													})
 												]
 											})
-											.catch(() => {})
-									})
+											.catch(() => {});
+									});
 								}
-							})
+							});
 						}
-					})
+					});
 					collector.on('end', async (collected: any, reason: string) => {
 						if (reason === 'time') {
 							const content = new MessageButton()
 								.setLabel('Timed Out')
 								.setStyle('DANGER')
 								.setCustomId('timeout|91817623842')
-								.setDisabled(true)
+								.setDisabled(true);
 
-							const row = new MessageActionRow().addComponents([content])
+							const row = new MessageActionRow().addComponents([content]);
 
-							await msg.edit({ embeds: [msg.embeds[0]], components: [row] })
+							await msg.edit({ embeds: [msg.embeds[0]], components: [row] });
 						}
-					})
-				})
+					});
+				});
 		} catch (err: any) {
 			console.log(
 				`${chalk.red('Error Occured.')} | ${chalk.magenta(
 					'embedCreate'
 				)} | Error: ${err.stack}`
-			)
+			);
 		}
-	})
+	});
 }

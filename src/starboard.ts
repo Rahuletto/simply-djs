@@ -42,6 +42,7 @@ export type starboardOption = {
  * @param client
  * @param reaction
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/starboard***
  * @example simplydjs.starboard(client, reaction)
  */
 

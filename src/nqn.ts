@@ -8,6 +8,7 @@ import chalk from 'chalk';
 /**
  * NQN bot feature. But you have the power to do it.
  * @param message
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/nqn***
  * @example simplydjs.nqn(message)
  */
 
@@ -27,12 +28,12 @@ export async function nqn(message: Message) {
 
 		if (st && st[0]) {
 			st.forEach(async (emojii) => {
-				let rlem = emojii.toLowerCase().replaceAll(':', '');
+				let rlem = emojii.replaceAll(':', '');
 				let emoji =
 					message.guild.emojis.cache.find((x) => x.name === rlem) ||
 					client.emojis.cache.find((x) => x.name === rlem);
 
-				if (!emoji) return;
+				if (!emoji.id) return;
 
 				reply = reply.replace(emojii, emoji.toString());
 			});

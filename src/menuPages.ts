@@ -46,6 +46,7 @@ export type menuEmbOptions = {
  * An Embed Paginator using Select menus
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/menuPages***
  * @example simplydjs.menuPages(interaction, { ... })
  */
 

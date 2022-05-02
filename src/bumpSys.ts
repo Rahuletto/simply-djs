@@ -25,10 +25,11 @@ export type bumpOptions = {
 // ------------------------------
 
 /**
- * An reliable bump remainder for **Disboard**
+ * A Very cool bump reminder system that reminds when a bump is necessary [Only Disboard]
  * @param client
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/bumpSystem***
  * @example simplydjs.bumpSystem(client, message)
  */
 
@@ -39,6 +40,7 @@ export async function bumpSystem(
 ): Promise<boolean> {
 	try {
 		if (options.auto == false) {
+			if (options.toggle == false) return;
 			const bumpo = new MessageEmbed()
 				.setTitle('Its Bump Time !')
 				.setDescription(
@@ -155,7 +157,7 @@ export async function bumpSystem(
 				});
 			}
 		} else {
-			if (!options.toggle) return;
+			if (options.toggle == false) return;
 			let bumpo = new MessageEmbed()
 				.setTitle('Its time to Bump !')
 				.setDescription(

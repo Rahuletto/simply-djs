@@ -40,6 +40,10 @@ interface requirement {
 	id: string;
 }
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ */
+
 interface btnTemplate {
 	style?: MessageButtonStyle;
 	label?: string;
@@ -92,6 +96,7 @@ interface returns {
  * @param client
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/givewaySystem***
  * @example simplydjs.giveawaySystem(client, message)
  */
 
@@ -202,7 +207,7 @@ export async function giveawaySystem(
 				time = int.options.getString('time') || options.time || '1h';
 				winners = int.options.getInteger('winners') || options.winners;
 				prize = int.options.getString('prize') || options.prize;
-			} else if (!interaction) {
+			} else if (!int) {
 				const [...args] = mes.content.split(/ +/g);
 				// @ts-ignore
 				ch = options.channel || message.mentions.channels.first();

@@ -41,9 +41,10 @@ export type memeOptions = {
 // ------------------------------
 
 /**
- * Auto meme sender so others would laugh at jokes
+ * The memes are sent automatically, so others will able to laugh at the jokes without having to do anything !
  * @param client
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/automeme***
  * @example simplydjs.automeme(client, { channelId: '1234567890123' })
  */
 

@@ -27,6 +27,7 @@ export type manageSugOptions = {
  * An **Suggestion** handler which handles all sugestions from the package
  * @param interaction
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageSug***
  * @example simplydjs.manageSug(interaction)
  */
 

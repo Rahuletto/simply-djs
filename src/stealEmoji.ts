@@ -37,6 +37,7 @@ export type stealOptions = {
  * How cool is **stealing an emoji** from another server ? Feel the power with this function.
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/stealEmoji***
  * @example simplydjs.stealEmoji(interaction)
  */
 

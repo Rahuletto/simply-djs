@@ -20,12 +20,13 @@ export type chatbotOptions = {
 // ------------------------------
 
 /**
- * A made from scratch **chatbot** which is *smarter yet friendly*
+ * A chatbot system that is both technically advanced and intelligent, and is your buddy.
  *
  * **URL** of the api: *https://simplyapi.js.org*
  * @param client
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/chatbot***
  * @example simplydjs.chatbot(client, message)
  */
 

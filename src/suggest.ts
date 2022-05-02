@@ -34,6 +34,10 @@ interface CustomizableEmbed {
 	credit?: boolean;
 }
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ */
+
 interface btnTemplate {
 	style?: MessageButtonStyle;
 	emoji?: string;
@@ -63,6 +67,7 @@ export type suggestOption = {
  * An **Beautiful** suggestion system with buttons ;D | *Required: **manageSug()***
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
  * @example simplydjs.suggestSystem(interaction)
  */
 

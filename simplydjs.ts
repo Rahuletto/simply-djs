@@ -2,17 +2,21 @@
 // -------- E R R O R S ---------
 // ------------------------------
 
-import { Erroptions, SimplyError } from './src/Error/Error';
+import { SimplyError } from './src/Error/Error';
 
 if (+process.version.slice(1, 3) - 0 < 16)
-	throw new Error(
-		`NodeJS Version 16 or newer is required, but you are using ${process.version}. See https://nodejs.org/`
-	);
+	throw new SimplyError({
+		name: `NodeJS Version 16 or newer is required, but you are using ${process.version}.`,
+		tip: `Install nodejs 16 or higher in https://nodejs.org/`
+	});
 
 try {
 	require('discord.js');
 } catch (e) {
-	throw new Error('Discord.JS is required for this package to run');
+	throw new SimplyError({
+		name: 'Discord.JS is required for this package to run',
+		tip: 'This package is optimized to run with discord.js'
+	});
 }
 
 const { version: discordJSVersion } = require(require('path').join(
@@ -22,43 +26,19 @@ const { version: discordJSVersion } = require(require('path').join(
 	'package.json'
 ));
 
-if (discordJSVersion.slice(0, 2) !== '13')
-	throw new Error(
-		`Discord.JS version 13 is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`
-	);
+if (Number(discordJSVersion.slice(0, 2)) < 13)
+	throw new SimplyError({
+		name: `Discord.JS version 13 is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
+		tip: 'This package is not optimized for Discord.JS v12 or lower.'
+	});
 
 // ------------------------------
 // ------- E X P O R T S --------
 // ------------------------------
-export const version: string = '3.0.0';
 
-/**
- * Emit Errors like Simply DJS does
- * @example simplydjs.emitError({ name: "Test", tip: "This is just to test" })
- */
+export const version: string = '3.0.0-dev-2';
 
-export async function emitError(
-	options: Erroptions = {
-		tip: 'Join the Support Server [https://discord.gg/3JzDV9T5Fn]'
-	}
-) {
-	throw new SimplyError(options);
-}
-
-/**
- * Convert **Hex string** to **RGB** Value. `(Used for Discord.js v14)`
- * @example simplydjs.toRgb('#075FFF')
- */
-export function toRgb(
-	hex: string,
-	type: 'Array' | 'String' = 'Array'
-): number[] | string {
-	let red = parseInt(hex.slice(1, 3), 16);
-	let green = parseInt(hex.slice(3, 4), 16);
-	let blue = parseInt(hex.slice(5, 7), 16);
-	if (type === 'Array') return [red, green, blue];
-	else if (type === 'String') return `rgb(${red}, ${green}, ${blue})`;
-}
+export { toRgb } from './src/Others/toRgb';
 
 export { automeme } from './src/automeme';
 export { betterBtnRole } from './src/betterBtnRole';

@@ -14,6 +14,10 @@ import { SimplyError } from './Error/Error';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ */
+
 interface btnTemplate {
 	style?: MessageButtonStyle;
 	label?: string;
@@ -55,6 +59,7 @@ export type pagesOption = {
  * @param message
  * @param pages
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/embedPages***
  * @example simplydjs.embedPages(message, [embed1, embed2] )
  */
 

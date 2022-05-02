@@ -23,6 +23,10 @@ import gsys from './model/gSys';
 // ----- I N T E R F A C E ------
 // ------------------------------
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ */
+
 interface btnTemplate {
 	style?: MessageButtonStyle;
 	label?: string;
@@ -98,9 +102,10 @@ type rerolly = {
 // ------------------------------
 
 /**
- * An Button Handler for **simplydjs package functions.**
+ * An Button Handler for **simplydjs package functions.** [Except Suggestion Handling !]
  * @param interaction
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtn***
  * @example simplydjs.manageBtn(interaction)
  */
 
@@ -216,6 +221,11 @@ export async function manageBtn(
 								}
 							]
 						});
+
+						await interaction.editReply({
+							content: `🎫 Opened your support ticket in ${ch.toString()}.`
+						});
+
 						let rlz: Role[] = [];
 
 						if (options.ticketSys?.pingRole) {
@@ -369,9 +379,7 @@ export async function manageBtn(
 							m.content = url;
 						}
 
-						response.push(
-							`[${m.author.tag} | ${m.author.id}] => \`${m.content}\``
-						);
+						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
 					});
 
 					let tr = await interaction.editReply({
@@ -388,7 +396,7 @@ export async function manageBtn(
 
 					let attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
-						`${(use.user as User).tag}.md`
+						`${(use.user as User).tag}.txt`
 					);
 
 					setTimeout(async () => {
@@ -419,6 +427,7 @@ export async function manageBtn(
 					});
 				} else if (interaction.customId === 'yea_del') {
 					await interaction.deferUpdate();
+					await (interaction.message as Message).edit({ components: [] });
 
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100

@@ -35,9 +35,10 @@ export type btnOptions = {
 // ------------------------------
 
 /**
- * A faster **button role system** | *Requires: **manageBtn()***
+ * A **Button Role System** that lets you create button roles with your own message. | Requires: ***manageBtn()***
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/btnrole***
  * @example simplydjs.btnRole(message, { data: {...} })
  */
 

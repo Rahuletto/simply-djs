@@ -4,8 +4,8 @@ import {
 	MessageEmbedFooter,
 	MessageEmbedAuthor,
 	ColorResolvable
-} from 'discord.js'
-import chalk from 'chalk'
+} from 'discord.js';
+import chalk from 'chalk';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -16,19 +16,19 @@ import chalk from 'chalk'
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor
-	title?: string
-	footer?: MessageEmbedFooter
-	description?: string
-	color?: ColorResolvable
+	author?: MessageEmbedAuthor;
+	title?: string;
+	footer?: MessageEmbedFooter;
+	description?: string;
+	color?: ColorResolvable;
 
-	credit?: boolean
+	credit?: boolean;
 }
 
 export type ghostOptions = {
-	embed?: CustomizableEmbed
-	custom?: boolean
-}
+	embed?: CustomizableEmbed;
+	custom?: boolean;
+};
 
 // ------------------------------
 // ------ F U N C T I O N -------
@@ -41,6 +41,7 @@ export type ghostOptions = {
  *
  * @param message
  * @param options
+ * @link `Documentation:` ***https://simplyd.js.org/docs/General/ghostPing***
  * @example simplydjs.ghostPing(message)
  */
 
@@ -51,7 +52,7 @@ export async function ghostPing(
 	return new Promise(async (resolve) => {
 		if (message.mentions.users.first()) {
 			try {
-				if (message.author.bot) return
+				if (message.author.bot) return;
 
 				if (
 					message.content.includes(
@@ -70,7 +71,7 @@ export async function ghostPing(
 								},
 								color: '#075FFF',
 								credit: true
-							}
+							};
 						}
 
 						const chembed: MessageEmbed = new MessageEmbed()
@@ -98,26 +99,26 @@ export async function ghostPing(
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
 							)
-							.setTimestamp()
+							.setTimestamp();
 
 						message.channel
 							.send({ embeds: [chembed] })
 							.then(async (msg: Message) => {
 								setTimeout(() => {
-									msg.delete()
-								}, 10000)
-							})
+									msg.delete();
+								}, 10000);
+							});
 					}
 
-					resolve(true)
-				} else resolve(false)
+					resolve(true);
+				} else resolve(false);
 			} catch (err: any) {
 				console.log(
 					`${chalk.red('Error Occured.')} | ${chalk.magenta(
 						'ghostPing'
 					)} | Error: ${err.stack}`
-				)
+				);
 			}
 		}
-	})
+	});
 }
