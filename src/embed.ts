@@ -252,7 +252,7 @@ export async function embedCreate(
 								});
 
 								let titleclr = button.channel.createMessageCollector({
-									fitler,
+									filter: fitler,
 									time: 30000,
 									max: 1
 								});
@@ -306,7 +306,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
-								btnfilt,
+								filter: btnfilt,
 								idle: 60000
 							});
 
@@ -369,7 +369,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
-								btnfilt,
+								filter: btnfilt,
 								idle: 60000
 							});
 
@@ -385,7 +385,7 @@ export async function embedCreate(
 									});
 
 									let authclr = button.channel.createMessageCollector({
-										fitler,
+										filter: fitler,
 										time: 30000,
 										max: 1
 									});
@@ -421,7 +421,7 @@ export async function embedCreate(
 									});
 
 									let authclr = button.channel.createMessageCollector({
-										fitler,
+										filter: fitler,
 										time: 30000,
 										max: 1
 									});
@@ -431,7 +431,7 @@ export async function embedCreate(
 											m.content.match(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||
-											m.attachments.first().url ||
+											m.attachments.first()?.url ||
 											'';
 										if (!isthumb)
 											return button.followUp({
@@ -452,7 +452,7 @@ export async function embedCreate(
 															? preview.embeds[0].author?.name
 															: '', // @ts-ignore
 														iconURL:
-															m.content || m.attachments.first().url || '',
+															m.content || m.attachments.first()?.url || '',
 														url: preview.embeds[0].author?.url
 															? preview.embeds[0].author?.url
 															: ''
@@ -471,7 +471,7 @@ export async function embedCreate(
 									});
 
 									let authclr = button.channel.createMessageCollector({
-										fitler,
+										filter: fitler,
 										time: 30000,
 										max: 1
 									});
@@ -514,7 +514,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});
@@ -535,7 +535,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});
@@ -545,7 +545,7 @@ export async function embedCreate(
 									m.content.match(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
-									m.attachments.first().url ||
+									m.attachments.first()?.url ||
 									'';
 								if (!isthumb)
 									return button.followUp({
@@ -562,7 +562,7 @@ export async function embedCreate(
 										content: preview.content,
 										embeds: [
 											preview.embeds[0].setThumbnail(
-												m.content || m.attachments.first().url || ''
+												m.content || m.attachments.first()?.url || ''
 											)
 										]
 									})
@@ -575,7 +575,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000
 							});
 
@@ -609,7 +609,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});
@@ -638,7 +638,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});
@@ -648,7 +648,7 @@ export async function embedCreate(
 									m.content.match(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
-									m.attachments.first().url ||
+									m.attachments.first()?.url ||
 									'';
 								if (!isthumb)
 									return message.reply(
@@ -662,7 +662,7 @@ export async function embedCreate(
 										content: preview.content,
 										embeds: [
 											preview.embeds[0].setImage(
-												m.content || m.attachments.first().url
+												m.content || m.attachments.first()?.url
 											)
 										]
 									})
@@ -675,7 +675,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});
@@ -738,7 +738,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageComponentCollector({
-								btnfilt,
+								filter: btnfilt,
 								idle: 60000
 							});
 
@@ -754,7 +754,7 @@ export async function embedCreate(
 									});
 
 									let authclr = button.channel.createMessageCollector({
-										fitler,
+										filter: fitler,
 										time: 30000,
 										max: 1
 									});
@@ -787,7 +787,7 @@ export async function embedCreate(
 									});
 
 									let authclr = button.channel.createMessageCollector({
-										fitler,
+										filter: fitler,
 										time: 30000,
 										max: 1
 									});
@@ -797,7 +797,7 @@ export async function embedCreate(
 											m.content.match(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||
-											m.attachments.first().url ||
+											m.attachments.first()?.url ||
 											'';
 										if (!isthumb)
 											return button.followUp({
@@ -816,7 +816,7 @@ export async function embedCreate(
 													preview.embeds[0].setFooter({
 														text: preview.embeds[0].footer?.text || '', // @ts-ignore
 														iconURL:
-															m.content || m.attachments.first().url || ''
+															m.content || m.attachments.first()?.url || ''
 													})
 												]
 											})

@@ -36,9 +36,10 @@ if (Number(discordJSVersion.slice(0, 2)) < 13)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '3.0.0-dev-2';
+export const version: string = '3.0.0-dev-3';
 
 export { toRgb } from './src/Others/toRgb';
+export { emitError } from './src/Others/emitError';
 
 export { automeme } from './src/automeme';
 export { betterBtnRole } from './src/betterBtnRole';

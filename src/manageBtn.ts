@@ -656,7 +656,7 @@ export async function manageBtn(
 						if (dt) {
 							let embed = interaction.message.embeds[0];
 
-							let tim = Number(dt.endTime.slice(0, -3));
+							let tim = Number(dt.endTime);
 							let f: EmbedFieldData[] = [];
 							embed.fields.forEach((a) => {
 								if (a.name === 'Requirements') return;

@@ -360,10 +360,16 @@ export async function giveawaySystem(
 
 					let rowew = new MessageActionRow().addComponents([link]);
 
-					await message.channel.send({
-						content: 'Giveaway has started.',
-						components: [rowew]
-					});
+					if (int) {
+						await int.editReply({
+							content: 'Giveaway has started.',
+							components: [rowew]
+						});
+					} else
+						await message.channel.send({
+							content: 'Giveaway has started.',
+							components: [rowew]
+						});
 
 					let tim = Number(Date.now() + ms(time));
 

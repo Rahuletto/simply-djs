@@ -39,25 +39,26 @@ export async function bumpSystem(
 	options: bumpOptions = {}
 ): Promise<boolean> {
 	try {
+		let bumpo: MessageEmbed = new MessageEmbed()
+			.setTitle('Its Bump Time !')
+			.setDescription(
+				'Its been 2 hours since last bump. Could someone please bump the server again ?'
+			)
+			.setTimestamp()
+			.setColor('#075FFF')
+			.setFooter({ text: 'Do !d bump to bump the server ;)' });
+
+		let bumpoo: MessageEmbed = new MessageEmbed()
+			.setTitle('Thank you')
+			.setDescription(
+				'Thank you for bumping the server. Your support means a lot. Will notify you after 2 hours'
+			)
+			.setTimestamp()
+			.setColor('#06bf00')
+			.setFooter({ text: 'Now its time to wait for 120 minutes. (2 hours)' });
+
 		if (options.auto == false) {
 			if (options.toggle == false) return;
-			const bumpo = new MessageEmbed()
-				.setTitle('Its Bump Time !')
-				.setDescription(
-					'Its been 2 hours since last bump. Could someone please bump the server again ?'
-				)
-				.setTimestamp()
-				.setColor('#075FFF')
-				.setFooter({ text: 'Do !d bump to bump the server ;)' });
-
-			const bumpoo = new MessageEmbed()
-				.setTitle('Thank you')
-				.setDescription(
-					'Thank you for bumping the server. Your support means a lot. Will notify you after 2 hours'
-				)
-				.setTimestamp()
-				.setColor('#06bf00')
-				.setFooter({ text: 'Now its time to wait for 120 minutes. (2 hours)' });
 
 			let chid: string[] = [];
 
@@ -69,12 +70,10 @@ export async function bumpSystem(
 						chid.push(options.channelId);
 					}
 
-					if (!options.embed) {
-						options.embed = {
-							bumpEmb: bumpo,
-							thankEmb: bumpoo
-						};
-					}
+					options.embed = {
+						bumpEmb: options.embed?.bumpEmb || bumpo,
+						thankEmb: options.embed?.thankEmb || bumpoo
+					};
 
 					if ((message as Message).author.id === '302050872383242240') {
 						for (let i = 0; i < chid.length; i++) {
@@ -158,16 +157,6 @@ export async function bumpSystem(
 			}
 		} else {
 			if (options.toggle == false) return;
-			let bumpo = new MessageEmbed()
-				.setTitle('Its time to Bump !')
-				.setDescription(
-					'Its been 2 hours since last bump. Could someone please bump the server again ?'
-				)
-				.setTimestamp()
-				.setColor('#075FFF')
-				.setFooter({ text: 'Do /bump to bump the server ;)' });
-
-			let bumpoo = new MessageEmbed();
 
 			if (options && (message as Message).channel) {
 				return new Promise(async (resolve, reject) => {
@@ -185,13 +174,6 @@ export async function bumpSystem(
 							(message as Message).embeds[0].description &&
 							(message as Message).embeds[0].description.includes('Bump done')
 						) {
-							let usew: string[] | string = (
-								message as Message
-							).embeds[0].description.split(/ +/g);
-
-							usew = usew[0];
-							usew = usew.replace('<@', '').replace('>', '');
-
 							let timeout = 7200000;
 							let time = Date.now() + timeout;
 
@@ -208,8 +190,6 @@ export async function bumpSystem(
 								});
 								await data.save().catch(() => {});
 							}
-
-							let rl = data.counts.find((a) => a.user === usew);
 
 							data.nxtBump = time;
 							data.channel = chid;
