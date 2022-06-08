@@ -1,0 +1,34 @@
+{
+  "JavaScript": {
+    "beautifiers": [
+      "Prettier",
+      "Pretty Diff",
+      "JS-Beautify",
+      "ESLint"
+    ],
+    "align_assignments": true,
+    "arrow_parens": "always",
+    "break_chained_methods": true,
+    "indent_size": 2,
+    "indent_style": "space",
+    "max_preserve_newlines": 2,
+    "multiline_ternary": "never",
+    "object_curly_spacing": false,
+    "wrap_line_length": 1,
+    "brace_style": "none"
+  },
+  "TypeScript": {
+    "beautifiers": [
+      "Prettier",
+      "Pretty Diff",
+      "TSLint"
+    ],
+    "break_chained_methods": true,
+    "indent_size": 2,
+    "indent_style": "space",
+    "max_preserve_newlines": 2,
+    "multiline_ternary": "never",
+    "object_curly_spacing": false,
+    "wrap_line_length": 1
+  }
+}
