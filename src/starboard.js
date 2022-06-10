@@ -68,7 +68,7 @@ async function starboard(client, reaction, options = []) {
 					.setTitle(`Jump to message`)
 					.setURL(fetchMsg.url)
 					.setImage(url)
-					.setFooter('⭐ | ID: ' + fetchMsg.id)
+					.setFooter({ text: '⭐ | ID: ' + fetchMsg.id })
 
 				const msgs = await starboard.messages.fetch({ limit: 100 })
 
@@ -139,7 +139,7 @@ async function starboard(client, reaction, options = []) {
 					.setTitle(`Jump to message`)
 					.setURL(fetchMsg.url)
 					.setImage(url)
-					.setFooter('⭐ | ID: ' + fetchMsg.id)
+					.setFooter({ text: '⭐ | ID: ' + fetchMsg.id })
 
 				const msgs = await starboard.messages.fetch({ limit: 100 })
 
