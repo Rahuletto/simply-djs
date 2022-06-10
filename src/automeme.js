@@ -83,7 +83,7 @@ async function automeme(client, options = []) {
 					.setURL(`${url}`)
 					.setImage(memeImage)
 					.setColor(options.embedColor || '#075FFF')
-					.setFooter(`🔺 ${upp} | Upvote Ratio: ${ratio}`)
+					.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` })
 				channel.send({ embeds: [embed] })
 			})
 	}, interv)
