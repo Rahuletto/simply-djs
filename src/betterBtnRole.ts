@@ -44,7 +44,7 @@ export type betterbtnOptions = {
 // ------------------------------
 
 /**
- * An **Button Role builder** that lets **admins create** button roles. | *Requires: **manageBtn()***
+ * A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  * @param client
  * @param interaction
  * @param options

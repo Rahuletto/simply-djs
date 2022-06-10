@@ -28,7 +28,7 @@ const { version: discordJSVersion } = require(require('path').join(
 
 if (Number(discordJSVersion.slice(0, 2)) < 13)
 	throw new SimplyError({
-		name: `Discord.JS version 13 is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
+		name: `Discord.JS version 13 or higher is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
 		tip: 'This package is not optimized for Discord.JS v12 or lower.'
 	});
 
@@ -36,10 +36,11 @@ if (Number(discordJSVersion.slice(0, 2)) < 13)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '3.0.0-dev-3';
+export const version: string = '3.0.0';
 
 export { toRgb } from './src/Others/toRgb';
 export { emitError } from './src/Others/emitError';
+export { ms } from './src/Others/ms';
 
 export { automeme } from './src/automeme';
 export { betterBtnRole } from './src/betterBtnRole';

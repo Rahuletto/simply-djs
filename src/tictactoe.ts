@@ -12,7 +12,7 @@ import {
 	User
 } from 'discord.js';
 import chalk from 'chalk';
-import { APIMessage } from 'discord-api-types';
+import { APIMessage } from 'discord-api-types/v10';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
@@ -31,13 +31,16 @@ interface CustomizableEmbed {
 	credit?: boolean;
 }
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tttbtntemplate*
+ */
 interface tttBtnTemplate {
 	style?: MessageButtonStyle;
 	emoji?: string;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/tictactoe*
+ * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tttbuttons*
  */
 interface tttButtons {
 	X?: tttBtnTemplate;
@@ -58,7 +61,7 @@ export type tttOptions = {
 // ------------------------------
 
 /**
- * One line implementation of a super enjoyable **tictactoe game.**
+ * One line implementation of a super enjoyable **tictactoe game**.
  * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/tictactoe***

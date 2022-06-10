@@ -34,7 +34,7 @@ interface btnTemplate {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/manageBtn#ticketSystem*
+ * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#ticketbtn*
  */
 
 interface ticketBtn {
@@ -58,6 +58,10 @@ interface CustomizableEmbed {
 	credit?: boolean;
 }
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#ticketsys*
+ */
+
 interface ticketSys {
 	ticketname?: string;
 	buttons?: ticketBtn;
@@ -66,6 +70,10 @@ interface ticketSys {
 	timed?: boolean;
 	embed?: CustomizableEmbed;
 }
+
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#btnrole*
+ */
 
 interface btnRole {
 	addedMsg: string;
@@ -102,7 +110,7 @@ type rerolly = {
 // ------------------------------
 
 /**
- * An Button Handler for **simplydjs package functions.** [Except Suggestion Handling !]
+ * A Button Handler for **simplydjs package functions.** [Except Suggestion Handling !]
  * @param interaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtn***
@@ -548,8 +556,12 @@ export async function manageBtn(
 								}
 							);
 
-							await interaction.editReply({
-								content: 'Left the giveaway ;('
+							data.entered = data.entered - 1;
+
+							await data.save().then(async (a) => {
+								await interaction.editReply({
+									content: 'Left the giveaway ;('
+								});
 							});
 						} else if (!entris) {
 							data.entry.push({
@@ -615,10 +627,12 @@ export async function manageBtn(
 
 					let entries = dt.entry;
 
-					for (let i = 0; i < winCt; i++) {
-						let winno = Math.floor(Math.random() * dt.entered);
+					if (dt.entered > 0) {
+						for (let i = 0; i < winCt; i++) {
+							let winno = Math.floor(Math.random() * dt.entered);
 
-						winArr.push(entries[winno]);
+							winArr.push(entries[winno]);
+						}
 					}
 
 					setTimeout(() => {

@@ -54,7 +54,7 @@ export type tSysOptions = {
 // ------------------------------
 
 /**
- * A **Faster** yet Powerful ticketSystem | *Required: **manageBtn()***
+ * A **Faster** yet Powerful ticketSystem | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  *
  * @param message
  * @param options

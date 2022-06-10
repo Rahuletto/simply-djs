@@ -1,11 +1,12 @@
 {
 	"name": "simply-djs",
-	"version": "3.0.0-dev-3",
+	"version": "3.0.0tsc",
 	"description": "Powerful yet a Simple, East and Beginner friendly discord.js Package for everyone",
 	"main": "lib/simplydjs.js",
 	"typings": "typings/simplydjs.d.ts",
 	"scripts": {
 		"test": "node test",
+		"dev": "npm publish --tag dev",
 		"prepare": "husky install"
 	},
 	"keywords": [
@@ -97,8 +98,8 @@
 	"dependencies": {
 		"axios": "^0.25.0",
 		"chalk": "^4.1.2",
-		"mongoose": "^6.1.4",
-		"ms": "^2.1.3"
+		"discord-api-types": "^0.33.5",
+		"mongoose": "^6.1.4"
 	},
 	"devDependencies": {
 		"@types/ms": "^0.7.31",

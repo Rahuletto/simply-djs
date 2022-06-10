@@ -7,14 +7,13 @@ import {
 	MessageButton,
 	MessageEmbed,
 	MessageEmbedAuthor,
-	MessageEmbedFooter,
 	MessageReaction,
 	TextChannel
 } from 'discord.js';
 import { SimplyError } from './Error/Error';
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/StarboardEmbed*
+ * **URL** of the Type: *https://simplyd.js.org/docs/Systems/starboard#starboardembed*
  */
 
 interface StarboardEmbed {
@@ -38,12 +37,12 @@ export type starboardOption = {
 /**
  * Efficient yet Simplest starboard system ever existed !
  *
- * `NOTE:` **Only Use it in `messageReactionAdd`, `messageReactionDelete` and `messageDelete` events.**
+ * `NOTE:` **Only Use it in `messageReactionAdd`, `messageReactionRemove` and `messageDelete` events.**
  * @param client
  * @param reaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/starboard***
- * @example simplydjs.starboard(client, reaction)
+ * @example simplydjs.starboard(client, reaction, { channelId: '1234567890123' })
  */
 
 export async function starboard(
@@ -52,8 +51,12 @@ export async function starboard(
 	options: starboardOption = {}
 ) {
 	let min = options.min || 2;
-	let m = reaction as Message;
-	let r = reaction as MessageReaction;
+	let m: Message;
+	let r: MessageReaction;
+
+	// @ts-ignore
+	if (reaction.id) m = reaction;
+	else r = reaction as MessageReaction;
 
 	if (!min || min == NaN || min == 0)
 		throw new SimplyError({
@@ -80,6 +83,26 @@ export async function starboard(
 						name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
 						tip: 'Check the permissions (or) Try using another Channel ID'
 					});
+
+				starboard = await r.message.guild.channels.fetch(options.channelId, {
+					cache: true
+				});
+
+				if (!starboard) return;
+
+				if (r.count == 0 || !r.count) {
+					let msz = await (starboard as TextChannel)?.messages.fetch({
+						limit: 100
+					});
+
+					let exist = msz.find(
+						(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + m.id
+					);
+
+					if (exist) {
+						await exist.delete();
+					}
+				}
 
 				let fetch = await r.message.fetch();
 
@@ -152,6 +175,12 @@ export async function starboard(
 					name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
 					tip: 'Check the permissions (or) Try using another Channel ID'
 				});
+
+			starboard = await m.guild.channels.fetch(options.channelId, {
+				cache: true
+			});
+
+			if (!starboard) return;
 
 			let msz = await (starboard as TextChannel)?.messages.fetch({
 				limit: 100

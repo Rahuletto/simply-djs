@@ -1,4 +1,3 @@
-import ms from 'ms';
 import {
 	MessageEmbed,
 	Message,
@@ -12,7 +11,8 @@ import {
 	MessageButtonStyle,
 	Role,
 	Permissions,
-	EmbedFieldData
+	EmbedFieldData,
+	CacheType
 } from 'discord.js';
 import chalk from 'chalk';
 import model from './model/gSys';
@@ -107,7 +107,7 @@ export async function giveawaySystem(
 ): Promise<returns> {
 	return new Promise(async (resolve) => {
 		try {
-			let interaction;
+			let interaction: any;
 			// @ts-ignore
 			if (message.commandId) {
 				interaction = message;
@@ -128,6 +128,19 @@ export async function giveawaySystem(
 				roly = await message.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
+
+			if (
+				// @ts-ignore
+				!(
+					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ||
+					roly
+				)
+			) {
+				return message.channel.send({
+					content:
+						'You Must Have • Administrator Permission (or) • Giveaway Manager Role'
+				});
+			}
 
 			options.winners ??= 1;
 
@@ -207,11 +220,14 @@ export async function giveawaySystem(
 				time = int.options.getString('time') || options.time || '1h';
 				winners = int.options.getInteger('winners') || options.winners;
 				prize = int.options.getString('prize') || options.prize;
-			} else if (!int) {
+			} else if (!interaction) {
 				const [...args] = mes.content.split(/ +/g);
 				// @ts-ignore
-				ch = options.channel || message.mentions.channels.first();
-				time = options.time || args[1];
+				ch =
+					options.channel ||
+					message.mentions.channels.first() ||
+					message.channel;
+				time = options.time || args[1] || '1h';
 				winners = args[2] || options.winners;
 				prize = options.prize || args.slice(3).join(' ');
 			}
@@ -261,9 +277,15 @@ export async function giveawaySystem(
 
 			let row = new MessageActionRow().addComponents([enter, reroll, end]);
 
-			let endtime = Number((Date.now() + ms(time)).toString().slice(0, -3));
+			time = ms(time);
+
+			let endtime = Number((Date.now() + time).toString().slice(0, -3));
 
 			options.fields = options.fields || [
+				{
+					name: 'Prize',
+					value: `{prize}`
+				},
 				{
 					name: 'Hosted By',
 					value: `{hosted}`,
@@ -312,7 +334,7 @@ export async function giveawaySystem(
 						.replaceAll('{entered}', '0') || prize
 				)
 				.setColor(options.embed?.color || '#075FFF')
-				.setTimestamp(Number(Date.now() + ms(time)))
+				.setTimestamp(Number(Date.now() + time))
 				.setFooter(
 					options.embed?.credit
 						? options.embed?.footer
@@ -341,7 +363,7 @@ export async function giveawaySystem(
 
 			await ch
 				.send({ content: content, embeds: [embed], components: [row] })
-				.then(async (msg: any) => {
+				.then(async (msg: Message) => {
 					resolve({
 						message: msg.id,
 						winners: winners,
@@ -360,8 +382,8 @@ export async function giveawaySystem(
 
 					let rowew = new MessageActionRow().addComponents([link]);
 
-					if (int) {
-						await int.editReply({
+					if (int && interaction) {
+						await int.followUp({
 							content: 'Giveaway has started.',
 							components: [rowew]
 						});
@@ -371,7 +393,7 @@ export async function giveawaySystem(
 							components: [rowew]
 						});
 
-					let tim = Number(Date.now() + ms(time));
+					let tim = Number(Date.now() + time);
 
 					let crete = new model({
 						message: msg.id,
@@ -490,6 +512,8 @@ export async function giveawaySystem(
 										});
 									}
 
+									let allComp = await msg.components[0];
+
 									if (dt.entered <= 0 || !winArr[0]) {
 										embed
 											.setTitle('No one entered')
@@ -505,19 +529,13 @@ export async function giveawaySystem(
 													  }
 											);
 
-										(
-											msg.components[0].components[0] as MessageButton
-										).setDisabled(true);
-										(
-											msg.components[0].components[1] as MessageButton
-										).setDisabled(true);
-										(
-											msg.components[0].components[2] as MessageButton
-										).setDisabled(true);
+										allComp.components[0].disabled = true;
+										allComp.components[1].disabled = true;
+										allComp.components[2].disabled = true;
 
 										return await msg.edit({
-											embeds: [embed],
-											components: msg.components as MessageActionRow[]
+											embeds: [embed], //@ts-ignore
+											components: [allComp]
 										});
 									}
 
@@ -553,19 +571,13 @@ export async function giveawaySystem(
 												  }
 										);
 
-									(
-										msg.components[0].components[0] as MessageButton
-									).setDisabled(true);
-									(
-										msg.components[0].components[1] as MessageButton
-									).setDisabled(false);
-									(
-										msg.components[0].components[2] as MessageButton
-									).setDisabled(true);
+									allComp.components[0].disabled = true;
+									allComp.components[1].disabled = false;
+									allComp.components[2].disabled = true;
 
 									await msg.edit({
 										embeds: [embed],
-										components: msg.components as MessageActionRow[]
+										components: [allComp]
 									});
 								}
 							}, 5200);
@@ -580,4 +592,47 @@ export async function giveawaySystem(
 			);
 		}
 	});
+}
+
+function ms(str: string) {
+	let sum = 0,
+		time,
+		type,
+		val;
+
+	let arr: string[] = ('' + str)
+		.split(' ')
+		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
+
+	let length = arr.length;
+
+	for (let i = 0; i < length; i++) {
+		time = arr[i];
+		type = time.match(/[wdhms]$/i);
+
+		if (type) {
+			val = Number(time.replace(type[0], ''));
+
+			switch (type[0].toLowerCase()) {
+				case 'w':
+					sum += val * 604800000;
+					break;
+				case 'd':
+					sum += val * 86400000;
+					break;
+				case 'h':
+					sum += val * 3600000;
+					break;
+				case 'm':
+					sum += val * 60000;
+					break;
+				case 's':
+					sum += val * 1000;
+					break;
+			}
+		} else if (!isNaN(parseFloat(time)) && isFinite(parseFloat(time))) {
+			sum += parseFloat(time);
+		}
+	}
+	return sum;
 }

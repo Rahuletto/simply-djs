@@ -25,7 +25,7 @@ interface btnTemplate {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/embedPages*
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/embedPages#pagebuttons*
  */
 
 interface Pagebuttons {
@@ -55,7 +55,8 @@ export type pagesOption = {
 // ------------------------------
 
 /**
- * Description: An *powerful yet customizable* **Embed Paginator**
+ * An *powerful yet customizable* **Embed Paginator**
+ *
  * @param message
  * @param pages
  * @param options

@@ -25,7 +25,9 @@ export type bumpOptions = {
 // ------------------------------
 
 /**
- * A Very cool bump reminder system that reminds when a bump is necessary [Only Disboard]
+ * A Very cool bump reminder system that reminds when a bump is necessary [Only Disboard].
+ *
+ * **Requires you to have this in `messageCreate` and `ready` event**
  * @param client
  * @param message
  * @param options
@@ -36,7 +38,7 @@ export type bumpOptions = {
 export async function bumpSystem(
 	client: Client,
 	message: Message | bumpOptions,
-	options: bumpOptions = {}
+	options: bumpOptions
 ): Promise<boolean> {
 	try {
 		let bumpo: MessageEmbed = new MessageEmbed()
@@ -57,8 +59,36 @@ export async function bumpSystem(
 			.setColor('#06bf00')
 			.setFooter({ text: 'Now its time to wait for 120 minutes. (2 hours)' });
 
-		if (options.auto == false) {
-			if (options.toggle == false) return;
+		if ((!options && (message as bumpOptions)) || (!options && !message)) {
+			return new Promise(async (resolve, reject) => {
+				setInterval(async () => {
+					let data = await db.find({
+						counts: []
+					});
+
+					data.forEach(async (dt) => {
+						if (dt.nxtBump && dt.nxtBump < Date.now()) {
+							dt.nxtBump = undefined;
+							await dt.save().catch(() => {});
+
+							let cho = await client.channels.fetch(dt.channel, {
+								force: true
+							});
+
+							await (cho as TextChannel).send({
+								content: message.content || '\u200b',
+								embeds: [(message as bumpOptions).embed?.bumpEmb || bumpo]
+							});
+
+							resolve(true);
+						} else return;
+					});
+				}, 5000);
+			});
+		}
+
+		if (options?.auto == false) {
+			if (options?.toggle == false) return;
 
 			let chid: string[] = [];
 
@@ -89,12 +119,14 @@ export async function bumpSystem(
 									let time = Date.now() + timeout;
 
 									let data = await db.findOne({
-										channel: options.channelId[i]
+										channel: chid[i]
 									});
 									if (!data) {
 										data = new db({
-											channel: options.channelId[i],
-											nxtBump: undefined
+											counts: [],
+											guild: (message as Message).guild.id,
+											channel: chid[i],
+											nxtBump: time
 										});
 										await data.save().catch(() => {});
 									}
@@ -113,60 +145,19 @@ export async function bumpSystem(
 						}
 					}
 				});
-			} else if (!options && message.channelId) {
-				return new Promise(async (resolve, reject) => {
-					if (Array.isArray(message.channelId)) {
-						chid = message.channelId;
-					} else if (!Array.isArray(message.channelId)) {
-						chid.push(message.channelId);
-					}
-					setInterval(async () => {
-						for (let i = 0; i < chid.length; i++) {
-							let data = await db.findOne({
-								channel: chid[i]
-							});
-							if (!data) {
-								data = new db({
-									channel: chid[i],
-									nxtBump: undefined
-								});
-								await data.save().catch(() => {});
-							}
-
-							let time = data.nxtBump;
-
-							if (time && time !== undefined && Date.now() > time) {
-								data.nxtBump = undefined;
-
-								await data.save().catch(() => {});
-
-								let cho = await client.channels.fetch(chid[i], {
-									cache: true
-								});
-
-								await (cho as TextChannel).send({
-									content: message.content || '\u200b',
-									embeds: [(message as bumpOptions).embed?.bumpEmb || bumpo]
-								});
-
-								resolve(true);
-							} else return;
-						}
-					}, 5000);
-				});
 			}
-		} else {
-			if (options.toggle == false) return;
+		} else if (message.content || options?.auto == true) {
+			if (options?.toggle == false) return;
 
-			if (options && (message as Message).channel) {
+			if ((message as Message)?.channel) {
 				return new Promise(async (resolve, reject) => {
 					if ((message as Message).author.id === '302050872383242240') {
 						let chid = (message as Message).channel.id;
 						let guild = (message as Message).guild.id;
 
 						options.embed = {
-							bumpEmb: options.embed?.bumpEmb || bumpo,
-							thankEmb: options.embed?.thankEmb || bumpoo
+							bumpEmb: options?.embed?.bumpEmb || bumpo,
+							thankEmb: options?.embed?.thankEmb || bumpoo
 						};
 
 						if (
@@ -186,7 +177,7 @@ export async function bumpSystem(
 									counts: [],
 									guild: guild,
 									channel: chid,
-									nxtBump: undefined
+									nxtBump: time
 								});
 								await data.save().catch(() => {});
 							}
@@ -203,35 +194,6 @@ export async function bumpSystem(
 							resolve(true);
 						}
 					}
-				});
-			} else if (
-				(!options && (message as bumpOptions)) ||
-				(!options && !message)
-			) {
-				return new Promise(async (resolve, reject) => {
-					setInterval(async () => {
-						let data = await db.find({
-							nxtBump: Date.now()
-						});
-
-						data.forEach(async (dt) => {
-							if (dt.nxtBump && dt.nxtBump < Date.now()) {
-								dt.nxtBump = undefined;
-								await dt.save().catch(() => {});
-
-								let cho = await client.channels.fetch(dt.channel, {
-									force: true
-								});
-
-								await (cho as TextChannel).send({
-									content: message.content || '\u200b',
-									embeds: [(message as bumpOptions).embed?.bumpEmb || bumpo]
-								});
-
-								resolve(true);
-							} else return;
-						});
-					}, 10000);
 				});
 			}
 		}

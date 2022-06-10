@@ -12,12 +12,20 @@ import { SimplyError } from './Error/Error';
 // ----- I N T E R F A C E ------
 // ------------------------------
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#deleteopt*
+ */
+
 interface deleteOpt {
 	enable?: boolean;
 	label?: string;
 	description?: string;
 	emoji?: string;
 }
+
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#dataobj*
+ */
 
 interface dataObj {
 	label?: string;
@@ -43,11 +51,11 @@ export type menuEmbOptions = {
 // ------------------------------
 
 /**
- * An Embed Paginator using Select menus
+ * An Embed paginator using Select Menus
  * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/menuPages***
- * @example simplydjs.menuPages(interaction, { ... })
+ * @example simplydjs.menuPages(interaction, { data: {...} })
  */
 
 export async function menuPages(
@@ -163,7 +171,7 @@ export async function menuPages(
 					return menu.editReply({
 						content: "You cannot access other's pagination."
 					});
-				else collector.stop('decline');
+				else collector.stop('delete');
 			}
 
 			for (let i = 0; i < data.length; i++) {

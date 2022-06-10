@@ -1,16 +1,13 @@
 import {
-	Client,
 	Message,
 	MessageEmbed,
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageButton,
 	CommandInteraction,
-	MessageButtonStyle,
 	MessageEmbedAuthor,
 	MessageEmbedFooter,
 	ColorResolvable,
-	ButtonInteraction,
 	MessageSelectOptionData,
 	Permissions
 } from 'discord.js';
@@ -220,7 +217,7 @@ export async function embedCreate(
 						m: any //@ts-ignore
 					) => m.user.id === message.member.user.id;
 					let collector = msg.createMessageComponentCollector({
-						filter,
+						filter: filter,
 						idle: 1000 * 60 * 3
 					});
 
@@ -698,7 +695,7 @@ export async function embedCreate(
 							});
 
 							let titleclr = button.channel.createMessageCollector({
-								fitler,
+								filter: fitler,
 								time: 30000,
 								max: 1
 							});

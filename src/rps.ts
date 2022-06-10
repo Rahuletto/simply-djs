@@ -12,7 +12,7 @@ import {
 	User
 } from 'discord.js';
 import chalk from 'chalk';
-import { APIMessage } from 'discord-api-types';
+import { APIMessage } from 'discord-api-types/v10';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
@@ -39,7 +39,7 @@ interface btnTemplate {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/rps*
+ * **URL** of the Type: *https://simplyd.js.org/docs/Fun/rps#rpsbuttons*
  */
 
 interface rpsButtons {

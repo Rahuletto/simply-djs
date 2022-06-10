@@ -32,10 +32,10 @@ interface CustomizableEmbed {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/calculator*
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/calculator#calcbuttons*
  */
 
-interface calcBtnStyle {
+interface calcButtons {
 	numbers?: MessageButtonStyle;
 	symbols?: MessageButtonStyle;
 	delete?: MessageButtonStyle;
@@ -43,7 +43,7 @@ interface calcBtnStyle {
 
 export type calcOptions = {
 	embed?: CustomizableEmbed;
-	buttons?: calcBtnStyle;
+	buttons?: calcButtons;
 };
 
 // ------------------------------

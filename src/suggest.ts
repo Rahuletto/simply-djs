@@ -18,7 +18,7 @@ import {
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
 import db from './model/suggestion';
-import { APIMessage } from 'discord-api-types';
+import { APIMessage } from 'discord-api-types/v10';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
@@ -44,7 +44,7 @@ interface btnTemplate {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/suggestSystem*
+ * **URL** of the Type: *https://simplyd.js.org/docs/Systems/suggestSystem#suggestbuttons*
  */
 
 interface suggestButtons {
@@ -64,11 +64,11 @@ export type suggestOption = {
 // ------------------------------
 
 /**
- * An **Beautiful** suggestion system with buttons ;D | *Required: **manageSug()***
+ * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
  * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
- * @example simplydjs.suggestSystem(interaction)
+ * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
  */
 
 export async function suggestSystem(

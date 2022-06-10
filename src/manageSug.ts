@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 
 import db from './model/suggestion';
-import { APIMessage, APIEmbed } from 'discord-api-types';
+import { APIMessage, APIEmbed } from 'discord-api-types/v10';
 import { votz } from './model/suggestion';
 import chalk from 'chalk';
 
@@ -24,7 +24,7 @@ export type manageSugOptions = {
 // ------------------------------
 
 /**
- * An **Suggestion** handler which handles all sugestions from the package
+ * A **Suggestion** handler which handles all sugestions from the package
  * @param interaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageSug***
@@ -58,6 +58,26 @@ export async function manageSug(
 				}
 
 				let oldemb = button.message.embeds[0];
+
+				let likesnd = oldemb.fields[1].value.split(/\s+/);
+				let likes: number | string = likesnd[1].replaceAll('`', '');
+				let dislikes: number | string = likesnd[3].replaceAll('`', '');
+
+				if (
+					(!oldemb.fields[1].value.includes('%') && !isNaN(parseInt(likes))) ||
+					(!oldemb.fields[1].value.includes('%') && !isNaN(parseInt(dislikes)))
+				) {
+					likes = parseInt(likes);
+					dislikes = parseInt(dislikes);
+
+					let l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
+					let d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
+
+					data.votes = l.concat(d);
+					await data.save().catch(() => {});
+
+					await calc(oldemb, button.message);
+				}
 
 				if (
 					// @ts-ignore
@@ -93,15 +113,16 @@ export async function manageSug(
 							let vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
-							let ot: any[] | votz =
-								data.votes.find((m) => m.user.toString() !== btn.user.id) || [];
+							let ot: any[] | votz[] =
+								data.votes.filter((m) => m.user.toString() !== btn.user.id) ||
+								[];
 
 							if (!Array.isArray(ot)) {
 								ot = [ot];
 							}
 
 							if (!vt || vt.vote === null) {
-								let vot = { user: btn.user.id, vote: 'down' };
+								let vot: votz = { user: btn.user.id, vote: 'down' };
 								ot.push(vot);
 								data.votes = ot;
 								await data.save().catch(() => {});
@@ -126,7 +147,7 @@ export async function manageSug(
 										components: []
 									});
 								} else if (vt.vote === 'up') {
-									let vot = { user: btn.user.id, vote: 'down' };
+									let vot: votz = { user: btn.user.id, vote: 'down' };
 									ot.push(vot);
 									data.votes = ot;
 									await data.save().catch(() => {});
@@ -185,15 +206,16 @@ export async function manageSug(
 					!button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
-					let ot: any[] | votz =
-						data.votes.find((m) => m.user.toString() !== button.user.id) || [];
+					let ot: any[] | votz[] =
+						data.votes.filter((m) => m.user.toString() !== button.user.id) ||
+						[];
 
 					if (!Array.isArray(ot)) {
 						ot = [ot];
 					}
 
 					if (!vt || vt.vote === null) {
-						let vot = { user: button.user.id, vote: 'down' };
+						let vot: votz = { user: button.user.id, vote: 'down' };
 						ot.push(vot);
 						data.votes = ot;
 						await data.save().catch(() => {});
@@ -218,7 +240,7 @@ export async function manageSug(
 								components: []
 							});
 						} else if (vt.vote === 'up') {
-							let vot = { user: button.user.id, vote: 'down' };
+							let vot: votz = { user: button.user.id, vote: 'down' };
 							ot.push(vot);
 							data.votes = ot;
 							await data.save().catch(() => {});
@@ -248,6 +270,26 @@ export async function manageSug(
 				}
 
 				let oldemb = button.message.embeds[0];
+
+				let likesnd = oldemb.fields[1].value.split(/\s+/);
+				let likes: number | string = likesnd[1].replaceAll('`', '');
+				let dislikes: number | string = likesnd[3].replaceAll('`', '');
+
+				if (
+					(!oldemb.fields[1].value.includes('%') && !isNaN(parseInt(likes))) ||
+					(!oldemb.fields[1].value.includes('%') && !isNaN(parseInt(dislikes)))
+				) {
+					likes = parseInt(likes);
+					dislikes = parseInt(dislikes);
+
+					let l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
+					let d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
+
+					data.votes = l.concat(d);
+					await data.save().catch(() => {});
+
+					await calc(oldemb, button.message);
+				}
 
 				if (
 					// @ts-ignore
@@ -283,15 +325,16 @@ export async function manageSug(
 							let vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
-							let ot: any[] | votz =
-								data.votes.find((m) => m.user.toString() !== btn.user.id) || [];
+							let ot: any[] | votz[] =
+								data.votes.filter((m) => m.user.toString() !== btn.user.id) ||
+								[];
 
 							if (!Array.isArray(ot)) {
 								ot = [ot];
 							}
 
 							if (!vt || vt.vote === null) {
-								let vot = { user: btn.user.id, vote: 'up' };
+								let vot: votz = { user: btn.user.id, vote: 'up' };
 								ot.push(vot);
 								data.votes = ot;
 								await data.save().catch(() => {});
@@ -315,7 +358,7 @@ export async function manageSug(
 										components: []
 									});
 								} else if (vt.vote === 'down') {
-									let vot = { user: btn.user.id, vote: 'up' };
+									let vot: votz = { user: btn.user.id, vote: 'up' };
 									ot.push(vot);
 									data.votes = ot;
 									await data.save().catch(() => {});
@@ -373,15 +416,16 @@ export async function manageSug(
 					!button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
-					let ot: any[] | votz =
-						data.votes.find((m) => m.user.toString() !== button.user.id) || [];
+					let ot: any[] | votz[] =
+						data.votes.filter((m) => m.user.toString() !== button.user.id) ||
+						[];
 
 					if (!Array.isArray(ot)) {
 						ot = [ot];
 					}
 
 					if (!vt || vt.vote === null) {
-						let vot = { user: button.user.id, vote: 'up' };
+						let vot: votz = { user: button.user.id, vote: 'up' };
 						ot.push(vot);
 						data.votes = ot;
 						await data.save().catch(() => {});
@@ -405,7 +449,7 @@ export async function manageSug(
 								components: []
 							});
 						} else if (vt.vote === 'down') {
-							let vot = { user: button.user.id, vote: 'up' };
+							let vot: votz = { user: button.user.id, vote: 'up' };
 							ot.push(vot);
 							data.votes = ot;
 							await data.save().catch(() => {});
@@ -447,8 +491,8 @@ export async function manageSug(
 					});
 				}
 
-				let dislik = d.length;
-				let lik = l.length;
+				let dislik = d.length || 0;
+				let lik = l.length || 0;
 
 				if (lik <= 0) {
 					lik = 0;
@@ -463,10 +507,18 @@ export async function manageSug(
 
 				let dPercent = (dislik * 100) / total;
 
+				uPercent = parseInt(uPercent.toPrecision(3)) || 0;
+				dPercent = parseInt(dPercent.toPrecision(3)) || 0;
+
 				let st = '⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛';
 
 				if (uPercent / 10 + dPercent / 10 != 0 || total != 0)
 					st = '🟩'.repeat(uPercent / 10) + '🟥'.repeat(dPercent / 10);
+				else if (total == 0) {
+					st = '⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛';
+					uPercent = 0;
+					dPercent = 0;
+				}
 
 				(msg.components[0].components[0] as MessageButton).label =
 					lik.toString();

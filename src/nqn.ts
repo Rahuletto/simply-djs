@@ -20,6 +20,8 @@ export async function nqn(message: Message) {
 		let msg = message.content;
 		let str = msg.match(/(?<=:)([^:\s]+)(?=:)/gi);
 
+		if (msg.includes('<:') || msg.includes('<a:')) return;
+
 		msg = msg.replace('<:', '').replace('<a:', '');
 
 		let st = msg.match(/(:)([^:\s]+)(:)/gi);
@@ -33,9 +35,9 @@ export async function nqn(message: Message) {
 					message.guild.emojis.cache.find((x) => x.name === rlem) ||
 					client.emojis.cache.find((x) => x.name === rlem);
 
-				if (!emoji.id) return;
+				if (!emoji?.id) return;
 
-				reply = reply.replace(emojii, emoji.toString());
+				reply = reply.replace(emojii, emoji?.toString());
 			});
 
 			let webhook = await (

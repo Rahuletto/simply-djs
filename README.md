@@ -10,23 +10,23 @@
 
 <br>
 <p align="center">
-   <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge" /></a>
- <a href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs?style=for-the-badge" /></a>
-   <br>
-   <a href="https://simplyd.js.org"><img src="https://img.shields.io/badge/Simply--DJS-Documentation-075FFF?style=for-the-badge"/>
-      <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord"/>
-      <br>
+<a class="shield" href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge" /></a> 
+ <a class="shield" href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs?style=for-the-badge" /></a>
+   <br></br>
+   <a class="shield" href="https://simplyd.js.org"><img src="https://img.shields.io/badge/Simply--DJS-Documentation-075FFF?style=for-the-badge"/></a> 
+      <a class="shield" href="https://discord.gg/3JzDV9T5Fn"><img src="https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord"/></a> 
+      <br></br>
    <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
-      
+
 </p>
 
 ---
 
 <br>
 
-## 🖥️ <b>How to install ?
+## 🖥️ <b>How to install ?</b>
 
-(Use any one command)
+(Use any one method)
 
 ```
 npm install simply-djs
@@ -41,7 +41,7 @@ pnpm add simply-djs
 ```
 
 ```ts
-import sdjs from 'https://cdn.skypack.dev/simply-djs';
+import simplydjs from 'https://cdn.skypack.dev/simply-djs';
 ```
 
 <br>
@@ -49,20 +49,31 @@ import sdjs from 'https://cdn.skypack.dev/simply-djs';
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 
 - ## ⚡ Breaking Changes !
-
   - Conversion to Typescript
   - Conversion to Mongoose
   - Uniform Options just like discord.js
+
+<br></br>
 
 - ## 🔨 Simply-DJS v3
   - Total package got remastered !
   - New Dependencies !
   - Massive Bug squash 🐞
   - Changed to [Simply API](https://simplyapi.js.org) for chatbot
-  - Removal of `modmail`, `rankCard`, `stealSticker`, `clickBtn`, `suggestBtn` | Addition of `connect`, `manageBtn` and `manageSug`
+  - Removal of `modmail`, `rankCard`, `stealSticker`, `clickBtn` | Addition of `connect`, `manageBtn`
   - 100% Promise Based
   - Faster and Smaller
-    <br>
+
+<br></br>
+
+- ## 🗒 Documentation
+  - Massive UI overhaul
+  - Simpler Experience
+  - Detailed documentation
+  - Smoother animations
+  - Minor additions like `Tags`
+
+<br></br>
 
 # 🤔 But Why ?
 
@@ -72,7 +83,7 @@ import sdjs from 'https://cdn.skypack.dev/simply-djs';
 - Beginner Friendly
 - Easier than any other package
 - 100% Slash Support
-- 20 Functions
+- 22+ Functions
 - Open source project !
 - Simple & Understandable **[Documentation](https://simplyd.js.org)**
 
