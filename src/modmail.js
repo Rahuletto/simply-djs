@@ -82,7 +82,7 @@ async function modmail(client, message, options = []) {
 					.setDescription(
 						`As this command is used in dms.. We dont know what guild you are trying to open the modmail. Please select the guild in the select menu`
 					)
-					.setFooter(foot)
+					.setFooter({ text: foot })
 					.setColor('#075FFF')
 
 				message.channel
@@ -245,7 +245,7 @@ async function modmail(client, message, options = []) {
 											.setDescription(
 												`***You have opened a modmail.***\nPlease wait for the *support team* to contact with you.\n***I will react to your message if it is delivered***`
 											)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 											.setColor('#075FFF')
 
 										message.author
@@ -279,7 +279,7 @@ async function modmail(client, message, options = []) {
 															)
 															.setTimestamp()
 															.setColor('#c90000')
-															.setFooter(foot)
+															.setFooter({ text: foot })
 
 														button
 															.reply({
@@ -306,7 +306,7 @@ async function modmail(client, message, options = []) {
 																			)
 																			.setTimestamp()
 																			.setColor('#c90000')
-																			.setFooter(foot)
+																			.setFooter({ text: foot })
 
 																		setTimeout(() => {
 																			message.author.send({ embeds: [embaaa] })
@@ -400,7 +400,7 @@ async function modmail(client, message, options = []) {
 											.setThumbnail(guild.iconURL())
 											.setTimestamp()
 											.setColor(options.embedColor || '#075FFF')
-											.setFooter(foot)
+											.setFooter({ text: foot })
 
 										let pingrole = []
 										if (options.pingRole) {
@@ -530,7 +530,7 @@ async function modmail(client, message, options = []) {
 														)
 														.setTimestamp()
 														.setColor('#c90000')
-														.setFooter(foot)
+														.setFooter({ text: foot })
 
 													button
 														.reply({
@@ -557,7 +557,7 @@ async function modmail(client, message, options = []) {
 																		)
 																		.setTimestamp()
 																		.setColor('#c90000')
-																		.setFooter(foot)
+																		.setFooter({ text: foot })
 
 																	setTimeout(() => {
 																		message.author.send({ embeds: [embaaa] })
@@ -610,7 +610,7 @@ async function modmail(client, message, options = []) {
 													msg.author.displayAvatarURL()
 												)
 												.setDescription(msg.content)
-												.setFooter(foot)
+												.setFooter({ text: foot })
 												.setImage(
 													msg.attachments.first()
 														? msg.attachments.first().url
@@ -640,7 +640,7 @@ async function modmail(client, message, options = []) {
 				.setDescription(
 					`***You have opened a modmail.***\nPlease wait for the *support team* to contact with you.\n***I will react to your message if it is delivered***`
 				)
-				.setFooter(foot)
+				.setFooter({ text: foot })
 				.setColor('#075FFF')
 
 			let nopeembed = new Discord.MessageEmbed()
@@ -648,7 +648,7 @@ async function modmail(client, message, options = []) {
 				.setDescription(
 					`Sorry but your ***dms are closed.*** You should **open your dms** to contact with the support team.`
 				)
-				.setFooter(foot)
+				.setFooter({ text: foot })
 				.setColor('#cc0000')
 
 			if (options.blacklistUser) {
@@ -728,7 +728,7 @@ async function modmail(client, message, options = []) {
 										message.author.displayAvatarURL()
 									)
 									.setDescription(msg.content)
-									.setFooter(foot)
+									.setFooter({ text: foot })
 									.setImage(
 										msg.attachments.first() ? msg.attachments.first().url : ''
 									)
@@ -758,7 +758,7 @@ async function modmail(client, message, options = []) {
 						.setThumbnail(message.guild.iconURL())
 						.setTimestamp()
 						.setColor(options.embedColor || '#075FFF')
-						.setFooter(foot)
+						.setFooter({ text: foot })
 
 					let supportRole =
 						message.guild.roles.cache.get(options.role) || '***Support Team***'
@@ -795,7 +795,7 @@ async function modmail(client, message, options = []) {
 									)
 									.setTimestamp()
 									.setColor('#c90000')
-									.setFooter(foot)
+									.setFooter({ text: foot })
 
 								button
 									.reply({
@@ -821,7 +821,7 @@ async function modmail(client, message, options = []) {
 													)
 													.setTimestamp()
 													.setColor('#c90000')
-													.setFooter(foot)
+													.setFooter({ text: foot })
 
 												setTimeout(() => {
 													message.author.send({ embeds: [embaaa] })
@@ -871,7 +871,7 @@ async function modmail(client, message, options = []) {
 						let tosupport = new Discord.MessageEmbed()
 							.setAuthor(msg.author.tag, msg.author.displayAvatarURL())
 							.setDescription(msg.content)
-							.setFooter(foot)
+							.setFooter({ text: foot })
 							.setImage(
 								msg.attachments.first() ? msg.attachments.first().url : ''
 							)
