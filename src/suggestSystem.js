@@ -74,7 +74,7 @@ async function suggestSystem(client, message, args, options = []) {
 				.setDescription(`Is this your suggestion ? \`${suggestion}\``)
 				.setTimestamp()
 				.setColor(options.embedColor || '#075FFF')
-				.setFooter(foot)
+				.setFooter({ text: foot })
 
 			interaction
 				.followUp({ embeds: [embedo], components: [row1], ephemeral: true })
@@ -99,7 +99,7 @@ async function suggestSystem(client, message, args, options = []) {
 									interaction.user.displayAvatarURL()
 								)
 								.setColor(options.embedColor || '#075FFF')
-								.setFooter(foot)
+								.setFooter({ text: foot })
 								.addFields(
 									{
 										name: 'Status:',
@@ -183,7 +183,7 @@ async function suggestSystem(client, message, args, options = []) {
 				.setTimestamp()
 				.setImage(url)
 				.setColor(options.embedColor || '#075FFF')
-				.setFooter(foot)
+				.setFooter({ text: foot })
 
 			message.channel
 				.send({ embeds: [embedo], components: [row1] })
@@ -215,7 +215,7 @@ async function suggestSystem(client, message, args, options = []) {
 									message.author.displayAvatarURL()
 								)
 								.setColor(options.embedColor || '#075FFF')
-								.setFooter(foot)
+								.setFooter({ text: foot })
 								.setImage(url)
 								.addFields(
 									{
