@@ -84,7 +84,7 @@ async function tictactoe(message, options = []) {
 					(message.user ? message.user : message.author).displayAvatarURL()
 				)
 				.setColor(options.embedColor || 0x075fff)
-				.setFooter(foot)
+				.setFooter({ text: foot })
 
 			let accept = new Discord.MessageButton()
 				.setLabel('Accept')
@@ -199,7 +199,7 @@ async function tictactoe(message, options = []) {
 					let epm = new Discord.MessageEmbed()
 						.setTitle('TicTacToe..')
 						.setColor(options.embedColor || 0x075fff)
-						.setFooter(foot)
+						.setFooter({ text: foot })
 						.setTimestamp()
 
 					let msg
@@ -830,7 +830,7 @@ async function tictactoe(message, options = []) {
 							(message.user ? message.user : message.author).displayAvatarURL()
 						)
 						.setColor(options.timeoutEmbedColor || 0xc90000)
-						.setFooter(foot)
+						.setFooter({ text: foot })
 						.setDescription('Ran out of time!\nTime limit: 30s')
 					m.edit({
 						content: '<@' + opponent.id + '>. Didnt accept in time',
@@ -846,7 +846,7 @@ async function tictactoe(message, options = []) {
 							(message.user ? message.user : message.author).displayAvatarURL()
 						)
 						.setColor(options.timeoutEmbedColor || 0xc90000)
-						.setFooter(foot)
+						.setFooter({ text: foot })
 						.setDescription(`${opponent.user.tag} has declined your game!`)
 					m.edit({
 						embeds: [embed],
