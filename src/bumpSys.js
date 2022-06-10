@@ -42,7 +42,7 @@ async function bumpSys(client, db, options = []) {
 								)
 								.setTimestamp()
 								.setColor('#06bf00')
-								.setFooter('Now its time to wait for 120 minutes. (2 hours)')
+								.setFooter({ text: 'Now its time to wait for 120 minutes. (2 hours)' })
 
 							message.channel.send({
 								content: options.content || '\u200b',
@@ -69,7 +69,7 @@ async function bumpSys(client, db, options = []) {
 							)
 							.setTimestamp()
 							.setColor('#075FFF')
-							.setFooter('Do !d bump to bump the server')
+							.setFooter({ text: 'Do !d bump to bump the server' })
 
 						cho.send({
 							content: options.content || '\u200b',
