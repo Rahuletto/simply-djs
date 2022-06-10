@@ -52,7 +52,7 @@ async function stealEmoji(message, args, options = []) {
 							)
 							.setThumbnail(url)
 							.setColor(options.embedColor || 0x075fff)
-							.setFooter(foot)
+							.setFooter({ text: foot })
 
 						message.channel.send({ embeds: [mentionav] })
 					})
@@ -92,7 +92,7 @@ async function stealEmoji(message, args, options = []) {
 								)
 								.setThumbnail(url)
 								.setColor(options.embedColor || 0x075fff)
-								.setFooter(foot)
+								.setFooter({ text: foot })
 
 							message.channel.send({ embeds: [mentionav] })
 						})
@@ -124,7 +124,7 @@ async function stealEmoji(message, args, options = []) {
 								)
 								.setThumbnail(url)
 								.setColor(options.embedColor || 0x075fff)
-								.setFooter(foot)
+								.setFooter({ text: foot })
 
 							message.channel.send({ embeds: [mentionav] })
 						})
@@ -146,7 +146,7 @@ async function stealEmoji(message, args, options = []) {
 					)
 					.setThumbnail(uri)
 					.setColor(0xc90000)
-					.setFooter(foot)
+					.setFooter({ text: foot })
 
 				message.channel.send({ embeds: [mentionav] })
 			} else {
@@ -172,7 +172,7 @@ async function stealEmoji(message, args, options = []) {
 							)
 							.setThumbnail(url)
 							.setColor(options.embedColor || 0x075fff)
-							.setFooter(foot)
+							.setFooter({ text: foot })
 
 						message.channel.send({ embeds: [mentionav] })
 					})
