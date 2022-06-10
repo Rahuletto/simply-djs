@@ -130,10 +130,9 @@ export async function giveawaySystem(
 				);
 
 			if (
-				// @ts-ignore
 				!(
-					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ||
-					roly
+					roly || // @ts-ignore
+					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 				)
 			) {
 				return message.channel.send({
@@ -222,9 +221,9 @@ export async function giveawaySystem(
 				prize = int.options.getString('prize') || options.prize;
 			} else if (!interaction) {
 				const [...args] = mes.content.split(/ +/g);
-				// @ts-ignore
+
 				ch =
-					options.channel ||
+					options.channel || // @ts-ignore
 					message.mentions.channels.first() ||
 					message.channel;
 				time = options.time || args[1] || '1h';
