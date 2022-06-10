@@ -114,7 +114,7 @@ async function embed(message, options = []) {
 					'https://user-images.githubusercontent.com/71836991/145395922-311bb29a-a45b-476a-b55e-73cd4717f401.png'
 				)
 				.setColor(options.embedColor || '#075FFF')
-				.setFooter(foot)
+				.setFooter({ text: foot })
 
 			let e
 			if (message.commandId) {
@@ -129,7 +129,7 @@ async function embed(message, options = []) {
 				})
 			}
 
-			const emb = new MessageEmbed().setFooter(foot).setColor('#2F3136')
+			const emb = new MessageEmbed().setFooter({ text: foot }).setColor('#2F3136')
 
 			message.channel
 				.send({ content: '** **', embeds: [emb] })
@@ -247,7 +247,7 @@ async function embed(message, options = []) {
 										.setTitle(membed.embeds[0].title || '')
 										.setDescription(membed.embeds[0].description || '')
 										.setColor(membed.embeds[0].color || '#36393F')
-										.setFooter(membed.embeds[0].footer.text || '')
+										.setFooter({ text: membed.embeds[0].footer.text || '' })
 										.setImage(url)
 										.setURL(membed.embeds[0].url || '')
 										.setThumbnail(
@@ -287,7 +287,7 @@ async function embed(message, options = []) {
 										.setTitle(membed.embeds[0].title || '')
 										.setDescription(membed.embeds[0].description || '')
 										.setColor(membed.embeds[0].color || '#36393F')
-										.setFooter(membed.embeds[0].footer.text || '')
+										.setFooter({ text: membed.embeds[0].footer.text || '' })
 										.setImage(url)
 										.setURL(membed.embeds[0].url || '')
 										.setThumbnail(
@@ -381,7 +381,7 @@ async function embed(message, options = []) {
 											.setTitle(membed.embeds[0].title || '')
 											.setDescription(membed.embeds[0].description || '')
 											.setColor(membed.embeds[0].color || '#36393F')
-											.setFooter(membed.embeds[0].footer.text || '')
+											.setFooter({ text: membed.embeds[0].footer.text || '' })
 											.setImage(url)
 											.setURL(membed.embeds[0].url || '')
 											.setThumbnail(
@@ -446,7 +446,7 @@ async function embed(message, options = []) {
 											.setTitle(membed.embeds[0].title || '')
 											.setDescription(membed.embeds[0].description || '')
 											.setColor(membed.embeds[0].color || '#36393F')
-											.setFooter(membed.embeds[0].footer.text || '')
+											.setFooter({ text: membed.embeds[0].footer.text || '' })
 											.setImage(url)
 											.setURL(membed.embeds[0].url || '')
 											.setThumbnail(
@@ -504,7 +504,7 @@ async function embed(message, options = []) {
 												.setTitle(membed.embeds[0].title || '')
 												.setDescription(membed.embeds[0].description || '')
 												.setColor(membed.embeds[0].color || '#36393F')
-												.setFooter(membed.embeds[0].footer.text || '')
+												.setFooter({ text: membed.embeds[0].footer.text || '' })
 												.setImage(url)
 												.setURL(membed.embeds[0].url || '')
 												.setThumbnail(
@@ -559,7 +559,7 @@ async function embed(message, options = []) {
 									.setTitle(membed.embeds[0].title || '')
 									.setDescription(membed.embeds[0].description || '')
 									.setColor(membed.embeds[0].color || '#36393F')
-									.setFooter(membed.embeds[0].footer.text || '')
+									.setFooter({ text: membed.embeds[0].footer.text || '' })
 									.setImage(url)
 									.setURL(membed.embeds[0].url || '')
 									.setThumbnail(
@@ -625,7 +625,7 @@ async function embed(message, options = []) {
 									.setDescription(membed.embeds[0].description || '')
 									.setColor(membed.embeds[0].color || '#2F3136')
 									.setURL(membed.embeds[0].url || '')
-									.setFooter(membed.embeds[0].footer.text || '')
+									.setFooter({ text: membed.embeds[0].footer.text || '' })
 									.setImage(url)
 									.setThumbnail(m.content || m.attachments.first().url || '')
 									.setAuthor(
@@ -672,7 +672,7 @@ async function embed(message, options = []) {
 										.setDescription(membed.embeds[0].description || '')
 										.setColor(`${m.content}`)
 										.setURL(membed.embeds[0].url || '')
-										.setFooter(membed.embeds[0].footer.text || '')
+										.setFooter({ text: membed.embeds[0].footer.text || '' })
 										.setImage(url)
 										.setAuthor(
 											membed.embeds[0].author?.name
@@ -748,7 +748,7 @@ async function embed(message, options = []) {
 										.setDescription(membed.embeds[0].description || '')
 										.setColor(membed.embeds[0].color || '#2F3136')
 										.setImage(url || '')
-										.setFooter(membed.embeds[0].footer.text || '')
+										.setFooter({ text: membed.embeds[0].footer.text || '' })
 										.setThumbnail(
 											membed.embeds[0].thumbnail
 												? membed.embeds[0].thumbnail.url
@@ -792,7 +792,7 @@ async function embed(message, options = []) {
 									.setTitle(membed.embeds[0].title || '')
 									.setDescription(membed.embeds[0].description || '')
 									.setColor(membed.embeds[0].color || '#2F3136')
-									.setFooter(membed.embeds[0].footer.text || '')
+									.setFooter({ text: membed.embeds[0].footer.text || '' })
 									.setAuthor(
 										membed.embeds[0].author?.name
 											? membed.embeds[0].author?.name
@@ -860,7 +860,7 @@ async function embed(message, options = []) {
 									)
 									.setTimestamp(membed.embeds[0].timestamp ? new Date() : false)
 									.setImage(url || '')
-									.setFooter(membed.embeds[0].footer.text || '')
+									.setFooter({ text: membed.embeds[0].footer.text || '' })
 								m.delete().catch(() => {})
 								titleclr.stop()
 
@@ -910,7 +910,7 @@ async function embed(message, options = []) {
 									)
 									.setColor(membed.embeds[0].color || '#2F3136')
 									.setImage(url || '')
-									.setFooter(membed.embeds[0].footer.text || '')
+									.setFooter({ text: membed.embeds[0].footer.text || '' })
 								m.delete().catch(() => {})
 								titleclr.stop()
 								membed
@@ -947,7 +947,7 @@ async function embed(message, options = []) {
 									)
 									.setDescription(membed.embeds[0].description || '')
 									.setColor(membed.embeds[0].color || '#2F3136')
-									.setFooter(m.content || '')
+									.setFooter({ text: m.content || '' })
 									.setImage(url || '')
 									.setAuthor(
 										membed.embeds[0].author?.name
