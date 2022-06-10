@@ -260,7 +260,7 @@ async function clickBtn(button, options = []) {
 								.setThumbnail(button.message.guild.iconURL())
 								.setTimestamp()
 								.setColor(options.embedColor || '#075FFF')
-								.setFooter(foot)
+								.setFooter({ text: foot })
 
 							if (options.embed) {
 								options.embed.description = options.embed.description
@@ -461,7 +461,7 @@ async function clickBtn(button, options = []) {
 					)
 					.setTimestamp()
 					.setColor('#c90000')
-					.setFooter(foot)
+					.setFooter({ text: foot })
 
 				button.followUp({
 					embeds: [options.confirmEmb || emb],
@@ -509,7 +509,7 @@ async function clickBtn(button, options = []) {
 						)
 						.setTimestamp()
 						.setColor('#cc0000')
-						.setFooter(foot)
+						.setFooter({ text: foot })
 
 					let ek = button.channel.name
 
@@ -595,7 +595,7 @@ async function clickBtn(button, options = []) {
 						.setDescription(
 							`Please wait.. We are Processing the winner with magiks`
 						)
-						.setFooter('Giveaway Ending.. Wait a moment.')
+						.setFooter({ text: 'Giveaway Ending.. Wait a moment.' })
 
 					setTimeout(() => {
 						button.message.edit({ embeds: [embeddd], components: [] })
@@ -658,7 +658,7 @@ async function clickBtn(button, options = []) {
 									{ name: '🏆 Winner(s):', value: `none` },
 									{ name: '💝 People Entered', value: `***${entero}***` }
 								)
-								.setFooter('Giveaway Ended.')
+								.setFooter({ text: 'Giveaway Ended.' })
 
 							let msgwonid = await db.get(
 								`giveaway_${button.message.id}_yaywon`
@@ -713,7 +713,7 @@ async function clickBtn(button, options = []) {
 									{ name: '🏆 Winner(s):', value: `${winner}` },
 									{ name: '💝 People Entered', value: `***${entero}***` }
 								)
-								.setFooter('Giveaway Ended.')
+								.setFooter({ text: 'Giveaway Ended.' })
 
 							let winmsgreroll = await db.get(
 								`giveaway_${button.message.id}_yaywon`
@@ -730,7 +730,7 @@ async function clickBtn(button, options = []) {
 								.setColor(0x3bb143)
 								.setTitle('You just won the giveaway.')
 								.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-								.setFooter('Dm the host to claim your prize 0_0')
+								.setFooter({ text: 'Dm the host to claim your prize 0_0' })
 							if (!winreroll) {
 								button.channel
 									.send({
@@ -788,7 +788,7 @@ async function clickBtn(button, options = []) {
 						.setDescription(
 							`Please wait.. We are Processing the winner with magiks`
 						)
-						.setFooter('Giveaway Ending.. Wait a moment.')
+						.setFooter({ text: 'Giveaway Ending.. Wait a moment.' })
 
 					setTimeout(() => {
 						button.message.edit({ embeds: [embeddd], components: [] })
@@ -818,7 +818,7 @@ async function clickBtn(button, options = []) {
 									{ name: '🏆 Winner(s):', value: `none` },
 									{ name: '💝 People Entered', value: `***${winnnerNumber}***` }
 								)
-								.setFooter('Giveaway Ended.')
+								.setFooter({ text: 'Giveaway Ended.' })
 
 							button.message.edit({ embeds: [embedod], components: [] })
 						} else {
@@ -892,13 +892,13 @@ async function clickBtn(button, options = []) {
 									{ name: '🏆 Winner(s):', value: `${winner}` },
 									{ name: '💝 People Entered', value: `***${entero}***` }
 								)
-								.setFooter('Giveaway Ended.')
+								.setFooter({ text: 'Giveaway Ended.' })
 
 							const embb = new Discord.MessageEmbed()
 								.setColor(0x3bb143)
 								.setTitle('You just won the giveaway.')
 								.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-								.setFooter('Dm the host to claim your prize 0_0')
+								.setFooter({ text: 'Dm the host to claim your prize 0_0' })
 
 							const gothere = new Discord.MessageButton()
 								.setLabel('View Giveaway')
