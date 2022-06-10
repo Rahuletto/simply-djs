@@ -45,7 +45,7 @@ async function ghostPing(message, options = []) {
 							})**\n\nContent: **${message.content}**`
 					)
 					.setColor(options.embedColor || 0x075fff)
-					.setFooter(foot)
+					.setFooter({ text: foot })
 					.setTimestamp()
 
 				message.channel
