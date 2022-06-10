@@ -373,7 +373,7 @@ async function suggestBtn(button, users, options = []) {
 					.setDescription(oldemb.description)
 					.setColor(oldemb.color)
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
-					.setFooter(oldemb.footer.text)
+					.setFooter({ text: oldemb.footer.text })
 					.setImage(oldemb.image)
 					.addFields(
 						{ name: oldemb.fields[0].name, value: oldemb.fields[0].value },
@@ -411,7 +411,7 @@ async function suggestBtn(button, users, options = []) {
 					.setColor(oldemb.color)
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
 					.setImage(oldemb.image)
-					.setFooter(oldemb.footer.text)
+					.setFooter({ text: oldemb.footer.text })
 					.addFields(
 						{ name: oldemb.fields[0].name, value: oldemb.fields[0].value },
 						{
@@ -448,7 +448,7 @@ async function suggestBtn(button, users, options = []) {
 					.setColor(options.denyEmbColor || 'RED')
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
 					.setImage(oldemb.image)
-					.setFooter(`Rejected by ${user.tag}`)
+					.setFooter({ text: `Rejected by ${user.tag}` })
 					.addFields(
 						{ name: 'Status:', value: `\`\`\`Rejected !\`\`\`` },
 						{ name: 'Reason:', value: `\`\`\`${reason}\`\`\`` },
@@ -489,7 +489,7 @@ async function suggestBtn(button, users, options = []) {
 					.setColor(oldemb.color)
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
 					.setImage(oldemb.image)
-					.setFooter(oldemb.footer.text)
+					.setFooter({ text: oldemb.footer.text })
 					.addFields(
 						{ name: oldemb.fields[0].name, value: oldemb.fields[0].value },
 						{
@@ -526,7 +526,7 @@ async function suggestBtn(button, users, options = []) {
 					.setColor(oldemb.color)
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
 					.setImage(oldemb.image)
-					.setFooter(oldemb.footer.text)
+					.setFooter({ text: oldemb.footer.text })
 					.addFields(
 						{ name: oldemb.fields[0].name, value: oldemb.fields[0].value },
 						{
@@ -563,7 +563,7 @@ async function suggestBtn(button, users, options = []) {
 					.setColor(options.agreeEmbColor || 'GREEN')
 					.setAuthor(oldemb.author.name, oldemb.author.iconURL)
 					.setImage(oldemb.image)
-					.setFooter(`Accepted by ${user.tag}`)
+					.setFooter({ text: `Accepted by ${user.tag}` })
 					.addFields(
 						{ name: 'Status:', value: `\`\`\`Accepted !\`\`\`` },
 						{ name: 'Reason:', value: `\`\`\`${reason}\`\`\`` },
