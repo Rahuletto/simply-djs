@@ -69,7 +69,7 @@ async function ticketSystem(message, channel, options = []) {
 			.setThumbnail(message.guild.iconURL())
 			.setTimestamp()
 			.setColor(options.embedColor || '#075FFF')
-			.setFooter(foot)
+			.setFooter({ text: foot })
 
 		try {
 			if (message.commandId) {
