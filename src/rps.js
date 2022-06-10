@@ -104,7 +104,7 @@ async function rps(msgOrInter, options = {}) {
 			.setTitle('Game Timed Out!')
 			.setColor(options.timeoutEmbedColor)
 			.setDescription('One or more players did not make a move in time(30s)')
-			.setFooter(foot)
+			.setFooter({ text: foot })
 
 		try {
 			let opponent
@@ -149,7 +149,7 @@ async function rps(msgOrInter, options = {}) {
 					(interaction ? interaction.user : message.author).displayAvatarURL()
 				)
 				.setColor(options.embedColor)
-				.setFooter(foot)
+				.setFooter({ text: foot })
 
 			/** @type {Discord.Message} */
 			let m
@@ -193,7 +193,7 @@ async function rps(msgOrInter, options = {}) {
 						}`
 					)
 					.setColor(options.embedColor)
-					.setFooter(foot)
+					.setFooter({ text: foot })
 					.setDescription('Select 🪨, 📄, or ✂️')
 
 				if (msgOrInter.commandId) {
@@ -276,7 +276,7 @@ async function rps(msgOrInter, options = {}) {
 											.setTitle('Draw!')
 											.setColor(options.drawEmbedColor)
 											.setDescription(`Both players chose **${op}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -289,7 +289,7 @@ async function rps(msgOrInter, options = {}) {
 											.setTitle('Draw!')
 											.setColor(options.drawEmbedColor)
 											.setDescription(`Both players chose **${op}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -312,7 +312,7 @@ async function rps(msgOrInter, options = {}) {
 											.setTitle(`${opponent.tag} Wins!`)
 											.setColor(options.winEmbedColor)
 											.setDescription(`**${op}** defeats **${auth}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -327,7 +327,7 @@ async function rps(msgOrInter, options = {}) {
 											.setTitle(`${opponent.tag} Wins!`)
 											.setColor(options.winEmbedColor)
 											.setDescription(`**${op}** defeats **${auth}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -354,7 +354,7 @@ async function rps(msgOrInter, options = {}) {
 											)
 											.setColor(options.winEmbedColor)
 											.setDescription(`**${auth}** defeats **${op}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -370,7 +370,7 @@ async function rps(msgOrInter, options = {}) {
 											)
 											.setColor(options.winEmbedColor)
 											.setDescription(`**${auth}** defeats **${op}**`)
-											.setFooter(foot)
+											.setFooter({ text: foot })
 									],
 									components: []
 								})
@@ -395,7 +395,7 @@ async function rps(msgOrInter, options = {}) {
 										interaction.user.displayAvatarURL()
 									)
 									.setColor(options.timeoutEmbedColor)
-									.setFooter(foot)
+									.setFooter({ text: foot })
 									.setDescription('Ran out of time!\nTime limit: 30s')
 							],
 							components: []
@@ -411,7 +411,7 @@ async function rps(msgOrInter, options = {}) {
 										message.author.displayAvatarURL()
 									)
 									.setColor(options.timeoutEmbedColor)
-									.setFooter(foot)
+									.setFooter({ text: foot })
 									.setDescription('Ran out of time!\nTime limit: 30s')
 							],
 							components: []
@@ -429,7 +429,7 @@ async function rps(msgOrInter, options = {}) {
 										interaction.user.displayAvatarURL()
 									)
 									.setColor(options.timeoutEmbedColor || 0xc90000)
-									.setFooter(foot)
+									.setFooter({ text: foot })
 									.setDescription(`${opponent.tag} has declined your game!`)
 							],
 							components: []
@@ -445,7 +445,7 @@ async function rps(msgOrInter, options = {}) {
 										message.author.displayAvatarURL()
 									)
 									.setColor(options.timeoutEmbedColor || 0xc90000)
-									.setFooter(foot)
+									.setFooter({ text: foot })
 									.setDescription(`${opponent.tag} has declined your game!`)
 							],
 							components: []
