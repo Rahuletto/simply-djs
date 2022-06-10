@@ -53,7 +53,7 @@ async function stealSticker(message, args, options = []) {
 							)
 							.setThumbnail(st.url)
 							.setColor(options.embedColor || 0x075fff)
-							.setFooter(foot)
+							.setFooter({ text: foot })
 
 						message.channel.send({ embeds: [mentionav] })
 						message.delete()
@@ -72,7 +72,7 @@ async function stealSticker(message, args, options = []) {
 							)
 							.setThumbnail(st.url)
 							.setColor(options.embedColor || 0x075fff)
-							.setFooter(foot)
+							.setFooter({ text: foot })
 
 						message.channel.send({ embeds: [mentionav] })
 						message.delete()
