@@ -77,10 +77,8 @@ async function giveawaySystem(client, db, message, options = []) {
 				.setTitle(options.embedTitle || 'Giveaways')
 				.setColor(0x075fff)
 				.setTimestamp(Number(Date.now() + ms(time)))
-				.setFooter(
-					'Ends ',
-					'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-				)
+				.setFooter({ text: 'Ends ',
+				'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif' })
 				.setDescription(
 					`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 						options.prize || prize
@@ -124,7 +122,7 @@ async function giveawaySystem(client, db, message, options = []) {
 							.setDescription(
 								`Please wait.. We are Processing the winner with magiks`
 							)
-							.setFooter('Giveaway Ending.. Wait a moment.')
+							.setFooter({ text: 'Giveaway Ending.. Wait a moment.' })
 
 						m.edit({ embeds: [embeddd], components: [] })
 
@@ -147,7 +145,7 @@ async function giveawaySystem(client, db, message, options = []) {
 										{ name: '🏆 Winner(s):', value: `none` },
 										{ name: '💝 People Entered', value: `***0***` }
 									)
-									.setFooter('Giveaway Ended.')
+									.setFooter({ text: 'Giveaway Ended.' })
 
 								m.edit({ embeds: [embedod], components: [] })
 							} else {
@@ -210,13 +208,13 @@ async function giveawaySystem(client, db, message, options = []) {
 										{ name: '🏆 Winner(s):', value: `${winner}` },
 										{ name: '💝 People Entered', value: `***${entero}***` }
 									)
-									.setFooter('Giveaway Ended.')
+									.setFooter({ text: 'Giveaway Ended.' })
 
 								const embb = new Discord.MessageEmbed()
 									.setColor(0x3bb143)
 									.setTitle('You just won the giveaway.')
 									.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-									.setFooter('Dm the host to claim your prize 0_0')
+									.setFooter({ text: 'Dm the host to claim your prize 0_0' })
 
 								const gothere = new Discord.MessageButton()
 									.setLabel('View Giveaway')
@@ -275,10 +273,10 @@ async function giveawaySystem(client, db, message, options = []) {
 								.setTitle(options.embedTitle || 'Giveaways')
 								.setColor(0x075fff)
 								.setTimestamp(Number(Date.now() + ms(time)))
-								.setFooter(
-									'Ends at ',
+								.setFooter({
+									text: 'Ends at ',
 									'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-								)
+						})
 								.setDescription(
 									`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 										options.prize || prize
@@ -312,10 +310,10 @@ async function giveawaySystem(client, db, message, options = []) {
 								.setTitle(options.embedTitle || 'Giveaways')
 								.setColor(0x075fff)
 								.setTimestamp(Number(Date.now() + ms(time)))
-								.setFooter(
-									'Ends at ',
+								.setFooter({
+									text: 'Ends at ',
 									'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-								)
+						})
 								.setDescription(
 									`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 										options.prize || prize
@@ -383,10 +381,10 @@ async function giveawaySystem(client, db, message, options = []) {
 				.setTitle(options.embedTitle || 'Giveaways')
 				.setColor(0x075fff)
 				.setTimestamp(Number(Date.now() + ms(time)))
-				.setFooter(
-					'Ends ',
+				.setFooter({
+					text: 'Ends ',
 					'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-				)
+		})
 				.setDescription(
 					`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 						options.prize || prize
@@ -431,7 +429,7 @@ async function giveawaySystem(client, db, message, options = []) {
 							.setDescription(
 								`Please wait.. We are Processing the winner with magiks`
 							)
-							.setFooter('Giveaway Ending.. Wait a moment.')
+							.setFooter({ text: 'Giveaway Ending.. Wait a moment.' })
 
 						m.edit({ embeds: [embeddd], components: [] })
 
@@ -454,7 +452,7 @@ async function giveawaySystem(client, db, message, options = []) {
 										{ name: '🏆 Winner(s):', value: `none` },
 										{ name: '💝 People Entered', value: `***0***` }
 									)
-									.setFooter('Giveaway Ended.')
+									.setFooter({ text: 'Giveaway Ended.' })
 
 								m.edit({ embeds: [embedod], components: [] })
 							} else {
@@ -517,13 +515,13 @@ async function giveawaySystem(client, db, message, options = []) {
 										{ name: '🏆 Winner(s):', value: `${winner}` },
 										{ name: '💝 People Entered', value: `***${entero}***` }
 									)
-									.setFooter('Giveaway Ended.')
+									.setFooter({ text: 'Giveaway Ended.' })
 
 								const embb = new Discord.MessageEmbed()
 									.setColor(0x3bb143)
 									.setTitle('You just won the giveaway.')
 									.setDescription(`🏆 Winner(s): ***${winnerNumber}***`)
-									.setFooter('Dm the host to claim your prize 0_0')
+									.setFooter({ text: 'Dm the host to claim your prize 0_0' })
 
 								const gothere = new Discord.MessageButton()
 									.setLabel('View Giveaway')
@@ -581,10 +579,10 @@ async function giveawaySystem(client, db, message, options = []) {
 								.setTitle(options.embedTitle || 'Giveaways')
 								.setColor(0x075fff)
 								.setTimestamp(Number(Date.now() + ms(time)))
-								.setFooter(
-									'Ends at ',
+								.setFooter({
+									text: 'Ends at ',
 									'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-								)
+						})
 								.setDescription(
 									`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 										options.prize || prize
@@ -618,10 +616,10 @@ async function giveawaySystem(client, db, message, options = []) {
 								.setTitle(options.embedTitle || 'Giveaways')
 								.setColor(0x075fff)
 								.setTimestamp(Number(Date.now() + ms(time)))
-								.setFooter(
-									'Ends at ',
+								.setFooter({
+									text: 'Ends at ',
 									'https://media.discordapp.net/attachments/867344516600037396/881941206513377331/869185703228084285.gif'
-								)
+						})
 								.setDescription(
 									`React with the buttons to interact with giveaway.\n\n**🎁 Prize:** ***${
 										options.prize || prize
