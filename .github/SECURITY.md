@@ -5,16 +5,17 @@
 Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |                
-| 2.x.x  (djs v13) | :white_check_mark: |
-| 1.0.88 (djs v12)  | :x:                |
+| Version             | Supported          |
+| ------------------- | ------------------ |
+| 3.x.x (djs v13.6.0) | :white_check_mark: |
+| 1.0.88 (djs v12)    | :x:                |
 
 ### Discord.js
+
 | Version | Supported          |
-| ------- | ------------------ |                
-| 13.x.x   | :white_check_mark: |
-| 12.5.x  | :x:
+| ------- | ------------------ |
+| 13.6.x  | :white_check_mark: |
+| 12.5.x  | :x:                |
 
 ## Reporting a Vulnerability
 
