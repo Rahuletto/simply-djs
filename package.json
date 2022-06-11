@@ -1,6 +1,6 @@
 {
 	"name": "simply-djs",
-	"version": "3.0.0tsc",
+	"version": "3.0.0",
 	"description": "Powerful yet a Simple, East and Beginner friendly discord.js Package for everyone",
 	"main": "lib/simplydjs.js",
 	"typings": "typings/simplydjs.d.ts",
