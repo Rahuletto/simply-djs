@@ -11,6 +11,20 @@ export function ms(str: string) {
 		type,
 		val;
 
+	str = str
+		.replaceAll('week', 'w')
+		.replaceAll('weeks', 'w')
+		.replaceAll('day', 'd')
+		.replaceAll('days', 'd')
+		.replaceAll('hour', 'h')
+		.replaceAll('hours', 'h')
+		.replaceAll('minute', 'm')
+		.replaceAll('minutes', 'm')
+		.replaceAll('min', 'm')
+		.replaceAll('second', 's')
+		.replaceAll('seconds', 's')
+		.replaceAll('sec', 's');
+
 	let arr: string[] = ('' + str)
 		.split(' ')
 		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));

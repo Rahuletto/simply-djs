@@ -526,7 +526,9 @@ export async function manageSug(
 				(msg.components[0].components[1] as MessageButton).label =
 					dislik.toString();
 
-				oldemb.fields[1].value = `${st} [${uPercent}% - ${dPercent}%]`;
+				oldemb.fields[1].value = `${st} [${uPercent || 0}% - ${
+					dPercent || 0
+				}%]`;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],

@@ -9,7 +9,6 @@ import {
 	MessageEmbedFooter,
 	MessageButtonStyle,
 	TextChannel,
-	PermissionFlags,
 	Permissions
 } from 'discord.js';
 import { SimplyError } from './Error/Error';
