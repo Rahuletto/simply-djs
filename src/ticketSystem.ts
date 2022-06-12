@@ -133,7 +133,7 @@ export async function ticketSystem(
 		let a = new MessageActionRow().addComponents([ticketbtn]);
 
 		let embed = new MessageEmbed()
-			.setTitle(options.embed?.title || 'Giveaways')
+			.setTitle(options.embed?.title || 'Ticket System')
 			.setColor(options.embed?.color || '#075FFF')
 			.setDescription(
 				options.embed?.description ||
