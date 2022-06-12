@@ -4,13 +4,14 @@ import {
 	MessageEmbedFooter,
 	MessageEmbedAuthor,
 	ColorResolvable,
-	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
 	MessageButtonStyle,
 	HexColorString,
 	User
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+
 import chalk from 'chalk';
 import { APIMessage } from 'discord-api-types/v10';
 
@@ -69,7 +70,7 @@ export type rpsOptions = {
  */
 
 export async function rps(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: rpsOptions = {}
 ) {
 	return new Promise(async (resolve) => {
@@ -160,7 +161,6 @@ export async function rps(
 			let opponent: any;
 
 			let interaction: any;
-			// @ts-ignore
 			if (message.commandId) {
 				interaction = message;
 				opponent = options.opponent || interaction.options.getUser('user');
@@ -168,7 +168,7 @@ export async function rps(
 				opponent = (message as Message).mentions.members.first()?.user;
 			}
 
-			let int = message as CommandInteraction;
+			let int = message as ExtendedInteraction;
 			let mes = message as Message;
 
 			if (!interaction) {
@@ -229,7 +229,7 @@ export async function rps(
 			}
 
 			let filter = (
-				m: any //@ts-ignore
+				m: any
 			) => m.user.id === opponent.id;
 			const acceptCollector = (m as Message).createMessageComponentCollector({
 				filter,
