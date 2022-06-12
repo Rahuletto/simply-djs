@@ -3,6 +3,7 @@ import { Client, Message } from 'discord.js';
 import axios from 'axios';
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
+import { ExtendedMessage } from './interfaces';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -32,7 +33,7 @@ export type chatbotOptions = {
 
 export async function chatbot(
 	client: Client,
-	message: Message,
+	message: ExtendedMessage,
 	options: chatbotOptions = {}
 ): Promise<Message> {
 	if (message.author.bot) return;
@@ -84,8 +85,8 @@ export async function chatbot(
 		params.set('message', input);
 		params.set('developer', options.developer);
 		params.set('name', options.name ?? client.user.username);
-		params.set('age', age.toString()); //@ts-ignore
-		params.set('year', client.user.createdAt.getFullYear());
+		params.set('age', age.toString());
+		params.set('year', client.user.createdAt.getFullYear().toString());
 		params.set('bday', client.user.createdAt.toLocaleDateString());
 		params.set('birthplace', 'Simply-Develop');
 		params.set('uid', message.author.id);
