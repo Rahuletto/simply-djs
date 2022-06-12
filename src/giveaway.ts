@@ -213,12 +213,12 @@ export async function giveawaySystem(
 
 			if (interaction) {
 				ch =
-					int.options.getChannel('channel') ||
-					options.channel ||
+					options.channel || int.options.getChannel('channel')
+					 ||
 					interaction.channel;
-				time = int.options.getString('time') || options.time || '1h';
-				winners = int.options.getInteger('winners') || options.winners;
-				prize = int.options.getString('prize') || options.prize;
+				time = options.time || int.options.getString('time') || '1h';
+				winners = options.winners || int.options.getNumber('winners')
+				prize = options.prize || int.options.getString('prize');
 			} else if (!interaction) {
 				const [...args] = mes.content.split(/ +/g);
 
