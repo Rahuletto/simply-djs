@@ -1,0 +1,16 @@
+# Configs
+.gitignore
+.prettierrc.json
+**/*.tgz
+
+# Folders
+src/
+node_modules/
+.husky
+.vscode
+.github
+
+# Files
+/tsconfig.json
+/simplydjs.ts
+test.js
