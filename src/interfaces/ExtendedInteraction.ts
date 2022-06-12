@@ -1,6 +1,8 @@
-import { CommandInteraction, GuildMember } from "discord.js";
+import { CommandInteraction, GuildMember, UserMention } from "discord.js";
 
 export interface ExtendedInteraction extends CommandInteraction {
-	author: any;
+	mentions: UserMention;
 	member: GuildMember;
+	customId: string;
+	author: any;
 }
