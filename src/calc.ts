@@ -8,7 +8,8 @@ import {
 	MessageEmbedAuthor,
 	MessageEmbedFooter,
 	ColorResolvable,
-	ButtonInteraction
+	ButtonInteraction,
+	GuildMember
 } from 'discord.js';
 
 import chalk from 'chalk';
@@ -46,6 +47,14 @@ export type calcOptions = {
 	buttons?: calcButtons;
 };
 
+interface ExtendedInteraction extends CommandInteraction {
+	author: any;
+	member: GuildMember;
+}
+
+interface ExtendedMessage extends Message {
+	commandId: any;
+}
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
@@ -59,7 +68,7 @@ export type calcOptions = {
  */
 
 export async function calculator(
-	interaction: Message | CommandInteraction,
+	interaction: ExtendedMessage | ExtendedInteraction,
 	options: calcOptions = {
 		buttons: { numbers: 'SECONDARY', symbols: 'PRIMARY', delete: 'DANGER' }
 	}
@@ -115,7 +124,6 @@ export async function calculator(
 
 		let message;
 
-		// @ts-ignore
 		if (!interaction.commandId) {
 			message = interaction;
 		}
@@ -152,7 +160,7 @@ export async function calculator(
 
 		let msg: any;
 
-		let int = interaction as CommandInteraction;
+		let int = interaction as ExtendedInteraction;
 		let ms = interaction as Message;
 
 		if (!message) {
@@ -172,9 +180,9 @@ export async function calculator(
 		let time = 300000;
 
 		let elem = '0';
-
-		const filter = (button: ButtonInteraction) =>
-			button.user.id === //@ts-ignore
+		
+		const filter = (button: ButtonInteraction, interaction: ExtendedInteraction) =>
+			button.user.id ===
 				(interaction.user ? interaction.user : interaction.author).id &&
 			button.customId.startsWith('cal-');
 
@@ -316,7 +324,7 @@ export async function calculator(
 		}
 	} catch (err: any) {
 		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
+			`${chalk.red('Error Occurred.')} | ${chalk.magenta(
 				'calculator'
 			)} | Error: ${err.stack}`
 		);
