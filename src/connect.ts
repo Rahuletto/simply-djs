@@ -23,6 +23,7 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 				tip: `Expected an MongoDB URI. Received ${db || 'undefined'}`
 			});
 
+		let tags: any;
 		mongoose
 			.connect(db)
 			.then(async () => {
@@ -32,6 +33,7 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 						.then((res) => res.data);
 					let v = json.dist - tags.latest;
 
+					// Condition will always return true because types 'number' and string have no overlap
 					if (v !== version) {
 						console.log(
 							`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
