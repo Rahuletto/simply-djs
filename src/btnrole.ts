@@ -1,13 +1,12 @@
 import {
-	CommandInteraction,
 	MessageButtonStyle,
 	Role,
 	Message,
 	MessageEmbed,
 	MessageButton,
 	MessageActionRow,
-	GuildMember
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
@@ -43,7 +42,7 @@ export type btnOptions = {
  */
 
 export async function btnRole(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: btnOptions = {}
 ): Promise<Message> {
 	try {
@@ -55,18 +54,15 @@ export async function btnRole(
 				}`
 			});
 
-		let msg = message as Message;
-		let int = message as CommandInteraction;
+		let msg = message as ExtendedMessage;
+		let int = message as ExtendedInteraction;
 
-		//@ts-ignore
 		if (message.commandId) {
-			//@ts-ignore
-			const member = interaction.member as GuildMember;
-			if (!member.permissions.has('ADMINISTRATOR'))
+			if (!int.member.permissions.has('ADMINISTRATOR'))
 				int.followUp({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
-			return; //@ts-ignore
+			return;
 		} else if (!message.customId) {
 			if (!msg.member.permissions.has('ADMINISTRATOR'))
 				return await msg.reply({
@@ -135,19 +131,19 @@ export async function btnRole(
 
 			let emb = options.embed;
 
-			if ((message as CommandInteraction).commandId) {
+			if ((message as ExtendedInteraction).commandId) {
 				if (!options.embed) {
-					(message as CommandInteraction).followUp({
+					(message as ExtendedInteraction).followUp({
 						content: options.content || '** **',
 						components: row
 					});
 				} else
-					(message as CommandInteraction).followUp({
+					(message as ExtendedInteraction).followUp({
 						content: options.content || '** **',
 						embeds: [emb],
 						components: row
 					});
-			} else if (!(message as CommandInteraction).commandId) {
+			} else if (!(message as ExtendedInteraction).commandId) {
 				if (!options.embed) {
 					message.channel.send({
 						content: options.content || '** **',
