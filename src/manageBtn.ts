@@ -140,8 +140,8 @@ export async function manageBtn(
 					else {
 						await interaction.deferReply({ ephemeral: true });
 						// @ts-ignore
-						if (!member.roles.cache.find((r) => r.id === role.id)) {
-							member.roles // @ts-ignore
+						if (!member.roles.cache.find((r: { id: string }) => r.id === role.id)) {
+							member.roles
 								.add(role)
 								.catch((err: any) =>
 									interaction.channel.send({
