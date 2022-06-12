@@ -1,5 +1,4 @@
 import {
-	CommandInteraction,
 	MessageButtonStyle,
 	Message,
 	MessageEmbed,
@@ -9,7 +8,6 @@ import {
 	MessageEmbedFooter,
 	ColorResolvable,
 	ButtonInteraction,
-	GuildMember
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from "./interfaces"
 
@@ -153,7 +151,7 @@ export async function calculator(
 
 		let msg: any;
 
-		let int = interaction as ExtendedInteraction;
+		const int = interaction as ExtendedInteraction;
 		let ms = interaction as Message;
 
 		if (!message) {
