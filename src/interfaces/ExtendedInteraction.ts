@@ -7,7 +7,7 @@ import { CommandInteraction, GuildMember, UserMention } from "discord.js";
  * @param {author} Discord.GuildMember Member type for CommandInteraction due to it missing.
  * @param {mentions} Discord.UserMention Mention type for CommandInteraction due to it missing.
  * @param {customId} string Option used by the simply-djs's functions for custom-id checking.
- * @returns {ExtendedInteraction}}
+ * @returns {ExtendedInteraction}
  */
 
 export interface ExtendedInteraction extends CommandInteraction {
