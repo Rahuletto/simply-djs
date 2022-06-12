@@ -1,6 +1,5 @@
 import {
 	MessageButtonStyle,
-	Message,
 	MessageEmbed,
 	MessageButton,
 	MessageActionRow,
@@ -152,7 +151,7 @@ export async function calculator(
 		let msg: any;
 
 		const int = interaction as ExtendedInteraction;
-		let ms = interaction as Message;
+		let ms = interaction as ExtendedMessage;
 
 		if (!message) {
 			await int.followUp({
