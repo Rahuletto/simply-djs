@@ -1,11 +1,10 @@
 import {
-	CommandInteraction,
 	MessageButtonStyle,
-	Message,
 	MessageEmbed,
 	MessageButton,
 	MessageActionRow
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
 import { SimplyError } from './Error/Error';
@@ -65,7 +64,7 @@ export type pagesOption = {
  */
 
 export async function embedPages(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	pages: MessageEmbed[],
 	options: pagesOption = {}
 ): Promise<any> {
@@ -205,15 +204,14 @@ export async function embedPages(
 
 		let interaction;
 
-		//@ts-ignore
 		if (message.commandId) {
 			interaction = message;
 		}
 
 		var m: any;
 
-		let int = message as CommandInteraction;
-		let ms = message as Message;
+		let int = message as ExtendedInteraction;
+		let ms = message as ExtendedMessage;
 
 		if (interaction) {
 			if (options.count) {
@@ -247,7 +245,7 @@ export async function embedPages(
 		}
 
 		let filter = (
-			m: any //@ts-ignore
+			m: any
 		) => m.user.id === (message.user ? message.user : message.author).id;
 
 		let collector = m.createMessageComponentCollector({

@@ -1,7 +1,6 @@
 import {
 	MessageEmbed,
 	Message,
-	CommandInteraction,
 	MessageButton,
 	MessageActionRow,
 	ColorResolvable,
@@ -11,6 +10,8 @@ import {
 	TextChannel,
 	Permissions
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
 
@@ -62,7 +63,7 @@ export type tSysOptions = {
  */
 
 export async function ticketSystem(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: tSysOptions = {}
 ) {
 	try {
@@ -89,15 +90,13 @@ export async function ticketSystem(
 			});
 
 		let interaction;
-		// @ts-ignore
 		if (message.commandId) {
 			interaction = message;
 		}
-		let int = message as CommandInteraction;
+		let int = message as ExtendedInteraction;
 		let mes = message as Message;
 
 		if (
-			// @ts-ignore
 			!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 		) {
 			if (interaction) {

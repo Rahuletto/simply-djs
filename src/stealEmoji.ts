@@ -3,12 +3,10 @@ import {
 	MessageEmbedAuthor,
 	ColorResolvable,
 	MessageEmbedFooter,
-	Message,
 	MessageEmbed,
 	Permissions,
-	CommandInteraction,
-	CacheType
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
@@ -42,18 +40,16 @@ export type stealOptions = {
  */
 
 export async function stealEmoji(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: stealOptions = {}
 ) {
 	try {
-		let interaction: CommandInteraction<CacheType>;
-		// @ts-ignore
+		let interaction: ExtendedInteraction;
 		if (message.commandId) {
-			interaction = message as CommandInteraction;
+			interaction = message as ExtendedInteraction;
 
 			if (
-				// @ts-ignore
-				!interaction.member.permissions.has(
+				!(interaction.member.permissions as Permissions).has(
 					Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS
 				)
 			)
@@ -63,7 +59,6 @@ export async function stealEmoji(
 				});
 		} else {
 			if (
-				// @ts-ignore
 				!message.member.permissions.has(
 					Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS
 				)
@@ -73,8 +68,8 @@ export async function stealEmoji(
 				});
 		}
 
-		let int = interaction as CommandInteraction;
-		let ms = message as Message;
+		let int = interaction as ExtendedInteraction;
+		let ms = message as ExtendedMessage;
 
 		let attachment;
 		let em: string;
@@ -117,9 +112,9 @@ export async function stealEmoji(
 				});
 			} else emojiCalc(em);
 		} else if (!interaction) {
-			const [...args] = (message as Message).content.split(/ +/g);
+			const [...args] = (message as ExtendedMessage).content.split(/ +/g);
 
-			attachment = (message as Message).attachments?.first();
+			attachment = (message as ExtendedMessage).attachments?.first();
 
 			n = options?.name || args[2] || 'emojiURL';
 			em = options?.emoji || attachment?.url || args[1];

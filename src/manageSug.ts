@@ -80,8 +80,7 @@ export async function manageSug(
 				}
 
 				if (
-					// @ts-ignore
-					button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let surebtn = new MessageButton()
 						.setStyle('DANGER')
@@ -164,8 +163,7 @@ export async function manageSug(
 							}
 						} else if (btn.customId === 'deny-sug') {
 							if (
-								// @ts-ignore
-								!btn.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+								!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 							)
 								return;
 							let filter = (m: any) => button.user.id === m.author.id;
@@ -202,8 +200,7 @@ export async function manageSug(
 						}
 					});
 				} else if (
-					// @ts-ignore
-					!button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
 					let ot: any[] | votz[] =
@@ -292,8 +289,7 @@ export async function manageSug(
 				}
 
 				if (
-					// @ts-ignore
-					button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let surebtn = new MessageButton()
 						.setStyle('SUCCESS')
@@ -375,8 +371,7 @@ export async function manageSug(
 							}
 						} else if (btn.customId === 'accept-sug') {
 							if (
-								// @ts-ignore
-								!button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+								!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 							)
 								return;
 							let filter = (m: any) => button.user.id === m.author.id;
@@ -412,8 +407,7 @@ export async function manageSug(
 						}
 					});
 				} else if (
-					// @ts-ignore
-					!button.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
 					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
 					let ot: any[] | votz[] =

@@ -4,7 +4,6 @@ import {
 	MessageEmbedFooter,
 	MessageEmbedAuthor,
 	ColorResolvable,
-	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
 	Client,
@@ -14,6 +13,8 @@ import {
 	EmbedFieldData,
 	CacheType
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+
 import chalk from 'chalk';
 import model from './model/gSys';
 
@@ -102,36 +103,33 @@ interface returns {
 
 export async function giveawaySystem(
 	client: Client,
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
 ): Promise<returns> {
 	return new Promise(async (resolve) => {
 		try {
 			let interaction: any;
-			// @ts-ignore
 			if (message.commandId) {
 				interaction = message;
 			}
 			let timeStart: number = Date.now();
-			let int = message as CommandInteraction;
+			let int = message as ExtendedInteraction;
 			let mes = message as Message;
 
 			let roly;
 
 			if (options.manager as Role)
-				// @ts-ignore
 				roly = await message.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as Role).id
 				);
 			else if (options.manager as string)
-				// @ts-ignore
 				roly = await message.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
 			if (
 				!(
-					roly || // @ts-ignore
+					roly ||
 					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 				)
 			) {
@@ -223,7 +221,8 @@ export async function giveawaySystem(
 				const [...args] = mes.content.split(/ +/g);
 
 				ch =
-					options.channel || // @ts-ignore
+					options.channel ||
+					// @ts-ignore
 					message.mentions.channels.first() ||
 					message.channel;
 				time = options.time || args[1] || '1h';
@@ -533,7 +532,7 @@ export async function giveawaySystem(
 										allComp.components[2].disabled = true;
 
 										return await msg.edit({
-											embeds: [embed], //@ts-ignore
+											embeds: [embed],
 											components: [allComp]
 										});
 									}

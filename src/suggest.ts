@@ -1,16 +1,12 @@
 import {
-	Client,
 	MessageEmbed,
 	MessageEmbedAuthor,
 	ColorResolvable,
 	TextChannel,
 	MessageEmbedFooter,
-	Channel,
-	Permissions,
 	MessageActionRow,
 	MessageButton,
 	MessageButtonStyle,
-	CommandInteraction,
 	Message,
 	User
 } from 'discord.js';
@@ -19,6 +15,7 @@ import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
 import db from './model/suggestion';
 import { APIMessage } from 'discord-api-types/v10';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
@@ -72,7 +69,7 @@ export type suggestOption = {
  */
 
 export async function suggestSystem(
-	message: CommandInteraction | Message,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: suggestOption = {}
 ) {
 	try {
@@ -81,9 +78,8 @@ export async function suggestSystem(
 		let suggestion: string;
 
 		let interaction;
-		// @ts-ignore
 		if (message.commandId) {
-			interaction = message as CommandInteraction;
+			interaction = message as ExtendedInteraction;
 
 			suggestion =
 				options.suggestion || interaction.options.getString('suggestion');
@@ -91,7 +87,6 @@ export async function suggestSystem(
 			if (!suggestion)
 				return interaction.followUp('Give me a suggestion to post.');
 		}
-		// @ts-ignore
 		else if (!message.commandId) {
 			const attachment = (message as Message).attachments?.first();
 
@@ -188,7 +183,7 @@ export async function suggestSystem(
 		}
 
 		let filter = (
-			m: any //@ts-ignore
+			m: any
 		) => m.user.id === (message.user ? message.user : message.author).id;
 		const collect = (m as Message).createMessageComponentCollector({
 			filter,

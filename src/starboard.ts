@@ -2,7 +2,6 @@ import chalk from 'chalk';
 import {
 	Client,
 	ColorResolvable,
-	Message,
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
@@ -11,6 +10,7 @@ import {
 	TextChannel
 } from 'discord.js';
 import { SimplyError } from './Error/Error';
+import { ExtendedMessage } from './interfaces';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/Systems/starboard#starboardembed*
@@ -47,15 +47,13 @@ export type starboardOption = {
 
 export async function starboard(
 	client: Client,
-	reaction: MessageReaction | Message,
+	reaction: MessageReaction | ExtendedMessage,
 	options: starboardOption = {}
 ) {
 	let min = options.min || 2;
-	let m: Message = reaction as Message;
+	let m: ExtendedMessage = reaction as ExtendedMessage;
 	let r: MessageReaction = reaction as MessageReaction;
-
-	// @ts-ignore
-	if (reaction.id) m = reaction;
+	if ((reaction as ExtendedMessage).id) (m as ExtendedMessage | MessageReaction) = reaction;
 	else r = reaction as MessageReaction;
 
 	if (!min || min == NaN || min == 0)
@@ -70,7 +68,7 @@ export async function starboard(
 		});
 
 	try {
-		if (m || (reaction as Message).id) {
+		if (m || (reaction as ExtendedMessage).id) {
 			let starboard = await client.channels.fetch(options.channelId, {
 				cache: true
 			});

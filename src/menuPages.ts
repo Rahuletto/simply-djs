@@ -1,10 +1,10 @@
 import {
 	MessageEmbed,
-	Message,
-	CommandInteraction,
 	MessageActionRow,
 	MessageSelectMenu
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+
 import chalk from 'chalk';
 import { SimplyError } from './Error/Error';
 
@@ -59,7 +59,7 @@ export type menuEmbOptions = {
  */
 
 export async function menuPages(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: menuEmbOptions = {}
 ) {
 	try {
@@ -131,13 +131,12 @@ export async function menuPages(
 		}
 
 		let interaction;
-		// @ts-ignore
 		if (message.commandId) {
 			interaction = message;
 		}
 
-		let int = message as CommandInteraction;
-		let mes = message as Message;
+		let int = message as ExtendedInteraction;
+		let mes = message as ExtendedMessage;
 
 		let m: any;
 
@@ -151,7 +150,7 @@ export async function menuPages(
 			m = await mes.reply({ embeds: [options.embed], components: rows });
 		}
 
-		const collector = (m as Message).createMessageComponentCollector({
+		const collector = (m as ExtendedMessage).createMessageComponentCollector({
 			componentType: 'SELECT_MENU',
 			idle: 600000
 		});
