@@ -11,6 +11,7 @@ import {
 	ButtonInteraction,
 	GuildMember
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from "./interfaces"
 
 import chalk from 'chalk';
 
@@ -47,14 +48,6 @@ export type calcOptions = {
 	buttons?: calcButtons;
 };
 
-interface ExtendedInteraction extends CommandInteraction {
-	author: any;
-	member: GuildMember;
-}
-
-interface ExtendedMessage extends Message {
-	commandId: any;
-}
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
