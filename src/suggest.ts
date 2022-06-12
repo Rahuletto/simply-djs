@@ -93,11 +93,11 @@ export async function suggestSystem(
 		}
 		// @ts-ignore
 		else if (!message.commandId) {
-			const attachment = (message as Message).attachments.first();
+			const attachment = (message as Message).attachments?.first();
 
 			url = attachment ? attachment.url : null;
 
-			suggestion = options.suggestion;
+			suggestion = options?.suggestion;
 
 			if (url) {
 				suggestion = suggestion + ' ' + url;
@@ -112,7 +112,7 @@ export async function suggestSystem(
 				return message.reply('Give me a suggestion to post.');
 		}
 
-		let channel = options.channelId;
+		let channel = options?.channelId;
 
 		if (!options.embed) {
 			options.embed = {
