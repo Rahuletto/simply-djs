@@ -28,9 +28,9 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 			.then(async () => {
 				if (notify !== false) {
 					let json = await axios
-						.get('https://api.npms.io/v2/search?q=simply-djs')
+						.get('https://registry.npmjs.org/simply-djs')
 						.then((res) => res.data);
-					let v = json.results[0].package.version;
+					let v = json.dist-tags.latest
 
 					if (v !== version) {
 						console.log(
