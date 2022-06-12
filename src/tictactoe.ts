@@ -4,13 +4,14 @@ import {
 	MessageEmbedFooter,
 	MessageEmbedAuthor,
 	ColorResolvable,
-	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
 	Client,
 	MessageButtonStyle,
 	User
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+
 import chalk from 'chalk';
 import { APIMessage } from 'discord-api-types/v10';
 
@@ -69,7 +70,7 @@ export type tttOptions = {
  */
 
 export async function tictactoe(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: tttOptions = {}
 ): Promise<User> {
 	return new Promise(async (resolve) => {
@@ -78,14 +79,13 @@ export async function tictactoe(
 
 			let interaction: any;
 
-			//@ts-ignore
 			if (message.commandId) {
 				interaction = message;
 			}
 
 			let opponent: User;
 
-			let int = message as CommandInteraction;
+			let int = message as ExtendedInteraction;
 			let ms = message as Message;
 
 			if (interaction) {
@@ -103,7 +103,7 @@ export async function tictactoe(
 						ephemeral: true
 					});
 
-				if (opponent.id == (message as CommandInteraction).user.id)
+				if (opponent.id == (message as ExtendedInteraction).user.id)
 					return int.followUp({
 						content: 'You cannot play with yourself!',
 						ephemeral: true
