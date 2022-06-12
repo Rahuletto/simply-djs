@@ -337,7 +337,7 @@ export async function embedPages(
 					m.edit({
 						embeds: [
 							pages[currentPage].setFooter({
-								text: `***Page: ${currentPage + 1}/${pages.length}***`
+								text: `Page: ${currentPage + 1}/${pages.length}`
 							})
 						],
 						components: comps,
