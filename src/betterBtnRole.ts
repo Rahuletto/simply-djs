@@ -1,15 +1,14 @@
 import {
 	Client,
-	CommandInteraction,
 	MessageButtonStyle,
 	TextChannel,
 	Role,
-	Message,
 	MessageButton,
 	MessageActionRow
 } from 'discord.js';
 
 import chalk from 'chalk';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 /*
 Error Codes
@@ -54,7 +53,7 @@ export type betterbtnOptions = {
 
 export async function betterBtnRole(
 	client: Client,
-	interaction: CommandInteraction,
+	interaction: ExtendedInteraction,
 	options: betterbtnOptions = { custom: false }
 ): Promise<string> {
 	return new Promise(async (resolve, reject) => {
@@ -62,10 +61,10 @@ export async function betterBtnRole(
 		let msgid = options.messageId || interaction.options.getString('message');
 		let role = options.role || interaction.options.getRole('role');
 
-		//@ts-ignore
-		let msg: Message = await (ch as TextChannel).messages
+		let msg: ExtendedMessage = await (ch as TextChannel).messages
 			.fetch(msgid)
-			.catch((e) => {});
+			.catch((e) => {})
+			.then();
 
 		if (!msg) {
 			if (options.custom === true) reject('NO_MSG');

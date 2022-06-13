@@ -1,16 +1,15 @@
 import {
-	Message,
 	MessageEmbed,
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageButton,
-	CommandInteraction,
 	MessageEmbedAuthor,
 	MessageEmbedFooter,
 	ColorResolvable,
 	MessageSelectOptionData,
 	Permissions
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
 
@@ -50,7 +49,7 @@ export type embOptions = {
  */
 
 export async function embedCreate(
-	message: Message | CommandInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: embOptions = {}
 ): Promise<MessageEmbed | any> {
 	return new Promise(async (resolve) => {
@@ -176,15 +175,15 @@ export async function embedCreate(
 			}
 
 			let interaction;
-			//@ts-ignore
+
 			if (message.commandId) {
 				interaction = message;
 			}
 
 			let msg: any;
 
-			let int = message as CommandInteraction;
-			let ms = message as Message;
+			let int = message as ExtendedInteraction;
+			let ms = message as ExtendedMessage;
 
 			if (interaction) {
 				await int.followUp({
@@ -213,22 +212,16 @@ export async function embedCreate(
 			message.channel
 				.send({ content: '** **', embeds: [emb] })
 				.then(async (preview) => {
-					let filter = (
-						m: any //@ts-ignore
-					) => m.user.id === message.member.user.id;
+					let filter = (m: any) => m.user.id === message.member.user.id;
 					let collector = msg.createMessageComponentCollector({
 						filter: filter,
 						idle: 1000 * 60 * 3
 					});
 
 					collector.on('collect', async (button: any) => {
-						let fitler = (m: any) =>
-							// @ts-ignore
-							message.member.user.id === m.author.id;
+						let fitler = (m: any) => message.member.user.id === m.author.id;
 
-						let btnfilt = (
-							m: any // @ts-ignore
-						) => message.member.user.id === m.user.id;
+						let btnfilt = (m: any) => message.member.user.id === m.user.id;
 
 						if (button.customId && button.customId === 'setDelete') {
 							button.reply({
@@ -240,7 +233,6 @@ export async function embedCreate(
 							msg.delete().catch(() => {});
 						} else if (button.customId && button.customId === 'setDone') {
 							if (
-								// @ts-ignore
 								message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 							) {
 								button.reply({
@@ -271,7 +263,6 @@ export async function embedCreate(
 									}
 								});
 							} else if (
-								// @ts-ignore
 								!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
 							) {
 								button.reply({ content: 'Done 👍', ephemeral: true });
@@ -396,8 +387,8 @@ export async function embedCreate(
 												content: preview.content,
 												embeds: [
 													preview.embeds[0].setAuthor({
-														name: m.content, // @ts-ignore
-														iconURL: preview.embeds[0].author?.iconURL // @ts-ignore
+														name: m.content,
+														iconURL: preview.embeds[0].author?.iconURL
 															? preview.embeds[0].author?.iconURL
 															: '',
 														url: preview.embeds[0].author?.url
@@ -447,7 +438,7 @@ export async function embedCreate(
 													preview.embeds[0].setAuthor({
 														name: preview.embeds[0].author?.name
 															? preview.embeds[0].author?.name
-															: '', // @ts-ignore
+															: '',
 														iconURL:
 															m.content || m.attachments.first()?.url || '',
 														url: preview.embeds[0].author?.url
@@ -490,8 +481,8 @@ export async function embedCreate(
 														preview.embeds[0].setAuthor({
 															name: preview.embeds[0].author?.name
 																? preview.embeds[0].author?.name
-																: '', // @ts-ignore
-															iconURL: preview.embeds[0].author?.iconURL // @ts-ignore
+																: '',
+															iconURL: preview.embeds[0].author?.iconURL
 																? preview.embeds[0].author?.iconURL
 																: '',
 															url: m.content || ''
@@ -765,8 +756,8 @@ export async function embedCreate(
 												content: preview.content,
 												embeds: [
 													preview.embeds[0].setFooter({
-														text: m.content, // @ts-ignore
-														iconURL: preview.embeds[0].footer?.iconURL // @ts-ignore
+														text: m.content,
+														iconURL: preview.embeds[0].footer?.iconURL
 															? preview.embeds[0].footer?.iconURL
 															: ''
 													})
@@ -811,7 +802,7 @@ export async function embedCreate(
 												content: preview.content,
 												embeds: [
 													preview.embeds[0].setFooter({
-														text: preview.embeds[0].footer?.text || '', // @ts-ignore
+														text: preview.embeds[0].footer?.text || '',
 														iconURL:
 															m.content || m.attachments.first()?.url || ''
 													})

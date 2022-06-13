@@ -1,0 +1,30 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - run:
+          name: Install husky globally
+          command: sudo npm i -g husky
+      - run:
+          name: Generate package-lock.json
+          command: npm i --package-lock-only
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Intall TypeScript globally
+          command: sudo npm i -g typescript
+      - run:
+          name: Compile simply-djs
+          command: tsc
+
+workflows:
+  sample:
+    jobs:
+      - build

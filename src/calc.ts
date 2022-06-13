@@ -1,7 +1,5 @@
 import {
-	CommandInteraction,
 	MessageButtonStyle,
-	Message,
 	MessageEmbed,
 	MessageButton,
 	MessageActionRow,
@@ -10,6 +8,7 @@ import {
 	ColorResolvable,
 	ButtonInteraction
 } from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
 
@@ -59,7 +58,7 @@ export type calcOptions = {
  */
 
 export async function calculator(
-	interaction: Message | CommandInteraction,
+	interaction: ExtendedMessage | ExtendedInteraction,
 	options: calcOptions = {
 		buttons: { numbers: 'SECONDARY', symbols: 'PRIMARY', delete: 'DANGER' }
 	}
@@ -115,7 +114,6 @@ export async function calculator(
 
 		let message;
 
-		// @ts-ignore
 		if (!interaction.commandId) {
 			message = interaction;
 		}
@@ -152,8 +150,8 @@ export async function calculator(
 
 		let msg: any;
 
-		let int = interaction as CommandInteraction;
-		let ms = interaction as Message;
+		const int = interaction as ExtendedInteraction;
+		let ms = interaction as ExtendedMessage;
 
 		if (!message) {
 			await int.followUp({
@@ -173,8 +171,11 @@ export async function calculator(
 
 		let elem = '0';
 
-		const filter = (button: ButtonInteraction) =>
-			button.user.id === //@ts-ignore
+		const filter = (
+			button: ButtonInteraction,
+			interaction: ExtendedInteraction
+		) =>
+			button.user.id ===
 				(interaction.user ? interaction.user : interaction.author).id &&
 			button.customId.startsWith('cal-');
 
@@ -316,7 +317,7 @@ export async function calculator(
 		}
 	} catch (err: any) {
 		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
+			`${chalk.red('Error Occurred.')} | ${chalk.magenta(
 				'calculator'
 			)} | Error: ${err.stack}`
 		);

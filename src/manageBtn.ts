@@ -13,8 +13,8 @@ import {
 	GuildMember,
 	TextChannel,
 	Role,
-	Permissions,
-	EmbedFieldData
+	EmbedFieldData,
+	GuildMemberManager
 } from 'discord.js';
 import chalk from 'chalk';
 import gsys from './model/gSys';
@@ -139,9 +139,13 @@ export async function manageBtn(
 					if (!role) return;
 					else {
 						await interaction.deferReply({ ephemeral: true });
-						// @ts-ignore
-						if (!member.roles.cache.find((r) => r.id === role.id)) {
-							member.roles // @ts-ignore
+						if (
+							!(member.roles as unknown as GuildMemberManager).cache.find(
+								(r: { id: string }) => r.id === role.id
+							)
+						) {
+							member.roles
+								// @ts-ignore
 								.add(role)
 								.catch((err: any) =>
 									interaction.channel.send({
@@ -155,9 +159,13 @@ export async function manageBtn(
 									options?.btnRole?.addedMsg ||
 									`✅ Added the ${role.toString()} role to you.`
 							});
-							// @ts-ignore
-						} else if (member.roles.cache.find((r) => r.id === role.id)) {
-							member.roles // @ts-ignore
+						} else if (
+							(member.roles as unknown as GuildMemberManager).cache.find(
+								(r: { id: string }) => r.id === role.id
+							)
+						) {
+							member.roles
+								// @ts-ignore
 								.remove(role)
 								.catch((err: any) =>
 									interaction.channel.send({
@@ -523,10 +531,9 @@ export async function manageBtn(
 					else {
 						if (data.requirements.type === 'role') {
 							if (
-								// @ts-ignore
-								!interaction.member.roles.cache.find(
-									(r: any) => r.id === data.requirements.id
-								)
+								!(
+									interaction.member.roles as unknown as GuildMemberManager
+								).cache.find((r: any) => r.id === data.requirements.id)
 							)
 								return interaction.editReply({
 									content:
