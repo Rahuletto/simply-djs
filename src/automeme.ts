@@ -53,7 +53,7 @@ export async function automeme(
 	options: memeOptions = { channelId: '' }
 ): Promise<void> {
 	try {
-		let ch = options.channelId;
+		const ch = options.channelId;
 
 		if (!ch || ch == '')
 			throw new SimplyError({
@@ -63,7 +63,7 @@ export async function automeme(
 				}`
 			});
 
-		let sub = [
+		const sub = [
 			'meme',
 			'me_irl',
 			'memes',
@@ -88,7 +88,7 @@ export async function automeme(
 			};
 		}
 
-		let random = Math.floor(Math.random() * sub.length);
+		const random = Math.floor(Math.random() * sub.length);
 
 		let interv;
 		if (options.interval) {
@@ -105,7 +105,7 @@ export async function automeme(
 		}
 
 		setInterval(async () => {
-			let channel = await client.channels.fetch(ch, {
+			const channel = await client.channels.fetch(ch, {
 				cache: true
 			});
 
@@ -115,7 +115,7 @@ export async function automeme(
 					tip: 'Check the permissions (or) Try using another Channel ID'
 				});
 
-			let response = await axios
+			const response = await axios
 				.get(`https://www.reddit.com/r/${sub[random]}/random/.json`)
 				.then((res) => res.data)
 				.catch(() => {});
@@ -125,14 +125,14 @@ export async function automeme(
 
 			if (response[0].data.children[0].data.over_18 === true) return;
 
-			let perma = response[0].data.children[0].data.permalink;
-			let url = `https://reddit.com${perma}`;
-			let memeImage =
+			const perma = response[0].data.children[0].data.permalink;
+			const url = `https://reddit.com${perma}`;
+			const memeImage =
 				response[0].data.children[0].data.url ||
 				response[0].data.children[0].data.url_overridden_by_dest;
-			let title = response[0].data.children[0].data.title;
-			let upp = response[0].data.children[0].data.ups;
-			let ratio = response[0].data.children[0].data.upvote_ratio;
+			const title = response[0].data.children[0].data.title;
+			const upp = response[0].data.children[0].data.ups;
+			const ratio = response[0].data.children[0].data.upvote_ratio;
 
 			const embed = new MessageEmbed()
 				.setTitle(options.embed?.title || `${title}`)

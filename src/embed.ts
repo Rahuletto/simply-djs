@@ -64,7 +64,7 @@ export async function embedCreate(
 				.setStyle('DANGER')
 				.setCustomId('setDelete');
 
-			let menuOp = [
+			const menuOp = [
 				{
 					name: 'Message',
 					desc: 'Message outside of the embed',
@@ -118,7 +118,7 @@ export async function embedCreate(
 				}
 			];
 
-			let menuOptions: MessageSelectOptionData[] = [];
+			const menuOptions: MessageSelectOptionData[] = [];
 
 			if (!options.embed) {
 				options.embed = {
@@ -132,7 +132,7 @@ export async function embedCreate(
 			}
 
 			for (let i = 0; i < menuOp.length; i++) {
-				let dataopt = {
+				const dataopt = {
 					label: menuOp[i].name,
 					description: menuOp[i].desc,
 					value: menuOp[i].value
@@ -141,7 +141,7 @@ export async function embedCreate(
 				menuOptions.push(dataopt);
 			}
 
-			let slct = new MessageSelectMenu()
+			const slct = new MessageSelectMenu()
 				.setMaxValues(1)
 				.setCustomId('embed-creator')
 				.setPlaceholder('Embed Creator')
@@ -182,8 +182,8 @@ export async function embedCreate(
 
 			let msg: any;
 
-			let int = message as ExtendedInteraction;
-			let ms = message as ExtendedMessage;
+			const int = message as ExtendedInteraction;
+			const ms = message as ExtendedMessage;
 
 			if (interaction) {
 				await int.followUp({
@@ -212,19 +212,19 @@ export async function embedCreate(
 			message.channel
 				.send({ content: '** **', embeds: [emb] })
 				.then(async (preview) => {
-					let filter = (
+					const filter = (
 						m: any
 					) => m.user.id === message.member.user.id;
-					let collector = msg.createMessageComponentCollector({
+					const collector = msg.createMessageComponentCollector({
 						filter: filter,
 						idle: 1000 * 60 * 3
 					});
 
 					collector.on('collect', async (button: any) => {
-						let fitler = (m: any) =>
+						const fitler = (m: any) =>
 							message.member.user.id === m.author.id;
 
-						let btnfilt = (
+						const btnfilt = (
 							m: any
 						) => message.member.user.id === m.user.id;
 
@@ -245,7 +245,7 @@ export async function embedCreate(
 									ephemeral: true
 								});
 
-								let titleclr = button.channel.createMessageCollector({
+								const titleclr = button.channel.createMessageCollector({
 									filter: fitler,
 									time: 30000,
 									max: 1
@@ -253,7 +253,7 @@ export async function embedCreate(
 
 								titleclr.on('collect', async (m: any) => {
 									if (m.mentions.channels.first()) {
-										let ch = m.mentions.channels.first();
+										const ch = m.mentions.channels.first();
 										button.editReply({ content: 'Done 👍', ephemeral: true });
 
 										ch.send({
@@ -282,12 +282,12 @@ export async function embedCreate(
 								resolve(preview.embeds[0].toJSON());
 							}
 						} else if (button.values[0] === 'setTimestamp') {
-							let btn = new MessageButton()
+							const btn = new MessageButton()
 								.setLabel('Enable')
 								.setCustomId('timestamp-yes')
 								.setStyle('SUCCESS');
 
-							let btn2 = new MessageButton()
+							const btn2 = new MessageButton()
 								.setLabel('Disable')
 								.setCustomId('timestamp-no')
 								.setStyle('DANGER');
@@ -298,7 +298,7 @@ export async function embedCreate(
 								components: [new MessageActionRow().addComponents([btn, btn2])]
 							});
 
-							let titleclr = button.channel.createMessageComponentCollector({
+							const titleclr = button.channel.createMessageComponentCollector({
 								filter: btnfilt,
 								idle: 60000
 							});
@@ -333,7 +333,7 @@ export async function embedCreate(
 								}
 							});
 						} else if (button.values[0] === 'setAuthor') {
-							let autsel = new MessageSelectMenu()
+							const autsel = new MessageSelectMenu()
 								.setMaxValues(1)
 								.setCustomId('author-selct')
 								.setPlaceholder('Author Options')
@@ -361,7 +361,7 @@ export async function embedCreate(
 								components: [new MessageActionRow().addComponents([autsel])]
 							});
 
-							let titleclr = button.channel.createMessageComponentCollector({
+							const titleclr = button.channel.createMessageComponentCollector({
 								filter: btnfilt,
 								idle: 60000
 							});
@@ -377,7 +377,7 @@ export async function embedCreate(
 										components: []
 									});
 
-									let authclr = button.channel.createMessageCollector({
+									const authclr = button.channel.createMessageCollector({
 										filter: fitler,
 										time: 30000,
 										max: 1
@@ -413,14 +413,14 @@ export async function embedCreate(
 										components: []
 									});
 
-									let authclr = button.channel.createMessageCollector({
+									const authclr = button.channel.createMessageCollector({
 										filter: fitler,
 										time: 30000,
 										max: 1
 									});
 
 									authclr.on('collect', async (m: any) => {
-										let isthumb =
+										const isthumb =
 											m.content.match(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||
@@ -463,7 +463,7 @@ export async function embedCreate(
 										components: []
 									});
 
-									let authclr = button.channel.createMessageCollector({
+									const authclr = button.channel.createMessageCollector({
 										filter: fitler,
 										time: 30000,
 										max: 1
@@ -506,7 +506,7 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
@@ -527,14 +527,14 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
 							});
 
 							titleclr.on('collect', async (m: any) => {
-								let isthumb =
+								const isthumb =
 									m.content.match(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
@@ -567,7 +567,7 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000
 							});
@@ -601,7 +601,7 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
@@ -630,14 +630,14 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
 							});
 
 							titleclr.on('collect', async (m: any) => {
-								let isthumb =
+								const isthumb =
 									m.content.match(
 										/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 									) != null ||
@@ -667,7 +667,7 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
@@ -690,7 +690,7 @@ export async function embedCreate(
 								ephemeral: true
 							});
 
-							let titleclr = button.channel.createMessageCollector({
+							const titleclr = button.channel.createMessageCollector({
 								filter: fitler,
 								time: 30000,
 								max: 1
@@ -707,7 +707,7 @@ export async function embedCreate(
 									.catch(() => {});
 							});
 						} else if (button.values[0] === 'setFooter') {
-							let autsel = new MessageSelectMenu()
+							const autsel = new MessageSelectMenu()
 								.setMaxValues(1)
 								.setCustomId('footer-selct')
 								.setPlaceholder('Footer Options')
@@ -730,7 +730,7 @@ export async function embedCreate(
 								components: [new MessageActionRow().addComponents([autsel])]
 							});
 
-							let titleclr = button.channel.createMessageComponentCollector({
+							const titleclr = button.channel.createMessageComponentCollector({
 								filter: btnfilt,
 								idle: 60000
 							});
@@ -746,7 +746,7 @@ export async function embedCreate(
 										components: []
 									});
 
-									let authclr = button.channel.createMessageCollector({
+									const authclr = button.channel.createMessageCollector({
 										filter: fitler,
 										time: 30000,
 										max: 1
@@ -779,14 +779,14 @@ export async function embedCreate(
 										components: []
 									});
 
-									let authclr = button.channel.createMessageCollector({
+									const authclr = button.channel.createMessageCollector({
 										filter: fitler,
 										time: 30000,
 										max: 1
 									});
 
 									authclr.on('collect', async (m: any) => {
-										let isthumb =
+										const isthumb =
 											m.content.match(
 												/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 											) != null ||

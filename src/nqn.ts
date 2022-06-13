@@ -14,24 +14,24 @@ import chalk from 'chalk';
 
 export async function nqn(message: Message) {
 	try {
-		let { client } = message;
+		const { client } = message;
 		if (message.author.bot) return;
 
 		let msg = message.content;
-		let str = msg.match(/(?<=:)([^:\s]+)(?=:)/gi);
+		const str = msg.match(/(?<=:)([^:\s]+)(?=:)/gi);
 
 		if (msg.includes('<:') || msg.includes('<a:')) return;
 
 		msg = msg.replace('<:', '').replace('<a:', '');
 
-		let st = msg.match(/(:)([^:\s]+)(:)/gi);
+		const st = msg.match(/(:)([^:\s]+)(:)/gi);
 
 		let reply: string = message.content;
 
 		if (st && st[0]) {
 			st.forEach(async (emojii) => {
-				let rlem = emojii.replaceAll(':', '');
-				let emoji =
+				const rlem = emojii.replaceAll(':', '');
+				const emoji =
 					message.guild.emojis.cache.find((x) => x.name === rlem) ||
 					client.emojis.cache.find((x) => x.name === rlem);
 

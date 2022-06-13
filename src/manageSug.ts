@@ -35,7 +35,7 @@ export async function manageSug(
 	interaction: ButtonInteraction,
 	options: manageSugOptions = {}
 ) {
-	let button = interaction;
+	const button = interaction;
 	if (button.isButton()) {
 		try {
 			options.deny = {
@@ -57,9 +57,9 @@ export async function manageSug(
 					await data.save().catch(() => {});
 				}
 
-				let oldemb = button.message.embeds[0];
+				const oldemb = button.message.embeds[0];
 
-				let likesnd = oldemb.fields[1].value.split(/\s+/);
+				const likesnd = oldemb.fields[1].value.split(/\s+/);
 				let likes: number | string = likesnd[1].replaceAll('`', '');
 				let dislikes: number | string = likesnd[3].replaceAll('`', '');
 
@@ -70,8 +70,8 @@ export async function manageSug(
 					likes = parseInt(likes);
 					dislikes = parseInt(dislikes);
 
-					let l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
-					let d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
+					const l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
+					const d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
 
 					data.votes = l.concat(d);
 					await data.save().catch(() => {});
@@ -82,34 +82,34 @@ export async function manageSug(
 				if (
 					(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
-					let surebtn = new MessageButton()
+					const surebtn = new MessageButton()
 						.setStyle('DANGER')
 						.setLabel('Downvote Suggestion')
 						.setCustomId('no-vote');
 
-					let nobtn = new MessageButton()
+					const nobtn = new MessageButton()
 						.setStyle('PRIMARY')
 						.setLabel('Deny Suggestion')
 						.setCustomId('deny-sug');
 
-					let row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
 
-					let msg: Message | APIMessage = await button.reply({
+					const msg: Message | APIMessage = await button.reply({
 						content: 'Do you want to Deny suggestion (or) Vote ?',
 						components: [row1],
 						ephemeral: true,
 						fetchReply: true
 					});
 
-					let ftter = (m: any) => button.user.id === m.user.id;
-					let coll = (msg as Message).createMessageComponentCollector({
+					const ftter = (m: any) => button.user.id === m.user.id;
+					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
 						componentType: 'BUTTON',
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
 						if (btn.customId === 'no-vote') {
-							let vt = data.votes.find(
+							const vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
 							let ot: any[] | votz[] =
@@ -121,7 +121,7 @@ export async function manageSug(
 							}
 
 							if (!vt || vt.vote === null) {
-								let vot: votz = { user: btn.user.id, vote: 'down' };
+								const vot: votz = { user: btn.user.id, vote: 'down' };
 								ot.push(vot);
 								data.votes = ot;
 								await data.save().catch(() => {});
@@ -146,7 +146,7 @@ export async function manageSug(
 										components: []
 									});
 								} else if (vt.vote === 'up') {
-									let vot: votz = { user: btn.user.id, vote: 'down' };
+									const vot: votz = { user: btn.user.id, vote: 'down' };
 									ot.push(vot);
 									data.votes = ot;
 									await data.save().catch(() => {});
@@ -166,7 +166,7 @@ export async function manageSug(
 								!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 							)
 								return;
-							let filter = (m: any) => button.user.id === m.author.id;
+							const filter = (m: any) => button.user.id === m.author.id;
 
 							await button.editReply({
 								content:
@@ -174,7 +174,7 @@ export async function manageSug(
 								components: []
 							});
 
-							let msgCl = btn.channel.createMessageCollector({
+							const msgCl = btn.channel.createMessageCollector({
 								filter,
 
 								time: 120000
@@ -202,7 +202,7 @@ export async function manageSug(
 				} else if (
 					!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
-					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
+					const vt = data.votes.find((m) => m.user.toString() === button.user.id);
 					let ot: any[] | votz[] =
 						data.votes.filter((m) => m.user.toString() !== button.user.id) ||
 						[];
@@ -212,7 +212,7 @@ export async function manageSug(
 					}
 
 					if (!vt || vt.vote === null) {
-						let vot: votz = { user: button.user.id, vote: 'down' };
+						const vot: votz = { user: button.user.id, vote: 'down' };
 						ot.push(vot);
 						data.votes = ot;
 						await data.save().catch(() => {});
@@ -237,7 +237,7 @@ export async function manageSug(
 								components: []
 							});
 						} else if (vt.vote === 'up') {
-							let vot: votz = { user: button.user.id, vote: 'down' };
+							const vot: votz = { user: button.user.id, vote: 'down' };
 							ot.push(vot);
 							data.votes = ot;
 							await data.save().catch(() => {});
@@ -266,9 +266,9 @@ export async function manageSug(
 					await data.save().catch(() => {});
 				}
 
-				let oldemb = button.message.embeds[0];
+				const oldemb = button.message.embeds[0];
 
-				let likesnd = oldemb.fields[1].value.split(/\s+/);
+				const likesnd = oldemb.fields[1].value.split(/\s+/);
 				let likes: number | string = likesnd[1].replaceAll('`', '');
 				let dislikes: number | string = likesnd[3].replaceAll('`', '');
 
@@ -279,8 +279,8 @@ export async function manageSug(
 					likes = parseInt(likes);
 					dislikes = parseInt(dislikes);
 
-					let l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
-					let d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
+					const l: votz[] = Array(likes).fill({ user: '1', vote: 'up' });
+					const d: votz[] = Array(dislikes).fill({ user: '2', vote: 'down' });
 
 					data.votes = l.concat(d);
 					await data.save().catch(() => {});
@@ -291,34 +291,34 @@ export async function manageSug(
 				if (
 					(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
-					let surebtn = new MessageButton()
+					const surebtn = new MessageButton()
 						.setStyle('SUCCESS')
 						.setLabel('Upvote Suggestion')
 						.setCustomId('yes-vote');
 
-					let nobtn = new MessageButton()
+					const nobtn = new MessageButton()
 						.setStyle('PRIMARY')
 						.setLabel('Accept Suggestion')
 						.setCustomId('accept-sug');
 
-					let row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
 
-					let msg = await button.reply({
+					const msg = await button.reply({
 						content: 'Do you want to Accept suggestion (or) Vote ?',
 						components: [row1],
 						ephemeral: true,
 						fetchReply: true
 					});
 
-					let ftter = (m: any) => button.user.id === m.user.id;
-					let coll = (msg as Message).createMessageComponentCollector({
+					const ftter = (m: any) => button.user.id === m.user.id;
+					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
 						componentType: 'BUTTON',
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
 						if (btn.customId === 'yes-vote') {
-							let vt = data.votes.find(
+							const vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
 							let ot: any[] | votz[] =
@@ -330,7 +330,7 @@ export async function manageSug(
 							}
 
 							if (!vt || vt.vote === null) {
-								let vot: votz = { user: btn.user.id, vote: 'up' };
+								const vot: votz = { user: btn.user.id, vote: 'up' };
 								ot.push(vot);
 								data.votes = ot;
 								await data.save().catch(() => {});
@@ -354,7 +354,7 @@ export async function manageSug(
 										components: []
 									});
 								} else if (vt.vote === 'down') {
-									let vot: votz = { user: btn.user.id, vote: 'up' };
+									const vot: votz = { user: btn.user.id, vote: 'up' };
 									ot.push(vot);
 									data.votes = ot;
 									await data.save().catch(() => {});
@@ -374,7 +374,7 @@ export async function manageSug(
 								!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 							)
 								return;
-							let filter = (m: any) => button.user.id === m.author.id;
+							const filter = (m: any) => button.user.id === m.author.id;
 
 							await button.editReply({
 								content:
@@ -382,7 +382,7 @@ export async function manageSug(
 								components: []
 							});
 
-							let msgCl = btn.channel.createMessageCollector({
+							const msgCl = btn.channel.createMessageCollector({
 								filter,
 								time: 120000
 							});
@@ -409,7 +409,7 @@ export async function manageSug(
 				} else if (
 					!(button.member.permissions as Permissions).has(Permissions.FLAGS.ADMINISTRATOR)
 				) {
-					let vt = data.votes.find((m) => m.user.toString() === button.user.id);
+					const vt = data.votes.find((m) => m.user.toString() === button.user.id);
 					let ot: any[] | votz[] =
 						data.votes.filter((m) => m.user.toString() !== button.user.id) ||
 						[];
@@ -419,7 +419,7 @@ export async function manageSug(
 					}
 
 					if (!vt || vt.vote === null) {
-						let vot: votz = { user: button.user.id, vote: 'up' };
+						const vot: votz = { user: button.user.id, vote: 'up' };
 						ot.push(vot);
 						data.votes = ot;
 						await data.save().catch(() => {});
@@ -443,7 +443,7 @@ export async function manageSug(
 								components: []
 							});
 						} else if (vt.vote === 'down') {
-							let vot: votz = { user: button.user.id, vote: 'up' };
+							const vot: votz = { user: button.user.id, vote: 'up' };
 							ot.push(vot);
 							data.votes = ot;
 							await data.save().catch(() => {});
@@ -465,12 +465,12 @@ export async function manageSug(
 				oldemb: MessageEmbed | APIEmbed,
 				msg: Message | APIMessage
 			) {
-				let data = await db.findOne({
+				const data = await db.findOne({
 					message: button.message.id
 				});
 
-				let l: any[] = [];
-				let d: any[] = [];
+				const l: any[] = [];
+				const d: any[] = [];
 
 				if (data.votes === [] || !data.votes) {
 					l.length = 0;
@@ -495,7 +495,7 @@ export async function manageSug(
 					dislik = 0;
 				}
 
-				let total = data.votes.length;
+				const total = data.votes.length;
 
 				let uPercent = (100 * lik) / total;
 

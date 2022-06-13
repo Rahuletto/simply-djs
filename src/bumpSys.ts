@@ -41,7 +41,7 @@ export async function bumpSystem(
 	options: bumpOptions
 ): Promise<boolean> {
 	try {
-		let bumpo: MessageEmbed = new MessageEmbed()
+		const bumpo: MessageEmbed = new MessageEmbed()
 			.setTitle('Its Bump Time !')
 			.setDescription(
 				'Its been 2 hours since last bump. Could someone please bump the server again ?'
@@ -50,7 +50,7 @@ export async function bumpSystem(
 			.setColor('#075FFF')
 			.setFooter({ text: 'Do !d bump to bump the server ;)' });
 
-		let bumpoo: MessageEmbed = new MessageEmbed()
+		const bumpoo: MessageEmbed = new MessageEmbed()
 			.setTitle('Thank you')
 			.setDescription(
 				'Thank you for bumping the server. Your support means a lot. Will notify you after 2 hours'
@@ -62,7 +62,7 @@ export async function bumpSystem(
 		if ((!options && (message as bumpOptions)) || (!options && !message)) {
 			return new Promise(async (resolve, reject) => {
 				setInterval(async () => {
-					let data = await db.find({
+					const data = await db.find({
 						counts: []
 					});
 
@@ -71,7 +71,7 @@ export async function bumpSystem(
 							dt.nxtBump = undefined;
 							await dt.save().catch(() => {});
 
-							let cho = await client.channels.fetch(dt.channel, {
+							const cho = await client.channels.fetch(dt.channel, {
 								force: true
 							});
 
@@ -115,8 +115,8 @@ export async function bumpSystem(
 										'Bump done'
 									)
 								) {
-									let timeout = 7200000;
-									let time = Date.now() + timeout;
+									const timeout = 7200000;
+									const time = Date.now() + timeout;
 
 									let data = await db.findOne({
 										channel: chid[i]
@@ -152,8 +152,8 @@ export async function bumpSystem(
 			if ((message as Message)?.channel) {
 				return new Promise(async (resolve, reject) => {
 					if ((message as Message).author.id === '302050872383242240') {
-						let chid = (message as Message).channel.id;
-						let guild = (message as Message).guild.id;
+						const chid = (message as Message).channel.id;
+						const guild = (message as Message).guild.id;
 
 						options.embed = {
 							bumpEmb: options?.embed?.bumpEmb || bumpo,
@@ -165,8 +165,8 @@ export async function bumpSystem(
 							(message as Message).embeds[0].description &&
 							(message as Message).embeds[0].description.includes('Bump done')
 						) {
-							let timeout = 7200000;
-							let time = Date.now() + timeout;
+							const timeout = 7200000;
+							const time = Date.now() + timeout;
 
 							let data = await db.findOne({
 								guild: guild

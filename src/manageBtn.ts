@@ -124,16 +124,16 @@ export async function manageBtn(
 	return new Promise(async (resolve, reject) => {
 		if (interaction.isButton()) {
 			try {
-				let member = interaction.member;
+				const member = interaction.member;
 
 				// ------------------------------
 				// ------ B T N - R O L E -------
 				// ------------------------------
 
 				if (interaction.customId.startsWith('role-')) {
-					let roleId = interaction.customId.replace('role-', '');
+					const roleId = interaction.customId.replace('role-', '');
 
-					let role = await interaction.guild.roles.fetch(roleId, {
+					const role = await interaction.guild.roles.fetch(roleId, {
 						force: true
 					});
 					if (!role) return;
@@ -187,9 +187,9 @@ export async function manageBtn(
 						.replaceAll('{tag}', (member.user as User).tag)
 						.replaceAll('{id}', member.user.id);
 
-					let topic = `Ticket has been opened by <@${member.user.id}>`;
+					const topic = `Ticket has been opened by <@${member.user.id}>`;
 
-					let check = await interaction.guild.channels.cache.find(
+					const check = await interaction.guild.channels.cache.find(
 						(ch) => (ch as TextChannel).topic === topic
 					);
 
@@ -199,14 +199,14 @@ export async function manageBtn(
 						});
 					} else if (!check) {
 						let chparent = options.ticketSys?.category || null;
-						let category = interaction.guild.channels.cache.get(
+						const category = interaction.guild.channels.cache.get(
 							options.ticketSys?.category
 						);
 						if (!category) {
 							chparent = null;
 						}
 
-						let ch = await interaction.guild.channels.create(name, {
+						const ch = await interaction.guild.channels.create(name, {
 							type: 'GUILD_TEXT',
 							topic: topic,
 							parent: chparent,
@@ -234,12 +234,12 @@ export async function manageBtn(
 							content: `🎫 Opened your support ticket in ${ch.toString()}.`
 						});
 
-						let rlz: Role[] = [];
+						const rlz: Role[] = [];
 
 						if (options.ticketSys?.pingRole) {
 							if (Array.isArray(options.ticketSys?.pingRole)) {
 								options.ticketSys?.pingRole.forEach(async (e) => {
-									let roler = await interaction.guild.roles.fetch(e, {
+									const roler = await interaction.guild.roles.fetch(e, {
 										force: true
 									});
 
@@ -248,7 +248,7 @@ export async function manageBtn(
 									}
 								});
 							} else if (!Array.isArray(options.ticketSys?.pingRole)) {
-								let roler = await interaction.guild.roles.fetch(
+								const roler = await interaction.guild.roles.fetch(
 									options.ticketSys?.pingRole,
 									{
 										force: true
@@ -278,7 +278,7 @@ export async function manageBtn(
 							str = '';
 						}
 
-						let emb = new MessageEmbed()
+						const emb = new MessageEmbed()
 							.setTitle('Ticket Created')
 							.setDescription(
 								options.ticketSys.embed?.description
@@ -304,13 +304,13 @@ export async function manageBtn(
 									  }
 							);
 
-						let close = new MessageButton()
+						const close = new MessageButton()
 							.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
 							.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
 							.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
 							.setCustomId('close_ticket');
 
-						let closerow = new MessageActionRow().addComponents([close]);
+						const closerow = new MessageActionRow().addComponents([close]);
 
 						ch.send({
 							content: `Here is your ticket ${member.user.toString()}. | ${rlz.join(
@@ -336,19 +336,19 @@ export async function manageBtn(
 						})
 						.catch((err) => {});
 
-					let X_btn = new MessageButton()
+					const X_btn = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.delete?.style || 'DANGER')
 						.setEmoji(options.ticketSys?.buttons?.delete?.emoji || '❌')
 						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Delete')
 						.setCustomId('delete_ticket');
 
-					let open_btn = new MessageButton()
+					const open_btn = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.reopen?.style || 'SUCCESS')
 						.setEmoji(options.ticketSys?.buttons?.reopen?.emoji || '🔓')
 						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Reopen')
 						.setCustomId('open_ticket');
 
-					let tr_btn = new MessageButton()
+					const tr_btn = new MessageButton()
 						.setStyle(
 							options.ticketSys?.buttons?.transcript?.style || 'PRIMARY'
 						)
@@ -358,7 +358,7 @@ export async function manageBtn(
 						)
 						.setCustomId('tr_ticket');
 
-					let row = new MessageActionRow().addComponents([
+					const row = new MessageActionRow().addComponents([
 						open_btn,
 						X_btn,
 						tr_btn
@@ -373,7 +373,7 @@ export async function manageBtn(
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100
 					});
-					let response: string[] = [];
+					const response: string[] = [];
 
 					messagecollection = messagecollection.sort(
 						(a, b) => a.createdTimestamp - b.createdTimestamp
@@ -390,7 +390,7 @@ export async function manageBtn(
 						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
 					});
 
-					let tr = await interaction.editReply({
+					const tr = await interaction.editReply({
 						content: 'Collecting messages to create logs'
 					});
 
@@ -402,7 +402,7 @@ export async function manageBtn(
 
 					use = await interaction.guild.members.fetch(use);
 
-					let attach = new MessageAttachment(
+					const attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						`${(use.user as User).tag}.txt`
 					);
@@ -417,17 +417,17 @@ export async function manageBtn(
 				} else if (interaction.customId === 'delete_ticket') {
 					await interaction.deferReply({ ephemeral: true });
 
-					let yes = new MessageButton()
+					const yes = new MessageButton()
 						.setCustomId('yea_del')
 						.setLabel('Delete')
 						.setStyle('DANGER');
 
-					let no = new MessageButton()
+					const no = new MessageButton()
 						.setCustomId('dont_del')
 						.setLabel('Cancel')
 						.setStyle('SUCCESS');
 
-					let row = new MessageActionRow().addComponents([yes, no]);
+					const row = new MessageActionRow().addComponents([yes, no]);
 
 					interaction.editReply({
 						content: 'Are you sure ?? This process is not reversible !',
@@ -440,7 +440,7 @@ export async function manageBtn(
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100
 					});
-					let response: string[] = [];
+					const response: string[] = [];
 
 					messagecollection = messagecollection.sort(
 						(a, b) => a.createdTimestamp - b.createdTimestamp
@@ -459,7 +459,7 @@ export async function manageBtn(
 						);
 					});
 
-					let attach = new MessageAttachment(
+					const attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						`${(interaction.channel as TextChannel).topic}.md`
 					);
@@ -498,13 +498,13 @@ export async function manageBtn(
 						})
 						.catch((err) => {});
 
-					let close = new MessageButton()
+					const close = new MessageButton()
 						.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
 						.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
 						.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
 						.setCustomId('close_ticket');
 
-					let closerow: MessageActionRow = new MessageActionRow().addComponents(
+					const closerow: MessageActionRow = new MessageActionRow().addComponents(
 						[close]
 					);
 
@@ -515,7 +515,7 @@ export async function manageBtn(
 				// ------------------------------
 				else if (interaction.customId === 'enter_giveaway') {
 					await interaction.deferReply({ ephemeral: true });
-					let data = await gsys.findOne({
+					const data = await gsys.findOne({
 						message: interaction.message.id
 					});
 
@@ -533,8 +533,8 @@ export async function manageBtn(
 								});
 						}
 						if (data.requirements.type === 'guild') {
-							let g = interaction.client.guilds.cache.get(data.requirements.id);
-							let mem = await g.members.fetch(interaction.member.user.id);
+							const g = interaction.client.guilds.cache.get(data.requirements.id);
+							const mem = await g.members.fetch(interaction.member.user.id);
 
 							if (!mem)
 								return interaction.editReply({
@@ -543,7 +543,7 @@ export async function manageBtn(
 								});
 						}
 
-						let entris = data.entry.find((id) => id.userID === member.user.id);
+						const entris = data.entry.find((id) => id.userID === member.user.id);
 
 						if (entris) {
 							await gsys.findOneAndUpdate(
@@ -578,13 +578,13 @@ export async function manageBtn(
 							});
 						}
 
-						let eem = interaction.message.embeds[0];
+						const eem = interaction.message.embeds[0];
 
 						(
 							interaction.message.components[0].components[0] as MessageButton
 						).label = data.entered.toString();
 
-						let mes = interaction.message as Message;
+						const mes = interaction.message as Message;
 						mes.edit({
 							embeds: [eem],
 							components: interaction.message.components as MessageActionRow[]
@@ -596,8 +596,8 @@ export async function manageBtn(
 					interaction.customId === 'end_giveaway' ||
 					interaction.customId === 'reroll_giveaway'
 				) {
-					let allComp = await interaction.message.components[0];
-					let ftr = await interaction.message.embeds[0].footer;
+					const allComp = await interaction.message.components[0];
+					const ftr = await interaction.message.embeds[0].footer;
 
 					const embeded = new MessageEmbed()
 						.setTitle('Processing Data...')
@@ -609,26 +609,26 @@ export async function manageBtn(
 							text: 'Ending the Giveaway, Scraping the ticket..'
 						});
 
-					let msg = interaction.message as Message;
+					const msg = interaction.message as Message;
 
 					await msg.edit({ embeds: [embeded], components: [] }).catch(() => {});
 
-					let dispWin: string[] = [];
+					const dispWin: string[] = [];
 
-					let dt = await gsys.findOne({ message: msg.id });
+					const dt = await gsys.findOne({ message: msg.id });
 
 					dt.endTime = undefined;
 					await dt.save().catch(() => {});
 
-					let winArr: any[] = [];
+					const winArr: any[] = [];
 
-					let winCt = dt.winCount;
+					const winCt = dt.winCount;
 
-					let entries = dt.entry;
+					const entries = dt.entry;
 
 					if (dt.entered > 0) {
 						for (let i = 0; i < winCt; i++) {
-							let winno = Math.floor(Math.random() * dt.entered);
+							const winno = Math.floor(Math.random() * dt.entered);
 
 							winArr.push(entries[winno]);
 						}
@@ -641,7 +641,7 @@ export async function manageBtn(
 								.then((user) => {
 									dispWin.push(`<@${user.user.id}>`);
 
-									let embod = new MessageEmbed()
+									const embod = new MessageEmbed()
 										.setTitle('You.. Won the Giveaway !')
 										.setDescription(
 											`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
@@ -649,12 +649,12 @@ export async function manageBtn(
 										.setColor(0x075fff)
 										.setFooter(ftr);
 
-									let gothe = new MessageButton()
+									const gothe = new MessageButton()
 										.setLabel('View Giveaway')
 										.setStyle('LINK')
 										.setURL(msg.url);
 
-									let entrow = new MessageActionRow().addComponents([gothe]);
+									const entrow = new MessageActionRow().addComponents([gothe]);
 
 									return user
 										.send({ embeds: [embod], components: [entrow] })
@@ -667,10 +667,10 @@ export async function manageBtn(
 					setTimeout(async () => {
 						if (!dt) return await msg.delete();
 						if (dt) {
-							let embed = interaction.message.embeds[0];
+							const embed = interaction.message.embeds[0];
 
-							let tim = Number(dt.endTime);
-							let f: EmbedFieldData[] = [];
+							const tim = Number(dt.endTime);
+							const f: EmbedFieldData[] = [];
 							embed.fields.forEach((a) => {
 								if (a.name === 'Requirements') return;
 								a.value = a.value
@@ -702,7 +702,7 @@ export async function manageBtn(
 								});
 							}
 
-							let resWin: GuildMember[] = [];
+							const resWin: GuildMember[] = [];
 
 							allComp.components[0].disabled = true;
 							allComp.components[1].disabled = false;

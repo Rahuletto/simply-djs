@@ -57,11 +57,11 @@ export async function betterBtnRole(
 	options: betterbtnOptions = { custom: false }
 ): Promise<string> {
 	return new Promise(async (resolve, reject) => {
-		let ch = options.channel || interaction.options.getChannel('channel');
-		let msgid = options.messageId || interaction.options.getString('message');
-		let role = options.role || interaction.options.getRole('role');
+		const ch = options.channel || interaction.options.getChannel('channel');
+		const msgid = options.messageId || interaction.options.getString('message');
+		const role = options.role || interaction.options.getRole('role');
 
-		let msg: ExtendedMessage = await (ch as TextChannel).messages
+		const msg: ExtendedMessage = await (ch as TextChannel).messages
 			.fetch(msgid)
 			.catch((e) => {}).then();
 
@@ -87,13 +87,13 @@ export async function betterBtnRole(
 
 		if (options.type === 'add') {
 			try {
-				let label =
+				const label =
 					options.label || interaction.options.getString('label') || role.name;
-				let color =
+				const color =
 					options.style ||
 					interaction.options.getString('style') ||
 					'SECONDARY';
-				let emoji = options.emoji || interaction.options.getString('emoji');
+				const emoji = options.emoji || interaction.options.getString('emoji');
 
 				if (msg.components) {
 					for (let i = 0; msg.components.length > i; i++) {
@@ -132,7 +132,7 @@ export async function betterBtnRole(
 							.setStyle(color as MessageButtonStyle)
 							.setCustomId('role-' + role.id);
 
-						let rowe = new MessageActionRow().addComponents([btn]);
+						const rowe = new MessageActionRow().addComponents([btn]);
 
 						await msg
 							.edit({
@@ -146,7 +146,7 @@ export async function betterBtnRole(
 									.setStyle('LINK')
 									.setURL(m.url);
 
-								let rowew = new MessageActionRow().addComponents([link]);
+								const rowew = new MessageActionRow().addComponents([link]);
 
 								if (options.custom === true) return resolve('DONE');
 								else
@@ -166,7 +166,7 @@ export async function betterBtnRole(
 							.setCustomId('role-' + role.id)
 							.setEmoji(emoji);
 
-						let rowe = new MessageActionRow().addComponents([btn]);
+						const rowe = new MessageActionRow().addComponents([btn]);
 
 						await msg
 							.edit({
@@ -180,7 +180,7 @@ export async function betterBtnRole(
 									.setStyle('LINK')
 									.setURL(m.url);
 
-								let rowew = new MessageActionRow().addComponents([link]);
+								const rowew = new MessageActionRow().addComponents([link]);
 
 								if (options.custom === true) return resolve('DONE');
 								else
@@ -204,7 +204,7 @@ export async function betterBtnRole(
 							});
 					}
 
-					let rowgap = msg.components[msg.components.length - 1].components;
+					const rowgap = msg.components[msg.components.length - 1].components;
 					if (rowgap.length < 5) {
 						if (!emoji || emoji === null) {
 							const btn = new MessageButton()
@@ -226,7 +226,7 @@ export async function betterBtnRole(
 										.setStyle('LINK')
 										.setURL(m.url);
 
-									let rowew = new MessageActionRow().addComponents([link]);
+									const rowew = new MessageActionRow().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -260,7 +260,7 @@ export async function betterBtnRole(
 										.setStyle('LINK')
 										.setURL(m.url);
 
-									let rowew = new MessageActionRow().addComponents([link]);
+									const rowew = new MessageActionRow().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -281,7 +281,7 @@ export async function betterBtnRole(
 								.setStyle(color as MessageButtonStyle)
 								.setCustomId('role-' + role.id);
 
-							let rowe = new MessageActionRow().addComponents([btn]);
+							const rowe = new MessageActionRow().addComponents([btn]);
 
 							msg.components.push(rowe);
 
@@ -297,7 +297,7 @@ export async function betterBtnRole(
 										.setStyle('LINK')
 										.setURL(m.url);
 
-									let rowew = new MessageActionRow().addComponents([link]);
+									const rowew = new MessageActionRow().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -317,7 +317,7 @@ export async function betterBtnRole(
 								.setCustomId('role-' + role.id)
 								.setEmoji(emoji);
 
-							let rowe = new MessageActionRow().addComponents([btn]);
+							const rowe = new MessageActionRow().addComponents([btn]);
 
 							msg.components.push(rowe);
 
@@ -333,7 +333,7 @@ export async function betterBtnRole(
 										.setStyle('LINK')
 										.setURL(m.url);
 
-									let rowew = new MessageActionRow().addComponents([link]);
+									const rowew = new MessageActionRow().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -396,7 +396,7 @@ export async function betterBtnRole(
 												.setStyle('LINK')
 												.setURL(m.url);
 
-											let rowew = new MessageActionRow().addComponents([link]);
+											const rowew = new MessageActionRow().addComponents([link]);
 
 											if (options.custom === true) return resolve('DONE');
 											else
@@ -420,7 +420,7 @@ export async function betterBtnRole(
 												.setStyle('LINK')
 												.setURL(m.url);
 
-											let rowew = new MessageActionRow().addComponents([link]);
+											const rowew = new MessageActionRow().addComponents([link]);
 
 											if (options.custom === true) return resolve('DONE');
 											else
