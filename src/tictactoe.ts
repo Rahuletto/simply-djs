@@ -85,8 +85,8 @@ export async function tictactoe(
 
 			let opponent: User;
 
-			let int = message as ExtendedInteraction;
-			let ms = message as Message;
+			const int = message as ExtendedInteraction;
+			const ms = message as Message;
 
 			if (interaction) {
 				opponent = options.user || int.options.getUser('user');
@@ -127,7 +127,7 @@ export async function tictactoe(
 					});
 			}
 
-			let acceptEmbed = new MessageEmbed()
+			const acceptEmbed = new MessageEmbed()
 				.setTitle(`Tictactoe with ${opponent.tag}`)
 				.setDescription('Waiting for the opponent to accept/deny')
 				.setAuthor({
@@ -144,17 +144,17 @@ export async function tictactoe(
 						  }
 				);
 
-			let accept = new MessageButton()
+			const accept = new MessageButton()
 				.setLabel('Accept')
 				.setStyle('SUCCESS')
 				.setCustomId('accept-ttt');
 
-			let decline = new MessageButton()
+			const decline = new MessageButton()
 				.setLabel('Deny')
 				.setStyle('DANGER')
 				.setCustomId('deny-ttt');
 
-			let accep = new MessageActionRow().addComponents([accept, decline]);
+			const accep = new MessageActionRow().addComponents([accept, decline]);
 
 			let m: Message | APIMessage;
 
@@ -196,20 +196,20 @@ export async function tictactoe(
 						(button.message as Message).delete();
 					}
 
-					let players = [message.member.user.id, opponent.id].sort(() =>
+					const players = [message.member.user.id, opponent.id].sort(() =>
 						Math.random() > 0.5 ? 1 : -1
 					);
 
-					let x_emoji = options.buttons?.X?.emoji || '❌';
-					let o_emoji = options.buttons?.O?.emoji || '⭕';
+					const x_emoji = options.buttons?.X?.emoji || '❌';
+					const o_emoji = options.buttons?.O?.emoji || '⭕';
 
-					let dashmoji = options.buttons?.idle?.emoji || '➖';
+					const dashmoji = options.buttons?.idle?.emoji || '➖';
 
-					let idleClr = options.buttons?.idle?.style || 'SECONDARY';
-					let XClr = options.buttons?.X?.style || 'DANGER';
-					let OClr = options.buttons?.O?.style || 'PRIMARY';
+					const idleClr = options.buttons?.idle?.style || 'SECONDARY';
+					const XClr = options.buttons?.X?.style || 'DANGER';
+					const OClr = options.buttons?.O?.style || 'PRIMARY';
 
-					let Plrs = {
+					const Plrs = {
 						user: 0,
 						userid: '1234567890123',
 						a1: {
@@ -259,7 +259,7 @@ export async function tictactoe(
 						}
 					};
 
-					let epm = new MessageEmbed()
+					const epm = new MessageEmbed()
 						.setTitle('Lets play TicTacToe.')
 						.setColor(options.embed?.color || '#075fff')
 						.setFooter(
@@ -299,60 +299,60 @@ export async function tictactoe(
 
 					async function ttt(m: Message) {
 						Plrs.userid = players[Plrs.user];
-						let won = {
+						const won = {
 							'O-Player': false,
 							'X-Player': false
 						};
 
-						let a1 = new MessageButton()
+						const a1 = new MessageButton()
 							.setStyle(Plrs.a1.style)
 							.setEmoji(Plrs.a1.emoji)
 							.setCustomId('a1')
 							.setDisabled(Plrs.a1.disabled);
-						let a2 = new MessageButton()
+						const a2 = new MessageButton()
 							.setStyle(Plrs.a2.style)
 							.setEmoji(Plrs.a2.emoji)
 							.setCustomId('a2')
 							.setDisabled(Plrs.a2.disabled);
-						let a3 = new MessageButton()
+						const a3 = new MessageButton()
 							.setStyle(Plrs.a3.style)
 							.setEmoji(Plrs.a3.emoji)
 							.setCustomId('a3')
 							.setDisabled(Plrs.a3.disabled);
-						let b1 = new MessageButton()
+						const b1 = new MessageButton()
 							.setStyle(Plrs.b1.style)
 							.setEmoji(Plrs.b1.emoji)
 							.setCustomId('b1')
 							.setDisabled(Plrs.b1.disabled);
-						let b2 = new MessageButton()
+						const b2 = new MessageButton()
 							.setStyle(Plrs.b2.style)
 							.setEmoji(Plrs.b2.emoji)
 							.setCustomId('b2')
 							.setDisabled(Plrs.b2.disabled);
-						let b3 = new MessageButton()
+						const b3 = new MessageButton()
 							.setStyle(Plrs.b3.style)
 							.setEmoji(Plrs.b3.emoji)
 							.setCustomId('b3')
 							.setDisabled(Plrs.b3.disabled);
-						let c1 = new MessageButton()
+						const c1 = new MessageButton()
 							.setStyle(Plrs.c1.style)
 							.setEmoji(Plrs.c1.emoji)
 							.setCustomId('c1')
 							.setDisabled(Plrs.c1.disabled);
-						let c2 = new MessageButton()
+						const c2 = new MessageButton()
 							.setStyle(Plrs.c2.style)
 							.setEmoji(Plrs.c2.emoji)
 							.setCustomId('c2')
 							.setDisabled(Plrs.c2.disabled);
-						let c3 = new MessageButton()
+						const c3 = new MessageButton()
 							.setStyle(Plrs.c3.style)
 							.setEmoji(Plrs.c3.emoji)
 							.setCustomId('c3')
 							.setDisabled(Plrs.c3.disabled);
-						let a = new MessageActionRow().addComponents([a1, a2, a3]);
-						let b = new MessageActionRow().addComponents([b1, b2, b3]);
-						let c = new MessageActionRow().addComponents([c1, c2, c3]);
-						let buttons = [a, b, c];
+						const a = new MessageActionRow().addComponents([a1, a2, a3]);
+						const b = new MessageActionRow().addComponents([b1, b2, b3]);
+						const c = new MessageActionRow().addComponents([c1, c2, c3]);
+						const buttons = [a, b, c];
 
 						if (
 							Plrs.a1.emoji == o_emoji &&
@@ -403,7 +403,7 @@ export async function tictactoe(
 						)
 							won['O-Player'] = true;
 						if (won['O-Player'] != false) {
-							let wonner: User | void = await client.users
+							const wonner: User | void = await client.users
 								.fetch(players[1])
 								.catch(console.error);
 							resolve(wonner as User);
@@ -500,7 +500,7 @@ export async function tictactoe(
 						)
 							won['X-Player'] = true;
 						if (won['X-Player'] != false) {
-							let wonner: User | void = await client.users
+							const wonner: User | void = await client.users
 								.fetch(players[1])
 								.catch(console.error);
 							resolve(wonner as User);
@@ -610,7 +610,7 @@ export async function tictactoe(
 									Object.keys(obj)
 										.filter((key) => predicate(obj[key])) // @ts-ignore
 										.reduce((res, key) => ((res[key] = obj[key]), res), {});
-								let Filer = objectFilter(
+								const Filer = objectFilter(
 									map(
 										Plrs,
 										(_: any, elem: { emoji: string }) => elem.emoji == dashmoji

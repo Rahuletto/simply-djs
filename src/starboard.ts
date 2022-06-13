@@ -50,7 +50,7 @@ export async function starboard(
 	reaction: MessageReaction | ExtendedMessage,
 	options: starboardOption = {}
 ) {
-	let min = options.min || 2;
+	const min = options.min || 2;
 	let m: ExtendedMessage = reaction as ExtendedMessage;
 	let r: MessageReaction = reaction as MessageReaction;
 	if ((reaction as ExtendedMessage).id)
@@ -88,11 +88,11 @@ export async function starboard(
 
 			if (!starboard) return;
 
-			let msz = await (starboard as TextChannel)?.messages.fetch({
+			const msz = await (starboard as TextChannel)?.messages.fetch({
 				limit: 100
 			});
 
-			let exist = msz.find(
+			const exist = msz.find(
 				(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + m.id
 			);
 
@@ -105,7 +105,7 @@ export async function starboard(
 				r.emoji.name == '⭐' ||
 				r.emoji.name == '🌟'
 			) {
-				let minmax = r.count;
+				const minmax = r.count;
 				if (minmax < min) return;
 
 				let starboard = await client.channels.fetch(options.channelId, {
@@ -127,11 +127,11 @@ export async function starboard(
 				if (!starboard) return;
 
 				if (r.count == 0 || !r.count) {
-					let msz = await (starboard as TextChannel)?.messages.fetch({
+					const msz = await (starboard as TextChannel)?.messages.fetch({
 						limit: 100
 					});
 
-					let exist = msz.find(
+					const exist = msz.find(
 						(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + m.id
 					);
 
@@ -140,14 +140,14 @@ export async function starboard(
 					}
 				}
 
-				let fetch = await r.message.fetch();
+				const fetch = await r.message.fetch();
 
 				const attachment = fetch.attachments.first();
 				const url = attachment ? attachment.url : null;
 
 				if (fetch.embeds.length !== 0) return;
 
-				let embed = new MessageEmbed()
+				const embed = new MessageEmbed()
 					.setAuthor(
 						options.embed?.author || {
 							name: fetch.author.tag,
@@ -164,29 +164,29 @@ export async function starboard(
 					embed.setImage(url);
 				}
 
-				let msz = await (starboard as TextChannel)?.messages.fetch({
+				const msz = await (starboard as TextChannel)?.messages.fetch({
 					limit: 100
 				});
 
-				let emo = options.emoji
+				const emo = options.emoji
 					? client.emojis.cache.get(options?.emoji) || '⭐'
 					: '⭐';
 
-				let btn = new MessageButton()
+				const btn = new MessageButton()
 					.setLabel((r.count ? r.count : 1).toString())
 					.setEmoji(emo)
 					.setCustomId('starboard')
 					.setDisabled(true)
 					.setStyle('PRIMARY');
 
-				let btn2 = new MessageButton()
+				const btn2 = new MessageButton()
 					.setLabel(`Jump to message`)
 					.setStyle('LINK')
 					.setURL(fetch.url);
 
-				let row = new MessageActionRow().addComponents([btn, btn2]);
+				const row = new MessageActionRow().addComponents([btn, btn2]);
 
-				let exist = msz.find(
+				const exist = msz.find(
 					(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + fetch.id
 				);
 

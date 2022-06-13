@@ -67,13 +67,13 @@ export async function menuPages(
 				tip: 'TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
 			});
 
-		let data = options.data;
-		let rowz = options.rows;
-		let menuOptions = [];
+		const data = options.data;
+		const rowz = options.rows;
+		const menuOptions = [];
 
 		for (let i = 0; i < data.length; i++) {
 			if (data[i].emoji) {
-				let dataopt = {
+				const dataopt = {
 					label: data[i].label,
 					description: data[i].description,
 					value: data[i].label,
@@ -82,7 +82,7 @@ export async function menuPages(
 
 				menuOptions.push(dataopt);
 			} else if (!data[i].emoji) {
-				let dataopt = {
+				const dataopt = {
 					label: data[i].label,
 					description: data[i].description,
 					value: data[i].label
@@ -108,15 +108,15 @@ export async function menuPages(
 			menuOptions.push(delopt);
 		}
 
-		let slct = new MessageSelectMenu()
+		const slct = new MessageSelectMenu()
 			.setMaxValues(1)
 			.setCustomId('menuPages')
 			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
 			.addOptions(menuOptions);
 
-		let row = new MessageActionRow().addComponents(slct);
+		const row = new MessageActionRow().addComponents(slct);
 
-		let rows = [];
+		const rows = [];
 
 		rows.push(row);
 
@@ -131,8 +131,8 @@ export async function menuPages(
 			interaction = message;
 		}
 
-		let int = message as ExtendedInteraction;
-		let mes = message as ExtendedMessage;
+		const int = message as ExtendedInteraction;
+		const mes = message as ExtendedMessage;
 
 		let m: any;
 
@@ -151,7 +151,7 @@ export async function menuPages(
 			idle: 600000
 		});
 		collector.on('collect', async (menu: any) => {
-			let selected = menu.values[0];
+			const selected = menu.values[0];
 
 			if (type === 2) {
 				await menu.deferUpdate();

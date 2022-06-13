@@ -54,8 +54,8 @@ export async function btnRole(
 				}`
 			});
 
-		let msg = message as ExtendedMessage;
-		let int = message as ExtendedInteraction;
+		const msg = message as ExtendedMessage;
+		const int = message as ExtendedInteraction;
 
 		if (message.commandId) {
 			if (!int.member.permissions.has('ADMINISTRATOR'))
@@ -70,23 +70,23 @@ export async function btnRole(
 				});
 		}
 
-		let row: any[] = [];
-		let data = options.data;
+		const row: any[] = [];
+		const data = options.data;
 
 		if (data.length <= 5) {
-			let button: any[][] = [[]];
+			const button: any[][] = [[]];
 			btnEngine(data, button, row);
 		} else if (data.length > 5 && data.length <= 10) {
-			let button: any[][] = [[], []];
+			const button: any[][] = [[], []];
 			btnEngine(data, button, row);
 		} else if (data.length > 11 && data.length <= 15) {
-			let button: any[][] = [[], [], []];
+			const button: any[][] = [[], [], []];
 			btnEngine(data, button, row);
 		} else if (data.length > 16 && data.length <= 20) {
-			let button: any[][] = [[], [], [], []];
+			const button: any[][] = [[], [], [], []];
 			btnEngine(data, button, row);
 		} else if (data.length > 21 && data.length <= 25) {
-			let button: any[][] = [[], [], [], [], []];
+			const button: any[][] = [[], [], [], [], []];
 			btnEngine(data, button, row);
 		} else if (data.length > 25) {
 			throw new SimplyError({
@@ -100,13 +100,13 @@ export async function btnRole(
 			for (let i = 0; i < data.length; i++) {
 				if (button[current].length === 5) current++;
 
-				let emoji = data[i].emoji || null;
-				let clr = data[i].style || 'SECONDARY';
+				const emoji = data[i].emoji || null;
+				const clr = data[i].style || 'SECONDARY';
 				let url = '';
-				let role: Role | null = message.guild.roles.cache.find(
+				const role: Role | null = message.guild.roles.cache.find(
 					(r) => r.id === data[i].role
 				);
-				let label = data[i].label || role?.name;
+				const label = data[i].label || role?.name;
 
 				if (!role && clr === 'LINK') {
 					url = data[i].url;
@@ -116,7 +116,7 @@ export async function btnRole(
 				}
 
 				if (i === data.length - 1) {
-					let rero = addRow(button[current]);
+					const rero = addRow(button[current]);
 					row.push(rero);
 				}
 			}
@@ -129,7 +129,7 @@ export async function btnRole(
 					}`
 				});
 
-			let emb = options.embed;
+			const emb = options.embed;
 
 			if ((message as ExtendedInteraction).commandId) {
 				if (!options.embed) {
@@ -158,7 +158,7 @@ export async function btnRole(
 			}
 
 			function addRow(btns: any[]): MessageActionRow {
-				let row1 = new MessageActionRow();
+				const row1 = new MessageActionRow();
 
 				row1.addComponents(btns);
 
@@ -170,7 +170,7 @@ export async function btnRole(
 				url: string,
 				emoji: string
 			): MessageButton {
-				let btn = new MessageButton();
+				const btn = new MessageButton();
 				if (!emoji || emoji === null) {
 					btn.setLabel(label).setStyle('LINK').setURL(url);
 				} else if (emoji && emoji !== null) {
@@ -185,7 +185,7 @@ export async function btnRole(
 				color: MessageButtonStyle,
 				emoji: string
 			): MessageButton {
-				let btn = new MessageButton();
+				const btn = new MessageButton();
 				if (!emoji || emoji === null) {
 					btn
 						.setLabel(label)

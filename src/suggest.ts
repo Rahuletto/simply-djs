@@ -73,7 +73,7 @@ export async function suggestSystem(
 	options: suggestOption = {}
 ) {
 	try {
-		let { client } = message;
+		const { client } = message;
 		let url;
 		let suggestion: string;
 
@@ -106,7 +106,7 @@ export async function suggestSystem(
 				return message.reply('Give me a suggestion to post.');
 		}
 
-		let channel = options?.channelId;
+		const channel = options?.channelId;
 
 		if (!options.embed) {
 			options.embed = {
@@ -131,7 +131,7 @@ export async function suggestSystem(
 			}
 		};
 
-		let ch =
+		const ch =
 			client.channels.cache.get(channel as string) || (channel as TextChannel);
 		if (!ch)
 			throw new SimplyError({
@@ -139,19 +139,19 @@ export async function suggestSystem(
 				tip: 'Check the permissions (or) Try using another Channel ID'
 			});
 
-		let surebtn = new MessageButton()
+		const surebtn = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Yes')
 			.setCustomId('send-sug');
 
-		let nobtn = new MessageButton()
+		const nobtn = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('No')
 			.setCustomId('nope-sug');
 
-		let row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+		const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
 
-		let embedo = new MessageEmbed()
+		const embedo = new MessageEmbed()
 			.setTitle('Are you sure ?')
 			.setDescription(`Is this your suggestion ? \`${suggestion}\``)
 			.setTimestamp()
@@ -181,7 +181,7 @@ export async function suggestSystem(
 			});
 		}
 
-		let filter = (m: any) =>
+		const filter = (m: any) =>
 			m.user.id === (message.user ? message.user : message.author).id;
 		const collect = (m as Message).createMessageComponentCollector({
 			filter,
@@ -223,24 +223,24 @@ export async function suggestSystem(
 						}
 					);
 
-				let approve = new MessageButton()
+				const approve = new MessageButton()
 					.setEmoji(options.buttons.upvote.emoji)
 					.setLabel('0')
 					.setStyle(options.buttons.upvote.style)
 					.setCustomId('agree-sug');
 
-				let no = new MessageButton()
+				const no = new MessageButton()
 					.setEmoji(options.buttons.downvote.emoji)
 					.setLabel('0')
 					.setStyle(options.buttons.downvote.style)
 					.setCustomId('no-sug');
 
-				let row = new MessageActionRow().addComponents([approve, no]);
+				const row = new MessageActionRow().addComponents([approve, no]);
 
 				await (ch as TextChannel)
 					.send({ embeds: [emb], components: [row] })
 					.then(async (ms) => {
-						let cr = new db({
+						const cr = new db({
 							message: ms.id,
 							author: message.member.user.id
 						});

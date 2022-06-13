@@ -128,7 +128,7 @@ export async function embedPages(
 		};
 
 		//Defining all buttons
-		let firstBtn = new MessageButton()
+		const firstBtn = new MessageButton()
 			.setCustomId('first_embed')
 
 			.setStyle(options.buttons.firstBtn.style);
@@ -138,7 +138,7 @@ export async function embedPages(
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			firstBtn.setLabel(options.buttons?.firstBtn?.label);
 
-		let forwardBtn = new MessageButton()
+		const forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
 			.setStyle(options.buttons.nextBtn.style);
 
@@ -147,7 +147,7 @@ export async function embedPages(
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			forwardBtn.setLabel(options.buttons?.nextBtn?.label);
 
-		let backBtn = new MessageButton()
+		const backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
 			.setStyle(options.buttons.backBtn.style);
 
@@ -161,7 +161,7 @@ export async function embedPages(
 			backBtn.setDisabled(true);
 		}
 
-		let lastBtn = new MessageButton()
+		const lastBtn = new MessageButton()
 			.setCustomId('last_embed')
 			.setStyle(options.buttons.lastBtn.style);
 
@@ -170,7 +170,7 @@ export async function embedPages(
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			lastBtn.setLabel(options.buttons?.lastBtn?.label);
 
-		let deleteBtn = new MessageButton()
+		const deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
 			.setStyle(options.buttons.deleteBtn.style);
 
@@ -198,7 +198,7 @@ export async function embedPages(
 
 		pageMovingButtons.addComponents(btnCollection);
 
-		var currentPage = 0;
+		let currentPage = 0;
 
 		comps.push(pageMovingButtons);
 
@@ -208,10 +208,10 @@ export async function embedPages(
 			interaction = message;
 		}
 
-		var m: any;
+		let m: any;
 
-		let int = message as ExtendedInteraction;
-		let ms = message as ExtendedMessage;
+		const int = message as ExtendedInteraction;
+		const ms = message as ExtendedMessage;
 
 		if (interaction) {
 			if (options.count) {
@@ -244,10 +244,10 @@ export async function embedPages(
 			}
 		}
 
-		let filter = (m: any) =>
+		const filter = (m: any) =>
 			m.user.id === (message.user ? message.user : message.author).id;
 
-		let collector = m.createMessageComponentCollector({
+		const collector = m.createMessageComponentCollector({
 			time: options.timeout || 120000,
 			filter,
 			componentType: 'BUTTON'
@@ -273,20 +273,20 @@ export async function embedPages(
 
 			if (options.dynamic) {
 				if (currentPage === 0) {
-					let bt = comps[0].components[0];
+					const bt = comps[0].components[0];
 					bt.disabled = true;
 					if (options.skips) {
-						let inde = comps[0].components[1];
+						const inde = comps[0].components[1];
 						inde.disabled = true;
 						comps[0].components[1] = inde;
 					}
 
 					comps[0].components[0] = bt;
 				} else {
-					let bt = comps[0].components[0];
+					const bt = comps[0].components[0];
 					bt.disabled = false;
 					if (options.skips) {
-						let inde = comps[0].components[1];
+						const inde = comps[0].components[1];
 						inde.disabled = false;
 						comps[0].components[1] = inde;
 					}
@@ -294,8 +294,8 @@ export async function embedPages(
 				}
 				if (currentPage === pages.length - 1) {
 					if (options.skips) {
-						let bt = comps[0].components[3];
-						let inde = comps[0].components[4];
+						const bt = comps[0].components[3];
+						const inde = comps[0].components[4];
 
 						inde.disabled = true;
 						bt.disabled = true;
@@ -303,7 +303,7 @@ export async function embedPages(
 						comps[0].components[3] = bt;
 						comps[0].components[4] = inde;
 					} else {
-						let bt = comps[0].components[2];
+						const bt = comps[0].components[2];
 
 						bt.disabled = true;
 
@@ -311,8 +311,8 @@ export async function embedPages(
 					}
 				} else {
 					if (options.skips) {
-						let bt = comps[0].components[3];
-						let inde = comps[0].components[4];
+						const bt = comps[0].components[3];
+						const inde = comps[0].components[4];
 
 						inde.disabled = false;
 						bt.disabled = false;
@@ -320,7 +320,7 @@ export async function embedPages(
 						comps[0].components[3] = bt;
 						comps[0].components[4] = inde;
 					} else {
-						let bt = comps[0].components[2];
+						const bt = comps[0].components[2];
 
 						bt.disabled = false;
 
@@ -356,7 +356,7 @@ export async function embedPages(
 			if (reason === 'del') {
 				await m.delete().catch(() => {});
 			} else {
-				let disab: any[] = [];
+				const disab: any[] = [];
 
 				btnCollection.forEach((a) => {
 					disab.push(a.setDisabled(true));

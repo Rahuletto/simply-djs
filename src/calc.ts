@@ -64,9 +64,9 @@ export async function calculator(
 	}
 ): Promise<void> {
 	try {
-		let button = new Array([], [], [], [], []);
-		let row: any[] = [];
-		let text: string[] = [
+		const button: any[][] = [[], [], [], [], []];
+		const row: any[] = [];
+		const text: string[] = [
 			'Clear',
 			'(',
 			')',
@@ -122,7 +122,7 @@ export async function calculator(
 			if (button[current].length === 5) current++;
 			button[current].push(createButton(text[i]));
 			if (i === text.length - 1) {
-				for (let btn of button) row.push(addRow(btn));
+				for (const btn of button) row.push(addRow(btn));
 			}
 		}
 
@@ -151,7 +151,7 @@ export async function calculator(
 		let msg: any;
 
 		const int = interaction as ExtendedInteraction;
-		let ms = interaction as ExtendedMessage;
+		const ms = interaction as ExtendedMessage;
 
 		if (!message) {
 			await int.followUp({
@@ -167,7 +167,7 @@ export async function calculator(
 			});
 		}
 
-		let time = 300000;
+		const time = 300000;
 
 		let elem = '0';
 
@@ -179,7 +179,7 @@ export async function calculator(
 				(interaction.user ? interaction.user : interaction.author).id &&
 			button.customId.startsWith('cal-');
 
-		let collect = msg.createMessageComponentCollector({
+		const collect = msg.createMessageComponentCollector({
 			filter,
 			componentType: 'BUTTON',
 			time: time
@@ -188,7 +188,7 @@ export async function calculator(
 		collect.on('collect', async (button: ButtonInteraction) => {
 			await button.deferUpdate();
 
-			let btnName: any = button.customId.replace('cal-', '');
+			const btnName: any = button.customId.replace('cal-', '');
 
 			if (elem === '0') elem = '';
 
@@ -268,8 +268,8 @@ export async function calculator(
 		}, time);
 
 		function addRow(btns: MessageButton[]) {
-			let row1 = new MessageActionRow();
-			for (let btn of btns) {
+			const row1 = new MessageActionRow();
+			for (const btn of btns) {
 				row1.addComponents(btn);
 			}
 			return row1;

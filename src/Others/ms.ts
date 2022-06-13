@@ -25,11 +25,11 @@ export function ms(str: string) {
 		.replaceAll('seconds', 's')
 		.replaceAll('sec', 's');
 
-	let arr: string[] = ('' + str)
+	const arr: string[] = ('' + str)
 		.split(' ')
 		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
 
-	let length = arr.length;
+	const length = arr.length;
 
 	for (let i = 0; i < length; i++) {
 		time = arr[i];
