@@ -64,7 +64,7 @@ export async function calculator(
 	}
 ): Promise<void> {
 	try {
-		const button = [[], [], [], [], []];
+		const button: any[][] = [[], [], [], [], []];
 		const row: any[] = [];
 		const text: string[] = [
 			'Clear',
