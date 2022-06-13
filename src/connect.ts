@@ -23,7 +23,6 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 				tip: `Expected an MongoDB URI. Received ${db || 'undefined'}`
 			});
 
-		let tags: any;
 		mongoose
 			.connect(db)
 			.then(async () => {
