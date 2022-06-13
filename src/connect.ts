@@ -33,8 +33,7 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 						.then((res) => res.data);
 					let v = json.dist - tags.latest;
 
-					// Condition will always return true because types 'number' and string have no overlap
-					if (v !== version) {
+					if (v.toString() != version) {
 						console.log(
 							`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
 								'→'
