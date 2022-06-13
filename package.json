@@ -6,6 +6,7 @@
 	"typings": "typings/simplydjs.d.ts",
 	"scripts": {
 		"test": "node test",
+		"git": "sh ./gitpush.sh",
 		"dev": "npm publish --tag dev",
 		"prepare": "husky install"
 	},

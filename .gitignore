@@ -7,3 +7,4 @@ node_modules/
 # Other
 **/*.tgz
 test.js
+gitpush.sh
