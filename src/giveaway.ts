@@ -112,9 +112,9 @@ export async function giveawaySystem(
 			if (message.commandId) {
 				interaction = message;
 			}
-			let timeStart: number = Date.now();
-			let int = message as ExtendedInteraction;
-			let mes = message as Message;
+			const timeStart: number = Date.now();
+			const int = message as ExtendedInteraction;
+			const mes = message as Message;
 
 			let roly;
 
@@ -230,7 +230,7 @@ export async function giveawaySystem(
 				prize = options.prize || args.slice(3).join(' ');
 			}
 
-			let enter = new MessageButton()
+			const enter = new MessageButton()
 				.setCustomId('enter_giveaway')
 				.setStyle(options.buttons.enter.style || 'SUCCESS');
 
@@ -244,7 +244,7 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.enter.label || '0');
 			}
 
-			let end = new MessageButton()
+			const end = new MessageButton()
 				.setCustomId('end_giveaway')
 				.setStyle(options.buttons.end.style || 'DANGER');
 
@@ -258,7 +258,7 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.end.label || 'End');
 			}
 
-			let reroll = new MessageButton()
+			const reroll = new MessageButton()
 				.setCustomId('reroll_giveaway')
 				.setStyle(options.buttons.reroll.style || 'SUCCESS')
 				.setDisabled(true);
@@ -273,11 +273,11 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.reroll.label || 'Reroll');
 			}
 
-			let row = new MessageActionRow().addComponents([enter, reroll, end]);
+			const row = new MessageActionRow().addComponents([enter, reroll, end]);
 
 			time = ms(time);
 
-			let endtime = Number((Date.now() + time).toString().slice(0, -3));
+			const endtime = Number((Date.now() + time).toString().slice(0, -3));
 
 			options.fields = options.fields || [
 				{
@@ -316,7 +316,7 @@ export async function giveawaySystem(
 					.replaceAll('{entered}', '0');
 			});
 
-			let embed = new MessageEmbed()
+			const embed = new MessageEmbed()
 				.setTitle(
 					options.embed?.title
 						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
@@ -378,7 +378,7 @@ export async function giveawaySystem(
 						.setStyle('LINK')
 						.setURL(msg.url);
 
-					let rowew = new MessageActionRow().addComponents([link]);
+					const rowew = new MessageActionRow().addComponents([link]);
 
 					if (int && interaction) {
 						await int.followUp({
@@ -391,9 +391,9 @@ export async function giveawaySystem(
 							components: [rowew]
 						});
 
-					let tim = Number(Date.now() + time);
+					const tim = Number(Date.now() + time);
 
-					let crete = new model({
+					const crete = new model({
 						message: msg.id,
 						entered: 0,
 						winCount: winners,
@@ -411,10 +411,10 @@ export async function giveawaySystem(
 
 					await crete.save();
 
-					let timer = setInterval(async () => {
+					const timer = setInterval(async () => {
 						if (!msg) return;
 
-						let dt = await model.findOne({ message: msg.id });
+						const dt = await model.findOne({ message: msg.id });
 
 						if (dt.endTime && Number(dt.endTime) < Date.now()) {
 							const embeded = new MessageEmbed()
@@ -433,16 +433,16 @@ export async function giveawaySystem(
 								.edit({ embeds: [embeded], components: [] })
 								.catch(() => {});
 
-							let dispWin: string[] = [];
+							const dispWin: string[] = [];
 
-							let winArr: any[] = [];
+							const winArr: any[] = [];
 
-							let winCt = dt.winCount;
+							const winCt = dt.winCount;
 
-							let entries = dt.entry;
+							const entries = dt.entry;
 
 							for (let i = 0; i < winCt; i++) {
-								let winno = Math.floor(Math.random() * dt.entered);
+								const winno = Math.floor(Math.random() * dt.entered);
 
 								winArr.push(entries[winno]);
 							}
@@ -454,7 +454,7 @@ export async function giveawaySystem(
 										.then((user) => {
 											dispWin.push(`<@${user.user.id}>`);
 
-											let embod = new MessageEmbed()
+											const embod = new MessageEmbed()
 												.setTitle('You.. Won the Giveaway !')
 												.setDescription(
 													`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
@@ -469,12 +469,12 @@ export async function giveawaySystem(
 														  }
 												);
 
-											let gothe = new MessageButton()
+											const gothe = new MessageButton()
 												.setLabel('View Giveaway')
 												.setStyle('LINK')
 												.setURL(msg.url);
 
-											let entrow = new MessageActionRow().addComponents([
+											const entrow = new MessageActionRow().addComponents([
 												gothe
 											]);
 
@@ -489,8 +489,8 @@ export async function giveawaySystem(
 							setTimeout(async () => {
 								if (!dt) return await msg.delete();
 								if (dt) {
-									let tim = Number(dt.endTime.slice(0, -3));
-									let f: EmbedFieldData[] = [];
+									const tim = Number(dt.endTime.slice(0, -3));
+									const f: EmbedFieldData[] = [];
 									if (options.fields) {
 										options.fields.forEach((a) => {
 											a.value = a.value
@@ -510,7 +510,7 @@ export async function giveawaySystem(
 										});
 									}
 
-									let allComp = await msg.components[0];
+									const allComp = await msg.components[0];
 
 									if (dt.entered <= 0 || !winArr[0]) {
 										embed
@@ -598,11 +598,11 @@ function ms(str: string) {
 		type,
 		val;
 
-	let arr: string[] = ('' + str)
+	const arr: string[] = ('' + str)
 		.split(' ')
 		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
 
-	let length = arr.length;
+	const length = arr.length;
 
 	for (let i = 0; i < length; i++) {
 		time = arr[i];

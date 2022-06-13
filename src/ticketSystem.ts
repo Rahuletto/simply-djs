@@ -67,7 +67,7 @@ export async function ticketSystem(
 	options: tSysOptions = {}
 ) {
 	try {
-		let ch = options.channelId;
+		const ch = options.channelId;
 
 		if (!ch || ch == '')
 			throw new SimplyError({
@@ -93,8 +93,8 @@ export async function ticketSystem(
 		if (message.commandId) {
 			interaction = message;
 		}
-		let int = message as ExtendedInteraction;
-		let mes = message as Message;
+		const int = message as ExtendedInteraction;
+		const mes = message as Message;
 
 		if (
 			!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
@@ -111,7 +111,7 @@ export async function ticketSystem(
 			}
 		}
 
-		let ticketbtn = new MessageButton()
+		const ticketbtn = new MessageButton()
 			.setStyle(options?.button?.style || 'PRIMARY')
 			.setEmoji(options?.button?.emoji || '🎫')
 			.setLabel(options?.button?.label || 'Open a Ticket')
@@ -129,9 +129,9 @@ export async function ticketSystem(
 			};
 		}
 
-		let a = new MessageActionRow().addComponents([ticketbtn]);
+		const a = new MessageActionRow().addComponents([ticketbtn]);
 
-		let embed = new MessageEmbed()
+		const embed = new MessageEmbed()
 			.setTitle(options.embed?.title || 'Ticket System')
 			.setColor(options.embed?.color || '#075FFF')
 			.setDescription(

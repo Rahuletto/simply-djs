@@ -168,8 +168,8 @@ export async function rps(
 				opponent = (message as Message).mentions.members.first()?.user;
 			}
 
-			let int = message as ExtendedInteraction;
-			let mes = message as Message;
+			const int = message as ExtendedInteraction;
+			const mes = message as Message;
 
 			if (!interaction) {
 				if (!opponent) return mes.reply('No opponent mentioned!');
@@ -228,7 +228,7 @@ export async function rps(
 				});
 			}
 
-			let filter = (
+			const filter = (
 				m: any
 			) => m.user.id === opponent.id;
 			const acceptCollector = (m as Message).createMessageComponentCollector({
@@ -270,12 +270,12 @@ export async function rps(
 				}
 
 				acceptCollector.stop();
-				let ids = new Set();
+				const ids = new Set();
 				ids.add(message.member.user.id);
 				ids.add(opponent.id);
 				let op: any, auth: any;
 
-				let btnCollector = (m as Message).createMessageComponentCollector({
+				const btnCollector = (m as Message).createMessageComponentCollector({
 					componentType: 'BUTTON',
 					time: 30000
 				});
@@ -337,7 +337,7 @@ export async function rps(
 									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
 								);
 
-							let mm: any = {
+							const mm: any = {
 								content: '** **',
 								embeds: [
 									new MessageEmbed()
@@ -391,7 +391,7 @@ export async function rps(
 									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
 								);
 
-							let mm: any = {
+							const mm: any = {
 								content: '** **',
 								embeds: [
 									new MessageEmbed()
@@ -447,7 +447,7 @@ export async function rps(
 									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
 								);
 
-							let mm: any = {
+							const mm: any = {
 								content: '** **',
 								embeds: [
 									new MessageEmbed()
@@ -480,7 +480,7 @@ export async function rps(
 
 			acceptCollector.on('end', async (coll, reason) => {
 				if (reason === 'time') {
-					let wee: any = {
+					const wee: any = {
 						content: '** **',
 						embeds: [timeoutEmbed],
 						components: []
@@ -488,7 +488,7 @@ export async function rps(
 
 					await (m as Message).edit(wee);
 				} else if (reason === 'decline') {
-					let wee: any = {
+					const wee: any = {
 						content: '** **',
 						embeds: [
 							new MessageEmbed()

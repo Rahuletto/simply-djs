@@ -68,8 +68,8 @@ export async function stealEmoji(
 				});
 		}
 
-		let int = interaction as ExtendedInteraction;
-		let ms = message as ExtendedMessage;
+		const int = interaction as ExtendedInteraction;
+		const ms = message as ExtendedMessage;
 
 		let attachment;
 		let em: string;
@@ -84,9 +84,9 @@ export async function stealEmoji(
 					content:
 						'Send an Image URL/Attachment (Image file)/Emoji to steal [Collecting]'
 				});
-				let filter = (msg: any) => msg.author.id === int.member.user.id;
+				const filter = (msg: any) => msg.author.id === int.member.user.id;
 
-				let msgCl = interaction.channel.createMessageCollector({
+				const msgCl = interaction.channel.createMessageCollector({
 					filter,
 					max: 1,
 					time: 20 * 1000
@@ -126,9 +126,9 @@ export async function stealEmoji(
 					content:
 						'Send an Image URL/Attachment (Image file)/Emoji to steal [Collecting]'
 				});
-				let filter = (msg: any) => msg.author.id === ms.author.id;
+				const filter = (msg: any) => msg.author.id === ms.author.id;
 
-				let msgCl = message.channel.createMessageCollector({
+				const msgCl = message.channel.createMessageCollector({
 					filter,
 					max: 1,
 					time: 20 * 1000
@@ -206,9 +206,9 @@ export async function stealEmoji(
 
 				const emo = msg.match(hasEmoteRegex);
 
-				let emoji: RegExpExecArray = emoteRegex.exec(emo?.toString());
+				const emoji: RegExpExecArray = emoteRegex.exec(emo?.toString());
 
-				let anim: RegExpExecArray = animatedEmoteRegex.exec(emo?.toString());
+				const anim: RegExpExecArray = animatedEmoteRegex.exec(emo?.toString());
 
 				let url;
 				if (emoji && !anim) {
