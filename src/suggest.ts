@@ -5,8 +5,6 @@ import {
 	ColorResolvable,
 	TextChannel,
 	MessageEmbedFooter,
-	Channel,
-	Permissions,
 	MessageActionRow,
 	MessageButton,
 	MessageButtonStyle,
@@ -92,7 +90,7 @@ export async function suggestSystem(
 				return interaction.followUp('Give me a suggestion to post.');
 		}
 		// @ts-ignore
-		else if (!message.commandId) {
+		else if (!message?.commandId) {
 			const attachment = (message as Message).attachments?.first();
 
 			url = attachment ? attachment.url : null;

@@ -30,7 +30,7 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 					let json = await axios
 						.get('https://registry.npmjs.org/simply-djs')
 						.then((res) => res.data);
-					let v = json.dist - tags.latest;
+					let v: string = json['dist-tags'].latest;
 
 					if (v !== version) {
 						console.log(
