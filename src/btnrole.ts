@@ -1,15 +1,16 @@
 import {
-	MessageButtonStyle,
+	ButtonStyle,
 	Role,
 	Message,
-	MessageEmbed,
-	MessageButton,
-	MessageActionRow
+	EmbedBuilder,
+	ButtonBuilder,
+	ActionRowBuilder
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
+import { LegacyStyles, styleObj } from './interfaces';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -19,12 +20,12 @@ interface dataObj {
 	role?: string;
 	label?: string;
 	emoji?: string;
-	style?: MessageButtonStyle;
+	style?: ButtonStyle;
 	url?: `https://${string}`;
 }
 
 export type btnOptions = {
-	embed?: MessageEmbed;
+	embed?: EmbedBuilder;
 	content?: string;
 	data?: dataObj[];
 };
@@ -58,13 +59,13 @@ export async function btnRole(
 		const int = message as ExtendedInteraction;
 
 		if (message.commandId) {
-			if (!int.member.permissions.has('ADMINISTRATOR'))
+			if (!int.member.permissions.has('Administrator'))
 				int.followUp({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
 			return;
 		} else if (!message.customId) {
-			if (!msg.member.permissions.has('ADMINISTRATOR'))
+			if (!msg.member.permissions.has('Administrator'))
 				return await msg.reply({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
@@ -101,14 +102,17 @@ export async function btnRole(
 				if (button[current].length === 5) current++;
 
 				const emoji = data[i].emoji || null;
-				const clr = data[i].style || 'SECONDARY';
+				let clr = data[i].style || 'SECONDARY';
+
+				clr = (clr as ButtonStyle) || styleObj[clr as LegacyStyles];
+
 				let url = '';
 				const role: Role | null = message.guild.roles.cache.find(
 					(r) => r.id === data[i].role
 				);
 				const label = data[i].label || role?.name;
 
-				if (!role && clr === 'LINK') {
+				if (!role && clr === ButtonStyle.Link) {
 					url = data[i].url;
 					button[current].push(createLink(label, url, emoji));
 				} else {
@@ -157,8 +161,8 @@ export async function btnRole(
 					});
 			}
 
-			function addRow(btns: any[]): MessageActionRow {
-				const row1 = new MessageActionRow();
+			function addRow(btns: any[]): ActionRowBuilder {
+				const row1 = new ActionRowBuilder();
 
 				row1.addComponents(btns);
 
@@ -169,12 +173,16 @@ export async function btnRole(
 				label: string,
 				url: string,
 				emoji: string
-			): MessageButton {
-				const btn = new MessageButton();
+			): ButtonBuilder {
+				const btn = new ButtonBuilder();
 				if (!emoji || emoji === null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url);
+					btn.setLabel(label).setStyle(styleObj['LINK']).setURL(url);
 				} else if (emoji && emoji !== null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url).setEmoji(emoji);
+					btn
+						.setLabel(label)
+						.setStyle(styleObj['LINK'])
+						.setURL(url)
+						.setEmoji(emoji);
 				}
 				return btn;
 			}
@@ -182,10 +190,10 @@ export async function btnRole(
 			function createButton(
 				label: string,
 				role: Role,
-				color: MessageButtonStyle,
+				color: ButtonStyle,
 				emoji: string
-			): MessageButton {
-				const btn = new MessageButton();
+			): ButtonBuilder {
+				const btn = new ButtonBuilder();
 				if (!emoji || emoji === null) {
 					btn
 						.setLabel(label)

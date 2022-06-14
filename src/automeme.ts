@@ -1,10 +1,10 @@
 import {
 	Client,
-	MessageEmbed,
-	MessageEmbedAuthor,
+	EmbedBuilder,
 	ColorResolvable,
 	TextChannel,
-	MessageEmbedFooter
+	EmbedFooterOptions,
+	EmbedAuthorOptions
 } from 'discord.js';
 
 import axios from 'axios';
@@ -20,9 +20,9 @@ import chalk from 'chalk';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedAuthorOptions;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedFooterOptions;
 	color?: ColorResolvable;
 	description?: string;
 
@@ -134,7 +134,7 @@ export async function automeme(
 			const upp = response[0].data.children[0].data.ups;
 			const ratio = response[0].data.children[0].data.upvote_ratio;
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(options.embed?.title || `${title}`)
 				.setURL(`${url}`)
 				.setImage(memeImage)

@@ -20,74 +20,8 @@
 
 </p>
 
----
-
-<br>
-
-## 🖥️ <b>How to install ?</b>
-
-(Use any one method)
-
-```
-npm install simply-djs
-```
-
-```
-yarn add simply-djs
-```
-
-```
-pnpm add simply-djs
-```
-
-```ts
-import simplydjs from 'https://cdn.skypack.dev/simply-djs';
-```
-
-<br>
- 
-# 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
-
-- ## ⚡ Breaking Changes !
-  - Conversion to Typescript
-  - Conversion to Mongoose
-  - Uniform Options just like discord.js
-
-<br></br>
-
-- ## 🔨 Simply-DJS v3
-  - Total package got remastered !
-  - New Dependencies !
-  - Massive Bug squash 🐞
-  - Changed to [Simply API](https://simplyapi.js.org) for chatbot
-  - Removal of `modmail`, `rankCard`, `stealSticker`, `clickBtn` | Addition of `connect`, `manageBtn`
-  - 100% Promise Based
-  - Faster and Smaller
-
-<br></br>
-
-- ## 🗒 Documentation
-  - Massive UI overhaul
-  - Simpler Experience
-  - Detailed documentation
-  - Smoother animations
-  - Minor additions like `Tags`
-
-<br></br>
-
-# 🤔 But Why ?
-
-- Simplifies things in discord.js
-- Fastest Support ever
-- Easier yet Flexible.
-- Beginner Friendly
-- Easier than any other package
-- 100% Slash Support
-- 22+ Functions
-- Open source project !
-- Simple & Understandable **[Documentation](https://simplyd.js.org)**
-
----
+We are converting this package to work with discord.js v14.
+Dont worry, it will work with v13 too
 
 <br>
 

@@ -1,14 +1,17 @@
 import {
 	Client,
-	MessageButtonStyle,
+	ButtonStyle,
 	TextChannel,
 	Role,
-	MessageButton,
-	MessageActionRow
+	ButtonBuilder,
+	ActionRowBuilder,
+	Message
 } from 'discord.js';
 
 import chalk from 'chalk';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import { ExtendedInteraction } from './interfaces';
+
+import { LegacyStyles, styleObj } from './interfaces';
 
 /*
 Error Codes
@@ -34,7 +37,7 @@ export type betterbtnOptions = {
 	label?: string;
 	messageId?: string;
 	role?: Role;
-	style?: MessageButtonStyle;
+	style?: ButtonStyle;
 	emoji?: string;
 };
 
@@ -57,12 +60,14 @@ export async function betterBtnRole(
 	options: betterbtnOptions = { custom: false }
 ): Promise<string> {
 	return new Promise(async (resolve, reject) => {
-		const ch = options.channel || interaction.options.getChannel('channel');
-		const msgid = options.messageId || interaction.options.getString('message');
-		const role = options.role || interaction.options.getRole('role');
+		const ch = options.channel || interaction.options.get('channel', true);
+		const msgid = options.messageId || interaction.options.get('message', true);
+		let role = options.role || interaction.options.get('role', true);
 
-		const msg: ExtendedMessage = await (ch as TextChannel).messages
-			.fetch(msgid)
+		role = role as Role;
+
+		const msg: Message = await (ch as TextChannel).messages
+			.fetch({ message: msgid as string })
 			.catch((e) => {})
 			.then();
 
@@ -89,12 +94,12 @@ export async function betterBtnRole(
 		if (options.type === 'add') {
 			try {
 				const label =
-					options.label || interaction.options.getString('label') || role.name;
+					options.label || interaction.options.get('label') || role.name;
 				const color =
-					options.style ||
-					interaction.options.getString('style') ||
-					'SECONDARY';
-				const emoji = options.emoji || interaction.options.getString('emoji');
+					options.style || interaction.options.get('style') || 'SECONDARY';
+				const emoji = options.emoji || interaction.options.get('emoji');
+
+				let st = (color as ButtonStyle) || styleObj[color as LegacyStyles];
 
 				if (msg.components) {
 					for (let i = 0; msg.components.length > i; i++) {
@@ -128,12 +133,14 @@ export async function betterBtnRole(
 					msg.components === []
 				) {
 					if (!emoji || emoji === null) {
-						const btn = new MessageButton()
-							.setLabel(label)
-							.setStyle(color as MessageButtonStyle)
+						const btn = new ButtonBuilder()
+							.setLabel(label as string)
+							.setStyle(st)
 							.setCustomId('role-' + role.id);
 
-						const rowe = new MessageActionRow().addComponents([btn]);
+						const rowe = new ActionRowBuilder<ButtonBuilder>().addComponents([
+							btn
+						]);
 
 						await msg
 							.edit({
@@ -141,17 +148,18 @@ export async function betterBtnRole(
 								embeds: msg.embeds,
 								components: [rowe]
 							})
-							.then((m) => {
-								const link = new MessageButton()
+							.then(async (m) => {
+								const link = new ButtonBuilder()
 									.setLabel('View Message')
-									.setStyle('LINK')
+									.setStyle(styleObj['LINK'])
 									.setURL(m.url);
 
-								const rowew = new MessageActionRow().addComponents([link]);
+								const rowew =
+									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 								if (options.custom === true) return resolve('DONE');
 								else
-									interaction.followUp({
+									await interaction.followUp({
 										content: 'Done.. Editing the message with the button...',
 										components: [rowew],
 										ephemeral: true
@@ -161,13 +169,15 @@ export async function betterBtnRole(
 								interaction.followUp({ content: `\`${err.stack}\`` });
 							});
 					} else if (emoji && emoji !== null) {
-						const btn = new MessageButton()
-							.setLabel(label)
-							.setStyle(color as MessageButtonStyle)
+						const btn = new ButtonBuilder()
+							.setLabel(label as string)
+							.setStyle(color as ButtonStyle)
 							.setCustomId('role-' + role.id)
 							.setEmoji(emoji);
 
-						const rowe = new MessageActionRow().addComponents([btn]);
+						const rowe = new ActionRowBuilder<ButtonBuilder>().addComponents([
+							btn
+						]);
 
 						await msg
 							.edit({
@@ -176,12 +186,13 @@ export async function betterBtnRole(
 								components: [rowe]
 							})
 							.then((m) => {
-								const link = new MessageButton()
+								const link = new ButtonBuilder()
 									.setLabel('View Message')
-									.setStyle('LINK')
+									.setStyle(styleObj['LINK'])
 									.setURL(m.url);
 
-								const rowew = new MessageActionRow().addComponents([link]);
+								const rowew =
+									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 								if (options.custom === true) return resolve('DONE');
 								else
@@ -205,29 +216,33 @@ export async function betterBtnRole(
 							});
 					}
 
-					const rowgap = msg.components[msg.components.length - 1].components;
-					if (rowgap.length < 5) {
+					const rowgap = msg.components[msg.components.length - 1];
+
+					const rowy = ActionRowBuilder.from(rowgap);
+
+					if (rowgap.components.length < 5) {
 						if (!emoji || emoji === null) {
-							const btn = new MessageButton()
-								.setLabel(label)
-								.setStyle(color as MessageButtonStyle)
+							const btn = new ButtonBuilder()
+								.setLabel(label as string)
+								.setStyle(color as ButtonStyle)
 								.setCustomId('role-' + role.id);
 
-							rowgap.push(btn);
+							rowy.addComponents([btn]);
 
 							await msg
 								.edit({
 									content: msg.content || '\u200b',
 									embeds: msg.embeds,
-									components: msg.components
+									components: [rowy as ActionRowBuilder<ButtonBuilder>]
 								})
 								.then(async (m) => {
-									const link = new MessageButton()
+									const link = new ButtonBuilder()
 										.setLabel('View Message')
-										.setStyle('LINK')
+										.setStyle(styleObj['LINK'])
 										.setURL(m.url);
 
-									const rowew = new MessageActionRow().addComponents([link]);
+									const rowew =
+										new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -241,27 +256,28 @@ export async function betterBtnRole(
 									interaction.followUp({ content: `\`${err.stack}\`` });
 								});
 						} else if (emoji && emoji !== null) {
-							const btn = new MessageButton()
-								.setLabel(label)
-								.setStyle(color as MessageButtonStyle)
+							const btn = new ButtonBuilder()
+								.setLabel(label as string)
+								.setStyle(color as ButtonStyle)
 								.setCustomId('role-' + role.id)
 								.setEmoji(emoji);
 
-							rowgap.push(btn);
+							rowy.addComponents([btn]);
 
 							await msg
 								.edit({
 									content: msg.content || '\u200b',
 									embeds: msg.embeds,
-									components: msg.components
+									components: [rowy as ActionRowBuilder<ButtonBuilder>]
 								})
 								.then(async (m) => {
-									const link = new MessageButton()
+									const link = new ButtonBuilder()
 										.setLabel('View Message')
-										.setStyle('LINK')
+										.setStyle(styleObj['LINK'])
 										.setURL(m.url);
 
-									const rowew = new MessageActionRow().addComponents([link]);
+									const rowew =
+										new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -275,30 +291,31 @@ export async function betterBtnRole(
 									interaction.followUp({ content: `\`${err.stack}\`` });
 								});
 						}
-					} else if (rowgap.length === 5) {
+					} else if (rowy.components.length === 5) {
 						if (!emoji || emoji === null) {
-							const btn = new MessageButton()
-								.setLabel(label)
-								.setStyle(color as MessageButtonStyle)
+							const btn = new ButtonBuilder()
+								.setLabel(label as string)
+								.setStyle(color as ButtonStyle)
 								.setCustomId('role-' + role.id);
 
-							const rowe = new MessageActionRow().addComponents([btn]);
-
-							msg.components.push(rowe);
+							const rowe = new ActionRowBuilder<ButtonBuilder>().addComponents([
+								btn
+							]);
 
 							await msg
 								.edit({
 									content: msg.content || '\u200b',
 									embeds: msg.embeds,
-									components: msg.components
+									components: [...msg.components, rowe]
 								})
 								.then(async (m) => {
-									const link = new MessageButton()
+									const link = new ButtonBuilder()
 										.setLabel('View Message')
-										.setStyle('LINK')
+										.setStyle(styleObj['LINK'])
 										.setURL(m.url);
 
-									const rowew = new MessageActionRow().addComponents([link]);
+									const rowew =
+										new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -312,29 +329,30 @@ export async function betterBtnRole(
 									interaction.followUp({ content: `\`${err.stack}\`` });
 								});
 						} else if (emoji && emoji !== null) {
-							const btn = new MessageButton()
-								.setLabel(label)
-								.setStyle(color as MessageButtonStyle)
+							const btn = new ButtonBuilder()
+								.setLabel(label as string)
+								.setStyle(color as ButtonStyle)
 								.setCustomId('role-' + role.id)
 								.setEmoji(emoji);
 
-							const rowe = new MessageActionRow().addComponents([btn]);
-
-							msg.components.push(rowe);
+							const rowe = new ActionRowBuilder<ButtonBuilder>().addComponents([
+								btn
+							]);
 
 							msg
 								.edit({
 									content: msg.content || '\u200b',
 									embeds: msg.embeds,
-									components: msg.components
+									components: [...msg.components, rowe]
 								})
 								.then(async (m) => {
-									const link = new MessageButton()
+									const link = new ButtonBuilder()
 										.setLabel('View Message')
-										.setStyle('LINK')
+										.setStyle(styleObj['LINK'])
 										.setURL(m.url);
 
-									const rowew = new MessageActionRow().addComponents([link]);
+									const rowew =
+										new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
 									if (options.custom === true) return resolve('DONE');
 									else
@@ -392,14 +410,15 @@ export async function betterBtnRole(
 											components: []
 										})
 										.then(async (m) => {
-											const link = new MessageButton()
+											const link = new ButtonBuilder()
 												.setLabel('View Message')
-												.setStyle('LINK')
+												.setStyle(styleObj['LINK'])
 												.setURL(m.url);
 
-											const rowew = new MessageActionRow().addComponents([
-												link
-											]);
+											const rowew =
+												new ActionRowBuilder<ButtonBuilder>().addComponents([
+													link
+												]);
 
 											if (options.custom === true) return resolve('DONE');
 											else
@@ -418,14 +437,15 @@ export async function betterBtnRole(
 											components: msg.components
 										})
 										.then(async (m) => {
-											const link = new MessageButton()
+											const link = new ButtonBuilder()
 												.setLabel('View Message')
-												.setStyle('LINK')
+												.setStyle(styleObj['LINK'])
 												.setURL(m.url);
 
-											const rowew = new MessageActionRow().addComponents([
-												link
-											]);
+											const rowew =
+												new ActionRowBuilder<ButtonBuilder>().addComponents([
+													link
+												]);
 
 											if (options.custom === true) return resolve('DONE');
 											else

@@ -1,10 +1,10 @@
 import {
-	MessageButtonStyle,
-	MessageEmbed,
-	MessageButton,
-	MessageActionRow,
-	MessageEmbedAuthor,
-	MessageEmbedFooter,
+	ButtonStyle,
+	EmbedBuilder,
+	ButtonBuilder,
+	ActionRowBuilder,
+	EmbedAuthorOptions,
+	EmbedFooterOptions,
 	ColorResolvable,
 	ButtonInteraction
 } from 'discord.js';
@@ -12,6 +12,7 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
 
+import { LegacyStyles, styleObj } from './interfaces';
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -21,9 +22,9 @@ import chalk from 'chalk';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedAuthorOptions;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedFooterOptions;
 	color?: ColorResolvable;
 	description?: string;
 
@@ -35,9 +36,9 @@ interface CustomizableEmbed {
  */
 
 interface calcButtons {
-	numbers?: MessageButtonStyle;
-	symbols?: MessageButtonStyle;
-	delete?: MessageButtonStyle;
+	numbers?: ButtonStyle | LegacyStyles;
+	symbols?: ButtonStyle | LegacyStyles;
+	delete?: ButtonStyle | LegacyStyles;
 }
 
 export type calcOptions = {
@@ -126,7 +127,7 @@ export async function calculator(
 			}
 		}
 
-		const emb1 = new MessageEmbed()
+		const emb1 = new EmbedBuilder()
 			.setColor(options.embed?.color || '#075FFF')
 			.setFooter(
 				options.embed?.credit
@@ -171,10 +172,7 @@ export async function calculator(
 
 		let elem = '0';
 
-		const filter = (
-			button: ButtonInteraction,
-			interaction: ExtendedInteraction
-		) =>
+		const filter = (button: ButtonInteraction) =>
 			button.user.id ===
 				(interaction.user ? interaction.user : interaction.author).id &&
 			button.customId.startsWith('cal-');
@@ -267,8 +265,8 @@ export async function calculator(
 			}
 		}, time);
 
-		function addRow(btns: MessageButton[]) {
-			const row1 = new MessageActionRow();
+		function addRow(btns: ButtonBuilder[]) {
+			const row1 = new ActionRowBuilder();
 			for (const btn of btns) {
 				row1.addComponents(btn);
 			}
@@ -277,7 +275,7 @@ export async function calculator(
 
 		function createButton(
 			label: any,
-			style: MessageButtonStyle = options.buttons.numbers
+			style: ButtonStyle | LegacyStyles = options.buttons.numbers
 		) {
 			if (label === 'Clear') style = options.buttons.delete;
 			else if (label === 'Delete') style = options.buttons.delete;
@@ -288,7 +286,9 @@ export async function calculator(
 			else if (label === '.') style = options.buttons.symbols;
 			else if (label === '=') style = 'SUCCESS';
 			else if (isNaN(label)) style = options.buttons.symbols;
-			const btn = new MessageButton()
+
+			style = (style as ButtonStyle) || styleObj[style as LegacyStyles];
+			const btn = new ButtonBuilder()
 				.setLabel(label)
 				.setStyle(style)
 				.setCustomId('cal-' + label);
