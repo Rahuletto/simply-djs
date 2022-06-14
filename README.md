@@ -20,8 +20,39 @@
 
 </p>
 
-We are converting this package to work with discord.js v14.
-Dont worry, it will work with v13 too
+## We are converting this package to work with discord.js v14.
+
+- ### New files
+
+```diff
++ interfaces/LegacyStyles
+```
+
+- ### Conversion
+
+```diff
++ automeme
++ betterBtnRole
++ btnRole
+! bumpSystem
++ calculator
+! chatbot
++ connect
+! embedCreate
+! embedPages
+! ghostPing
+! giveaway
+! manageBtn
+! manageSug
+! menuPages
+! nqn
+! rps
+! starboard
+! stealEmoji
+! suggest
+! ticketSystem
+! tictactoe
+```
 
 <br>
 
