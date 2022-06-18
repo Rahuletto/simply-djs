@@ -136,7 +136,7 @@ export async function tictactoe(
 				})
 				.setColor(options.embed?.color || `#075fff`)
 				.setFooter(
-					options.embed?.credit
+					options.embed?.credit === false
 						? options.embed?.footer
 						: {
 								text: '©️ Simply Develop. npm i simply-djs',
@@ -263,7 +263,7 @@ export async function tictactoe(
 						.setTitle('Lets play TicTacToe.')
 						.setColor(options.embed?.color || '#075fff')
 						.setFooter(
-							options.embed?.credit
+							options.embed?.credit === false
 								? options.embed?.footer
 								: {
 										text: '©️ Simply Develop. npm i simply-djs',
@@ -682,7 +682,7 @@ export async function tictactoe(
 						})
 						.setColor(`#c90000`)
 						.setFooter(
-							options.embed?.credit
+							options.embed?.credit === false
 								? options.embed?.footer
 								: {
 										text: '©️ Simply Develop. npm i simply-djs',
@@ -704,7 +704,7 @@ export async function tictactoe(
 						})
 						.setColor(`#c90000`)
 						.setFooter(
-							options.embed?.credit
+							options.embed?.credit === false
 								? options.embed?.footer
 								: {
 										text: '©️ Simply Develop. npm i simply-djs',

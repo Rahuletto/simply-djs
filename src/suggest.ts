@@ -78,7 +78,7 @@ export async function suggestSystem(
 		let suggestion: string;
 
 		let interaction;
-		if (message.commandId) {
+		if (message.commandId || !message.content) {
 			interaction = message as ExtendedInteraction;
 
 			suggestion =
@@ -86,7 +86,7 @@ export async function suggestSystem(
 
 			if (!suggestion)
 				return interaction.followUp('Give me a suggestion to post.');
-		} else if (!message.commandId) {
+		} else if (!message.commandId && message.content) {
 			const attachment = (message as Message).attachments?.first();
 
 			url = attachment ? attachment.url : null;
@@ -98,7 +98,7 @@ export async function suggestSystem(
 			}
 
 			if (!options.suggestion) {
-				const [...args] = (message as Message).content.split(/ +/g);
+				const [...args] = (message as Message).content?.split(/ +/g);
 				suggestion = args.slice(1).join(' ');
 			}
 
@@ -155,9 +155,9 @@ export async function suggestSystem(
 			.setTitle('Are you sure ?')
 			.setDescription(`Is this your suggestion ? \`${suggestion}\``)
 			.setTimestamp()
-			.setColor(options.embed.color || '#075FFF')
+			.setColor(options.embed?.color || '#075FFF')
 			.setFooter(
-				options.embed?.credit
+				options.embed?.credit === false
 					? options.embed?.footer
 					: {
 							text: '©️ Simply Develop. npm i simply-djs',
@@ -203,9 +203,9 @@ export async function suggestSystem(
 							dynamic: true
 						})
 					})
-					.setColor(options.embed.color || '#075FFF')
+					.setColor(options.embed?.color || '#075FFF')
 					.setFooter(
-						options.embed?.credit
+						options.embed?.credit === false
 							? options.embed?.footer
 							: {
 									text: '©️ Simply Develop. npm i simply-djs',
@@ -224,15 +224,15 @@ export async function suggestSystem(
 					);
 
 				const approve = new MessageButton()
-					.setEmoji(options.buttons.upvote.emoji)
+					.setEmoji(options.buttons?.upvote?.emoji)
 					.setLabel('0')
-					.setStyle(options.buttons.upvote.style)
+					.setStyle(options.buttons?.upvote?.style)
 					.setCustomId('agree-sug');
 
 				const no = new MessageButton()
-					.setEmoji(options.buttons.downvote.emoji)
+					.setEmoji(options.buttons?.downvote?.emoji)
 					.setLabel('0')
-					.setStyle(options.buttons.downvote.style)
+					.setStyle(options.buttons?.downvote?.style)
 					.setCustomId('no-sug');
 
 				const row = new MessageActionRow().addComponents([approve, no]);

@@ -524,7 +524,7 @@ export async function manageSug(
 
 				if (uPercent / 10 + dPercent / 10 != 0 || total != 0)
 					st = '🟩'.repeat(uPercent / 10) + '🟥'.repeat(dPercent / 10);
-				else if (total == 0) {
+				else if (total == 0 || uPercent.toString() === 'NaN') {
 					st = '⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛';
 					uPercent = 0;
 					dPercent = 0;

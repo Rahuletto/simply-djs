@@ -69,6 +69,8 @@ interface ticketSys {
 	category?: string;
 	timed?: boolean;
 	embed?: CustomizableEmbed;
+
+	logChannelId?: string;
 }
 
 /**
@@ -122,6 +124,8 @@ export async function manageBtn(
 	options: manageBtnOptions = { ticketSys: { timed: true } }
 ): Promise<ticketDelete | rerolly> {
 	return new Promise(async (resolve, reject) => {
+		let { client } = interaction;
+
 		if (interaction.isButton()) {
 			try {
 				const member = interaction.member;
@@ -282,35 +286,36 @@ export async function manageBtn(
 						let str =
 							'\n\nThis channel will be deleted after 30 minutes to prevent spams.';
 
-						if (options.ticketSys.timed == false) {
+						if (options.ticketSys?.timed == false) {
 							str = '';
 						}
 
 						const emb = new MessageEmbed()
-							.setTitle('Ticket Created')
+							.setTitle(options.ticketSys?.embed?.title || 'Ticket Created')
 							.setDescription(
-								options.ticketSys.embed?.description
+								(
+									options.ticketSys?.embed?.description ||
+									`Ticket has been raised by {user}. The support will reach you shortly.\n\n**User ID**: \`{id}\` | **User Tag**: \`{tag}\`${str}`
+								)
 									.replaceAll('{user}', member.user.toString())
 									.replaceAll('{tag}', (member.user as User).tag)
 									.replaceAll('{id}', member.user.id)
-									.replaceAll('{guild}', interaction.guild.name) ||
-									`Ticket has been raised by ${
-										member.user
-									}. The support will reach you shortly.\n\n**User ID**: \`${
-										member.user.id
-									}\` | **User Tag**: \`${(member.user as User).tag}\`${str}`
+									.replaceAll('{guild}', interaction.guild.name)
 							)
 							.setThumbnail(interaction.guild.iconURL())
 							.setTimestamp()
-							.setColor(options.ticketSys.embed?.color || '#075FFF')
+							.setColor(options?.ticketSys?.embed?.color || '#075FFF')
 							.setFooter(
-								options.ticketSys.embed?.credit
-									? options.ticketSys.embed?.footer
+								options.ticketSys?.embed?.credit === false
+									? options.ticketSys?.embed?.footer
 									: {
 											text: '©️ Simply Develop. npm i simply-djs',
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
 							);
+
+						if (options.ticketSys?.embed?.author)
+							emb.setAuthor(options.ticketSys?.embed?.author);
 
 						const close = new MessageButton()
 							.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
@@ -362,7 +367,7 @@ export async function manageBtn(
 						)
 						.setEmoji(options.ticketSys?.buttons?.transcript?.emoji || '📜')
 						.setLabel(
-							options.ticketSys?.buttons?.transcript?.style || 'Transcript'
+							options.ticketSys?.buttons?.transcript?.label || 'Transcript'
 						)
 						.setCustomId('tr_ticket');
 
@@ -398,7 +403,7 @@ export async function manageBtn(
 						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
 					});
 
-					const tr = await interaction.editReply({
+					await interaction.editReply({
 						content: 'Collecting messages to create logs'
 					});
 
@@ -416,14 +421,15 @@ export async function manageBtn(
 					);
 
 					setTimeout(async () => {
-						await interaction.editReply({
+						await interaction.followUp({
 							content: 'Done. Generated the logs',
 							files: [attach],
-							embeds: []
+							embeds: [],
+							ephemeral: false
 						});
 					}, 2300);
 				} else if (interaction.customId === 'delete_ticket') {
-					await interaction.deferReply({ ephemeral: true });
+					await interaction.deferReply({ ephemeral: false });
 
 					const yes = new MessageButton()
 						.setCustomId('yea_del')
@@ -442,8 +448,11 @@ export async function manageBtn(
 						components: [row]
 					});
 				} else if (interaction.customId === 'yea_del') {
-					await interaction.deferUpdate();
-					await (interaction.message as Message).edit({ components: [] });
+					await (interaction.message as Message).edit({
+						content: 'Deleting the channel..',
+						embeds: [],
+						components: []
+					});
 
 					let messagecollection = await interaction.channel.messages.fetch({
 						limit: 100
@@ -462,14 +471,12 @@ export async function manageBtn(
 							m.content = url;
 						}
 
-						response.push(
-							`[${m.author.tag} | ${m.author.id}] => \`${m.content}\``
-						);
+						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
 					});
 
 					const attach = new MessageAttachment(
 						Buffer.from(response.join(`\n`), 'utf-8'),
-						`${(interaction.channel as TextChannel).topic}.md`
+						`${(interaction.channel as TextChannel).topic}.txt`
 					);
 
 					let use: GuildMember | string = (
@@ -487,13 +494,37 @@ export async function manageBtn(
 						data: attach
 					});
 
+					if (options.ticketSys?.logChannelId) {
+						let ch = await client.channels.fetch(
+							options.ticketSys?.logChannelId,
+							{
+								cache: true
+							}
+						);
+
+						if (ch) {
+							const log = new MessageEmbed()
+								.setTitle('Ticket deleted')
+								.setDescription(
+									`We found an ticket \`${interaction.channel.name}\` getting deleted by ${use.user}.`
+								)
+								.setTimestamp()
+								.setColor('RED');
+
+							await (ch as TextChannel).send({
+								embeds: [log],
+								files: [attach]
+							});
+						} else return;
+					}
+
 					setTimeout(async () => {
 						await interaction.channel.delete();
 					}, 2000);
 				} else if (interaction.customId === 'dont_del') {
 					await interaction.deferUpdate();
 					(interaction.message as Message).edit({
-						content: 'You cancelled the deletion',
+						content: 'You denied to delete',
 						components: []
 					});
 				} else if (interaction.customId === 'open_ticket') {
@@ -703,13 +734,9 @@ export async function manageBtn(
 									.setColor('RED')
 									.setFooter(ftr);
 
-								allComp.components[0].disabled = true;
-								allComp.components[1].disabled = true;
-								allComp.components[2].disabled = true;
-
 								return await msg.edit({
-									embeds: [embed], //@ts-ignore
-									components: [allComp]
+									embeds: [embed],
+									components: []
 								});
 							}
 

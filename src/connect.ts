@@ -35,7 +35,7 @@ export async function connect(db: string, notify?: boolean): Promise<boolean> {
 					if (v.toString() != version) {
 						console.log(
 							`\n\t\tUpdate available | ${chalk.grey(version)} ${chalk.magenta(
-								'→'
+								'>>>'
 							)} ${chalk.green(v)}\n\t\tRun [${chalk.blue(
 								'npm i simply-djs@latest'
 							)}] to update\n`

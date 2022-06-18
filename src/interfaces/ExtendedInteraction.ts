@@ -15,4 +15,5 @@ export interface ExtendedInteraction extends CommandInteraction {
 	member: GuildMember;
 	customId: string;
 	author: GuildMember;
+	content: string;
 }

@@ -162,7 +162,7 @@ export async function embedCreate(
 				)
 				.setColor(options.embed?.color || '#075FFF')
 				.setFooter(
-					options.embed?.credit
+					options.embed?.credit === false
 						? options.embed?.footer
 						: {
 								text: '©️ Simply Develop. npm i simply-djs',
@@ -201,10 +201,11 @@ export async function embedCreate(
 
 			const emb = new MessageEmbed()
 				.setFooter(
-					options.embed?.credit
+					options.embed?.credit === false
 						? options.embed?.footer
 						: {
-								text: 'Preview Embed'
+								text: '©️ Simply Develop. npm i simply-djs',
+								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
 				)
 				.setColor('#2F3136');

@@ -149,7 +149,7 @@ export async function rps(
 			.setColor(`RED`)
 			.setDescription('The opponent didnt respond in time (30s)')
 			.setFooter(
-				options.embed?.credit
+				options.embed?.credit === false
 					? options.embed?.footer
 					: {
 							text: '©️ Simply Develop. npm i simply-djs',
@@ -202,7 +202,7 @@ export async function rps(
 						dynamic: true
 					})
 				})
-				.setColor(options.embed.color || `#075FFF`)
+				.setColor(options.embed?.color || `#075FFF`)
 				.setFooter(
 					options.embed?.credit
 						? options.embed?.footer
@@ -324,15 +324,15 @@ export async function rps(
 							op = op
 								.replace(
 									'scissors',
-									`${options.buttons.scissor.emoji} ${options.buttons.scissor.label}`
+									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons.paper.emoji} ${options.buttons.paper.label}`
+									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
+									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
 								);
 
 							const mm: any = {
@@ -343,7 +343,7 @@ export async function rps(
 										.setColor(options.drawColor)
 										.setDescription(`Both players chose **${op}**`)
 										.setFooter(
-											options.embed?.credit
+											options.embed?.credit === false
 												? options.embed?.footer
 												: {
 														text: '©️ Simply Develop. npm i simply-djs',
@@ -364,29 +364,29 @@ export async function rps(
 							op = op
 								.replace(
 									'scissors',
-									`${options.buttons.scissor.emoji} ${options.buttons.scissor.label}`
+									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons.paper.emoji} ${options.buttons.paper.label}`
+									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
+									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
 								);
 
 							auth = auth
 								.replace(
 									'scissors',
-									`${options.buttons.scissor.emoji} ${options.buttons.scissor.label}`
+									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons.paper.emoji} ${options.buttons.paper.label}`
+									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
+									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
 								);
 
 							const mm: any = {
@@ -397,7 +397,7 @@ export async function rps(
 										.setColor(options.winColor)
 										.setDescription(`**${op}** defeats **${auth}**`)
 										.setFooter(
-											options.embed?.credit
+											options.embed?.credit === false
 												? options.embed?.footer
 												: {
 														text: '©️ Simply Develop. npm i simply-djs',
@@ -420,29 +420,29 @@ export async function rps(
 							op = op
 								.replace(
 									'scissors',
-									`${options.buttons.scissor.emoji} ${options.buttons.scissor.label}`
+									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons.paper.emoji} ${options.buttons.paper.label}`
+									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
+									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
 								);
 
 							auth = auth
 								.replace(
 									'scissors',
-									`${options.buttons.scissor.emoji} ${options.buttons.scissor.label}`
+									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons.paper.emoji} ${options.buttons.paper.label}`
+									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons.rock.emoji} ${options.buttons.rock.label}`
+									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
 								);
 
 							const mm: any = {
@@ -453,7 +453,7 @@ export async function rps(
 										.setColor(options.winColor)
 										.setDescription(`**${auth}** defeats **${op}**`)
 										.setFooter(
-											options.embed?.credit
+											options.embed?.credit === false
 												? options.embed?.footer
 												: {
 														text: '©️ Simply Develop. npm i simply-djs',
@@ -492,7 +492,7 @@ export async function rps(
 							new MessageEmbed()
 								.setColor(`RED`)
 								.setFooter(
-									options.embed?.credit
+									options.embed?.credit === false
 										? options.embed?.footer
 										: {
 												text: '©️ Simply Develop. npm i simply-djs',

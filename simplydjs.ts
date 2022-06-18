@@ -36,7 +36,7 @@ if (Number(discordJSVersion.slice(0, 2)) < 13)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '3.0.1';
+export const version: string = '3.0.2';
 
 export { toRgb } from './src/Others/toRgb';
 export { emitError } from './src/Others/emitError';

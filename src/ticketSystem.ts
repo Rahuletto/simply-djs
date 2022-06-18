@@ -139,7 +139,7 @@ export async function ticketSystem(
 			.setThumbnail(message.guild.iconURL())
 			.setTimestamp()
 			.setFooter(
-				options.embed?.credit
+				options.embed?.credit === false
 					? options.embed?.footer
 					: {
 							text: '©️ Simply Develop. npm i simply-djs',

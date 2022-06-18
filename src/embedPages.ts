@@ -131,28 +131,28 @@ export async function embedPages(
 		const firstBtn = new MessageButton()
 			.setCustomId('first_embed')
 
-			.setStyle(options.buttons.firstBtn.style);
+			.setStyle(options.buttons?.firstBtn?.style);
 
 		if (options.disable === 'Label' || options.disable === 'None')
-			firstBtn.setEmoji(options.buttons.firstBtn.emoji);
+			firstBtn.setEmoji(options.buttons?.firstBtn?.emoji);
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			firstBtn.setLabel(options.buttons?.firstBtn?.label);
 
 		const forwardBtn = new MessageButton()
 			.setCustomId('forward_button_embed')
-			.setStyle(options.buttons.nextBtn.style);
+			.setStyle(options.buttons?.nextBtn?.style);
 
 		if (options.disable === 'Label' || options.disable === 'None')
-			forwardBtn.setEmoji(options.buttons.nextBtn.emoji);
+			forwardBtn.setEmoji(options.buttons?.nextBtn?.emoji);
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			forwardBtn.setLabel(options.buttons?.nextBtn?.label);
 
 		const backBtn = new MessageButton()
 			.setCustomId('back_button_embed')
-			.setStyle(options.buttons.backBtn.style);
+			.setStyle(options.buttons?.backBtn?.style);
 
 		if (options.disable === 'Label' || options.disable === 'None')
-			backBtn.setEmoji(options.buttons.backBtn.emoji);
+			backBtn.setEmoji(options.buttons?.backBtn?.emoji);
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			backBtn.setLabel(options.buttons?.backBtn?.label);
 
@@ -163,19 +163,19 @@ export async function embedPages(
 
 		const lastBtn = new MessageButton()
 			.setCustomId('last_embed')
-			.setStyle(options.buttons.lastBtn.style);
+			.setStyle(options.buttons?.lastBtn?.style);
 
 		if (options.disable === 'Label' || options.disable === 'None')
-			lastBtn.setEmoji(options.buttons.lastBtn.emoji);
+			lastBtn.setEmoji(options.buttons?.lastBtn?.emoji);
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			lastBtn.setLabel(options.buttons?.lastBtn?.label);
 
 		const deleteBtn = new MessageButton()
 			.setCustomId('delete_embed')
-			.setStyle(options.buttons.deleteBtn.style);
+			.setStyle(options.buttons?.deleteBtn?.style);
 
 		if (options.disable === 'Label' || options.disable === 'None')
-			deleteBtn.setEmoji(options.buttons.deleteBtn.emoji);
+			deleteBtn.setEmoji(options.buttons?.deleteBtn?.emoji);
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			deleteBtn.setLabel(options.buttons?.deleteBtn?.label);
 

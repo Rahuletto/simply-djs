@@ -92,7 +92,7 @@ export async function ghostPing(
 							)
 							.setColor(options.embed?.color || '#075FFF')
 							.setFooter(
-								options.embed?.credit
+								options.embed?.credit === false
 									? options.embed?.footer
 									: {
 											text: '©️ Simply Develop. npm i simply-djs',

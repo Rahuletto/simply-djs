@@ -164,16 +164,18 @@ export async function stealEmoji(
 					.then(async (emoji) => {
 						const embed = new MessageEmbed()
 							.setTitle(
-								options.embed?.title
+								(
+									options.embed?.title ||
+									`Successfully added the emoji.\n\nEmoji Name: \`{name}\`\nEmoji ID: \`{id}\``
+								)
 									.replaceAll('{name}', emoji.name)
 									.replaceAll('{id}', emoji.id)
-									.replaceAll('{url}', emoji.url) ||
-									`Successfully added the emoji.\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``
+									.replaceAll('{url}', emoji.url)
 							)
 							.setThumbnail(emoji.url)
 							.setColor(options.embed?.color || 0x075fff)
 							.setFooter(
-								options.embed?.credit
+								options.embed?.credit === false
 									? options.embed?.footer
 									: {
 											text: '©️ Simply Develop. npm i simply-djs',
@@ -224,16 +226,18 @@ export async function stealEmoji(
 					.then(async (emoji) => {
 						const embed = new MessageEmbed()
 							.setTitle(
-								options.embed?.title
+								(
+									options.embed?.title ||
+									`Successfully added the emoji.\n\nEmoji Name: \`{name}\`\nEmoji ID: \`{id}\``
+								)
 									.replaceAll('{name}', emoji.name)
 									.replaceAll('{id}', emoji.id)
-									.replaceAll('{url}', emoji.url) ||
-									`Successfully added the emoji.\n\nEmoji Name: \`${emoji.name}\`\nEmoji ID: \`${emoji.id}\``
+									.replaceAll('{url}', emoji.url)
 							)
 							.setThumbnail(emoji.url)
 							.setColor(options.embed?.color || 0x075fff)
 							.setFooter(
-								options.embed?.credit
+								options.embed?.credit === false
 									? options.embed?.footer
 									: {
 											text: '©️ Simply Develop. npm i simply-djs',

@@ -10,8 +10,7 @@ import {
 	MessageButtonStyle,
 	Role,
 	Permissions,
-	EmbedFieldData,
-	CacheType
+	EmbedFieldData
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
@@ -130,7 +129,7 @@ export async function giveawaySystem(
 			if (
 				!(
 					roly ||
-					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					message?.member?.permissions?.has(Permissions.FLAGS.ADMINISTRATOR)
 				)
 			) {
 				return message.channel.send({
@@ -232,45 +231,45 @@ export async function giveawaySystem(
 
 			const enter = new MessageButton()
 				.setCustomId('enter_giveaway')
-				.setStyle(options.buttons.enter.style || 'SUCCESS');
+				.setStyle(options.buttons?.enter?.style || 'SUCCESS');
 
 			if (options.disable === 'Label')
-				enter.setEmoji(options.buttons.enter.emoji || '🎁');
+				enter.setEmoji(options.buttons?.enter?.emoji || '🎁');
 			else if (options.disable === 'Emoji')
-				enter.setLabel(options.buttons.enter.label || '0');
+				enter.setLabel(options.buttons?.enter?.label || '0');
 			else {
 				enter
-					.setEmoji(options.buttons.enter.emoji || '🎁')
-					.setLabel(options.buttons.enter.label || '0');
+					.setEmoji(options.buttons?.enter?.emoji || '🎁')
+					.setLabel(options.buttons?.enter?.label || '0');
 			}
 
 			const end = new MessageButton()
 				.setCustomId('end_giveaway')
-				.setStyle(options.buttons.end.style || 'DANGER');
+				.setStyle(options.buttons?.end?.style || 'DANGER');
 
 			if (options.disable === 'Label')
-				end.setEmoji(options.buttons.end.emoji || '⛔');
+				end.setEmoji(options.buttons?.end?.emoji || '⛔');
 			else if (options.disable === 'Emoji')
-				end.setLabel(options.buttons.end.label || 'End');
+				end.setLabel(options.buttons?.end?.label || 'End');
 			else {
 				end
-					.setEmoji(options.buttons.end.emoji || '⛔')
-					.setLabel(options.buttons.end.label || 'End');
+					.setEmoji(options.buttons?.end?.emoji || '⛔')
+					.setLabel(options.buttons?.end?.label || 'End');
 			}
 
 			const reroll = new MessageButton()
 				.setCustomId('reroll_giveaway')
-				.setStyle(options.buttons.reroll.style || 'SUCCESS')
+				.setStyle(options.buttons?.reroll?.style || 'SUCCESS')
 				.setDisabled(true);
 
 			if (options.disable === 'Label')
-				reroll.setEmoji(options.buttons.reroll.emoji || '🔁');
+				reroll.setEmoji(options.buttons?.reroll?.emoji || '🔁');
 			else if (options.disable === 'Emoji')
-				reroll.setLabel(options.buttons.reroll.label || 'Reroll');
+				reroll.setLabel(options.buttons?.reroll?.label || 'Reroll');
 			else {
 				reroll
-					.setEmoji(options.buttons.reroll.emoji || '🔁')
-					.setLabel(options.buttons.reroll.label || 'Reroll');
+					.setEmoji(options.buttons?.reroll?.emoji || '🔁')
+					.setLabel(options.buttons?.reroll?.label || 'Reroll');
 			}
 
 			const row = new MessageActionRow().addComponents([enter, reroll, end]);
@@ -301,7 +300,7 @@ export async function giveawaySystem(
 				}
 			];
 
-			options.fields.forEach((a) => {
+			options.fields?.forEach((a) => {
 				a.value = a?.value
 					.replaceAll('{hosted}', `<@${message.member.user.id}>`)
 					.replaceAll('{endsAt}', `<t:${endtime}:f>`)
@@ -318,7 +317,7 @@ export async function giveawaySystem(
 
 			const embed = new MessageEmbed()
 				.setTitle(
-					options.embed?.title
+					(options.embed?.title || 'Giveaway')
 						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
 						.replaceAll('{prize}', prize)
 						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
@@ -334,7 +333,7 @@ export async function giveawaySystem(
 				.setColor(options.embed?.color || '#075FFF')
 				.setTimestamp(Number(Date.now() + time))
 				.setFooter(
-					options.embed?.credit
+					options.embed?.credit === false
 						? options.embed?.footer
 						: {
 								text: '©️ Simply Develop. npm i simply-djs',
@@ -342,20 +341,21 @@ export async function giveawaySystem(
 						  }
 				)
 				.setDescription(
-					options.embed?.description
-						? options.embed?.description
-								.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-								.replaceAll('{prize}', prize)
-								.replaceAll('{endsAt}', `<t:${endtime}:R>`)
-								.replaceAll(
-									'{requirements}',
-									req === 'None'
-										? 'None'
-										: req + ' | ' + (req === 'Role' ? `${val}` : val)
-								)
-								.replaceAll('{winCount}', winners)
-								.replaceAll('{entered}', '0')
-						: `Interact with the giveaway using the buttons.`
+					(
+						options.embed?.description ||
+						`Interact with the giveaway using the buttons.`
+					)
+						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
+						.replaceAll('{prize}', prize)
+						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
+						.replaceAll(
+							'{requirements}',
+							req === 'None'
+								? 'None'
+								: req + ' | ' + (req === 'Role' ? `${val}` : val)
+						)
+						.replaceAll('{winCount}', winners)
+						.replaceAll('{entered}', '0')
 				)
 				.addFields(options.fields);
 
@@ -413,6 +413,7 @@ export async function giveawaySystem(
 
 					const timer = setInterval(async () => {
 						if (!msg) return;
+						const allComp = await msg?.components[0];
 
 						const dt = await model.findOne({ message: msg.id });
 
@@ -461,7 +462,7 @@ export async function giveawaySystem(
 												)
 												.setColor(0x075fff)
 												.setFooter(
-													options.embed?.credit
+													options.embed?.credit === false
 														? options.embed?.footer
 														: {
 																text: '©️ Simply Develop. npm i simply-djs',
@@ -510,8 +511,6 @@ export async function giveawaySystem(
 										});
 									}
 
-									const allComp = await msg.components[0];
-
 									if (dt.entered <= 0 || !winArr[0]) {
 										embed
 											.setTitle('No one entered')
@@ -519,7 +518,7 @@ export async function giveawaySystem(
 											.setFields(f)
 											.setColor('RED')
 											.setFooter(
-												options.embed?.credit
+												options.embed?.credit === false
 													? options.embed?.footer
 													: {
 															text: '©️ Simply Develop. npm i simply-djs',
@@ -527,13 +526,9 @@ export async function giveawaySystem(
 													  }
 											);
 
-										allComp.components[0].disabled = true;
-										allComp.components[1].disabled = true;
-										allComp.components[2].disabled = true;
-
 										return await msg.edit({
 											embeds: [embed],
-											components: [allComp]
+											components: []
 										});
 									}
 
@@ -541,27 +536,26 @@ export async function giveawaySystem(
 										.setTitle('We got the winner !')
 										.setDescription(
 											`${dispWin.join(', ')} got the prize !\n\n` +
-												(options.embed?.description
-													? options.embed?.description
-															.replaceAll('{hosted}', `<@${dt.host}>`)
-															.replaceAll('{prize}', dt.prize)
-															.replaceAll('{endsAt}', `<t:${dt.endTime}:R>`)
-															.replaceAll(
-																'{requirements}',
-																req === 'None'
-																	? 'None'
-																	: req +
-																			' | ' +
-																			(req === 'Role' ? `${val}` : val)
-															)
-															.replaceAll('{winCount}', dt.winCount.toString())
-															.replaceAll('{entered}', dt.entered.toString())
-													: `Reroll the giveaway using the button.`)
+												(
+													options.embed?.description ||
+													`Interact with the giveaway using the buttons.`
+												)
+													.replaceAll('{hosted}', `<@${dt.host}>`)
+													.replaceAll('{prize}', dt.prize)
+													.replaceAll('{endsAt}', `<t:${dt.endTime}:R>`)
+													.replaceAll(
+														'{requirements}',
+														req === 'None'
+															? 'None'
+															: req + ' | ' + (req === 'Role' ? `${val}` : val)
+													)
+													.replaceAll('{winCount}', dt.winCount.toString())
+													.replaceAll('{entered}', dt.entered.toString())
 										)
 										.setFields(options.fields)
 										.setColor(0x3bb143)
 										.setFooter(
-											options.embed?.credit
+											options.embed?.credit === false
 												? options.embed?.footer
 												: {
 														text: '©️ Simply Develop. npm i simply-djs',

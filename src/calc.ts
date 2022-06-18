@@ -129,7 +129,7 @@ export async function calculator(
 		const emb1 = new MessageEmbed()
 			.setColor(options.embed?.color || '#075FFF')
 			.setFooter(
-				options.embed?.credit
+				options.embed?.credit === false
 					? options.embed?.footer
 					: {
 							text: '©️ Simply Develop. npm i simply-djs',
@@ -141,11 +141,11 @@ export async function calculator(
 					(options.embed?.description ? `\n${options.embed?.description}` : '')
 			);
 
-		if (options.embed.author) {
-			emb1.setAuthor(options.embed.author);
+		if (options.embed?.author) {
+			emb1.setAuthor(options.embed?.author);
 		}
-		if (options.embed.title) {
-			emb1.setTitle(options.embed.title);
+		if (options.embed?.title) {
+			emb1.setTitle(options.embed?.title);
 		}
 
 		let msg: any;
@@ -171,11 +171,8 @@ export async function calculator(
 
 		let elem = '0';
 
-		const filter = (
-			button: ButtonInteraction,
-			interaction: ExtendedInteraction
-		) =>
-			button.user.id ===
+		const filter = (button: ButtonInteraction) =>
+			button.user?.id ===
 				(interaction.user ? interaction.user : interaction.author).id &&
 			button.customId.startsWith('cal-');
 
@@ -277,17 +274,17 @@ export async function calculator(
 
 		function createButton(
 			label: any,
-			style: MessageButtonStyle = options.buttons.numbers
+			style: MessageButtonStyle = options.buttons?.numbers
 		) {
-			if (label === 'Clear') style = options.buttons.delete;
-			else if (label === 'Delete') style = options.buttons.delete;
-			else if (label === '⌫') style = options.buttons.delete;
-			else if (label === 'π') style = options.buttons.numbers;
-			else if (label === '%') style = options.buttons.numbers;
-			else if (label === '^') style = options.buttons.numbers;
-			else if (label === '.') style = options.buttons.symbols;
+			if (label === 'Clear') style = options.buttons?.delete;
+			else if (label === 'Delete') style = options.buttons?.delete;
+			else if (label === '⌫') style = options.buttons?.delete;
+			else if (label === 'π') style = options.buttons?.numbers;
+			else if (label === '%') style = options.buttons?.numbers;
+			else if (label === '^') style = options.buttons?.numbers;
+			else if (label === '.') style = options.buttons?.symbols;
 			else if (label === '=') style = 'SUCCESS';
-			else if (isNaN(label)) style = options.buttons.symbols;
+			else if (isNaN(label)) style = options.buttons?.symbols;
 			const btn = new MessageButton()
 				.setLabel(label)
 				.setStyle(style)

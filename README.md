@@ -48,21 +48,10 @@ import simplydjs from 'https://cdn.skypack.dev/simply-djs';
  
 # 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
 
-- ## ⚡ Breaking Changes !
-  - Conversion to Typescript
-  - Conversion to Mongoose
-  - Uniform Options just like discord.js
-
-<br></br>
-
-- ## 🔨 Simply-DJS v3
-  - Total package got remastered !
-  - New Dependencies !
-  - Massive Bug squash 🐞
-  - Changed to [Simply API](https://simplyapi.js.org) for chatbot
-  - Removal of `modmail`, `rankCard`, `stealSticker`, `clickBtn` | Addition of `connect`, `manageBtn`
-  - 100% Promise Based
-  - Faster and Smaller
+- Fixed many embeds
+- Better Typings
+- Package Optimization
+- Bug fixes
 
 <br></br>
 
