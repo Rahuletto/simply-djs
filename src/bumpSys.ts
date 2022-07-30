@@ -1,4 +1,4 @@
-import { Client, MessageEmbed, TextChannel, Message } from 'discord.js';
+import { Client, EmbedBuilder, TextChannel, Message } from 'discord.js';
 
 import chalk from 'chalk';
 import db from './model/bumpSys';
@@ -8,8 +8,8 @@ import db from './model/bumpSys';
 // ------------------------------
 
 interface TypeEmbed {
-	thankEmb?: MessageEmbed;
-	bumpEmb?: MessageEmbed;
+	thankEmb?: EmbedBuilder;
+	bumpEmb?: EmbedBuilder;
 }
 
 export type bumpOptions = {
@@ -41,7 +41,7 @@ export async function bumpSystem(
 	options: bumpOptions
 ): Promise<boolean> {
 	try {
-		const bumpo: MessageEmbed = new MessageEmbed()
+		const bumpo: EmbedBuilder = new EmbedBuilder()
 			.setTitle('Its Bump Time !')
 			.setDescription(
 				'Its been 2 hours since last bump. Could someone please bump the server again ?'
@@ -50,7 +50,7 @@ export async function bumpSystem(
 			.setColor('#075FFF')
 			.setFooter({ text: 'Do !d bump to bump the server ;)' });
 
-		const bumpoo: MessageEmbed = new MessageEmbed()
+		const bumpoo: EmbedBuilder = new EmbedBuilder()
 			.setTitle('Thank you')
 			.setDescription(
 				'Thank you for bumping the server. Your support means a lot. Will notify you after 2 hours'

@@ -1,10 +1,10 @@
 import {
 	Client,
-	EmbedBuilder,
 	ColorResolvable,
 	TextChannel,
+	EmbedAuthorOptions,
 	EmbedFooterOptions,
-	EmbedAuthorOptions
+	EmbedBuilder
 } from 'discord.js';
 
 import axios from 'axios';

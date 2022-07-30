@@ -1,16 +1,15 @@
 import {
-	MessageEmbed,
-	MessageActionRow,
-	MessageSelectMenu,
-	MessageButton,
-	MessageEmbedAuthor,
-	MessageEmbedFooter,
+	EmbedBuilder,
+	ActionRowBuilder,
+	SelectMenuBuilder,
+	ButtonBuilder,
+	EmbedAuthorOptions,
+	EmbedFooterOptions,
 	ColorResolvable,
-	MessageSelectOptionData,
-	Permissions
+	PermissionsBitField
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-
+import { LegacyStyles, styleObj } from './interfaces';
 import chalk from 'chalk';
 
 // ------------------------------
@@ -22,9 +21,9 @@ import chalk from 'chalk';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedAuthorOptions;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedFooterOptions;
 	description?: string;
 	color?: ColorResolvable;
 
@@ -33,7 +32,7 @@ interface CustomizableEmbed {
 
 export type embOptions = {
 	embed?: CustomizableEmbed;
-	rawEmbed?: MessageEmbed;
+	rawEmbed?: EmbedBuilder;
 };
 
 // ------------------------------
@@ -51,17 +50,17 @@ export type embOptions = {
 export async function embedCreate(
 	message: ExtendedMessage | ExtendedInteraction,
 	options: embOptions = {}
-): Promise<MessageEmbed | any> {
+): Promise<EmbedBuilder | any> {
 	return new Promise(async (resolve) => {
 		try {
-			const done = new MessageButton()
+			const done = new ButtonBuilder()
 				.setLabel('Finish')
-				.setStyle('SUCCESS')
+				.setStyle(styleObj['SUCCESS'])
 				.setCustomId('setDone');
 
-			const reject = new MessageButton()
+			const reject = new ButtonBuilder()
 				.setLabel('Cancel')
-				.setStyle('DANGER')
+				.setStyle(styleObj['DANGER'])
 				.setCustomId('setDelete');
 
 			const menuOp = [
@@ -118,7 +117,7 @@ export async function embedCreate(
 				}
 			];
 
-			const menuOptions: MessageSelectOptionData[] = [];
+			const menuOptions = [];
 
 			if (!options.embed) {
 				options.embed = {
@@ -141,17 +140,22 @@ export async function embedCreate(
 				menuOptions.push(dataopt);
 			}
 
-			const slct = new MessageSelectMenu()
+			const slct = new SelectMenuBuilder()
 				.setMaxValues(1)
 				.setCustomId('embed-creator')
 				.setPlaceholder('Embed Creator')
 				.addOptions(menuOptions);
 
-			const row = new MessageActionRow().addComponents([done, reject]);
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				done,
+				reject
+			]);
 
-			const row2 = new MessageActionRow().addComponents([slct]);
+			const row2 = new ActionRowBuilder<SelectMenuBuilder>().addComponents([
+				slct
+			]);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(options.embed?.title || 'Embed Creator')
 				.setDescription(
 					options.embed?.description ||
@@ -199,7 +203,7 @@ export async function embedCreate(
 				});
 			}
 
-			const emb = new MessageEmbed()
+			const emb = new EmbedBuilder()
 				.setFooter(
 					options.embed?.credit
 						? options.embed?.footer
@@ -233,7 +237,9 @@ export async function embedCreate(
 							msg.delete().catch(() => {});
 						} else if (button.customId && button.customId === 'setDone') {
 							if (
-								message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+								message.member.permissions.has(
+									PermissionsBitField.Flags.Administrator
+								)
 							) {
 								button.reply({
 									content: 'Provide me the channel to send the embed.',
@@ -263,7 +269,9 @@ export async function embedCreate(
 									}
 								});
 							} else if (
-								!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+								!message.member.permissions.has(
+									PermissionsBitField.Flags.Administrator
+								)
 							) {
 								button.reply({ content: 'Done 👍', ephemeral: true });
 
@@ -277,20 +285,25 @@ export async function embedCreate(
 								resolve(preview.embeds[0].toJSON());
 							}
 						} else if (button.values[0] === 'setTimestamp') {
-							const btn = new MessageButton()
+							const btn = new ButtonBuilder()
 								.setLabel('Enable')
 								.setCustomId('timestamp-yes')
-								.setStyle('SUCCESS');
+								.setStyle(styleObj['SUCCESS']);
 
-							const btn2 = new MessageButton()
+							const btn2 = new ButtonBuilder()
 								.setLabel('Disable')
 								.setCustomId('timestamp-no')
-								.setStyle('DANGER');
+								.setStyle(styleObj['DANGER']);
 
 							button.reply({
 								content: 'Do you want a Timestamp in the embed ?',
 								ephemeral: true,
-								components: [new MessageActionRow().addComponents([btn, btn2])]
+								components: [
+									new ActionRowBuilder<ButtonBuilder>().addComponents([
+										btn,
+										btn2
+									])
+								]
 							});
 
 							const titleclr = button.channel.createMessageComponentCollector({
@@ -308,7 +321,11 @@ export async function embedCreate(
 									preview
 										.edit({
 											content: preview.content,
-											embeds: [preview.embeds[0].setTimestamp(new Date())]
+											embeds: [
+												EmbedBuilder.from(preview.embeds[0]).setTimestamp(
+													new Date()
+												)
+											]
 										})
 										.catch(() => {});
 								}
@@ -322,13 +339,15 @@ export async function embedCreate(
 									preview
 										.edit({
 											content: preview.content,
-											embeds: [preview.embeds[0].setTimestamp(null)]
+											embeds: [
+												EmbedBuilder.from(preview.embeds[0]).setTimestamp(null)
+											]
 										})
 										.catch(() => {});
 								}
 							});
 						} else if (button.values[0] === 'setAuthor') {
-							const autsel = new MessageSelectMenu()
+							const autsel = new SelectMenuBuilder()
 								.setMaxValues(1)
 								.setCustomId('author-selct')
 								.setPlaceholder('Author Options')
@@ -353,7 +372,11 @@ export async function embedCreate(
 							button.reply({
 								content: 'Select one from the "Author" options',
 								ephemeral: true,
-								components: [new MessageActionRow().addComponents([autsel])]
+								components: [
+									new ActionRowBuilder<SelectMenuBuilder>().addComponents([
+										autsel
+									])
+								]
 							});
 
 							const titleclr = button.channel.createMessageComponentCollector({
@@ -386,7 +409,7 @@ export async function embedCreate(
 											.edit({
 												content: preview.content,
 												embeds: [
-													preview.embeds[0].setAuthor({
+													EmbedBuilder.from(preview.embeds[0]).setAuthor({
 														name: m.content,
 														iconURL: preview.embeds[0].author?.iconURL
 															? preview.embeds[0].author?.iconURL
@@ -435,7 +458,7 @@ export async function embedCreate(
 											.edit({
 												content: preview.content,
 												embeds: [
-													preview.embeds[0].setAuthor({
+													EmbedBuilder.from(preview.embeds[0]).setAuthor({
 														name: preview.embeds[0].author?.name
 															? preview.embeds[0].author?.name
 															: '',
@@ -478,7 +501,7 @@ export async function embedCreate(
 												.edit({
 													content: preview.content,
 													embeds: [
-														preview.embeds[0].setAuthor({
+														EmbedBuilder.from(preview.embeds[0]).setAuthor({
 															name: preview.embeds[0].author?.name
 																? preview.embeds[0].author?.name
 																: '',
@@ -549,7 +572,7 @@ export async function embedCreate(
 									.edit({
 										content: preview.content,
 										embeds: [
-											preview.embeds[0].setThumbnail(
+											EmbedBuilder.from(preview.embeds[0]).setThumbnail(
 												m.content || m.attachments.first()?.url || ''
 											)
 										]
@@ -574,7 +597,9 @@ export async function embedCreate(
 									preview
 										.edit({
 											content: preview.content,
-											embeds: [preview.embeds[0].setColor(m.content)]
+											embeds: [
+												EmbedBuilder.from(preview.embeds[0]).setColor(m.content)
+											]
 										})
 										.catch(() => {
 											button.followUp({
@@ -614,7 +639,9 @@ export async function embedCreate(
 									preview
 										.edit({
 											content: preview.content,
-											embeds: [preview.embeds[0].setURL(m.content)]
+											embeds: [
+												EmbedBuilder.from(preview.embeds[0]).setURL(m.content)
+											]
 										})
 										.catch(() => {});
 								}
@@ -649,7 +676,7 @@ export async function embedCreate(
 									.edit({
 										content: preview.content,
 										embeds: [
-											preview.embeds[0].setImage(
+											EmbedBuilder.from(preview.embeds[0]).setImage(
 												m.content || m.attachments.first()?.url
 											)
 										]
@@ -675,7 +702,9 @@ export async function embedCreate(
 								preview
 									.edit({
 										content: preview.content,
-										embeds: [preview.embeds[0].setTitle(m.content)]
+										embeds: [
+											EmbedBuilder.from(preview.embeds[0]).setTitle(m.content)
+										]
 									})
 									.catch(() => {});
 							});
@@ -697,12 +726,16 @@ export async function embedCreate(
 								preview
 									.edit({
 										content: preview.content,
-										embeds: [preview.embeds[0].setDescription(m.content)]
+										embeds: [
+											EmbedBuilder.from(preview.embeds[0]).setDescription(
+												m.content
+											)
+										]
 									})
 									.catch(() => {});
 							});
 						} else if (button.values[0] === 'setFooter') {
-							const autsel = new MessageSelectMenu()
+							const autsel = new SelectMenuBuilder()
 								.setMaxValues(1)
 								.setCustomId('footer-selct')
 								.setPlaceholder('Footer Options')
@@ -722,7 +755,11 @@ export async function embedCreate(
 							button.reply({
 								content: 'Select one from the "Footer" options',
 								ephemeral: true,
-								components: [new MessageActionRow().addComponents([autsel])]
+								components: [
+									new ActionRowBuilder<SelectMenuBuilder>().addComponents([
+										autsel
+									])
+								]
 							});
 
 							const titleclr = button.channel.createMessageComponentCollector({
@@ -755,7 +792,7 @@ export async function embedCreate(
 											.edit({
 												content: preview.content,
 												embeds: [
-													preview.embeds[0].setFooter({
+													EmbedBuilder.from(preview.embeds[0]).setFooter({
 														text: m.content,
 														iconURL: preview.embeds[0].footer?.iconURL
 															? preview.embeds[0].footer?.iconURL
@@ -801,7 +838,7 @@ export async function embedCreate(
 											.edit({
 												content: preview.content,
 												embeds: [
-													preview.embeds[0].setFooter({
+													EmbedBuilder.from(preview.embeds[0]).setFooter({
 														text: preview.embeds[0].footer?.text || '',
 														iconURL:
 															m.content || m.attachments.first()?.url || ''
@@ -816,13 +853,15 @@ export async function embedCreate(
 					});
 					collector.on('end', async (collected: any, reason: string) => {
 						if (reason === 'time') {
-							const content = new MessageButton()
+							const content = new ButtonBuilder()
 								.setLabel('Timed Out')
-								.setStyle('DANGER')
+								.setStyle(styleObj['DANGER'])
 								.setCustomId('timeout|91817623842')
 								.setDisabled(true);
 
-							const row = new MessageActionRow().addComponents([content]);
+							const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+								content
+							]);
 
 							await msg.edit({ embeds: [msg.embeds[0]], components: [row] });
 						}
