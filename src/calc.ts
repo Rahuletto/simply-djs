@@ -154,14 +154,14 @@ export async function calculator(
 		const ms = interaction as ExtendedMessage;
 
 		if (!message) {
-			await int.followUp({
+			await int.reply({
 				embeds: [emb1],
 				components: row
 			});
 
 			msg = await int.fetchReply();
 		} else if (message) {
-			msg = await ms.reply({
+			msg = await ms.followUp({
 				embeds: [emb1],
 				components: row
 			});
