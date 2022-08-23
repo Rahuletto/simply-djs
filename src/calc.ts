@@ -161,7 +161,7 @@ export async function calculator(
 
 			msg = await int.fetchReply();
 		} else if (message) {
-			msg = await ms.followUp({
+			msg = await ms.reply({
 				embeds: [emb1],
 				components: row
 			});
