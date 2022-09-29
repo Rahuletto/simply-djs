@@ -11,6 +11,7 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
 import { LegacyStyles, styleObj } from './interfaces';
+import { convStyle } from './Others/convStyle';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -102,9 +103,9 @@ export async function btnRole(
 				if (button[current].length === 5) current++;
 
 				const emoji = data[i].emoji || null;
-				let clr = data[i].style || 'SECONDARY';
+				let clr = (data[i].style || 'SECONDARY') as ButtonStyle | LegacyStyles;
 
-				clr = (clr as ButtonStyle) || styleObj[clr as LegacyStyles];
+				clr = convStyle(clr);
 
 				let url = '';
 				const role: Role | null = message.guild.roles.cache.find(
@@ -190,19 +191,19 @@ export async function btnRole(
 			function createButton(
 				label: string,
 				role: Role,
-				color: ButtonStyle,
+				color: ButtonStyle | LegacyStyles,
 				emoji: string
 			): ButtonBuilder {
 				const btn = new ButtonBuilder();
 				if (!emoji || emoji === null) {
 					btn
 						.setLabel(label)
-						.setStyle(color)
+						.setStyle(convStyle(color))
 						.setCustomId('role-' + role.id);
 				} else if (emoji && emoji !== null) {
 					btn
 						.setLabel(label)
-						.setStyle(color)
+						.setStyle(convStyle(color))
 						.setCustomId('role-' + role.id)
 						.setEmoji(emoji);
 				}

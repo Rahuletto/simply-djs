@@ -1,9 +1,10 @@
 import {
-	MessageEmbed,
+	EmbedBuilder,
 	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
-	ColorResolvable
+	EmbedAuthorOptions,
+	EmbedFooterOptions,
+	ColorResolvable,
+	Embed
 } from 'discord.js';
 import chalk from 'chalk';
 
@@ -16,9 +17,9 @@ import chalk from 'chalk';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedAuthorOptions;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedFooterOptions;
 	description?: string;
 	color?: ColorResolvable;
 
@@ -74,11 +75,11 @@ export async function ghostPing(
 							};
 						}
 
-						const chembed: MessageEmbed = new MessageEmbed()
+						const chembed: EmbedBuilder = new EmbedBuilder()
 							.setAuthor(
 								options.embed?.author || {
 									name: message.author.tag,
-									iconURL: message.author.displayAvatarURL({ format: 'gif' })
+									iconURL: message.author.displayAvatarURL({ extension: 'png' })
 								}
 							)
 							.setTitle(options.embed?.title || 'Ghost Ping Detected')

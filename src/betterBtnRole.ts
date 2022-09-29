@@ -12,6 +12,7 @@ import chalk from 'chalk';
 import { ExtendedInteraction } from './interfaces';
 
 import { LegacyStyles, styleObj } from './interfaces';
+import { convStyle } from './Others/convStyle';
 
 /*
 Error Codes
@@ -95,11 +96,12 @@ export async function betterBtnRole(
 			try {
 				const label =
 					options.label || interaction.options.get('label') || role.name;
-				const color =
-					options.style || interaction.options.get('style') || 'SECONDARY';
+				const color = (options.style ||
+					interaction.options.get('style') ||
+					'SECONDARY') as LegacyStyles | ButtonStyle;
 				const emoji = options.emoji || interaction.options.get('emoji');
 
-				let st = (color as ButtonStyle) || styleObj[color as LegacyStyles];
+				let st = convStyle(color);
 
 				if (msg.components) {
 					for (let i = 0; msg.components.length > i; i++) {

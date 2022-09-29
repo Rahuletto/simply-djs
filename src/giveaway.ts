@@ -1,22 +1,25 @@
 import {
-	MessageEmbed,
+	EmbedBuilder,
 	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
+	EmbedFooterOptions,
+	EmbedAuthorOptions,
 	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
+	ActionRowBuilder,
+	ButtonBuilder,
 	Client,
-	MessageButtonStyle,
+	ButtonStyle,
 	Role,
-	Permissions,
-	EmbedFieldData,
-	CacheType
+	PermissionsBitField,
+	EmbedField,
+	CacheType,
+	MessageMentions
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import { LegacyStyles, styleObj } from './interfaces';
 
 import chalk from 'chalk';
 import model from './model/gSys';
+import { convStyle } from './Others/convStyle';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -27,9 +30,9 @@ import model from './model/gSys';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedAuthorOptions;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedFooterOptions;
 	description?: string;
 	color?: ColorResolvable;
 
@@ -46,7 +49,7 @@ interface requirement {
  */
 
 interface btnTemplate {
-	style?: MessageButtonStyle;
+	style?: ButtonStyle | LegacyStyles;
 	label?: string;
 	emoji?: string;
 }
@@ -75,7 +78,7 @@ export type giveawayOptions = {
 	ping?: string;
 
 	embed?: CustomizableEmbed;
-	fields?: EmbedFieldData[];
+	fields?: EmbedField[];
 
 	disable?: 'Label' | 'Emoji';
 };
@@ -130,7 +133,9 @@ export async function giveawaySystem(
 			if (
 				!(
 					roly ||
-					message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)
+					message.member.permissions.has(
+						PermissionsBitField.Flags.Administrator
+					)
 				)
 			) {
 				return message.channel.send({
@@ -211,28 +216,25 @@ export async function giveawaySystem(
 
 			if (interaction) {
 				ch =
-					options.channel ||
-					int.options.getChannel('channel') ||
-					interaction.channel;
-				time = options.time || int.options.getString('time') || '1h';
-				winners = options.winners || int.options.getNumber('winners');
-				prize = options.prize || int.options.getString('prize');
+					options.channel || int.options.get('channel') || interaction.channel;
+				time = options.time || int.options.get('time') || '1h';
+				winners = options.winners || int.options.get('winners');
+				prize = options.prize || int.options.get('prize');
 			} else if (!interaction) {
 				const [...args] = mes.content.split(/ +/g);
 
 				ch =
 					options.channel ||
-					// @ts-ignore
-					message.mentions.channels.first() ||
+					(message.mentions as MessageMentions).channels.first() ||
 					message.channel;
 				time = options.time || args[1] || '1h';
 				winners = args[2] || options.winners;
 				prize = options.prize || args.slice(3).join(' ');
 			}
 
-			const enter = new MessageButton()
+			const enter = new ButtonBuilder()
 				.setCustomId('enter_giveaway')
-				.setStyle(options.buttons.enter.style || 'SUCCESS');
+				.setStyle(convStyle(options.buttons.enter.style || 'SUCCESS'));
 
 			if (options.disable === 'Label')
 				enter.setEmoji(options.buttons.enter.emoji || '🎁');
@@ -244,9 +246,9 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.enter.label || '0');
 			}
 
-			const end = new MessageButton()
+			const end = new ButtonBuilder()
 				.setCustomId('end_giveaway')
-				.setStyle(options.buttons.end.style || 'DANGER');
+				.setStyle(convStyle(options.buttons.end.style || 'DANGER'));
 
 			if (options.disable === 'Label')
 				end.setEmoji(options.buttons.end.emoji || '⛔');
@@ -258,9 +260,9 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.end.label || 'End');
 			}
 
-			const reroll = new MessageButton()
+			const reroll = new ButtonBuilder()
 				.setCustomId('reroll_giveaway')
-				.setStyle(options.buttons.reroll.style || 'SUCCESS')
+				.setStyle(convStyle(options.buttons.reroll.style || 'SUCCESS'))
 				.setDisabled(true);
 
 			if (options.disable === 'Label')
@@ -273,7 +275,7 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.reroll.label || 'Reroll');
 			}
 
-			const row = new MessageActionRow().addComponents([enter, reroll, end]);
+			const row = new ActionRowBuilder().addComponents([enter, reroll, end]);
 
 			time = ms(time);
 
@@ -282,7 +284,8 @@ export async function giveawaySystem(
 			options.fields = options.fields || [
 				{
 					name: 'Prize',
-					value: `{prize}`
+					value: `{prize}`,
+					inline: false
 				},
 				{
 					name: 'Hosted By',
@@ -297,7 +300,8 @@ export async function giveawaySystem(
 				{ name: 'Winner(s)', value: `{winCount}`, inline: true },
 				{
 					name: 'Requirements',
-					value: `{requirements}`
+					value: `{requirements}`,
+					inline: false
 				}
 			];
 
@@ -316,7 +320,7 @@ export async function giveawaySystem(
 					.replaceAll('{entered}', '0');
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setTitle(
 					options.embed?.title
 						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
@@ -373,12 +377,14 @@ export async function giveawaySystem(
 								: req + ' | ' + (req === 'Role' ? val : gid)
 					});
 
-					const link = new MessageButton()
+					const link = new ButtonBuilder()
 						.setLabel('View Giveaway.')
-						.setStyle('LINK')
+						.setStyle(convStyle('LINK'))
 						.setURL(msg.url);
 
-					const rowew = new MessageActionRow().addComponents([link]);
+					const rowew = new ActionRowBuilder<ButtonBuilder>().addComponents([
+						link
+					]);
 
 					if (int && interaction) {
 						await int.followUp({
@@ -417,7 +423,7 @@ export async function giveawaySystem(
 						const dt = await model.findOne({ message: msg.id });
 
 						if (dt.endTime && Number(dt.endTime) < Date.now()) {
-							const embeded = new MessageEmbed()
+							const embeded = new EmbedBuilder()
 								.setTitle('Processing Data...')
 								.setColor(0xcc0000)
 								.setDescription(
@@ -454,7 +460,7 @@ export async function giveawaySystem(
 										.then((user) => {
 											dispWin.push(`<@${user.user.id}>`);
 
-											const embod = new MessageEmbed()
+											const embod = new EmbedBuilder()
 												.setTitle('You.. Won the Giveaway !')
 												.setDescription(
 													`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
@@ -469,14 +475,15 @@ export async function giveawaySystem(
 														  }
 												);
 
-											const gothe = new MessageButton()
+											const gothe = new ButtonBuilder()
 												.setLabel('View Giveaway')
-												.setStyle('LINK')
+												.setStyle(convStyle('LINK'))
 												.setURL(msg.url);
 
-											const entrow = new MessageActionRow().addComponents([
-												gothe
-											]);
+											const entrow =
+												new ActionRowBuilder<ButtonBuilder>().addComponents([
+													gothe
+												]);
 
 											return user
 												.send({ embeds: [embod], components: [entrow] })
@@ -490,7 +497,7 @@ export async function giveawaySystem(
 								if (!dt) return await msg.delete();
 								if (dt) {
 									const tim = Number(dt.endTime.slice(0, -3));
-									const f: EmbedFieldData[] = [];
+									const f: EmbedField[] = [];
 									if (options.fields) {
 										options.fields.forEach((a) => {
 											a.value = a.value
@@ -517,7 +524,7 @@ export async function giveawaySystem(
 											.setTitle('No one entered')
 
 											.setFields(f)
-											.setColor('RED')
+											.setColor('Red')
 											.setFooter(
 												options.embed?.credit
 													? options.embed?.footer
@@ -527,9 +534,9 @@ export async function giveawaySystem(
 													  }
 											);
 
-										allComp.components[0].disabled = true;
-										allComp.components[1].disabled = true;
-										allComp.components[2].disabled = true;
+										ButtonBuilder.from(allComp.components[0]).setDisabled(true);
+										ButtonBuilder.from(allComp.components[1]).setDisabled(true);
+										ButtonBuilder.from(allComp.components[2]).setDisabled(true);
 
 										return await msg.edit({
 											embeds: [embed],
@@ -569,9 +576,9 @@ export async function giveawaySystem(
 												  }
 										);
 
-									allComp.components[0].disabled = true;
-									allComp.components[1].disabled = false;
-									allComp.components[2].disabled = true;
+									ButtonBuilder.from(allComp.components[0]).setDisabled(true);
+									ButtonBuilder.from(allComp.components[1]).setDisabled(false);
+									ButtonBuilder.from(allComp.components[2]).setDisabled(true);
 
 									await msg.edit({
 										embeds: [embed],

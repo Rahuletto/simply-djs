@@ -3,13 +3,20 @@ import {
 	EmbedBuilder,
 	ButtonBuilder,
 	ActionRowBuilder,
-	AnyComponentBuilder
+	Message,
+	InteractionResponse,
+	ComponentType,
+	APIButtonComponent,
+	Utils,
+	ButtonInteraction,
+	ActionRow
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
 import { SimplyError } from './Error/Error';
 import { LegacyStyles, styleObj } from './interfaces/LegacyStyles';
+import { convStyle } from './Others/convStyle';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -20,7 +27,7 @@ import { LegacyStyles, styleObj } from './interfaces/LegacyStyles';
  */
 
 interface btnTemplate {
-	style?: ButtonStyle;
+	style?: ButtonStyle | LegacyStyles;
 	label?: string;
 	emoji?: string;
 }
@@ -102,48 +109,28 @@ export async function embedPages(
 
 		options.buttons = {
 			firstBtn: {
-				style:
-					(options.buttons?.firstBtn?.style as ButtonStyle) ||
-					styleObj[
-						(options.buttons?.firstBtn?.style || 'PRIMARY') as LegacyStyles
-					],
+				style: options.buttons?.firstBtn?.style || 'PRIMARY',
 				emoji: options.buttons?.firstBtn?.emoji || '⏪',
 				label: options.buttons?.firstBtn?.label || 'First'
 			},
 			nextBtn: {
-				style:
-					(options.buttons?.nextBtn?.style as ButtonStyle) ||
-					styleObj[
-						(options.buttons?.nextBtn?.style || 'SUCCESS') as LegacyStyles
-					],
+				style: options.buttons?.nextBtn?.style || 'SUCCESS',
 				emoji: options.buttons?.nextBtn?.emoji || '▶️',
 				label: options.buttons?.nextBtn?.label || 'Next'
 			},
 			backBtn: {
-				style:
-					(options.buttons?.backBtn?.style as ButtonStyle) ||
-					styleObj[
-						(options.buttons?.backBtn?.style || 'SUCCESS') as LegacyStyles
-					],
+				style: options.buttons?.backBtn?.style || 'SUCCESS',
 				emoji: options.buttons?.backBtn?.emoji || '◀️',
 				label: options.buttons?.backBtn?.label || 'Back'
 			},
 			lastBtn: {
-				style:
-					(options.buttons?.lastBtn?.style as ButtonStyle) ||
-					styleObj[
-						(options.buttons?.lastBtn?.style || 'PRIMARY') as LegacyStyles
-					],
+				style: options.buttons?.lastBtn?.style || 'PRIMARY',
 				emoji: options.buttons?.lastBtn?.emoji || '⏩',
 				label: options.buttons?.lastBtn?.label || 'Last'
 			},
 
 			deleteBtn: {
-				style:
-					(options.buttons?.deleteBtn?.style as ButtonStyle) ||
-					styleObj[
-						(options.buttons?.deleteBtn?.style || 'DANGER') as LegacyStyles
-					],
+				style: options.buttons?.deleteBtn?.style || 'DANGER',
 				emoji: options.buttons?.deleteBtn?.emoji || '🗑',
 				label: options.buttons?.deleteBtn?.label || 'Delete'
 			}
@@ -153,7 +140,7 @@ export async function embedPages(
 		const firstBtn = new ButtonBuilder()
 			.setCustomId('first_embed')
 
-			.setStyle(options.buttons.firstBtn.style);
+			.setStyle(convStyle(options.buttons.firstBtn.style));
 
 		if (options.disable === 'Label' || options.disable === 'None')
 			firstBtn.setEmoji(options.buttons.firstBtn.emoji);
@@ -162,7 +149,7 @@ export async function embedPages(
 
 		const forwardBtn = new ButtonBuilder()
 			.setCustomId('forward_button_embed')
-			.setStyle(options.buttons.nextBtn.style);
+			.setStyle(convStyle(options.buttons.nextBtn.style));
 
 		if (options.disable === 'Label' || options.disable === 'None')
 			forwardBtn.setEmoji(options.buttons.nextBtn.emoji);
@@ -171,7 +158,7 @@ export async function embedPages(
 
 		const backBtn = new ButtonBuilder()
 			.setCustomId('back_button_embed')
-			.setStyle(options.buttons.backBtn.style);
+			.setStyle(convStyle(options.buttons.backBtn.style));
 
 		if (options.disable === 'Label' || options.disable === 'None')
 			backBtn.setEmoji(options.buttons.backBtn.emoji);
@@ -185,7 +172,7 @@ export async function embedPages(
 
 		const lastBtn = new ButtonBuilder()
 			.setCustomId('last_embed')
-			.setStyle(options.buttons.lastBtn.style);
+			.setStyle(convStyle(options.buttons.lastBtn.style));
 
 		if (options.disable === 'Label' || options.disable === 'None')
 			lastBtn.setEmoji(options.buttons.lastBtn.emoji);
@@ -194,7 +181,7 @@ export async function embedPages(
 
 		const deleteBtn = new ButtonBuilder()
 			.setCustomId('delete_embed')
-			.setStyle(options.buttons.deleteBtn.style);
+			.setStyle(convStyle(options.buttons.deleteBtn.style));
 
 		if (options.disable === 'Label' || options.disable === 'None')
 			deleteBtn.setEmoji(options.buttons.deleteBtn.emoji);
@@ -230,7 +217,7 @@ export async function embedPages(
 			interaction = message;
 		}
 
-		let m: any;
+		let m: Message;
 
 		const int = message as ExtendedInteraction;
 		const ms = message as ExtendedMessage;
@@ -258,7 +245,7 @@ export async function embedPages(
 					allowedMentions: { repliedUser: false }
 				});
 			} else {
-				m = await message.reply({
+				m = await ms.reply({
 					embeds: [pages[0]],
 					components: comps,
 					allowedMentions: { repliedUser: false }
@@ -272,10 +259,10 @@ export async function embedPages(
 		const collector = m.createMessageComponentCollector({
 			time: options.timeout || 120000,
 			filter,
-			componentType: 'BUTTON'
+			componentType: ComponentType.Button
 		});
 
-		collector.on('collect', async (b: any) => {
+		collector.on('collect', async (b: ButtonInteraction) => {
 			if (!b.isButton()) return;
 			if (b.message.id !== m.id) return;
 
@@ -293,63 +280,67 @@ export async function embedPages(
 				currentPage = 0;
 			}
 
+			let components = ActionRowBuilder.from(m.components[0]).toJSON();
+
 			if (options.dynamic) {
 				if (currentPage === 0) {
-					const bt = comps[0].components[0];
+					const bt = components.components[0] as APIButtonComponent;
 					ButtonBuilder.from(bt).setDisabled(true);
 					if (options.skips) {
-						const inde = comps[0].components[1];
+						const inde = components.components[1] as APIButtonComponent;
 						ButtonBuilder.from(inde).setDisabled(true);
-						comps[0].components[1] = inde;
+						components.components[1] = inde;
 					}
 
-					comps[0].components[0] = bt;
+					components.components[0] = bt;
 				} else {
-					const bt = comps[0].components[0];
+					const bt = components.components[0] as APIButtonComponent;
 					ButtonBuilder.from(bt).setDisabled(false);
 					if (options.skips) {
-						const inde = comps[0].components[1];
+						const inde = components.components[1] as APIButtonComponent;
 						ButtonBuilder.from(inde).setDisabled(false);
-						comps[0].components[1] = inde;
+						components.components[1] = inde;
 					}
-					comps[0].components[0] = bt;
+					components.components[0] = bt;
 				}
 				if (currentPage === pages.length - 1) {
 					if (options.skips) {
-						const bt = comps[0].components[3];
-						const inde = comps[0].components[4];
+						const bt = components.components[3] as APIButtonComponent;
+						const inde = components.components[4] as APIButtonComponent;
 
 						ButtonBuilder.from(inde).setDisabled(true);
 						ButtonBuilder.from(bt).setDisabled(true);
 
-						comps[0].components[3] = bt;
-						comps[0].components[4] = inde;
+						components.components[3] = bt;
+						components.components[4] = inde;
 					} else {
-						const bt = comps[0].components[2];
+						const bt = components.components[2] as APIButtonComponent;
 
 						ButtonBuilder.from(bt).setDisabled(true);
 
-						comps[0].components[2] = bt;
+						components.components[2] = bt;
 					}
 				} else {
 					if (options.skips) {
-						const bt = comps[0].components[3];
-						const inde = comps[0].components[4];
+						const bt = components.components[3] as APIButtonComponent;
+						const inde = components.components[4] as APIButtonComponent;
 
 						ButtonBuilder.from(inde).setDisabled(false);
 						ButtonBuilder.from(bt).setDisabled(true);
 
-						comps[0].components[3] = bt;
-						comps[0].components[4] = inde;
+						components.components[3] = bt;
+						components.components[4] = inde;
 					} else {
-						const bt = comps[0].components[2];
+						const bt = components.components[2] as APIButtonComponent;
 
 						ButtonBuilder.from(bt).setDisabled(false);
 
-						comps[0].components[2] = bt;
+						components.components[2] = bt;
 					}
 				}
 			}
+
+			let cm = ActionRowBuilder.from(components);
 
 			if (b.customId !== 'delete_embed') {
 				if (options.count) {
@@ -359,13 +350,13 @@ export async function embedPages(
 								text: `Page: ${currentPage + 1}/${pages.length}`
 							})
 						],
-						components: comps,
+						components: [cm as ActionRowBuilder<ButtonBuilder>],
 						allowedMentions: { repliedUser: false }
 					});
 				} else {
 					m.edit({
 						embeds: [pages[currentPage]],
-						components: comps,
+						components: [cm as ActionRowBuilder<ButtonBuilder>],
 						allowedMentions: { repliedUser: false }
 					});
 				}

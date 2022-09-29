@@ -13,6 +13,7 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 import chalk from 'chalk';
 
 import { LegacyStyles, styleObj } from './interfaces';
+import { convStyle } from './Others/convStyle';
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -287,7 +288,7 @@ export async function calculator(
 			else if (label === '=') style = 'SUCCESS';
 			else if (isNaN(label)) style = options.buttons.symbols;
 
-			style = (style as ButtonStyle) || styleObj[style as LegacyStyles];
+			style = convStyle(style);
 			const btn = new ButtonBuilder()
 				.setLabel(label)
 				.setStyle(style)
