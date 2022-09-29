@@ -26,6 +26,7 @@
 
 ```diff
 + interfaces/LegacyStyles
++ Others/convStyle.ts
 ```
 
 - ### Conversion
@@ -39,9 +40,9 @@
 ! chatbot
 + connect
 ! embedCreate
-! embedPages
-! ghostPing
-! giveaway
++ embedPages
++ ghostPing
++ giveaway
 ! manageBtn
 ! manageSug
 ! menuPages
