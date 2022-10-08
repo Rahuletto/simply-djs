@@ -6,7 +6,8 @@ import {
 	EmbedAuthorOptions,
 	EmbedFooterOptions,
 	ColorResolvable,
-	ButtonInteraction
+	ButtonInteraction,
+	ComponentType
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
@@ -180,7 +181,7 @@ export async function calculator(
 
 		const collect = msg.createMessageComponentCollector({
 			filter,
-			componentType: 'BUTTON',
+			componentType: ComponentType.Button,
 			time: time
 		});
 
