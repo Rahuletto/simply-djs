@@ -1,19 +1,19 @@
 import {
-	MessageEmbed,
-	Message,
-	MessageButton,
-	MessageActionRow,
-	ColorResolvable,
-	MessageEmbedAuthor,
-	MessageEmbedFooter,
-	MessageButtonStyle,
-	TextChannel,
-	Permissions
-} from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+  EmbedBuilder,
+  Message,
+  ButtonBuilder,
+  ActionRowBuilder,
+  ColorResolvable,
+  EmbedBuilderAuthor,
+  EmbedBuilderFooter,
+  ButtonStyle,
+  TextChannel,
+  Permissions,
+} from "discord.js";
+import { ExtendedInteraction, ExtendedMessage } from "./interfaces";
 
-import { SimplyError } from './Error/Error';
-import chalk from 'chalk';
+import { SimplyError } from "./Error/Error";
+import chalk from "chalk";
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -24,13 +24,13 @@ import chalk from 'chalk';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
+  author?: EmbedBuilderAuthor;
+  title?: string;
+  footer?: EmbedBuilderFooter;
+  description?: string;
+  color?: ColorResolvable;
 
-	credit?: boolean;
+  credit?: boolean;
 }
 
 /**
@@ -38,15 +38,15 @@ interface CustomizableEmbed {
  */
 
 interface btnTemplate {
-	style?: MessageButtonStyle;
-	label?: string;
-	emoji?: string;
+  style?: ButtonStyle;
+  label?: string;
+  emoji?: string;
 }
 
 export type tSysOptions = {
-	embed?: CustomizableEmbed;
-	button?: btnTemplate;
-	channelId?: string;
+  embed?: CustomizableEmbed;
+  button?: btnTemplate;
+  channelId?: string;
 };
 
 // ------------------------------
@@ -63,101 +63,101 @@ export type tSysOptions = {
  */
 
 export async function ticketSystem(
-	message: ExtendedMessage | ExtendedInteraction,
-	options: tSysOptions = {}
+  message: ExtendedMessage | ExtendedInteraction,
+  options: tSysOptions = {}
 ) {
-	try {
-		const ch = options.channelId;
+  try {
+    const ch = options.channelId;
 
-		if (!ch || ch == '')
-			throw new SimplyError({
-				name: 'NOT_SPECIFIED | Provide an channel id to send memes.',
-				tip: `Expected channelId as string in options.. | Received ${
-					ch || 'undefined'
-				}`
-			});
+    if (!ch || ch == "")
+      throw new SimplyError({
+        name: "NOT_SPECIFIED | Provide an channel id to send memes.",
+        tip: `Expected channelId as string in options.. | Received ${
+          ch || "undefined"
+        }`,
+      });
 
-		let channel = await message.client.channels.fetch(ch, {
-			cache: true
-		});
+    let channel = await message.client.channels.fetch(ch, {
+      cache: true,
+    });
 
-		channel = channel as TextChannel;
+    channel = channel as TextChannel;
 
-		if (!channel)
-			throw new SimplyError({
-				name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
-				tip: 'Check the permissions (or) Try using another Channel ID'
-			});
+    if (!channel)
+      throw new SimplyError({
+        name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
+        tip: "Check the permissions (or) Try using another Channel ID",
+      });
 
-		let interaction;
-		if (message.commandId) {
-			interaction = message;
-		}
-		const int = message as ExtendedInteraction;
-		const mes = message as Message;
+    let interaction;
+    if (message.commandId) {
+      interaction = message;
+    }
+    const int = message as ExtendedInteraction;
+    const mes = message as Message;
 
-		if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
-			if (interaction) {
-				return await int.followUp({
-					content: 'You are not an admin to create a Ticket Panel',
-					ephemeral: true
-				});
-			} else if (!interaction) {
-				return await mes.reply({
-					content: 'You are not an admin to create a Ticket Panel'
-				});
-			}
-		}
+    if (!message.member.permissions.has("Administrator")) {
+      if (interaction) {
+        return await int.followUp({
+          content: "You are not an admin to create a Ticket Panel",
+          ephemeral: true,
+        });
+      } else if (!interaction) {
+        return await mes.reply({
+          content: "You are not an admin to create a Ticket Panel",
+        });
+      }
+    }
 
-		const ticketbtn = new MessageButton()
-			.setStyle(options?.button?.style || 'PRIMARY')
-			.setEmoji(options?.button?.emoji || '🎫')
-			.setLabel(options?.button?.label || 'Open a Ticket')
-			.setCustomId('create_ticket');
+    const ticketbtn = new ButtonBuilder()
+      .setStyle(options?.button?.style || ButtonStyle.Primary)
+      .setEmoji(options?.button?.emoji || "🎫")
+      .setLabel(options?.button?.label || "Open a Ticket")
+      .setCustomId("create_ticket");
 
-		if (!options.embed) {
-			options.embed = {
-				footer: {
-					text: '©️ Simply Develop. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
-				},
-				color: '#075FFF',
-				title: 'Create an Ticket',
-				credit: true
-			};
-		}
+    if (!options.embed) {
+      options.embed = {
+        footer: {
+          text: "©️ Simply Develop. npm i simply-djs",
+          iconURL: "https://i.imgur.com/u8VlLom.png",
+        },
+        color: "#075FFF",
+        title: "Create an Ticket",
+        credit: true,
+      };
+    }
 
-		const a = new MessageActionRow().addComponents([ticketbtn]);
+    const a = new ActionRowBuilder().addComponents([ticketbtn]);
 
-		const embed = new MessageEmbed()
-			.setTitle(options.embed?.title || 'Ticket System')
-			.setColor(options.embed?.color || '#075FFF')
-			.setDescription(
-				options.embed?.description ||
-					'🎫 Create an ticket by interacting with the button 🎫'
-			)
-			.setThumbnail(message.guild.iconURL())
-			.setTimestamp()
-			.setFooter(
-				options.embed?.credit
-					? options.embed?.footer
-					: {
-							text: '©️ Simply Develop. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
-					  }
-			);
+    const embed = new EmbedBuilder()
+      .setTitle(options.embed?.title || "Ticket System")
+      .setColor(options.embed?.color || "#075FFF")
+      .setDescription(
+        options.embed?.description ||
+          "🎫 Create an ticket by interacting with the button 🎫"
+      )
+      .setThumbnail(message.guild.iconURL())
+      .setTimestamp()
+      .setFooter(
+        options.embed?.credit
+          ? options.embed?.footer
+          : {
+              text: "©️ Simply Develop. npm i simply-djs",
+              iconURL: "https://i.imgur.com/u8VlLom.png",
+            }
+      );
 
-		if (interaction) {
-			int.followUp('Done. Setting Ticket to that channel');
-			channel.send({ embeds: [embed], components: [a] });
-		} else if (!interaction) {
-			channel.send({ embeds: [embed], components: [a] });
-		}
-	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
-				'ticketSystem'
-			)} | Error: ${err.stack}`
-		);
-	}
+    if (interaction) {
+      int.followUp("Done. Setting Ticket to that channel");
+      channel.send({ embeds: [embed], components: [a] });
+    } else if (!interaction) {
+      channel.send({ embeds: [embed], components: [a] });
+    }
+  } catch (err: any) {
+    console.log(
+      `${chalk.red("Error Occured.")} | ${chalk.magenta(
+        "ticketSystem"
+      )} | Error: ${err.stack}`
+    );
+  }
 }

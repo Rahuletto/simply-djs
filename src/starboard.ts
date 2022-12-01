@@ -2,12 +2,13 @@ import chalk from 'chalk';
 import {
 	Client,
 	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-	MessageEmbedAuthor,
+	ActionRowBuilder,
+	ButtonBuilder,
+	EmbedBuilder,
+	EmbedBuilderAuthor,
 	MessageReaction,
-	TextChannel
+	TextChannel,
+    ButtonStyle
 } from 'discord.js';
 import { SimplyError } from './Error/Error';
 import { ExtendedMessage } from './interfaces';
@@ -17,7 +18,7 @@ import { ExtendedMessage } from './interfaces';
  */
 
 interface StarboardEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedBuilderAuthor;
 	title?: string;
 	description?: string;
 	color?: ColorResolvable;
@@ -147,7 +148,7 @@ export async function starboard(
 
 				if (fetch.embeds.length !== 0) return;
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor(
 						options.embed?.author || {
 							name: fetch.author.tag,
@@ -172,19 +173,19 @@ export async function starboard(
 					? client.emojis.cache.get(options?.emoji) || '⭐'
 					: '⭐';
 
-				const btn = new MessageButton()
+				const btn = new ButtonBuilder()
 					.setLabel((r.count ? r.count : 1).toString())
 					.setEmoji(emo)
 					.setCustomId('starboard')
 					.setDisabled(true)
-					.setStyle('PRIMARY');
+					.setStyle(ButtonStyle.Primary);
 
-				const btn2 = new MessageButton()
+				const btn2 = new ButtonBuilder()
 					.setLabel(`Jump to message`)
-					.setStyle('LINK')
+					.setStyle(ButtonStyle.Link)
 					.setURL(fetch.url);
 
-				const row = new MessageActionRow().addComponents([btn, btn2]);
+				const row = new ActionRowBuilder().addComponents([btn, btn2]);
 
 				const exist = msz.find(
 					(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + fetch.id

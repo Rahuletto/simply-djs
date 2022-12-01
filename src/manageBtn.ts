@@ -215,7 +215,7 @@ export async function manageBtn(
             }
 
             const ch = await interaction.guild.channels.create(name, {
-              type: "GUILD_TEXT",
+              type: ChannelType.GuildText,
               topic: topic,
               parent: chparent,
               permissionOverwrites: [
@@ -347,14 +347,14 @@ export async function manageBtn(
             .setCustomId("delete_ticket");
 
           const open_btn = new ButtonBuilder()
-            .setStyle(options.ticketSys?.buttons?.reopen?.style || "SUCCESS")
+            .setStyle(options.ticketSys?.buttons?.reopen?.style || ButtonStyle.Success)
             .setEmoji(options.ticketSys?.buttons?.reopen?.emoji || "🔓")
             .setLabel(options.ticketSys?.buttons?.delete?.label || "Reopen")
             .setCustomId("open_ticket");
 
           const tr_btn = new ButtonBuilder()
             .setStyle(
-              options.ticketSys?.buttons?.transcript?.style || "PRIMARY"
+              options.ticketSys?.buttons?.transcript?.style || ButtonStyle.Primary
             )
             .setEmoji(options.ticketSys?.buttons?.transcript?.emoji || "📜")
             .setLabel(
@@ -429,7 +429,7 @@ export async function manageBtn(
           const no = new ButtonBuilder()
             .setCustomId("dont_del")
             .setLabel("Cancel")
-            .setStyle("SUCCESS");
+            .setStyle(ButtonStyle.Success);
 
           const row = new ActionRowBuilder().addComponents([yes, no]);
 
@@ -498,7 +498,7 @@ export async function manageBtn(
           interaction.editReply({ content: "Unlocking the channel." });
           (interaction.channel as TextChannel).permissionOverwrites
             .edit(interaction.guild.roles.everyone, {
-              SEND_MESSAGES: true,
+              SendMessages: true,
             })
             .catch((err) => {});
 

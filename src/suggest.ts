@@ -1,13 +1,14 @@
 import {
-	MessageEmbed,
-	MessageEmbedAuthor,
+	EmbedBuilder,
+	EmbedBuilderAuthor,
 	ColorResolvable,
 	TextChannel,
-	MessageEmbedFooter,
-	MessageActionRow,
-	MessageButton,
-	MessageButtonStyle,
+	EmbedBuilderFooter,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	Message,
+	ComponentType
 	User
 } from 'discord.js';
 
@@ -22,9 +23,9 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
  */
 
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedBuilderAuthor;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedBuilderFooter;
 	description?: string;
 	color?: ColorResolvable;
 
@@ -36,7 +37,7 @@ interface CustomizableEmbed {
  */
 
 interface btnTemplate {
-	style?: MessageButtonStyle;
+	style?: ButtonStyle;
 	emoji?: string;
 }
 
@@ -139,19 +140,19 @@ export async function suggestSystem(
 				tip: 'Check the permissions (or) Try using another Channel ID'
 			});
 
-		const surebtn = new MessageButton()
-			.setStyle('SUCCESS')
+		const surebtn = new ButtonBuilder()
+			.setStyle(ButtonStyle.Success)
 			.setLabel('Yes')
 			.setCustomId('send-sug');
 
-		const nobtn = new MessageButton()
-			.setStyle('DANGER')
+		const nobtn = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('No')
 			.setCustomId('nope-sug');
 
-		const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+		const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
 
-		const embedo = new MessageEmbed()
+		const embedo = new EmbedBuilder()
 			.setTitle('Are you sure ?')
 			.setDescription(`Is this your suggestion ? \`${suggestion}\``)
 			.setTimestamp()
@@ -186,7 +187,7 @@ export async function suggestSystem(
 		const collect = (m as Message).createMessageComponentCollector({
 			filter,
 			max: 1,
-			componentType: 'BUTTON',
+			componentType: ComponentType.Button,
 			time: 1000 * 15
 		});
 
@@ -195,7 +196,7 @@ export async function suggestSystem(
 				await b.reply({ content: 'Ok Suggested.', ephemeral: true });
 				await (b.message as Message).delete();
 
-				const emb = new MessageEmbed()
+				const emb = new EmbedBuilder()
 					.setDescription(suggestion)
 					.setAuthor({
 						name: (message.member.user as User).tag,
@@ -223,19 +224,19 @@ export async function suggestSystem(
 						}
 					);
 
-				const approve = new MessageButton()
+				const approve = new ButtonBuilder()
 					.setEmoji(options.buttons.upvote.emoji)
 					.setLabel('0')
 					.setStyle(options.buttons.upvote.style)
 					.setCustomId('agree-sug');
 
-				const no = new MessageButton()
+				const no = new ButtonBuilder()
 					.setEmoji(options.buttons.downvote.emoji)
 					.setLabel('0')
 					.setStyle(options.buttons.downvote.style)
 					.setCustomId('no-sug');
 
-				const row = new MessageActionRow().addComponents([approve, no]);
+				const row = new ActionRowBuilder().addComponents([approve, no]);
 
 				await (ch as TextChannel)
 					.send({ embeds: [emb], components: [row] })

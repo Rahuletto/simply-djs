@@ -35,24 +35,24 @@
 + automeme
 + betterBtnRole
 + btnRole
-! bumpSystem
++ bumpSystem
 + calculator
-! chatbot
++ chatbot
 + connect
-! embedCreate
++ embedCreate
 + embedPages
 + ghostPing
 + giveaway
-! manageBtn
-! manageSug
-! menuPages
-! nqn
-! rps
-! starboard
-! stealEmoji
-! suggest
-! ticketSystem
-! tictactoe
++ manageBtn
++ manageSug
++ menuPages
++ nqn
++ rps
++ starboard
++ stealEmoji
++ suggest
++ ticketSystem
++ tictactoe
 ```
 
 <br>

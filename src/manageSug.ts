@@ -1,11 +1,13 @@
 import {
 	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
+	ActionRowBuilder,
+	ButtonBuilder,
 	ButtonInteraction,
 	Permissions,
 	Message,
-	MessageEmbed,
+	EmbedBuilder,
+    ButtonStyle,
+    ComponentType,
 	User
 } from 'discord.js';
 
@@ -81,20 +83,20 @@ export async function manageSug(
 
 				if (
 					(button.member.permissions as Permissions).has(
-						Permissions.FLAGS.ADMINISTRATOR
+						"Administrator"
 					)
 				) {
-					const surebtn = new MessageButton()
-						.setStyle('DANGER')
+					const surebtn = new ButtonBuilder()
+						.setStyle(ButtonStyle.Danger)
 						.setLabel('Downvote Suggestion')
 						.setCustomId('no-vote');
 
-					const nobtn = new MessageButton()
-						.setStyle('PRIMARY')
+					const nobtn = new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
 						.setLabel('Deny Suggestion')
 						.setCustomId('deny-sug');
 
-					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+					const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
 
 					const msg: Message | APIMessage = await button.reply({
 						content: 'Do you want to Deny suggestion (or) Vote ?',
@@ -106,7 +108,7 @@ export async function manageSug(
 					const ftter = (m: any) => button.user.id === m.user.id;
 					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
-						componentType: 'BUTTON',
+						componentType: ComponentType.Button,
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
@@ -166,7 +168,7 @@ export async function manageSug(
 						} else if (btn.customId === 'deny-sug') {
 							if (
 								!(button.member.permissions as Permissions).has(
-									Permissions.FLAGS.ADMINISTRATOR
+						"Administrator"
 								)
 							)
 								return;
@@ -205,7 +207,7 @@ export async function manageSug(
 					});
 				} else if (
 					!(button.member.permissions as Permissions).has(
-						Permissions.FLAGS.ADMINISTRATOR
+						Admininstrator
 					)
 				) {
 					const vt = data.votes.find(
@@ -298,20 +300,20 @@ export async function manageSug(
 
 				if (
 					(button.member.permissions as Permissions).has(
-						Permissions.FLAGS.ADMINISTRATOR
+					Administrator
 					)
 				) {
-					const surebtn = new MessageButton()
-						.setStyle('SUCCESS')
+					const surebtn = new ButtonBuilder()
+						.setStyle(ButtonStyle.Success)
 						.setLabel('Upvote Suggestion')
 						.setCustomId('yes-vote');
 
-					const nobtn = new MessageButton()
-						.setStyle('PRIMARY')
+					const nobtn = new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
 						.setLabel('Accept Suggestion')
 						.setCustomId('accept-sug');
 
-					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
+					const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
 
 					const msg = await button.reply({
 						content: 'Do you want to Accept suggestion (or) Vote ?',
@@ -323,7 +325,7 @@ export async function manageSug(
 					const ftter = (m: any) => button.user.id === m.user.id;
 					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
-						componentType: 'BUTTON',
+						componentType: ComponentType.Button,
 						time: 30000
 					});
 					coll.on('collect', async (btn) => {
@@ -382,7 +384,7 @@ export async function manageSug(
 						} else if (btn.customId === 'accept-sug') {
 							if (
 								!(button.member.permissions as Permissions).has(
-									Permissions.FLAGS.ADMINISTRATOR
+								Administrator 
 								)
 							)
 								return;
@@ -420,7 +422,7 @@ export async function manageSug(
 					});
 				} else if (
 					!(button.member.permissions as Permissions).has(
-						Permissions.FLAGS.ADMINISTRATOR
+					Administrator 
 					)
 				) {
 					const vt = data.votes.find(
@@ -478,7 +480,7 @@ export async function manageSug(
 			}
 
 			async function calc(
-				oldemb: MessageEmbed | APIEmbed,
+				oldemb: EmbedBuilder | APIEmbed,
 				msg: Message | APIMessage
 			) {
 				const data = await db.findOne({
@@ -548,11 +550,11 @@ export async function manageSug(
 
 			async function dec(
 				reason: string,
-				oldemb: MessageEmbed | APIEmbed,
+				oldemb: EmbedBuilder | APIEmbed,
 				msg: Message | APIMessage,
 				user: User
 			) {
-				oldemb = oldemb as MessageEmbed;
+				oldemb = oldemb as EmbedBuilder;
 
 				oldemb.fields[0].value = `Declined\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.deny?.color || 'RED');
@@ -569,11 +571,11 @@ export async function manageSug(
 
 			async function aprov(
 				reason: string,
-				oldemb: MessageEmbed | APIEmbed,
+				oldemb: EmbedBuilder | APIEmbed,
 				msg: Message | APIMessage,
 				user: User
 			) {
-				oldemb = oldemb as MessageEmbed;
+				oldemb = oldemb as EmbedBuilder;
 
 				oldemb.fields[0].value = `Accepted\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.accept?.color || 'GREEN');

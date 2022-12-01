@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageActionRow, MessageSelectMenu } from 'discord.js';
+import { EmbedBuilder, ActionRowBuilder, SelectMenuBuilder } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
@@ -26,14 +26,14 @@ interface deleteOpt {
 interface dataObj {
 	label?: string;
 	description?: string;
-	embed?: MessageEmbed;
+	embed?: EmbedBuilder;
 	emoji?: string;
 }
 
 export type menuEmbOptions = {
 	type?: 1 | 2;
-	rows?: MessageActionRow[];
-	embed?: MessageEmbed;
+	rows?: ActionRowBuilder[];
+	embed?: EmbedBuilder;
 
 	delete?: deleteOpt;
 
@@ -108,13 +108,13 @@ export async function menuPages(
 			menuOptions.push(delopt);
 		}
 
-		const slct = new MessageSelectMenu()
+		const slct = new SelectMenuBuilder()
 			.setMaxValues(1)
 			.setCustomId('menuPages')
 			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
 			.addOptions(menuOptions);
 
-		const row = new MessageActionRow().addComponents(slct);
+		const row = new ActionRowBuilder().addComponents(slct);
 
 		const rows = [];
 

@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import {
-	MessageEmbedAuthor,
+	EmbedBuilderAuthor,
 	ColorResolvable,
-	MessageEmbedFooter,
-	MessageEmbed,
+	EmbedBuilderFooter,
+	EmbedBuilder,
 	Permissions
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
@@ -12,9 +12,9 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
  */
 interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
+	author?: EmbedBuilderAuthor;
 	title?: string;
-	footer?: MessageEmbedFooter;
+	footer?: EmbedBuilderFooter;
 	description?: string;
 	color?: ColorResolvable;
 
@@ -50,7 +50,7 @@ export async function stealEmoji(
 
 			if (
 				!(interaction.member.permissions as Permissions).has(
-					Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS
+				"ManageEmojisAndStickers"
 				)
 			)
 				return interaction.followUp({
@@ -60,7 +60,7 @@ export async function stealEmoji(
 		} else {
 			if (
 				!message.member.permissions.has(
-					Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS
+					"ManageEmojisAndStickers"
 				)
 			)
 				return message.channel.send({
@@ -119,7 +119,7 @@ export async function stealEmoji(
 			n = options?.name || args[2] || 'emojiURL';
 			em = options?.emoji || attachment?.url || args[1];
 
-			console.log(em, n);
+			//console.log(em, n);
 
 			if (!em || em == undefined) {
 				ms.reply({
@@ -162,7 +162,7 @@ export async function stealEmoji(
 						reason: 'Stole an emoji using a bot.'
 					})
 					.then(async (emoji) => {
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setTitle(
 								options.embed?.title
 									.replaceAll('{name}', emoji.name)
@@ -222,7 +222,7 @@ export async function stealEmoji(
 						reason: 'Stole an emoji using a bot.'
 					})
 					.then(async (emoji) => {
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setTitle(
 								options.embed?.title
 									.replaceAll('{name}', emoji.name)
