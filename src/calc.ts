@@ -110,9 +110,9 @@ export async function calculator(
 		}
 
 		options.buttons = {
-			numbers: options.buttons?.numbers || 'SECONDARY',
-			symbols: options.buttons?.symbols || 'PRIMARY',
-			delete: options.buttons?.delete || 'DANGER'
+			numbers: options.buttons?.numbers || convoStyle('SECONDARY'),
+			symbols: options.buttons?.symbols || convoStyle('PRIMARY'),
+			delete: options.buttons?.delete || convoStyle('DANGER')
 		};
 
 		let message;

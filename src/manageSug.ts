@@ -207,7 +207,7 @@ export async function manageSug(
 					});
 				} else if (
 					!(button.member.permissions as Permissions).has(
-						Admininstrator
+						"Admininstrator"
 					)
 				) {
 					const vt = data.votes.find(
@@ -300,7 +300,7 @@ export async function manageSug(
 
 				if (
 					(button.member.permissions as Permissions).has(
-					Administrator
+					"Administrator"
 					)
 				) {
 					const surebtn = new ButtonBuilder()
@@ -422,7 +422,7 @@ export async function manageSug(
 					});
 				} else if (
 					!(button.member.permissions as Permissions).has(
-					Administrator 
+					"Administrator"
 					)
 				) {
 					const vt = data.votes.find(

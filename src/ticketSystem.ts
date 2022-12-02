@@ -13,6 +13,7 @@ import {
 import { ExtendedInteraction, ExtendedMessage } from "./interfaces";
 
 import { SimplyError } from "./Error/Error";
+import { convStyle } from './Others/convStyle';
 import chalk from "chalk";
 
 // ------------------------------
@@ -110,7 +111,7 @@ export async function ticketSystem(
     }
 
     const ticketbtn = new ButtonBuilder()
-      .setStyle(options?.button?.style || ButtonStyle.Primary)
+      .setStyle(convoStyle(options?.button?.style) || ButtonStyle.Primary)
       .setEmoji(options?.button?.emoji || "🎫")
       .setLabel(options?.button?.label || "Open a Ticket")
       .setCustomId("create_ticket");

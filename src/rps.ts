@@ -77,7 +77,7 @@ export async function rps(
   return new Promise(async (resolve) => {
     const accept = new ButtonBuilder()
       .setLabel("Accept")
-      .setStyle(ButtomStyle.Success)
+      .setStyle(ButtonStyle.Success)
       .setCustomId("accept");
 
     const decline = new ButtonBuilder()

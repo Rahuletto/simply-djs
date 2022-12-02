@@ -148,17 +148,17 @@ export async function giveawaySystem(
 
 			options.buttons = {
 				enter: {
-					style: options.buttons?.enter?.style || 'SUCCESS',
+					style: options.buttons?.enter?.style || ButtonStyle.Success,
 					label: options.buttons?.enter?.label || '0',
 					emoji: options.buttons?.enter?.emoji || '🎁'
 				},
 				end: {
-					style: options.buttons?.end?.style || 'DANGER',
+					style: options.buttons?.end?.style || ButtonStyle.Danger,
 					label: options.buttons?.end?.label || 'End',
 					emoji: options.buttons?.end?.emoji || '⛔'
 				},
 				reroll: {
-					style: options.buttons?.end?.style || 'PRIMARY',
+					style: options.buttons?.end?.style || ButtonStyle.Primary,
 					label: options.buttons?.end?.label || 'Reroll',
 					emoji: options.buttons?.end?.emoji || '🔁'
 				}
