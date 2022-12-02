@@ -275,7 +275,7 @@ export async function giveawaySystem(
 					.setLabel(options.buttons.reroll.label || 'Reroll');
 			}
 
-			const row = new ActionRowBuilder().addComponents([enter, reroll, end]);
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([enter, reroll, end]);
 
 			time = ms(time);
 

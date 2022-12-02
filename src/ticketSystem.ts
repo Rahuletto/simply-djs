@@ -127,7 +127,7 @@ export async function ticketSystem(
       };
     }
 
-    const a = new ActionRowBuilder().addComponents([ticketbtn]);
+    const a = new ActionRowBuilder<ButtonBuilder>().addComponents([ticketbtn]);
 
     const embed = new EmbedBuilder()
       .setTitle(options.embed?.title || "Ticket System")

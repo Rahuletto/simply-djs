@@ -312,7 +312,7 @@ export async function manageBtn(
               .setLabel(options.ticketSys?.buttons?.close?.label || "Close")
               .setCustomId("close_ticket");
 
-            const closerow = new ActionRowBuilder().addComponents([close]);
+            const closerow = new ActionRowBuilder<ButtonBuilder>().addComponents([close]);
 
             ch.send({
               content: `Here is your ticket ${member.user.toString()}. | ${rlz.join(
@@ -431,7 +431,7 @@ export async function manageBtn(
             .setLabel("Cancel")
             .setStyle(ButtonStyle.Success);
 
-          const row = new ActionRowBuilder().addComponents([yes, no]);
+          const row = new ActionRowBuilder<ButtonBuilder>().addComponents([yes, no]);
 
           interaction.editReply({
             content: "Are you sure ?? This process is not reversible !",
@@ -511,7 +511,7 @@ export async function manageBtn(
             .setCustomId("close_ticket");
 
           const closerow: ActionRowBuilder =
-            new ActionRowBuilder().addComponents([close]);
+            new ActionRowBuilder<ButtonBuilder>().addComponents([close]);
 
           (interaction.message as Message).edit({ components: [closerow] });
         }
@@ -663,7 +663,7 @@ export async function manageBtn(
                     .setStyle(ButtonStyle.Link)
                     .setURL(msg.url);
 
-                  const entrow = new ActionRowBuilder().addComponents([gothe]);
+                  const entrow = new ActionRowBuilder<ButtonBuilder>().addComponents([gothe]);
 
                   return user
                     .send({ embeds: [embod], components: [entrow] })

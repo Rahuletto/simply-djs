@@ -8,7 +8,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	Message,
-	ComponentType
+	ComponentType,
 	User
 } from 'discord.js';
 
@@ -123,11 +123,11 @@ export async function suggestSystem(
 
 		options.buttons = {
 			upvote: {
-				style: options.buttons?.upvote?.style || 'PRIMARY',
+				style: options.buttons?.upvote?.style || ButtonStyle.Primary,
 				emoji: options.buttons?.upvote?.emoji || '☑️'
 			},
 			downvote: {
-				style: options.buttons?.downvote?.style || 'DANGER',
+				style: options.buttons?.downvote?.style || ButtonStyle.Danger,
 				emoji: options.buttons?.downvote?.emoji || '🇽'
 			}
 		};
@@ -150,7 +150,7 @@ export async function suggestSystem(
 			.setLabel('No')
 			.setCustomId('nope-sug');
 
-		const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
+		const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents([surebtn, nobtn]);
 
 		const embedo = new EmbedBuilder()
 			.setTitle('Are you sure ?')
@@ -236,7 +236,7 @@ export async function suggestSystem(
 					.setStyle(options.buttons.downvote.style)
 					.setCustomId('no-sug');
 
-				const row = new ActionRowBuilder().addComponents([approve, no]);
+				const row = new ActionRowBuilder<ButtonBuilder>().addComponents([approve, no]);
 
 				await (ch as TextChannel)
 					.send({ embeds: [emb], components: [row] })

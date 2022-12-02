@@ -155,7 +155,7 @@ export async function tictactoe(
         .setStyle(ButtonStyle.Danger)
         .setCustomId("deny-ttt");
 
-      const accep = new ActionRowBuilder().addComponents([accept, decline]);
+      const accep = new ActionRowBuilder<ButtonBuilder>().addComponents([accept, decline]);
 
       let m: Message | APIMessage;
 
@@ -350,9 +350,9 @@ export async function tictactoe(
               .setEmoji(Plrs.c3.emoji)
               .setCustomId("c3")
               .setDisabled(Plrs.c3.disabled);
-            const a = new ActionRowBuilder().addComponents([a1, a2, a3]);
-            const b = new ActionRowBuilder().addComponents([b1, b2, b3]);
-            const c = new ActionRowBuilder().addComponents([c1, c2, c3]);
+            const a = new ActionRowBuilder<ButtonBuilder>().addComponents([a1, a2, a3]);
+            const b = new ActionRowBuilder<ButtonBuilder>().addComponents([b1, b2, b3]);
+            const c = new ActionRowBuilder<ButtonBuilder>().addComponents([c1, c2, c3]);
             const buttons = [a, b, c];
 
             if (

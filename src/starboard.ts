@@ -185,7 +185,7 @@ export async function starboard(
 					.setStyle(ButtonStyle.Link)
 					.setURL(fetch.url);
 
-				const row = new ActionRowBuilder().addComponents([btn, btn2]);
+				const row = new ActionRowBuilder<ButtonBuilder>().addComponents([btn, btn2]);
 
 				const exist = msz.find(
 					(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + fetch.id

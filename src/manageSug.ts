@@ -96,7 +96,7 @@ export async function manageSug(
 						.setLabel('Deny Suggestion')
 						.setCustomId('deny-sug');
 
-					const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
+					const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents([surebtn, nobtn]);
 
 					const msg: Message | APIMessage = await button.reply({
 						content: 'Do you want to Deny suggestion (or) Vote ?',
@@ -313,7 +313,7 @@ export async function manageSug(
 						.setLabel('Accept Suggestion')
 						.setCustomId('accept-sug');
 
-					const row1 = new ActionRowBuilder().addComponents([surebtn, nobtn]);
+					const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents([surebtn, nobtn]);
 
 					const msg = await button.reply({
 						content: 'Do you want to Accept suggestion (or) Vote ?',
@@ -532,10 +532,10 @@ export async function manageSug(
 					dPercent = 0;
 				}
 
-				(msg.components[0].components[0] as MessageButton).label =
+				(msg.components[0].components[0] as ButtonBuilder).label =
 					lik.toString();
 
-				(msg.components[0].components[1] as MessageButton).label =
+				(msg.components[0].components[1] as ButtonBuilder).label =
 					dislik.toString();
 
 				oldemb.fields[1].value = `${st} [${uPercent || 0}% - ${
@@ -544,7 +544,7 @@ export async function manageSug(
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as MessageActionRow[]
+					components: msg.components as ActionRowBuilder[]
 				});
 			}
 
@@ -565,7 +565,7 @@ export async function manageSug(
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as MessageActionRow[]
+					components: msg.components as ActionRowBuilder[]
 				});
 			}
 
@@ -586,7 +586,7 @@ export async function manageSug(
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as MessageActionRow[]
+					components: msg.components as ActionRowBuilder[]
 				});
 			}
 		} catch (err: any) {

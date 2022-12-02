@@ -1,4 +1,4 @@
-import { EmbedBuilder, ActionRowBuilder, SelectMenuBuilder } from 'discord.js';
+import { EmbedBuilder, ActionRowBuilder, SelectMenuBuilder, ComponentType } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import chalk from 'chalk';
@@ -114,7 +114,7 @@ export async function menuPages(
 			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
 			.addOptions(menuOptions);
 
-		const row = new ActionRowBuilder().addComponents(slct);
+		const row = new ActionRowBuilder<SelectMenuBuilder>().addComponents(slct);
 
 		const rows = [];
 
@@ -147,7 +147,7 @@ export async function menuPages(
 		}
 
 		const collector = (m as ExtendedMessage).createMessageComponentCollector({
-			componentType: 'SELECT_MENU',
+			componentType: ComponentType.SelectMenu,
 			idle: 600000
 		});
 		collector.on('collect', async (menu: any) => {

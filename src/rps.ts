@@ -7,7 +7,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  ComponentType
+  ComponentType,
   HexColorString,
   User,
 } from "discord.js";
@@ -77,32 +77,32 @@ export async function rps(
   return new Promise(async (resolve) => {
     const accept = new ButtonBuilder()
       .setLabel("Accept")
-      .setStyle(ButtStyle.Success)
+      .setStyle(ButtomStyle.Success)
       .setCustomId("accept");
 
     const decline = new ButtonBuilder()
       .setLabel("Deny")
-      .setStyle(ButtStyle.Danger)
+      .setStyle(ButtonStyle.Danger)
       .setCustomId("decline");
 
-    const acceptComponents = new ActionRowBuilder().addComponents([
+    const acceptComponents = new ActionRowBuilder<ButtonBuilder>().addComponents([
       accept,
       decline,
     ]);
 
     options.buttons = {
       rock: {
-        style: options.buttons?.rock?.style || ButtStyle.Primary,
+        style: options.buttons?.rock?.style || ButtonStyle.Primary,
         label: options.buttons?.rock?.label || "Rock",
         emoji: options.buttons?.rock?.emoji || "🪨",
       },
       paper: {
-        style: options.buttons?.paper?.style || ButtStyle.Success,
+        style: options.buttons?.paper?.style || ButtonStyle.Success,
         label: options.buttons?.paper?.label || "Paper",
         emoji: options.buttons?.paper?.emoji || "📄",
       },
       scissor: {
-        style: options.buttons?.paper?.style || ButtStyle.Danger,
+        style: options.buttons?.paper?.style || ButtonStyle.Danger,
         label: options.buttons?.paper?.label || "Scissor",
         emoji: options.buttons?.paper?.emoji || "✂️",
       },
@@ -138,7 +138,7 @@ export async function rps(
       .setStyle(options.buttons?.scissor?.style)
       .setEmoji(options.buttons?.scissor?.emoji);
 
-    const rpsComponents = new ActionRowBuilder().addComponents([
+    const rpsComponents = new ActionRowBuilder<ButtonBuilder>().addComponents([
       rock,
       paper,
       scissors,
