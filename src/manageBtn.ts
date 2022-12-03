@@ -15,6 +15,7 @@ import {
   Role,
   EmbedFieldData,
   GuildMemberManager,
+  colorResolvable 
 } from "discord.js";
 import chalk from "chalk";
 import gsys from "./model/gSys";
@@ -698,7 +699,7 @@ export async function manageBtn(
                   .setTitle("No one entered")
 
                   .setFields(f)
-                  .setColor("RED")
+                  .setColor(colorResolvable("RED"))
                   .setFooter(ftr);
 
                 allComp.components[0].disabled = true;

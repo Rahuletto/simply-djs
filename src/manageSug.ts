@@ -8,7 +8,8 @@ import {
 	EmbedBuilder,
     ButtonStyle,
     ComponentType,
-	User
+	User,
+    colorResolvable
 } from 'discord.js';
 
 import db from './model/suggestion';
@@ -41,7 +42,7 @@ export async function manageSug(
 	if (button.isButton()) {
 		try {
 			options.deny = {
-				color: options?.deny?.color || 'RED'
+				color: options?.deny?.color || colorResolvable('RED')
 			};
 
 			options.accept = {
@@ -557,7 +558,7 @@ export async function manageSug(
 				oldemb = oldemb as EmbedBuilder;
 
 				oldemb.fields[0].value = `Declined\n\n**Reason:** \`${reason}\``;
-				oldemb.setColor(options?.deny?.color || 'RED');
+				oldemb.setColor(options?.deny?.color || colorResolvable('RED'));
 				oldemb.setFooter({ text: `Declined by ${user.tag}` });
 
 				msg.components[0].components[0].disabled = true;

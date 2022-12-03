@@ -10,6 +10,7 @@ import {
   ComponentType,
   HexColorString,
   User,
+  colorResolvable 
 } from "discord.js";
 import { ExtendedInteraction, ExtendedMessage } from "./interfaces";
 
@@ -147,7 +148,7 @@ export async function rps(
     //Embeds
     const timeoutEmbed = new EmbedBuilder()
       .setTitle("Game Timed Out!")
-      .setColor(`RED`)
+      .setColor(colorResolvable(`RED`))
       .setDescription("The opponent didnt respond in time (30s)")
       .setFooter(
         options.embed?.credit
@@ -491,7 +492,7 @@ export async function rps(
             content: "** **",
             embeds: [
               new EmbedBuilder()
-                .setColor(`RED`)
+                .setColor(colorResolvable(`RED`))
                 .setFooter(
                   options.embed?.credit
                     ? options.embed?.footer
