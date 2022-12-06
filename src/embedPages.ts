@@ -109,28 +109,28 @@ export async function embedPages(
 
 		options.buttons = {
 			firstBtn: {
-				style: options.buttons?.firstBtn?.style || 'PRIMARY',
+				style: convStyle(options.buttons?.firstBtn?.style || 'PRIMARY'),
 				emoji: options.buttons?.firstBtn?.emoji || '⏪',
 				label: options.buttons?.firstBtn?.label || 'First'
 			},
 			nextBtn: {
-				style: options.buttons?.nextBtn?.style || 'SUCCESS',
+				style: convStyle(options.buttons?.nextBtn?.style || 'SUCCESS'),
 				emoji: options.buttons?.nextBtn?.emoji || '▶️',
 				label: options.buttons?.nextBtn?.label || 'Next'
 			},
 			backBtn: {
-				style: options.buttons?.backBtn?.style || 'SUCCESS',
+				style: convStyle(options.buttons?.backBtn?.style || 'SUCCESS'),
 				emoji: options.buttons?.backBtn?.emoji || '◀️',
 				label: options.buttons?.backBtn?.label || 'Back'
 			},
 			lastBtn: {
-				style: options.buttons?.lastBtn?.style || 'PRIMARY',
+				style: convoStyle(options.buttons?.lastBtn?.style || 'PRIMARY'),
 				emoji: options.buttons?.lastBtn?.emoji || '⏩',
 				label: options.buttons?.lastBtn?.label || 'Last'
 			},
 
 			deleteBtn: {
-				style: options.buttons?.deleteBtn?.style || 'DANGER',
+				style: convStyle(options.buttons?.deleteBtn?.style || 'DANGER'),
 				emoji: options.buttons?.deleteBtn?.emoji || '🗑',
 				label: options.buttons?.deleteBtn?.label || 'Delete'
 			}

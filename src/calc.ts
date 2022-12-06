@@ -63,7 +63,7 @@ export type calcOptions = {
 export async function calculator(
 	interaction: ExtendedMessage | ExtendedInteraction,
 	options: calcOptions = {
-		buttons: { numbers: 'SECONDARY', symbols: 'PRIMARY', delete: 'DANGER' }
+		buttons: { numbers: ButtonStyle.Success, symbols: ButtonStyle.Primary, delete: ButtonStyle.Danger }
 	}
 ): Promise<void> {
 	try {

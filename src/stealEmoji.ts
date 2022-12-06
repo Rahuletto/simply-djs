@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import {
-	EmbedBuilderAuthor,
+	EmbedAuthorData,
 	ColorResolvable,
-	EmbedBuilderFooter,
+	EmbedFooterData,
 	EmbedBuilder,
 	Permissions
 } from 'discord.js';
@@ -12,9 +12,9 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
  */
 interface CustomizableEmbed {
-	author?: EmbedBuilderAuthor;
+	author?: EmbedAuthorData;
 	title?: string;
-	footer?: EmbedBuilderFooter;
+	footer?: EmbedFooterData;
 	description?: string;
 	color?: ColorResolvable;
 

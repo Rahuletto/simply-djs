@@ -4,8 +4,8 @@ import {
   ButtonBuilder,
   ActionRowBuilder,
   ColorResolvable,
-  EmbedBuilderAuthor,
-  EmbedBuilderFooter,
+  EmbedAuthorData,
+  EmbedFooterData,
   ButtonStyle,
   TextChannel,
   Permissions,
@@ -25,9 +25,9 @@ import chalk from "chalk";
  */
 
 interface CustomizableEmbed {
-  author?: EmbedBuilderAuthor;
+  author?: EmbedAuthorData;
   title?: string;
-  footer?: EmbedBuilderFooter;
+  footer?: EmbedFooterData;
   description?: string;
   color?: ColorResolvable;
 
@@ -111,7 +111,7 @@ export async function ticketSystem(
     }
 
     const ticketbtn = new ButtonBuilder()
-      .setStyle(convoStyle(options?.button?.style) || ButtonStyle.Primary)
+      .setStyle(convStyle(options?.button?.style) || ButtonStyle.Primary)
       .setEmoji(options?.button?.emoji || "🎫")
       .setLabel(options?.button?.label || "Open a Ticket")
       .setCustomId("create_ticket");

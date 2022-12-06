@@ -1,8 +1,8 @@
 import {
   EmbedBuilder,
   Message,
-  EmbedBuilderFooter,
-  EmbedBuilderAuthor,
+  EmbedFooterData,
+  EmbedAuthorData,
   ColorResolvable,
   ActionRowBuilder,
   ButtonBuilder,
@@ -24,9 +24,9 @@ import { APIMessage } from "discord-api-types/v10";
  * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
  */
 interface CustomizableEmbed {
-  author?: EmbedBuilderAuthor;
+  author?: EmbedAuthorData;
   title?: string;
-  footer?: EmbedBuilderFooter;
+  footer?: EmbedFooterData;
   description?: string;
   color?: ColorResolvable;
 

@@ -385,7 +385,7 @@ export async function manageSug(
 						} else if (btn.customId === 'accept-sug') {
 							if (
 								!(button.member.permissions as Permissions).has(
-								Administrator 
+								'Administrator'
 								)
 							)
 								return;

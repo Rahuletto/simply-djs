@@ -1,8 +1,8 @@
 import {
   EmbedBuilder,
   Message,
-  EmbedBuilderFooter,
-  EmbedBuilderAuthor,
+  EmbedFooterData,
+  EmbedAuthorData,
   colorResolvable,
   ActionRowBuilder,
   ButtonBuilder,
@@ -15,7 +15,7 @@ import {
   Role,
   EmbedFieldData,
   GuildMemberManager,
-  colorResolvable 
+  ChannelType
 } from "discord.js";
 import chalk from "chalk";
 import gsys from "./model/gSys";
@@ -50,9 +50,9 @@ interface ticketBtn {
  */
 
 interface CustomizableEmbed {
-  author?: EmbedBuilderAuthor;
+  author?: EmbedAuthorData;
   title?: string;
-  footer?: EmbedBuilderFooter;
+  footer?: EmbedFooterData;
   description?: string;
   color?: colorResolvable;
 
@@ -335,7 +335,7 @@ export async function manageBtn(
           interaction.editReply({ content: "Locking the channel." });
           (interaction.channel as TextChannel).permissionOverwrites
             .edit(interaction.guild.roles.everyone, {
-              SEND_MESSAGES: false,
+              SendMessages: false,
             })
             .catch((err) => {});
 

@@ -1,9 +1,9 @@
 import {
 	EmbedBuilder,
-	EmbedBuilderAuthor,
+	EmbedAuthorData,
 	ColorResolvable,
 	TextChannel,
-	EmbedBuilderFooter,
+	EmbedFooterData,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
@@ -23,9 +23,9 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
  */
 
 interface CustomizableEmbed {
-	author?: EmbedBuilderAuthor;
+	author?: EmbedAuthorData;
 	title?: string;
-	footer?: EmbedBuilderFooter;
+	footer?: EmbedFooterData;
 	description?: string;
 	color?: ColorResolvable;
 

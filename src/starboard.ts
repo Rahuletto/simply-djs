@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 import {
 	Client,
-	ColorResolvable,
+	colorResolvable,
 	ActionRowBuilder,
 	ButtonBuilder,
 	EmbedBuilder,
-	EmbedBuilderAuthor,
+	EmbedAuthorData,
 	MessageReaction,
 	TextChannel,
     ButtonStyle
@@ -18,10 +18,10 @@ import { ExtendedMessage } from './interfaces';
  */
 
 interface StarboardEmbed {
-	author?: EmbedBuilderAuthor;
+	author?: EmbedAuthorData;
 	title?: string;
 	description?: string;
-	color?: ColorResolvable;
+	color?: colorResolvable;
 }
 
 export type starboardOption = {
