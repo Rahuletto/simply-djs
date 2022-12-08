@@ -7,8 +7,7 @@
 	"scripts": {
 		"test": "node test",
 		"git": "sh ./gitpush.sh",
-		"dev": "npm publish --tag dev",
-		"prepare": "husky install"
+		"dev": "npm publish --tag dev"
 	},
 	"keywords": [
 		"discord",
