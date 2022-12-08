@@ -124,7 +124,7 @@ export async function embedPages(
 				label: options.buttons?.backBtn?.label || 'Back'
 			},
 			lastBtn: {
-				style: convoStyle(options.buttons?.lastBtn?.style || 'PRIMARY'),
+				style: convotyle(options.buttons?.lastBtn?.style || 'PRIMARY'),
 				emoji: options.buttons?.lastBtn?.emoji || '⏩',
 				label: options.buttons?.lastBtn?.label || 'Last'
 			},

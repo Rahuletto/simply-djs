@@ -533,10 +533,10 @@ export async function manageSug(
 					dPercent = 0;
 				}
 
-				(msg.components[0].components[0] as ButtonBuilder).label =
+ButtonBuilder.from(msg.components[0].components[0]).setLabel =
 					lik.toString();
 
-				(msg.components[0].components[1] as ButtonBuilder).label =
+ButtonBuilder.from(msg.components[0].components[1]).setLabel =
 					dislik.toString();
 
 				oldemb.fields[1].value = `${st} [${uPercent || 0}% - ${

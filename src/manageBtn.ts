@@ -590,9 +590,8 @@ export async function manageBtn(
 
             const eem = interaction.message.embeds[0];
 
-            (
-              interaction.message.components[0].components[0] as ButtonBuilder
-            ).label = data.entered.toString();
+    ButtonBuilder.from(
+              interaction.message.components[0].components[0]).setLabel = data.entered.toString();
 
             const mes = interaction.message as Message;
             mes.edit({
@@ -702,9 +701,9 @@ export async function manageBtn(
                   .setColor(colorResolvable("RED"))
                   .setFooter(ftr);
 
-                allComp.components[0].disabled = true;
-                allComp.components[1].disabled = true;
-                allComp.components[2].disabled = true;
+ButtonBuilder.from(allComp.components[0]).setDisabled = true;
+ButtonBuilder.from(allComp.components[1]).setDisabled = true;
+ButtonBuilder.from(allComp.components[2]).setDisabled = true;
 
                 return await msg.edit({
                   embeds: [embed], //@ts-ignore
@@ -714,9 +713,9 @@ export async function manageBtn(
 
               const resWin: GuildMember[] = [];
 
-              allComp.components[0].disabled = true;
-              allComp.components[1].disabled = false;
-              allComp.components[2].disabled = true;
+ButtonBuilder.from(allComp.components[0]).setDisabled = true;
+ButtonBuilder.from(allComp.components[1]).setDisabled = false;
+ButtonBuilder.from(allComp.components[2]).setDisabled = true;
 
               (embed as EmbedBuilder)
                 .setTitle("We got the winner !")
