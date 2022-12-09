@@ -538,7 +538,7 @@ ButtonBuilder.from(msg.components[0].components[0]).setLabel =
 
 ButtonBuilder.from(msg.components[0].components[1]).setLabel =
 					dislik.toString();
-
+oldemb = ButtonBuilder.from(oldemb)
 				oldemb.fields[1].value = `${st} [${uPercent || 0}% - ${
 					dPercent || 0
 				}%]`;
@@ -555,14 +555,14 @@ ButtonBuilder.from(msg.components[0].components[1]).setLabel =
 				msg: Message | APIMessage,
 				user: User
 			) {
-				oldemb = oldemb as EmbedBuilder;
+				oldemb = EmbedBuilder.from(oldemb);
 
 				oldemb.fields[0].value = `Declined\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.deny?.color || colorResolvable('RED'));
 				oldemb.setFooter({ text: `Declined by ${user.tag}` });
 
-				msg.components[0].components[0].disabled = true;
-				msg.components[0].components[1].disabled = true;
+				ButtonBuilder.from[msg.components[0].components[0]].setDisabled = true;
+				ButtonBuilder.from(msg.components[0].components[1]).setDisabled = true;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
@@ -576,14 +576,14 @@ ButtonBuilder.from(msg.components[0].components[1]).setLabel =
 				msg: Message | APIMessage,
 				user: User
 			) {
-				oldemb = oldemb as EmbedBuilder;
+				oldemb = EmbedBuiilder.from(oldemb);
 
 				oldemb.fields[0].value = `Accepted\n\n**Reason:** \`${reason}\``;
 				oldemb.setColor(options?.accept?.color || 'GREEN');
 				oldemb.setFooter({ text: `Accepted by ${user.tag}` });
 
-				msg.components[0].components[0].disabled = true;
-				msg.components[0].components[1].disabled = true;
+				ButtonBuilder.from(msg.components[0].components[0]).setDisabled = true;
+				ButtonBuilder.from(msg.components[0].components[1]).setDisabled = true;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],

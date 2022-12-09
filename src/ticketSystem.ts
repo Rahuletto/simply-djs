@@ -109,6 +109,8 @@ export async function ticketSystem(
         });
       }
     }
+      console.log(options.button.style)
+  console.log(convStyle(options.button.style))
 
     const ticketbtn = new ButtonBuilder()
       .setStyle(convStyle(options?.button?.style) || ButtonStyle.Primary)
