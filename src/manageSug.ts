@@ -60,7 +60,7 @@ export async function manageSug(
 					await data.save().catch(() => {});
 				}
 
-				const oldemb = button.message.embeds[0];
+				const oldemb = EmbedBuilder.from(button.message.embeds[0]);
 
 				const likesnd = oldemb.fields[1].value.split(/\s+/);
 				let likes: number | string = likesnd[1].replaceAll('`', '');
@@ -277,7 +277,7 @@ export async function manageSug(
 					await data.save().catch(() => {});
 				}
 
-				const oldemb = button.message.embeds[0];
+				const oldemb = EmbedBuilder.from(button.message.embeds[0]);
 
 				const likesnd = oldemb.fields[1].value.split(/\s+/);
 				let likes: number | string = likesnd[1].replaceAll('`', '');
@@ -533,19 +533,22 @@ export async function manageSug(
 					dPercent = 0;
 				}
 
-ButtonBuilder.from(msg.components[0].components[0]).setLabel =
+const lik1 = message.components
+    
+lik1[0].components[0] = ButtonBuilder.from(lik[0].components[0]).setLabel =
 					lik.toString();
 
-ButtonBuilder.from(msg.components[0].components[1]).setLabel =
+        lik1[0].components[1] = ButtonBuilder.from(lik1[0].components[1]).setLabel =
 					dislik.toString();
-oldemb = ButtonBuilder.from(oldemb)
+                
+oldemb = EmbedBuilder.from(oldemb)
 				oldemb.fields[1].value = `${st} [${uPercent || 0}% - ${
 					dPercent || 0
 				}%]`;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as ActionRowBuilder[]
+					components: lik1
 				});
 			}
 
@@ -561,12 +564,14 @@ oldemb = ButtonBuilder.from(oldemb)
 				oldemb.setColor(options?.deny?.color || colorResolvable('RED'));
 				oldemb.setFooter({ text: `Declined by ${user.tag}` });
 
-				ButtonBuilder.from[msg.components[0].components[0]].setDisabled = true;
-				ButtonBuilder.from(msg.components[0].components[1]).setDisabled = true;
+const msgs = msg.components
+                
+msgs[0].components[0] = ButtonBuilder.from[msgs[0].components[0]].setDisabled = true;
+msgs[0].components[1] = ButtonBuilder.from(msgs[0].components[1]).setDisabled = true;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as ActionRowBuilder[]
+					components: msgs
 				});
 			}
 
@@ -582,12 +587,14 @@ oldemb = ButtonBuilder.from(oldemb)
 				oldemb.setColor(options?.accept?.color || 'GREEN');
 				oldemb.setFooter({ text: `Accepted by ${user.tag}` });
 
-				ButtonBuilder.from(msg.components[0].components[0]).setDisabled = true;
-				ButtonBuilder.from(msg.components[0].components[1]).setDisabled = true;
+const msgs = msg.components
+                
+msgs[0].components[0] = ButtonBuilder.from[msgs[0].components[0]].setDisabled = true;
+msgs[0].components[1] = ButtonBuilder.from(msgs[0].components[1]).setDisabled = true;
 
 				(button.message as Message).edit({
 					embeds: [oldemb],
-					components: msg.components as ActionRowBuilder[]
+					components: msgs
 				});
 			}
 		} catch (err: any) {
