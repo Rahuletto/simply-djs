@@ -1,3 +1,7 @@
+<h1>This package has been deprecated. Thanks for this wonderful journey</h1>
+
+----
+
 <div align="center"><img style="width: 60%" src="https://user-images.githubusercontent.com/71836991/151350002-7a6885d1-b340-4b01-860a-0c0e9dc1d026.png"></div>
 
 <h2 align="center">A Simple, Easy and Beginner friendly Discord.js Package for everyone.</h2>
@@ -6,7 +10,7 @@
    
    ------------------
    
-   <h2 align="center">Developed by Rahuletto#0243</h2>
+   <h2 align="center">Deprecated by Rahuletto#0243</h2>
 
 <br>
 <p align="center">
@@ -25,56 +29,22 @@
 <br>
 
 ## 🖥️ <b>How to install ?</b>
-
-(Use any one method)
-
 ```
-npm install simply-djs
-```
-
-```
-yarn add simply-djs
-```
-
-```
-pnpm add simply-djs
-```
-
-```ts
-import simplydjs from 'https://cdn.skypack.dev/simply-djs';
+We don't recommend installing it. Please use other package
 ```
 
 <br>
  
-# 🎉 [What's New](https://simplyd.js.org/docs/new) 🎉
+# 💀 [What's New](https://simplyd.js.org/docs/new) 💀
 
-- Fixed many embeds
-- Better Typings
-- Package Optimization
-- Bug fixes
-
-<br></br>
-
-- ## 🗒 Documentation
-  - Massive UI overhaul
-  - Simpler Experience
-  - Detailed documentation
-  - Smoother animations
-  - Minor additions like `Tags`
+- Deprecated
 
 <br></br>
 
 # 🤔 But Why ?
 
-- Simplifies things in discord.js
-- Fastest Support ever
-- Easier yet Flexible.
-- Beginner Friendly
-- Easier than any other package
-- 100% Slash Support
-- 22+ Functions
-- Open source project !
-- Simple & Understandable **[Documentation](https://simplyd.js.org)**
+- Don't. Please don't. This will not work for discord.js v14
+- If you use Discord.js v13, you can use it
 
 ---
 
