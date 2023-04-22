@@ -26,17 +26,17 @@ const { version: discordJSVersion } = require(require('path').join(
 	'package.json'
 ));
 
-if (Number(discordJSVersion.slice(0, 2)) < 13)
+if (Number(discordJSVersion.slice(0, 2)) < 14)
 	throw new SimplyError({
-		name: `Discord.JS version 13 or higher is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
-		tip: 'This package is not optimized for Discord.JS v12 or lower.'
+		name: `Discord.JS version 14.x.x is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
+		tip: 'This package is not optimized for Discord.JS v13 or lower. Please use simply-djs v3.0.2 for Discord.JS v13 support'
 	});
 
 // ------------------------------
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '3.0.2';
+export const version: string = '3.1.0';
 
 export { toRgb } from './src/Others/toRgb';
 export { emitError } from './src/Others/emitError';

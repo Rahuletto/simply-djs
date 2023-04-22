@@ -1,5 +1,5 @@
 import {
-	MessageEmbed,
+	Embed,
 	Message,
 	MessageEmbedFooter,
 	MessageEmbedAuthor,

@@ -12,7 +12,7 @@ export class SimplyError extends Error {
 
 	constructor(
 		options: Erroptions = {
-			tip: 'Join the Support Server [https://discord.gg/3JzDV9T5Fn]'
+			tip: 'Get ya help here -> [https://discord.gg/3JzDV9T5Fn]'
 		}
 	) {
 		const msg = '"' + options.name + '"' + '\n' + 'Tip: ' + options.tip + '\n';

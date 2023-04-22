@@ -1,5 +1,5 @@
 /**
- * Transforms Time string to milliseconds ;)
+ * A Powerful, efficient yet simple system to convert human-readable time to ms
  * @param str
  * @link `Documentation:` ***https://simplyd.js.org/docs/Others/ms***
  * @example simplydjs.ms('1h')

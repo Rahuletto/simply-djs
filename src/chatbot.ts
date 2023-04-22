@@ -5,6 +5,8 @@ import { SimplyError } from './Error/Error';
 import chalk from 'chalk';
 import { ExtendedMessage } from './interfaces';
 
+import { Configuration, OpenAIApi } from 'openai';
+
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -14,6 +16,7 @@ export type chatbotOptions = {
 	toggle?: boolean;
 	name?: string;
 	developer?: string;
+	chatGpt?: string;
 };
 
 // ------------------------------
@@ -69,6 +72,28 @@ export async function chatbot(
 			'.'
 		);
 
+		if (options.chatGpt) {
+			await message.channel.sendTyping();
+
+			const configuration = new Configuration({
+				apiKey: options.chatGpt
+			});
+			const openai = new OpenAIApi(configuration);
+
+			async function runCompletion() {
+				const completion = await openai.createCompletion({
+					model: 'text-davinci-003',
+					prompt: input
+				});
+				return completion.data.choices[0].text;
+			}
+
+			return await message.reply({
+				content: await runCompletion(),
+				allowedMentions: { repliedUser: false }
+			});
+		}
+
 		const regg =
 			/(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|\ud83c[\ude32-\ude3a]|\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g;
 		//Replacing Emojis
@@ -78,7 +103,7 @@ export async function chatbot(
 		options.name ??= 'Simply-DJS';
 		options.developer ??= 'Rahuletto';
 
-		const url = new URL('https://simplyapi.js.org/chatbot'),
+		const url = new URL('https://simplyapi.js.org/api/chatbot'),
 			params = url.searchParams,
 			age = new Date().getFullYear() - client.user.createdAt.getFullYear();
 
@@ -93,7 +118,6 @@ export async function chatbot(
 
 		await message.channel.sendTyping();
 
-		// Using await instead of .then
 		const jsonRes = await axios
 			.get(url.toString())
 			.then((res: any) => res.data); // Parsing the data
@@ -104,7 +128,7 @@ export async function chatbot(
 
 		if (chatbotReply === '') {
 			return message.reply({
-				content: 'Wait What ?',
+				content: "That message is beyond my intelligence. I can't understand.",
 				allowedMentions: { repliedUser: false }
 			});
 		}

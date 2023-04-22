@@ -9,7 +9,7 @@ import { Erroptions, SimplyError } from '../Error/Error';
 
 export async function emitError(
 	options: Erroptions = {
-		tip: 'Join the Support Server [https://discord.gg/3JzDV9T5Fn]'
+		tip: 'Get ya help here -> [https://discord.gg/3JzDV9T5Fn]'
 	}
 ) {
 	throw new SimplyError(options);
