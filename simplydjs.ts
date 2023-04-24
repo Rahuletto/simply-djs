@@ -6,7 +6,8 @@ import { SimplyError } from './src/Error/Error';
 
 if (+process.version.slice(1, 3) - 0 < 16)
 	throw new SimplyError({
-		name: `NodeJS Version 16 or newer is required, but you are using ${process.version}.`,
+		function: 'simply-djs',
+		title: `NodeJS Version 16 or newer is required, but you are using ${process.version}.`,
 		tip: `Install nodejs 16 or higher in https://nodejs.org/`
 	});
 
@@ -14,7 +15,8 @@ try {
 	require('discord.js');
 } catch (e) {
 	throw new SimplyError({
-		name: 'Discord.JS is required for this package to run',
+		function: 'simply-djs',
+		title: 'Discord.JS is required for this package to run',
 		tip: 'This package is optimized to run with discord.js'
 	});
 }
@@ -28,7 +30,8 @@ const { version: discordJSVersion } = require(require('path').join(
 
 if (Number(discordJSVersion.slice(0, 2)) < 14)
 	throw new SimplyError({
-		name: `Discord.JS version 14.x.x is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
+		function: 'simply-djs',
+		title: `Discord.JS version 14.x.x is required, but you are using ${discordJSVersion}. See https://www.npmjs.com/package/discord.js`,
 		tip: 'This package is not optimized for Discord.JS v13 or lower. Please use simply-djs v3.0.2 for Discord.JS v13 support'
 	});
 
@@ -42,7 +45,7 @@ export { toRgb } from './src/Others/toRgb';
 export { emitError } from './src/Others/emitError';
 export { ms } from './src/Others/ms';
 
-export { automeme } from './src/automeme';
+export { meme } from './src/meme';
 export { betterBtnRole } from './src/betterBtnRole';
 export { btnRole } from './src/btnrole';
 export { bumpSystem } from './src/bumpSys';

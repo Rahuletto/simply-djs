@@ -1,8 +1,7 @@
 import { Client, Message } from 'discord.js';
 
-import axios from 'axios';
+import https from './Others/https';
 import { SimplyError } from './Error/Error';
-import chalk from 'chalk';
 import { ExtendedMessage } from './interfaces';
 
 import { Configuration, OpenAIApi } from 'openai';
@@ -16,7 +15,7 @@ export type chatbotOptions = {
 	toggle?: boolean;
 	name?: string;
 	developer?: string;
-	chatGpt?: string;
+	gptToken?: string; // To access ChatGPT
 };
 
 // ------------------------------

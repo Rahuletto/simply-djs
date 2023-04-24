@@ -1,4 +1,4 @@
-# Simply-DJS v3.1.0
+# Simply-DJS v4.0.0
 
 ## Support for Discord.JS v14
 
@@ -10,12 +10,11 @@ Simply-DJS Reimagined.
 ## Updated Files
 
 ```diff
-+ automeme.ts
 - betterBtnRole.ts
 - btnrole.ts
 - bumpSys.ts
 - calc.ts
-- chatbot.ts
++ chatbot.ts
 - clickBtn.ts
 - connect.ts
 - embed.ts
@@ -24,6 +23,7 @@ Simply-DJS Reimagined.
 - giveaway.ts
 - manageBtn.ts
 - manageSug.ts
++ meme.ts (automeme.ts)
 - menuPages.ts
 - nqn.ts
 - rps.ts

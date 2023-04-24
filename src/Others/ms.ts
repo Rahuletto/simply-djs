@@ -11,6 +11,7 @@ export function ms(str: string) {
 		type,
 		val;
 
+	// Convert the string to easier terms
 	str = str
 		.replaceAll('week', 'w')
 		.replaceAll('weeks', 'w')
@@ -25,6 +26,7 @@ export function ms(str: string) {
 		.replaceAll('seconds', 's')
 		.replaceAll('sec', 's');
 
+	// Splitting the string based on the terms
 	const arr: string[] = ('' + str)
 		.split(' ')
 		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
@@ -38,6 +40,7 @@ export function ms(str: string) {
 		if (type) {
 			val = Number(time.replace(type[0], ''));
 
+			// Actual conversion from human-readable time to ms
 			switch (type[0].toLowerCase()) {
 				case 'w':
 					sum += val * 604800000;
