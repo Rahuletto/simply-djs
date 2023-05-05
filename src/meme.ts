@@ -8,26 +8,13 @@ import {
 	Channel
 } from 'discord.js';
 
-import https from './Others/https';
+import { https } from './Others/https';
 import { SimplyError } from './Error/Error';
+import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
- */
-
-interface CustomizableEmbed {
-	author?: EmbedAuthorData;
-	title?: string;
-	footer?: EmbedFooterData;
-	color?: ColorResolvable;
-	description?: string;
-
-	credit?: boolean;
-}
 
 export type memeOptions = {
 	embed?: CustomizableEmbed;
@@ -153,7 +140,7 @@ export async function meme(
 
 			// Get a random reddit post from the subreddit
 			const response = await https(
-				`/www.reddit.com`,
+				`www.reddit.com`,
 				`/r/${sub[random]}/random.json`
 			);
 
@@ -181,7 +168,7 @@ export async function meme(
 				.setTitle(options.embed?.title || `${title}`)
 				.setURL(`${url}`)
 				.setImage(memeImage)
-				.setColor(options.embed?.color || '#075FFF')
+				.setColor(options.embed?.color || '#87A8E2')
 				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
 
 			if (options.embed?.author) {
@@ -197,7 +184,7 @@ export async function meme(
 		if (options.strict)
 			throw new SimplyError({
 				function: 'meme',
-				title: 'Error: ',
+				title: 'An Error occured when running the function ',
 				tip: err.stack
 			});
 		else console.log(`SimplyError - meme | Error: ${err.stack}`);

@@ -14,7 +14,6 @@ import {
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
-import chalk from 'chalk';
 import model from './model/gSys';
 
 // ------------------------------
@@ -161,10 +160,10 @@ export async function giveawaySystem(
 			if (!options.embed) {
 				options.embed = {
 					footer: {
-						text: '©️ Simply Develop. npm i simply-djs',
+						text: '©️ Rahuletto. npm i simply-djs',
 						iconURL: 'https://i.imgur.com/u8VlLom.png'
 					},
-					color: '#075FFF',
+					color: '#87A8E2',
 					title: 'Giveaways',
 					credit: true
 				};
@@ -330,13 +329,13 @@ export async function giveawaySystem(
 						.replaceAll('{winCount}', winners)
 						.replaceAll('{entered}', '0') || prize
 				)
-				.setColor(options.embed?.color || '#075FFF')
+				.setColor(options.embed?.color || '#87A8E2')
 				.setTimestamp(Number(Date.now() + time))
 				.setFooter(
 					options.embed?.credit === false
 						? options.embed?.footer
 						: {
-								text: '©️ Simply Develop. npm i simply-djs',
+								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
 				)
@@ -465,7 +464,7 @@ export async function giveawaySystem(
 													options.embed?.credit === false
 														? options.embed?.footer
 														: {
-																text: '©️ Simply Develop. npm i simply-djs',
+																text: '©️ Rahuletto. npm i simply-djs',
 																iconURL: 'https://i.imgur.com/u8VlLom.png'
 														  }
 												);
@@ -521,7 +520,7 @@ export async function giveawaySystem(
 												options.embed?.credit === false
 													? options.embed?.footer
 													: {
-															text: '©️ Simply Develop. npm i simply-djs',
+															text: '©️ Rahuletto. npm i simply-djs',
 															iconURL: 'https://i.imgur.com/u8VlLom.png'
 													  }
 											);
@@ -558,7 +557,7 @@ export async function giveawaySystem(
 											options.embed?.credit === false
 												? options.embed?.footer
 												: {
-														text: '©️ Simply Develop. npm i simply-djs',
+														text: '©️ Rahuletto. npm i simply-djs',
 														iconURL: 'https://i.imgur.com/u8VlLom.png'
 												  }
 										);

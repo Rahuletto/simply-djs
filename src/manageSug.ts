@@ -12,7 +12,6 @@ import {
 import db from './model/suggestion';
 import { APIMessage, APIEmbed } from 'discord-api-types/v10';
 import { votz } from './model/suggestion';
-import chalk from 'chalk';
 
 export type manageSugOptions = {
 	deny?: { color: ColorResolvable };

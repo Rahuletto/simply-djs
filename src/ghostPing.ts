@@ -1,33 +1,14 @@
-import {
-	MessageEmbed,
-	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
-	ColorResolvable
-} from 'discord.js';
-import chalk from 'chalk';
+import { EmbedBuilder, Message } from 'discord.js';
+import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
+import { SimplyError } from './Error/Error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
- */
-
-interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
-
-	credit?: boolean;
-}
-
 export type ghostOptions = {
+	strict: boolean;
 	embed?: CustomizableEmbed;
-	custom?: boolean;
 };
 
 // ------------------------------
@@ -47,8 +28,8 @@ export type ghostOptions = {
 
 export async function ghostPing(
 	message: Message,
-	options: ghostOptions = {}
-): Promise<boolean> {
+	options: ghostOptions = { strict: false }
+): Promise<void> {
 	return new Promise(async (resolve) => {
 		if (message.mentions.users.first()) {
 			try {
@@ -62,62 +43,65 @@ export async function ghostPing(
 						`<@!${message.mentions.members.first()?.user.id}>`
 					)
 				) {
-					if (!options.custom) {
-						if (!options.embed) {
-							options.embed = {
-								footer: {
-									text: '©️ Simply Develop. npm i simply-djs',
-									iconURL: 'https://i.imgur.com/u8VlLom.png'
-								},
-								color: '#075FFF',
-								credit: true
-							};
-						}
-
-						const chembed: MessageEmbed = new MessageEmbed()
-							.setAuthor(
-								options.embed?.author || {
-									name: message.author.tag,
-									iconURL: message.author.displayAvatarURL({ format: 'gif' })
-								}
-							)
-							.setTitle(options.embed?.title || 'Ghost Ping Detected')
-							.setDescription(
-								options.embed?.description ||
-									`${message.author} **(${
-										message.author.tag
-									})** just ghost pinged ${message.mentions.members.first()} **(${
-										message.mentions.users.first().tag
-									})**\n\nContent: **${message.content}**`
-							)
-							.setColor(options.embed?.color || '#075FFF')
-							.setFooter(
-								options.embed?.credit === false
-									? options.embed?.footer
-									: {
-											text: '©️ Simply Develop. npm i simply-djs',
-											iconURL: 'https://i.imgur.com/u8VlLom.png'
-									  }
-							)
-							.setTimestamp();
-
-						message.channel
-							.send({ embeds: [chembed] })
-							.then(async (msg: Message) => {
-								setTimeout(() => {
-									msg.delete();
-								}, 10000);
-							});
+					if (!options.embed) {
+						options.embed = {
+							footer: {
+								text: '©️ Rahuletto. npm i simply-djs',
+								iconURL: 'https://i.imgur.com/u8VlLom.png'
+							},
+							color: '#87A8E2'
+						};
 					}
 
-					resolve(true);
-				} else resolve(false);
+					const embed: EmbedBuilder = new EmbedBuilder()
+						.setAuthor(
+							options.embed?.author || {
+								name: message.author.tag,
+								iconURL: message.author.displayAvatarURL({ extension: 'gif' })
+							}
+						)
+						.setTitle(options.embed?.title || 'Ghost Ping')
+						.setDescription(
+							options.embed?.description ||
+								`${message.author} **(${
+									message.author.tag
+								})** just ghost pinged ${message.mentions.members.first()} **(${
+									message.mentions.users.first().tag
+								})**\n\nContent: **${message.content}**`
+						)
+						.setColor(options.embed?.color || '#87A8E2')
+						.setFooter(
+							options.embed?.footer
+								? options.embed?.footer
+								: {
+										text: '©️ Rahuletto. npm i simply-djs',
+										iconURL: 'https://i.imgur.com/u8VlLom.png'
+								  }
+						)
+						.setTimestamp();
+
+					if (options.embed.fields) embed.setFields(options.embed.fields);
+					if (options.embed.image) embed.setImage(options.embed.image);
+					if (options.embed.thumbnail)
+						embed.setThumbnail(options.embed.thumbnail);
+					if (options.embed.url) embed.setURL(options.embed.url);
+
+					message.channel
+						.send({ embeds: [embed] })
+						.then(async (msg: Message) => {
+							setTimeout(() => {
+								msg.delete();
+							}, 10000);
+						});
+				}
 			} catch (err: any) {
-				console.log(
-					`${chalk.red('Error Occured.')} | ${chalk.magenta(
-						'ghostPing'
-					)} | Error: ${err.stack}`
-				);
+				if (options.strict)
+					throw new SimplyError({
+						function: 'ghostPing',
+						title: 'An Error occured when running the function ',
+						tip: err.stack
+					});
+				else console.log(`SimplyError - ghostPing | Error: ${err.stack}`);
 			}
 		}
 	});

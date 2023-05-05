@@ -1,32 +1,34 @@
 import {
-	MessageButtonStyle,
+	ButtonStyle,
 	Role,
 	Message,
-	MessageEmbed,
-	MessageButton,
-	MessageActionRow
+	EmbedBuilder,
+	ButtonBuilder,
+	ActionRowBuilder,
+	PermissionFlagsBits
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import { SimplyError } from './Error/Error';
-import chalk from 'chalk';
+import { MessageButtonStyle } from './Others/MessageButtonStyle';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface dataObj {
-	role?: string;
+interface dataObject {
+	role?: string | Role;
 	label?: string;
 	emoji?: string;
-	style?: MessageButtonStyle;
+	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
 	url?: `https://${string}`;
 }
 
 export type btnOptions = {
-	embed?: MessageEmbed;
+	embed?: EmbedBuilder;
 	content?: string;
-	data?: dataObj[];
+	data?: dataObject[];
+	strict?: boolean;
 };
 
 // ------------------------------
@@ -46,25 +48,32 @@ export async function btnRole(
 	options: btnOptions = {}
 ): Promise<Message> {
 	try {
-		if (!options.data)
-			throw new SimplyError({
-				name: 'NOT_SPECIFIED | Provide an data option to make buttons.',
-				tip: `Expected data object in options.. Received ${
-					options.data || 'undefined'
-				}`
-			});
+		if (!options.data) {
+			if (options.strict)
+				throw new SimplyError({
+					function: 'btnRole',
+					title: 'Expected data object in options',
+					tip: `Received ${options.data || 'undefined'}`
+				});
+			else
+				console.log(
+					`SimplyError - btnRole | Error:  Expected data object in options.. Received ${
+						options.data || 'undefined'
+					}`
+				);
+		}
 
 		const msg = message as ExtendedMessage;
 		const int = message as ExtendedInteraction;
 
 		if (message.commandId) {
-			if (!int.member.permissions.has('ADMINISTRATOR'))
+			if (!int.member.permissions.has(PermissionFlagsBits.Administrator))
 				int.followUp({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
 			return;
 		} else if (!message.customId) {
-			if (!msg.member.permissions.has('ADMINISTRATOR'))
+			if (!msg.member.permissions.has(PermissionFlagsBits.Administrator))
 				return await msg.reply({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
@@ -75,61 +84,68 @@ export async function btnRole(
 
 		if (data.length <= 5) {
 			const button: any[][] = [[]];
-			btnEngine(data, button, row);
+			GenButton(data, button, row);
 		} else if (data.length > 5 && data.length <= 10) {
 			const button: any[][] = [[], []];
-			btnEngine(data, button, row);
+			GenButton(data, button, row);
 		} else if (data.length > 11 && data.length <= 15) {
 			const button: any[][] = [[], [], []];
-			btnEngine(data, button, row);
+			GenButton(data, button, row);
 		} else if (data.length > 16 && data.length <= 20) {
 			const button: any[][] = [[], [], [], []];
-			btnEngine(data, button, row);
+			GenButton(data, button, row);
 		} else if (data.length > 21 && data.length <= 25) {
 			const button: any[][] = [[], [], [], [], []];
-			btnEngine(data, button, row);
+			GenButton(data, button, row);
 		} else if (data.length > 25) {
-			throw new SimplyError({
-				name: 'Reached the limit of 25 buttons..',
-				tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
-			});
+			if (options.strict)
+				throw new SimplyError({
+					function: 'btnRole',
+					title: 'Reached the limit of 25 buttons..',
+					tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
+				});
 		}
-		async function btnEngine(data: dataObj[], button: any[][], row: any[]) {
+
+		// Generates buttons from the data provided
+		async function GenButton(data: dataObject[], button: any[][], row: any[]) {
 			let current = 0;
 
 			for (let i = 0; i < data.length; i++) {
 				if (button[current].length === 5) current++;
 
 				const emoji = data[i].emoji || null;
-				const clr = data[i].style || 'SECONDARY';
+				const color = data[i].style || ButtonStyle.Secondary;
 				let url = '';
 				const role: Role | null = message.guild.roles.cache.find(
 					(r) => r.id === data[i].role
 				);
 				const label = data[i].label || role?.name;
 
-				if (!role && clr === 'LINK') {
+				if (!role && color === 'LINK') {
 					url = data[i].url;
 					button[current].push(createLink(label, url, emoji));
 				} else {
-					button[current].push(createButton(label, role, clr, emoji));
+					button[current].push(createButton(label, role, color, emoji));
 				}
 
+				// push the row into array (So you can add more than a row of buttons)
 				if (i === data.length - 1) {
-					const rero = addRow(button[current]);
-					row.push(rero);
+					const newRow = addRow(button[current]);
+					row.push(newRow);
 				}
 			}
 
 			if (!options.embed && !options.content)
 				throw new SimplyError({
-					name: 'NOT_SPECIFIED | Provide an embed (or) content in the options.',
+					function: 'btnRole',
+					title: 'Provide an embed (or) content in the options.',
 					tip: `Expected embed (or) content options to send. Received ${
 						options.embed || options.content || 'undefined'
 					}`
 				});
 
-			const emb = options.embed;
+			// Embed from the options
+			let emb = options.embed;
 
 			if ((message as ExtendedInteraction).commandId) {
 				if (!options.embed) {
@@ -157,8 +173,8 @@ export async function btnRole(
 					});
 			}
 
-			function addRow(btns: any[]): MessageActionRow {
-				const row1 = new MessageActionRow();
+			function addRow(btns: any[]): ActionRowBuilder<ButtonBuilder> {
+				const row1 = new ActionRowBuilder<ButtonBuilder>();
 
 				row1.addComponents(btns);
 
@@ -169,12 +185,16 @@ export async function btnRole(
 				label: string,
 				url: string,
 				emoji: string
-			): MessageButton {
-				const btn = new MessageButton();
+			): ButtonBuilder {
+				const btn = new ButtonBuilder();
 				if (!emoji || emoji === null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url);
+					btn.setLabel(label).setStyle(ButtonStyle.Link).setURL(url);
 				} else if (emoji && emoji !== null) {
-					btn.setLabel(label).setStyle('LINK').setURL(url).setEmoji(emoji);
+					btn
+						.setLabel(label)
+						.setStyle(ButtonStyle.Link)
+						.setURL(url)
+						.setEmoji(emoji);
 				}
 				return btn;
 			}
@@ -182,30 +202,36 @@ export async function btnRole(
 			function createButton(
 				label: string,
 				role: Role,
-				color: MessageButtonStyle,
+				color:
+					| ButtonStyle
+					| 'PRIMARY'
+					| 'SECONDARY'
+					| 'SUCCESS'
+					| 'DANGER'
+					| 'LINK',
 				emoji: string
-			): MessageButton {
-				const btn = new MessageButton();
-				if (!emoji || emoji === null) {
-					btn
-						.setLabel(label)
-						.setStyle(color)
-						.setCustomId('role-' + role.id);
-				} else if (emoji && emoji !== null) {
-					btn
-						.setLabel(label)
-						.setStyle(color)
-						.setCustomId('role-' + role.id)
-						.setEmoji(emoji);
+			): ButtonBuilder {
+				if (color as string) color = MessageButtonStyle(color as string);
+
+				const btn = new ButtonBuilder();
+				btn
+					.setLabel(label)
+					.setStyle((color as ButtonStyle) || ButtonStyle.Secondary)
+					.setCustomId('role-' + role.id);
+
+				if (emoji && emoji !== null) {
+					btn.setEmoji(emoji);
 				}
 				return btn;
 			}
 		}
 	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta('btnRole')} | Error: ${
-				err.stack
-			}`
-		);
+		if (options.strict)
+			throw new SimplyError({
+				function: 'btnRole',
+				title: 'An Error occured when running the function ',
+				tip: err.stack
+			});
+		else console.log(`SimplyError - btnRole | Error: ${err.stack}`);
 	}
 }

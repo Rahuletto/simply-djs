@@ -1,7 +1,6 @@
 import { MessageEmbed, MessageActionRow, MessageSelectMenu } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
-import chalk from 'chalk';
 import { SimplyError } from './Error/Error';
 
 // ------------------------------

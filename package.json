@@ -100,13 +100,13 @@
 		"url": "https://github.com/Rahuletto/simply-djs/issues"
 	},
 	"dependencies": {
-		"mongoose": "^6.1.4"
+		"mongoose": "^7.1.0"
 	},
 	"devDependencies": {
-		"@types/node": "^17.0.12",
-		"discord.js": "^14.9.0",
-		"husky": "^7.0.0",
+		"@types/node": "^20.0.0",
+		"discord.js": "^14.10.2",
+		"husky": "^8.0.3",
 		"openai": "^3.2.1",
-		"pretty-quick": "^3.1.1"
+		"pretty-quick": "^3.1.3"
 	}
 }

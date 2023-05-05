@@ -3,16 +3,15 @@
  * @param hex
  * @param type
  * @link `Documentation:` ***https://simplyd.js.org/docs/Others/toRgb***
- * @example simplydjs.toRgb('#075FFF')
+ * @example simplydjs.toRgb('#87A8E2')
  */
 
-export function toRgb(
-	hex: string,
-	type: 'Array' | 'String' = 'Array'
-): number[] | string {
+import { ColorResolvable } from 'discord.js';
+
+export function toRgb(hex: string): ColorResolvable {
 	const red = parseInt(hex.slice(1, 3), 16);
 	const green = parseInt(hex.slice(3, 4), 16);
 	const blue = parseInt(hex.slice(5, 7), 16);
-	if (type === 'Array') return [red, green, blue];
-	else if (type === 'String') return `rgb(${red}, ${green}, ${blue})`;
+
+	return [red, green, blue];
 }

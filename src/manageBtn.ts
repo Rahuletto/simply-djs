@@ -16,7 +16,7 @@ import {
 	EmbedFieldData,
 	GuildMemberManager
 } from 'discord.js';
-import chalk from 'chalk';
+
 import gsys from './model/gSys';
 
 // ------------------------------
@@ -304,12 +304,12 @@ export async function manageBtn(
 							)
 							.setThumbnail(interaction.guild.iconURL())
 							.setTimestamp()
-							.setColor(options?.ticketSys?.embed?.color || '#075FFF')
+							.setColor(options?.ticketSys?.embed?.color || '#87A8E2')
 							.setFooter(
 								options.ticketSys?.embed?.credit === false
 									? options.ticketSys?.embed?.footer
 									: {
-											text: '©️ Simply Develop. npm i simply-djs',
+											text: '©️ Rahuletto. npm i simply-djs',
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
 							);

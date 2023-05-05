@@ -28,7 +28,7 @@ export type httpsOptions = {
  * @example simplydjs.https("postman-echo.com", "/get") // An Echo endpoint
  */
 
-export default function https(
+export function https(
 	host: string,
 	endpoint: string,
 	options: httpsOptions = {

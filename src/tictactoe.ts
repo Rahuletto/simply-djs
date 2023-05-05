@@ -12,7 +12,6 @@ import {
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
-import chalk from 'chalk';
 import { APIMessage } from 'discord-api-types/v10';
 
 // ------------------------------
@@ -134,12 +133,12 @@ export async function tictactoe(
 					name: (message.member.user as User).tag,
 					iconURL: (message.member.user as User).displayAvatarURL()
 				})
-				.setColor(options.embed?.color || `#075fff`)
+				.setColor(options.embed?.color || `#87A8E2`)
 				.setFooter(
 					options.embed?.credit === false
 						? options.embed?.footer
 						: {
-								text: '©️ Simply Develop. npm i simply-djs',
+								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/u8VlLom.png'
 						  }
 				);
@@ -261,12 +260,12 @@ export async function tictactoe(
 
 					const epm = new MessageEmbed()
 						.setTitle('Lets play TicTacToe.')
-						.setColor(options.embed?.color || '#075fff')
+						.setColor(options.embed?.color || '#87A8E2')
 						.setFooter(
 							options.embed?.credit === false
 								? options.embed?.footer
 								: {
-										text: '©️ Simply Develop. npm i simply-djs',
+										text: '©️ Rahuletto. npm i simply-djs',
 										iconURL: 'https://i.imgur.com/u8VlLom.png'
 								  }
 						)
@@ -685,7 +684,7 @@ export async function tictactoe(
 							options.embed?.credit === false
 								? options.embed?.footer
 								: {
-										text: '©️ Simply Develop. npm i simply-djs',
+										text: '©️ Rahuletto. npm i simply-djs',
 										iconURL: 'https://i.imgur.com/u8VlLom.png'
 								  }
 						)
@@ -707,7 +706,7 @@ export async function tictactoe(
 							options.embed?.credit === false
 								? options.embed?.footer
 								: {
-										text: '©️ Simply Develop. npm i simply-djs',
+										text: '©️ Rahuletto. npm i simply-djs',
 										iconURL: 'https://i.imgur.com/u8VlLom.png'
 								  }
 						)

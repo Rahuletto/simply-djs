@@ -1,6 +1,6 @@
 import { Client, Message } from 'discord.js';
 
-import https from './Others/https';
+import { https } from './Others/https';
 import { SimplyError } from './Error/Error';
 import { ExtendedMessage } from './interfaces';
 
@@ -11,6 +11,7 @@ import { Configuration, OpenAIApi } from 'openai';
 // ------------------------------
 
 export type chatbotOptions = {
+	strict?: boolean;
 	channelId?: string | string[];
 	toggle?: boolean;
 	name?: string;
@@ -26,7 +27,6 @@ export type chatbotOptions = {
  * A chatbot system that is both technically advanced and intelligent, and is your buddy.
  *
  * **URL** of the api: *https://simplyapi.js.org*
- * @param client
  * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/chatbot***
@@ -34,10 +34,11 @@ export type chatbotOptions = {
  */
 
 export async function chatbot(
-	client: Client,
 	message: ExtendedMessage,
-	options: chatbotOptions = {}
+	options: chatbotOptions = { strict: false }
 ): Promise<Message> {
+	const { client } = message;
+
 	if (message.author.bot) return;
 	if (options && options.toggle === false) return;
 
@@ -46,15 +47,25 @@ export async function chatbot(
 	else channels.push(options.channelId);
 
 	try {
-		for (const chan of channels) {
-			const ch = await client.channels.fetch(chan, {
+		for (const channel of channels) {
+			const ch = await client.channels.fetch(channel, {
 				cache: true
 			});
 			if (!ch)
-				throw new SimplyError({
-					name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
-					tip: 'Check the permissions (or) Try using another Channel ID'
-				});
+				if (options.strict)
+					throw new SimplyError({
+						function: 'chatbot',
+						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
+						tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
+							options.channelId || 'undefined'
+						}`
+					});
+				else
+					console.log(
+						`SimplyError - chatbot | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\nReceived ${
+							options.channelId || 'undefined'
+						}`
+					);
 		}
 
 		//Return if the channel of the message is not a chatbot channel
@@ -66,16 +77,18 @@ export async function chatbot(
 			'\ud83d[\ude80-\udeff]' // U+1F680 to U+1F6FF
 		];
 
+		// Remove such content
 		let input = message.cleanContent.replace(
 			new RegExp(ranges.join('|'), 'g'),
 			'.'
 		);
 
-		if (options.chatGpt) {
+		// For ChatGPT integration.
+		if (options.gptToken) {
 			await message.channel.sendTyping();
 
 			const configuration = new Configuration({
-				apiKey: options.chatGpt
+				apiKey: options.gptToken
 			});
 			const openai = new OpenAIApi(configuration);
 
@@ -117,11 +130,10 @@ export async function chatbot(
 
 		await message.channel.sendTyping();
 
-		const jsonRes = await axios
-			.get(url.toString())
-			.then((res: any) => res.data); // Parsing the data
+		// Get data from the api made by the same team
+		const jsonRes = await https(`simplyapi.js.org`, url.pathname);
 
-		const chatbotReply = jsonRes.reply
+		const chatbotReply = jsonRes.reply // Just replacing any mass mentions just in case
 			.replace(/@everyone/g, '`@everyone`')
 			.replace(/@here/g, '`@here`');
 
@@ -136,10 +148,12 @@ export async function chatbot(
 			allowedMentions: { repliedUser: false }
 		});
 	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta('chatbot')} | Error: ${
-				err.stack
-			}`
-		);
+		if (options.strict)
+			throw new SimplyError({
+				function: 'chatbot',
+				title: 'An Error occured when running the function',
+				tip: err.stack
+			});
+		else console.log(`SimplyError - chatbot | Error: ${err.stack}`);
 	}
 }

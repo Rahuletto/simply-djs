@@ -10,33 +10,42 @@ Simply-DJS Reimagined.
 ## Updated Files
 
 ```diff
-- betterBtnRole.ts
-- btnrole.ts
-- bumpSys.ts
-- calc.ts
++ betterBtnRole.ts
++ btnrole.ts
++ bumpReminder.ts (previously bumpSys.ts)
++ calculator.ts
 + chatbot.ts
-- clickBtn.ts
-- connect.ts
+# clickBtn.ts (Removed)
++ connect.ts
 - embed.ts
 - embedPages.ts
-- ghostPing.ts
++ ghostPing.ts
 - giveaway.ts
 - manageBtn.ts
 - manageSug.ts
 + meme.ts (automeme.ts)
 - menuPages.ts
-- nqn.ts
++ nqn.ts
 - rps.ts
 - starboard.ts
 - stealEmoji.ts
-- suggest.ts
-- suggestBtn.ts
-- ticketSystem.ts
++ suggest.ts (previously suggestSystem.ts)
+# suggestBtn.ts (Removed)
++ ticketSetup.ts (previously ticketSystem.ts)
 - tictactoe.ts
 ```
 
 ## Whats new ?
 
 ```diff
-+ ChatGPT integration
++ All new `strict` mode.
++ Totally Promise Based
++ ChatGPT integration in chatbot
++ Proper Commenting
++ Super Customizable embed ! (Make your bot yours)
+
+@@ Variable names that just make sense @@
+@@ Renamed functions @@
+
+- Removing `credit` option
 ```

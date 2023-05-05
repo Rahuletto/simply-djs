@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import {
 	MessageEmbedAuthor,
 	ColorResolvable,
@@ -178,7 +177,7 @@ export async function stealEmoji(
 								options.embed?.credit === false
 									? options.embed?.footer
 									: {
-											text: '©️ Simply Develop. npm i simply-djs',
+											text: '©️ Rahuletto. npm i simply-djs',
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
 							);
@@ -240,7 +239,7 @@ export async function stealEmoji(
 								options.embed?.credit === false
 									? options.embed?.footer
 									: {
-											text: '©️ Simply Develop. npm i simply-djs',
+											text: '©️ Rahuletto. npm i simply-djs',
 											iconURL: 'https://i.imgur.com/u8VlLom.png'
 									  }
 							);
