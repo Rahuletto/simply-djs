@@ -1,12 +1,4 @@
-import {
-	Client,
-	EmbedBuilder,
-	EmbedAuthorData,
-	ColorResolvable,
-	TextChannel,
-	EmbedFooterData,
-	Channel
-} from 'discord.js';
+import { Client, EmbedBuilder, TextChannel, Channel } from 'discord.js';
 
 import { https } from './Others/https';
 import { SimplyError } from './Error/Error';

@@ -18,13 +18,13 @@ Simply-DJS Reimagined.
 # clickBtn.ts (Removed)
 + connect.ts
 - embed.ts
-- embedPages.ts
++ buttonPages.ts (previously embedPages.ts)
 + ghostPing.ts
 - giveaway.ts
 - manageBtn.ts
 - manageSug.ts
 + meme.ts (automeme.ts)
-- menuPages.ts
++ menuPages.ts
 + nqn.ts
 - rps.ts
 - starboard.ts

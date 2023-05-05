@@ -55,7 +55,7 @@ export { calculator } from './src/calculator';
 export { connect } from './src/connect';
 export { chatbot } from './src/chatbot';
 export { embedCreate } from './src/embed';
-export { embedPages } from './src/embedPages';
+export { buttonPages } from './src/buttonPages';
 export { ghostPing } from './src/ghostPing';
 export { giveawaySystem } from './src/giveaway';
 export { manageBtn } from './src/manageBtn';
@@ -74,5 +74,6 @@ export { tictactoe } from './src/tictactoe';
 // ------------------------------
 
 export { bumpSystem } from './src/DEP-bumpSystem';
+export { embedPages } from './src/DEP-embedPages';
 export { ticketSystem } from './src/DEP-ticketSystem';
 export { suggestSystem } from './src/DEP-suggestSystem';

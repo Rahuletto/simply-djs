@@ -1,17 +1,25 @@
-import { MessageEmbed, MessageActionRow, MessageSelectMenu } from 'discord.js';
+import {
+	EmbedBuilder,
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	Message,
+	ComponentType,
+	StringSelectMenuInteraction
+} from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import { SimplyError } from './Error/Error';
+import { ms } from './Others/ms';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#deleteopt*
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#deleteoption*
  */
 
-interface deleteOpt {
+interface deleteOption {
 	enable?: boolean;
 	label?: string;
 	description?: string;
@@ -19,26 +27,27 @@ interface deleteOpt {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#dataobj*
+ * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#dataobject*
  */
 
-interface dataObj {
+interface dataObject {
 	label?: string;
 	description?: string;
-	embed?: MessageEmbed;
+	embed?: EmbedBuilder;
 	emoji?: string;
 }
 
 export type menuEmbOptions = {
 	type?: 1 | 2;
-	rows?: MessageActionRow[];
-	embed?: MessageEmbed;
+	rows?: ActionRowBuilder<StringSelectMenuBuilder>[];
+	embed?: EmbedBuilder;
 
-	delete?: deleteOpt;
+	delete?: deleteOption;
 
-	data?: dataObj[];
+	data?: dataObject[];
 
 	placeHolder?: string;
+	strict?: boolean;
 };
 
 // ------------------------------
@@ -58,16 +67,20 @@ export async function menuPages(
 	options: menuEmbOptions = {}
 ) {
 	try {
-		let type: number = options.type || 1;
-		type = Number(type);
-		if (type > 2)
-			throw new SimplyError({
-				name: 'There are only two types. You provided a type which doesnt exist',
-				tip: 'TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
-			});
+		const type: number = Number(options.type) || 1;
+
+		if (type !== 1 && type !== 2) {
+			if (options.strict)
+				throw new SimplyError({
+					function: 'menuPages',
+					title:
+						'There are only two types. You have provided a type which doesnt exist',
+					tip: 'Type 1: SEND EPHEMERAL MSG | Type 2: EDIT MSG'
+				});
+		}
 
 		const data = options.data;
-		const rowz = options.rows;
+		const rowOption = options.rows;
 		const menuOptions = [];
 
 		for (let i = 0; i < data.length; i++) {
@@ -90,13 +103,12 @@ export async function menuPages(
 				menuOptions.push(dataopt);
 			}
 		}
-		let delopt;
 
 		if (
 			options.delete?.enable === undefined ||
-			(options.delete?.enable !== false && options.delete?.enable === true)
+			options.delete?.enable === true
 		) {
-			delopt = {
+			const delopt = {
 				label: options.delete?.label || 'Delete',
 				description:
 					options.delete?.description || 'Delete the Select Menu Embed',
@@ -107,62 +119,64 @@ export async function menuPages(
 			menuOptions.push(delopt);
 		}
 
-		const slct = new MessageSelectMenu()
+		const slct = new StringSelectMenuBuilder()
 			.setMaxValues(1)
 			.setCustomId('menuPages')
 			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
 			.addOptions(menuOptions);
 
-		const row = new MessageActionRow().addComponents(slct);
+		const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+			slct
+		);
 
 		const rows = [];
 
 		rows.push(row);
 
-		if (rowz) {
-			for (let i = 0; i < rowz.length; i++) {
-				rows.push(rowz[i]);
+		if (rowOption) {
+			for (let i = 0; i < rowOption.length; i++) {
+				rows.push(rowOption[i]);
 			}
 		}
 
-		let interaction;
+		let interaction: ExtendedInteraction;
 		if (message.commandId) {
-			interaction = message;
+			interaction = message as ExtendedInteraction;
 		}
 
-		const int = message as ExtendedInteraction;
-		const mes = message as ExtendedMessage;
+		const extInteraction = message as ExtendedInteraction;
+		const extMessage = message as ExtendedMessage;
 
-		let m: any;
+		let m: Message;
 
 		if (interaction) {
-			m = await int.followUp({
+			m = await extInteraction.followUp({
 				embeds: [options.embed],
 				components: rows,
 				fetchReply: true
 			});
 		} else if (!interaction) {
-			m = await mes.reply({ embeds: [options.embed], components: rows });
+			m = await extMessage.reply({ embeds: [options.embed], components: rows });
 		}
 
-		const collector = (m as ExtendedMessage).createMessageComponentCollector({
-			componentType: 'SELECT_MENU',
-			idle: 600000
+		const collector = m.createMessageComponentCollector({
+			componentType: ComponentType.StringSelect,
+			idle: ms('10m')
 		});
-		collector.on('collect', async (menu: any) => {
+		collector.on('collect', async (menu: StringSelectMenuInteraction) => {
 			const selected = menu.values[0];
 
 			if (type === 2) {
 				await menu.deferUpdate();
 				if (message.member.user.id !== menu.user.id)
-					return menu.followUp({
+					menu.followUp({
 						content: "You cannot access other's pagination."
 					});
 			} else await menu.deferReply({ ephemeral: true });
 
 			if (selected === 'delete_menuemb') {
 				if (message.member.user.id !== menu.user.id)
-					return menu.editReply({
+					menu.editReply({
 						content: "You cannot access other's pagination."
 					});
 				else collector.stop('delete');
@@ -171,24 +185,27 @@ export async function menuPages(
 			for (let i = 0; i < data.length; i++) {
 				if (selected === data[i].label) {
 					if (type === 1) {
-						menu.editReply({ embeds: [data[i].embed], ephemeral: true });
+						menu.editReply({ embeds: [data[i].embed] });
 					} else if (type === 2) {
 						menu.message.edit({ embeds: [data[i].embed] });
 					}
 				}
 			}
 		});
+
 		collector.on('end', async (collected: any, reason: string) => {
-			if (reason === 'delete') return await m.delete();
+			if (reason === 'delete') await m.delete();
 			if (collected.size === 0) {
 				m.edit({ embeds: [options.embed], components: [] });
 			}
 		});
 	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
-				'menuPages'
-			)} | Error: ${err.stack}`
-		);
+		if (options.strict)
+			throw new SimplyError({
+				function: 'menuPages',
+				title: 'An Error occured when running the function ',
+				tip: err.stack
+			});
+		else console.log(`SimplyError - menuPages | Error: ${err.stack}`);
 	}
 }
