@@ -160,7 +160,7 @@ export async function meme(
 				.setTitle(options.embed?.title || `${title}`)
 				.setURL(`${url}`)
 				.setImage(memeImage)
-				.setColor(options.embed?.color || '#87A8E2')
+				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
 
 			if (options.embed?.author) {

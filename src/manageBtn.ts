@@ -304,7 +304,7 @@ export async function manageBtn(
 							)
 							.setThumbnail(interaction.guild.iconURL())
 							.setTimestamp()
-							.setColor(options?.ticketSys?.embed?.color || '#87A8E2')
+							.setColor(options?.ticketSys?.embed?.color || '#406DBC')
 							.setFooter(
 								options.ticketSys?.embed?.credit === false
 									? options.ticketSys?.embed?.footer

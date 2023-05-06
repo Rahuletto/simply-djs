@@ -3,7 +3,7 @@
  * @param hex
  * @param type
  * @link `Documentation:` ***https://simplyd.js.org/docs/Others/toRgb***
- * @example simplydjs.toRgb('#87A8E2')
+ * @example simplydjs.toRgb('#406DBC')
  */
 
 import { ColorResolvable } from 'discord.js';

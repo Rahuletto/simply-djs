@@ -15,7 +15,7 @@ import {
  * simplydjs.someFunction(client, {
  *  title: "Example embed",
  *  description: "This is the embed that will be sent by simplydjs",
- *  color: simplydjs.toRgb('#87A8E2')
+ *  color: simplydjs.toRgb('#406DBC')
  * })
  *
  *

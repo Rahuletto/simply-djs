@@ -48,7 +48,7 @@ export async function bumpReminder(
 				'Its been 2 hours since last bump. Reminding the server members to bump again.'
 			)
 			.setTimestamp()
-			.setColor(toRgb('#87A8E2'))
+			.setColor(toRgb('#406DBC'))
 			.setFooter({ text: 'Do /bump to bump the server ;)' });
 
 		const thankyou: EmbedBuilder = new EmbedBuilder()

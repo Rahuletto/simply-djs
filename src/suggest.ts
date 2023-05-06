@@ -17,6 +17,7 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
 import { MessageButtonStyle } from './Others/MessageButtonStyle';
 import { ms } from './Others/ms';
+import { toRgb } from './Others/toRgb';
 import { Document as Doc } from 'mongoose';
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/types/buttonTemplate*
@@ -102,7 +103,7 @@ export async function suggest(
 					text: '©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/u8VlLom.png'
 				},
-				color: '#87A8E2',
+				color: toRgb('#406DBC'),
 				title: 'New Suggestion'
 			};
 		}
@@ -169,7 +170,7 @@ export async function suggest(
 					`Is this your suggestion ? \`${suggestion}\``
 			)
 			.setTimestamp()
-			.setColor(options.embed?.color || '#87A8E2')
+			.setColor(options.embed?.color || toRgb('#406DBC'))
 			.setFooter(
 				options.embed?.footer
 					? options.embed?.footer
@@ -221,7 +222,7 @@ export async function suggest(
 							forceStatic: false
 						})
 					})
-					.setColor(options.embed?.color || '#87A8E2')
+					.setColor(options.embed?.color || toRgb('#406DBC'))
 					.setFooter(
 						options.embed?.footer
 							? options.embed?.footer

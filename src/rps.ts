@@ -112,7 +112,7 @@ export async function rps(
 					text: '©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/u8VlLom.png'
 				},
-				color: '#87A8E2',
+				color: '#406DBC',
 				title: 'Rock Paper Scissor !',
 				credit: true
 			};
@@ -201,7 +201,7 @@ export async function rps(
 						dynamic: true
 					})
 				})
-				.setColor(options.embed?.color || `#87A8E2`)
+				.setColor(options.embed?.color || `#406DBC`)
 				.setFooter(
 					options.embed?.credit
 						? options.embed?.footer

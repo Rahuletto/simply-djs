@@ -1,6 +1,5 @@
 import {
 	EmbedBuilder,
-	Message,
 	ButtonBuilder,
 	ActionRowBuilder,
 	ButtonStyle,
@@ -12,7 +11,7 @@ import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 import { SimplyError } from './Error/Error';
 import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
 import { MessageButtonStyle } from './Others/MessageButtonStyle';
-
+import { toRgb } from './Others/toRgb';
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -132,7 +131,7 @@ export async function ticketSetup(
 					text: '©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/u8VlLom.png'
 				},
-				color: '#87A8E2',
+				color: toRgb('#406DBC'),
 				title: 'Ticket Support'
 			};
 		}
@@ -143,7 +142,7 @@ export async function ticketSetup(
 
 		const embed = new EmbedBuilder()
 			.setTitle(options.embed?.title || 'Ticket Support')
-			.setColor(options.embed?.color || '#87A8E2')
+			.setColor(options.embed?.color || toRgb('#406DBC'))
 			.setDescription(
 				options.embed?.description ||
 					'🎫 Open a ticket by interacting with the button 🎫'

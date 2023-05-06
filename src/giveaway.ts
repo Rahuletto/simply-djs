@@ -15,6 +15,7 @@ import {
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
 import model from './model/gSys';
+import { toRgb } from './Others/toRgb';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -163,9 +164,8 @@ export async function giveawaySystem(
 						text: '©️ Rahuletto. npm i simply-djs',
 						iconURL: 'https://i.imgur.com/u8VlLom.png'
 					},
-					color: '#87A8E2',
-					title: 'Giveaways',
-					credit: true
+					color: toRgb('#406DBC'),
+					title: 'Giveaways'
 				};
 			}
 
@@ -329,7 +329,7 @@ export async function giveawaySystem(
 						.replaceAll('{winCount}', winners)
 						.replaceAll('{entered}', '0') || prize
 				)
-				.setColor(options.embed?.color || '#87A8E2')
+				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setTimestamp(Number(Date.now() + time))
 				.setFooter(
 					options.embed?.credit === false

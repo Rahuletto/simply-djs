@@ -112,7 +112,7 @@ export async function calculator(
 					text: '©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/u8VlLom.png'
 				},
-				color: '#87A8E2'
+				color: toRgb('#406DBC')
 			};
 		}
 
@@ -151,7 +151,7 @@ export async function calculator(
 		}
 
 		const embed = new EmbedBuilder()
-			.setColor(options.embed?.color || '#87A8E2')
+			.setColor(options.embed?.color || toRgb('#406DBC'))
 			.setFooter(
 				options.embed?.footer
 					? options.embed?.footer

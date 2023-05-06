@@ -1,6 +1,7 @@
 import { EmbedBuilder, Message } from 'discord.js';
 import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
 import { SimplyError } from './Error/Error';
+import { toRgb } from './Others/toRgb';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -49,7 +50,7 @@ export async function ghostPing(
 								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/u8VlLom.png'
 							},
-							color: '#87A8E2'
+							color: toRgb('#406DBC')
 						};
 					}
 
@@ -69,7 +70,7 @@ export async function ghostPing(
 									message.mentions.users.first().tag
 								})**\n\nContent: **${message.content}**`
 						)
-						.setColor(options.embed?.color || '#87A8E2')
+						.setColor(options.embed?.color || toRgb('#406DBC'))
 						.setFooter(
 							options.embed?.footer
 								? options.embed?.footer

@@ -133,7 +133,7 @@ export async function tictactoe(
 					name: (message.member.user as User).tag,
 					iconURL: (message.member.user as User).displayAvatarURL()
 				})
-				.setColor(options.embed?.color || `#87A8E2`)
+				.setColor(options.embed?.color || `#406DBC`)
 				.setFooter(
 					options.embed?.credit === false
 						? options.embed?.footer
@@ -260,7 +260,7 @@ export async function tictactoe(
 
 					const epm = new MessageEmbed()
 						.setTitle('Lets play TicTacToe.')
-						.setColor(options.embed?.color || '#87A8E2')
+						.setColor(options.embed?.color || '#406DBC')
 						.setFooter(
 							options.embed?.credit === false
 								? options.embed?.footer

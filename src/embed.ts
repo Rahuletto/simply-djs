@@ -10,6 +10,7 @@ import {
 	Permissions
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import { toRgb } from './Others/toRgb';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -124,8 +125,7 @@ export async function embedCreate(
 						text: '©️ Rahuletto. npm i simply-djs',
 						iconURL: 'https://i.imgur.com/u8VlLom.png'
 					},
-					color: '#87A8E2',
-					credit: true
+					color: toRgb('#406DBC')
 				};
 			}
 
@@ -158,7 +158,7 @@ export async function embedCreate(
 				.setImage(
 					'https://media.discordapp.net/attachments/885411032128978955/955066865347076226/unknown.png'
 				)
-				.setColor(options.embed?.color || '#87A8E2')
+				.setColor(options.embed?.color || '#406DBC')
 				.setFooter(
 					options.embed?.credit === false
 						? options.embed?.footer
