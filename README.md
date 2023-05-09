@@ -21,8 +21,14 @@ Simply-DJS Reimagined.
 + buttonPages.ts (previously embedPages.ts)
 + ghostPing.ts
 - giveaway.ts
-- manageBtn.ts (Will update last)
-- manageSug.ts (Will update last)
+
+# ---------(Will update last)------------------
++ manageBtnRole.ts (Splitted from manageBtn.ts)
+- manageGiveaway.ts (Splitted from manageBtn.ts)
+- manageSuggest.ts (previously manageSug.ts)
+- manageTicket.ts (Splitted from manageBtn.ts)
+# ---------------------------------------------
+
 + meme.ts (automeme.ts)
 + menuPages.ts
 + nqn.ts

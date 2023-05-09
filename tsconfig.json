@@ -16,7 +16,7 @@
 		"strictNullChecks": false,
 		"declaration": true,
 		"declarationDir": "typings",
-		"allowJs": true,
+		"allowJs": false,
 		"allowSyntheticDefaultImports": true,
 		"noImplicitAny": true
 	}
