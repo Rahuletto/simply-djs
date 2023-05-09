@@ -17,7 +17,7 @@ Simply-DJS Reimagined.
 + chatbot.ts
 # clickBtn.ts (Removed)
 + connect.ts
-- embed.ts
++ embedCreator.ts (previously embedCreate.ts)
 + buttonPages.ts (previously embedPages.ts)
 + ghostPing.ts
 - giveaway.ts
@@ -27,7 +27,7 @@ Simply-DJS Reimagined.
 + menuPages.ts
 + nqn.ts
 - rps.ts
-- starboard.ts
+- starboard.ts (Removed)
 - stealEmoji.ts
 + suggest.ts (previously suggestSystem.ts)
 # suggestBtn.ts (Removed)
@@ -47,5 +47,5 @@ Simply-DJS Reimagined.
 @@ Variable names that just make sense @@
 @@ Renamed functions @@
 
-- Removing `credit` option
+- Removed `credit` option
 ```

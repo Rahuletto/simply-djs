@@ -54,7 +54,7 @@ export { bumpReminder } from './src/bumpReminder';
 export { calculator } from './src/calculator';
 export { connect } from './src/connect';
 export { chatbot } from './src/chatbot';
-export { embedCreate } from './src/embed';
+export { embedCreate } from './src/embedCreator';
 export { buttonPages } from './src/buttonPages';
 export { ghostPing } from './src/ghostPing';
 export { giveawaySystem } from './src/giveaway';

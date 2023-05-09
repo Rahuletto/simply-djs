@@ -110,7 +110,7 @@ export async function rps(
 			options.embed = {
 				footer: {
 					text: '©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
+					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				},
 				color: '#406DBC',
 				title: 'Rock Paper Scissor !',
@@ -152,7 +152,7 @@ export async function rps(
 					? options.embed?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					  }
 			);
 
@@ -207,7 +207,7 @@ export async function rps(
 						? options.embed?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
-								iconURL: 'https://i.imgur.com/u8VlLom.png'
+								iconURL: 'https://i.imgur.com/XFUIwPh.png'
 						  }
 				);
 
@@ -346,7 +346,7 @@ export async function rps(
 												? options.embed?.footer
 												: {
 														text: '©️ Rahuletto. npm i simply-djs',
-														iconURL: 'https://i.imgur.com/u8VlLom.png'
+														iconURL: 'https://i.imgur.com/XFUIwPh.png'
 												  }
 										)
 								],
@@ -400,7 +400,7 @@ export async function rps(
 												? options.embed?.footer
 												: {
 														text: '©️ Rahuletto. npm i simply-djs',
-														iconURL: 'https://i.imgur.com/u8VlLom.png'
+														iconURL: 'https://i.imgur.com/XFUIwPh.png'
 												  }
 										)
 								],
@@ -456,7 +456,7 @@ export async function rps(
 												? options.embed?.footer
 												: {
 														text: '©️ Rahuletto. npm i simply-djs',
-														iconURL: 'https://i.imgur.com/u8VlLom.png'
+														iconURL: 'https://i.imgur.com/XFUIwPh.png'
 												  }
 										)
 								],
@@ -495,7 +495,7 @@ export async function rps(
 										? options.embed?.footer
 										: {
 												text: '©️ Rahuletto. npm i simply-djs',
-												iconURL: 'https://i.imgur.com/u8VlLom.png'
+												iconURL: 'https://i.imgur.com/XFUIwPh.png'
 										  }
 								)
 								.setTitle('Game Declined!')

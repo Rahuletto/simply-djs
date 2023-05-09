@@ -101,7 +101,7 @@ export async function suggest(
 			options.embed = {
 				footer: {
 					text: '©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
+					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				},
 				color: toRgb('#406DBC'),
 				title: 'New Suggestion'
@@ -176,7 +176,7 @@ export async function suggest(
 					? options.embed?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					  }
 			);
 
@@ -228,7 +228,7 @@ export async function suggest(
 							? options.embed?.footer
 							: {
 									text: '©️ Rahuletto. npm i simply-djs',
-									iconURL: 'https://i.imgur.com/u8VlLom.png'
+									iconURL: 'https://i.imgur.com/XFUIwPh.png'
 							  }
 					)
 					.addFields(

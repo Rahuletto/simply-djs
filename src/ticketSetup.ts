@@ -129,7 +129,7 @@ export async function ticketSetup(
 			options.embed = {
 				footer: {
 					text: '©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
+					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				},
 				color: toRgb('#406DBC'),
 				title: 'Ticket Support'
@@ -154,7 +154,7 @@ export async function ticketSetup(
 					? options.embed?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					  }
 			);
 

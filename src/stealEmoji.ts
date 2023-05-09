@@ -178,7 +178,7 @@ export async function stealEmoji(
 									? options.embed?.footer
 									: {
 											text: '©️ Rahuletto. npm i simply-djs',
-											iconURL: 'https://i.imgur.com/u8VlLom.png'
+											iconURL: 'https://i.imgur.com/XFUIwPh.png'
 									  }
 							);
 
@@ -240,7 +240,7 @@ export async function stealEmoji(
 									? options.embed?.footer
 									: {
 											text: '©️ Rahuletto. npm i simply-djs',
-											iconURL: 'https://i.imgur.com/u8VlLom.png'
+											iconURL: 'https://i.imgur.com/XFUIwPh.png'
 									  }
 							);
 

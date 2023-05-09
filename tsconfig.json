@@ -17,6 +17,7 @@
 		"declaration": true,
 		"declarationDir": "typings",
 		"allowJs": true,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": true
 	}
 }

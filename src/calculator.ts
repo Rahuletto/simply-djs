@@ -110,7 +110,7 @@ export async function calculator(
 			options.embed = {
 				footer: {
 					text: '©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
+					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				},
 				color: toRgb('#406DBC')
 			};
@@ -157,7 +157,7 @@ export async function calculator(
 					? options.embed?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					  }
 			)
 			.setDescription(

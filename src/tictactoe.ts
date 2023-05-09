@@ -139,7 +139,7 @@ export async function tictactoe(
 						? options.embed?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
-								iconURL: 'https://i.imgur.com/u8VlLom.png'
+								iconURL: 'https://i.imgur.com/XFUIwPh.png'
 						  }
 				);
 
@@ -266,7 +266,7 @@ export async function tictactoe(
 								? options.embed?.footer
 								: {
 										text: '©️ Rahuletto. npm i simply-djs',
-										iconURL: 'https://i.imgur.com/u8VlLom.png'
+										iconURL: 'https://i.imgur.com/XFUIwPh.png'
 								  }
 						)
 						.setTimestamp();
@@ -685,7 +685,7 @@ export async function tictactoe(
 								? options.embed?.footer
 								: {
 										text: '©️ Rahuletto. npm i simply-djs',
-										iconURL: 'https://i.imgur.com/u8VlLom.png'
+										iconURL: 'https://i.imgur.com/XFUIwPh.png'
 								  }
 						)
 						.setDescription('Ran out of time!\nTime limit: `30s`');
@@ -707,7 +707,7 @@ export async function tictactoe(
 								? options.embed?.footer
 								: {
 										text: '©️ Rahuletto. npm i simply-djs',
-										iconURL: 'https://i.imgur.com/u8VlLom.png'
+										iconURL: 'https://i.imgur.com/XFUIwPh.png'
 								  }
 						)
 						.setDescription('The Opponent decided not to play.');

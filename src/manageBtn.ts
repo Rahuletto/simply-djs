@@ -310,7 +310,7 @@ export async function manageBtn(
 									? options.ticketSys?.embed?.footer
 									: {
 											text: '©️ Rahuletto. npm i simply-djs',
-											iconURL: 'https://i.imgur.com/u8VlLom.png'
+											iconURL: 'https://i.imgur.com/XFUIwPh.png'
 									  }
 							);
 
