@@ -64,7 +64,7 @@ export { menuPages } from './src/menuPages';
 export { nqn } from './src/nqn';
 export { rps } from './src/rps';
 export { starboard } from './src/starboard';
-export { stealEmoji } from './src/stealEmoji';
+export { stealEmoji } from './src/DEP-stealEmoji';
 export { suggest } from './src/suggest';
 export { ticketSetup } from './src/ticketSetup';
 export { tictactoe } from './src/tictactoe';

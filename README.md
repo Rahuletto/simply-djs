@@ -27,8 +27,8 @@ Simply-DJS Reimagined.
 + menuPages.ts
 + nqn.ts
 - rps.ts
-- starboard.ts (Removed)
-- stealEmoji.ts
+- starboard.ts
+# stealEmoji.ts (Removed)
 + suggest.ts (previously suggestSystem.ts)
 # suggestBtn.ts (Removed)
 + ticketSetup.ts (previously ticketSystem.ts)

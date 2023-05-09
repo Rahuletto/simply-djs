@@ -104,6 +104,10 @@ export async function btnRole(
 					title: 'Reached the limit of 25 buttons..',
 					tip: 'Discord allows only 25 buttons in a message. Send a new message with more buttons.'
 				});
+			else
+				console.log(
+					`SimplyError - btnRole | Error: Reached the limit of 25 buttons..\n\nDiscord allows only 25 buttons in a message. Send a new message with more buttons.`
+				);
 		}
 
 		// Generates buttons from the data provided
