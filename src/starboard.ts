@@ -1,32 +1,22 @@
 import {
-	Client,
-	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
-	MessageEmbed,
-	MessageEmbedAuthor,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	EmbedBuilder,
 	MessageReaction,
 	TextChannel
 } from 'discord.js';
 import { SimplyError } from './Error/Error';
 import { ExtendedMessage } from './interfaces';
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/Systems/starboard#starboardembed*
- */
-
-interface StarboardEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	description?: string;
-	color?: ColorResolvable;
-}
+import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
 
 export type starboardOption = {
-	embed?: StarboardEmbed;
+	embed?: CustomizableEmbed;
 	channelId?: string;
-	min?: number | string;
+	min?: number;
 	emoji?: string;
+
+	strict?: boolean;
 };
 
 // ------------------------------
@@ -37,7 +27,6 @@ export type starboardOption = {
  * Efficient yet Simplest starboard system ever existed !
  *
  * `NOTE:` **Only Use it in `messageReactionAdd`, `messageReactionRemove` and `messageDelete` events.**
- * @param client
  * @param reaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/starboard***
@@ -45,108 +34,139 @@ export type starboardOption = {
  */
 
 export async function starboard(
-	client: Client,
-	reaction: MessageReaction | ExtendedMessage,
+	reactionOrMessage: MessageReaction | ExtendedMessage,
 	options: starboardOption = {}
 ) {
-	const min = options.min || 2;
-	let m: ExtendedMessage = reaction as ExtendedMessage;
-	let r: MessageReaction = reaction as MessageReaction;
-	if ((reaction as ExtendedMessage).id)
-		(m as ExtendedMessage | MessageReaction) = reaction;
-	else r = reaction as MessageReaction;
+	const { client } = reactionOrMessage;
+	const minimumRequired = options.min || 2;
+	let extMessage: ExtendedMessage = reactionOrMessage as ExtendedMessage;
+	let react: MessageReaction = reactionOrMessage as MessageReaction;
+	if ((reactionOrMessage as ExtendedMessage).id)
+		extMessage = reactionOrMessage as ExtendedMessage;
+	else react = reactionOrMessage as MessageReaction;
 
-	if (!min || min == NaN || min == 0)
-		throw new SimplyError({
-			name: 'MIN_IS_NAN | Minimum number of stars [min] option is Not A Number.',
-			tip: `Expected an Integer/Number. Received ${min || 'undefined'}.`
-		});
+	if (
+		!minimumRequired ||
+		Number.isNaN(minimumRequired) ||
+		minimumRequired == 0
+	) {
+		if (options.strict)
+			throw new SimplyError({
+				function: 'starboard',
+				title: `Minimum number of stars [min] option is not a number.`,
+				tip: `Expected an Integer/Number. Received ${
+					minimumRequired || 'undefined'
+				}.`
+			});
+		else
+			console.log(
+				`SimplyError - starboard | Minimum number of stars [min] option is not a number.\n\nExpected an Integer/Number. Received ${
+					minimumRequired || 'undefined'
+				}.`
+			);
+	}
 
-	if (!options.channelId)
-		throw new SimplyError({
-			name: 'Provide an Channel ID to set the starboard channel'
-		});
-
+	if (!options.channelId) {
+		if (options.strict)
+			throw new SimplyError({
+				function: 'starboard',
+				title: `Provide an Channel ID to set the starboard channel`
+			});
+		else
+			console.log(
+				`SimplyError - starboard | Provide an Channel ID to set the starboard channel`
+			);
+	}
 	try {
-		if (m || (reaction as ExtendedMessage).id) {
+		if (extMessage || (reactionOrMessage as ExtendedMessage).id) {
 			let starboard = await client.channels.fetch(options.channelId, {
 				cache: true
 			});
 
-			if (!m.guild) return;
+			if (!extMessage.guild) return;
 
-			if (!starboard)
-				throw new SimplyError({
-					name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
-					tip: 'Check the permissions (or) Try using another Channel ID'
-				});
+			if (!starboard) {
+				if (options.strict)
+					throw new SimplyError({
+						function: 'starboard',
+						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
+						tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
+							options.channelId || 'undefined'
+						}`
+					});
+				else
+					console.log(
+						`SimplyError - starboard | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\n Received ${
+							options.channelId || 'undefined'
+						}`
+					);
+			}
 
-			starboard = await m.guild.channels.fetch(options.channelId, {
-				cache: true
-			});
-
-			if (!starboard) return;
-
-			const msz = await (starboard as TextChannel)?.messages.fetch({
+			const messages = await (starboard as TextChannel)?.messages.fetch({
 				limit: 100
 			});
 
-			const exist = msz.find(
-				(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + m.id
+			const existing = messages.find(
+				(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + extMessage.id
 			);
 
-			if (exist) {
-				await exist.delete();
+			if (existing) {
+				await existing.delete();
 			}
-		} else if (r) {
+		} else if (react) {
 			if (
-				r.emoji.id == options.emoji ||
-				r.emoji.name == '⭐' ||
-				r.emoji.name == '🌟'
+				react.emoji.id == options.emoji ||
+				react.emoji.name == '⭐' ||
+				react.emoji.name == '🌟'
 			) {
-				const minmax = r.count;
-				if (minmax < min) return;
+				const minmax = react.count;
+				if (minmax < minimumRequired) return;
 
 				let starboard = await client.channels.fetch(options.channelId, {
 					cache: true
 				});
 
-				if (!r.message.guild) return;
+				if (!react.message.guild) return;
 
-				if (!starboard)
-					throw new SimplyError({
-						name: `INVALID_CHID - ${options.channelId} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
-						tip: 'Check the permissions (or) Try using another Channel ID'
-					});
+				if (!starboard) {
+					if (options.strict)
+						throw new SimplyError({
+							function: 'starboard',
+							title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
+							tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
+								options.channelId || 'undefined'
+							}`
+						});
+					else
+						console.log(
+							`SimplyError - starboard | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\n Received ${
+								options.channelId || 'undefined'
+							}`
+						);
+				}
 
-				starboard = await r.message?.guild.channels?.fetch(options.channelId, {
-					cache: true
-				});
-
-				if (!starboard) return;
-
-				if (r.count == 0 || !r.count) {
-					const msz = await (starboard as TextChannel)?.messages.fetch({
+				if (react.count == 0 || !react.count) {
+					const messages = await (starboard as TextChannel)?.messages.fetch({
 						limit: 100
 					});
 
-					const exist = msz.find(
-						(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + m.id
+					const existing = messages.find(
+						(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + extMessage.id
 					);
 
-					if (exist) {
-						await exist.delete();
+					if (existing) {
+						await existing.delete();
 					}
 				}
 
-				const fetch = await r.message.fetch();
+				const fetch = await react.message.fetch();
 
 				const attachment = fetch.attachments.first();
 				const url = attachment ? attachment.url : null;
 
 				if (fetch.embeds.length !== 0) return;
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor(
 						options.embed?.author || {
 							name: fetch.author.tag,
@@ -159,47 +179,56 @@ export async function starboard(
 					.setURL(fetch.url)
 					.setFooter({ text: '⭐ | ID: ' + fetch.id });
 
+				if (options.embed.fields) embed.setFields(options.embed.fields);
+				if (options.embed.thumbnail)
+					embed.setThumbnail(options.embed.thumbnail);
+				if (options.embed.timestamp)
+					embed.setTimestamp(options.embed.timestamp);
+
 				if (url) {
 					embed.setImage(url);
 				}
 
-				const msz = await (starboard as TextChannel)?.messages.fetch({
+				const messages = await (starboard as TextChannel)?.messages.fetch({
 					limit: 100
 				});
 
-				const emo = options.emoji
+				const starEmoji = options.emoji
 					? client.emojis.cache.get(options?.emoji) || '⭐'
 					: '⭐';
 
-				const btn = new MessageButton()
-					.setLabel((r.count ? r.count : 1).toString())
-					.setEmoji(emo)
+				const btn = new ButtonBuilder()
+					.setLabel((react.count ? react.count : 1).toString())
+					.setEmoji(starEmoji)
 					.setCustomId('starboard')
 					.setDisabled(true)
-					.setStyle('PRIMARY');
+					.setStyle(ButtonStyle.Primary);
 
-				const btn2 = new MessageButton()
+				const link = new ButtonBuilder()
 					.setLabel(`Jump to message`)
-					.setStyle('LINK')
+					.setStyle(ButtonStyle.Link)
 					.setURL(fetch.url);
 
-				const row = new MessageActionRow().addComponents([btn, btn2]);
+				const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+					btn,
+					link
+				]);
 
-				const exist = msz.find(
+				const existing = messages.find(
 					(msg) => msg.embeds[0]?.footer?.text == '⭐ | ID: ' + fetch.id
 				);
 
-				if (exist) {
-					if (r.count < min) return await exist.delete();
+				if (existing) {
+					if (react.count < minimumRequired) return await existing.delete();
 					else
-						await exist.edit({
-							content: `**${emo} ${r.count}**`,
+						await existing.edit({
+							content: `**${starEmoji} ${react.count}**`,
 							embeds: [embed],
 							components: [row]
 						});
 				} else {
 					await (starboard as TextChannel).send({
-						content: `**${emo} ${r.count}**`,
+						content: `**${starEmoji} ${react.count}**`,
 						embeds: [embed],
 						components: [row]
 					});
@@ -207,10 +236,12 @@ export async function starboard(
 			}
 		}
 	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
-				'starboard'
-			)} | Error: ${err.stack}`
-		);
+		if (options.strict)
+			throw new SimplyError({
+				function: 'starboard',
+				title: 'An Error occured when running the function ',
+				tip: err.stack
+			});
+		else console.log(`SimplyError - starboard | Error: ${err.stack}`);
 	}
 }

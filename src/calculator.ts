@@ -165,6 +165,7 @@ export async function calculator(
 					(options.embed?.description ? `\n${options.embed?.description}` : '')
 			);
 
+		if (options.embed.fields) embed.setFields(options.embed.fields);
 		if (options.embed.author) embed.setAuthor(options.embed.author);
 		if (options.embed.image) embed.setImage(options.embed.image);
 		if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);

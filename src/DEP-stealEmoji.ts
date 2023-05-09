@@ -184,6 +184,7 @@ export async function stealEmoji(
 									  }
 							);
 
+						if (options.embed.fields) embed.setFields(options.embed.fields);
 						if (options.embed.author) embed.setAuthor(options.embed.author);
 						if (options.embed.image) embed.setImage(options.embed.image);
 						if (options.embed.thumbnail)
@@ -269,6 +270,7 @@ export async function stealEmoji(
 							embed.setTimestamp(options.embed.timestamp);
 						if (options.embed?.title) embed.setTitle(options.embed?.title);
 						if (options.embed?.url) embed.setURL(options.embed?.url);
+						if (options.embed.fields) embed.setFields(options.embed.fields);
 
 						if (interaction) {
 							await extInteraction.followUp({

@@ -21,14 +21,14 @@ Simply-DJS Reimagined.
 + buttonPages.ts (previously embedPages.ts)
 + ghostPing.ts
 - giveaway.ts
-- manageBtn.ts
-- manageSug.ts
+- manageBtn.ts (Will update last)
+- manageSug.ts (Will update last)
 + meme.ts (automeme.ts)
 + menuPages.ts
 + nqn.ts
 - rps.ts
-- starboard.ts
-# stealEmoji.ts (Removed)
++ starboard.ts
++ stealEmoji.ts (Deprecated. Will be removed)
 + suggest.ts (previously suggestSystem.ts)
 # suggestBtn.ts (Removed)
 + ticketSetup.ts (previously ticketSystem.ts)
@@ -39,9 +39,9 @@ Simply-DJS Reimagined.
 
 ```diff
 + All new `strict` mode.
++ Proper Typings and Commenting
 + Totally Promise Based
 + ChatGPT integration in chatbot
-+ Proper Commenting
 + Super Customizable embed ! (Make your bot yours)
 
 @@ Variable names that just make sense @@

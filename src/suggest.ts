@@ -180,10 +180,13 @@ export async function suggest(
 					  }
 			);
 
-		if (options.embed.author) embed.setAuthor(options.embed.author);
 		if (options.embed.fields) embed.setFields(options.embed.fields);
+		if (options.embed.author) embed.setAuthor(options.embed.author);
 		if (options.embed.image) embed.setImage(options.embed.image);
 		if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
+		if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
+		if (options.embed?.title) embed.setTitle(options.embed?.title);
+		if (options.embed?.url) embed.setURL(options.embed?.url);
 
 		let m: Message | InteractionResponse;
 

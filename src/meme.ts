@@ -3,6 +3,7 @@ import { Client, EmbedBuilder, TextChannel, Channel } from 'discord.js';
 import { https } from './Others/https';
 import { SimplyError } from './Error/Error';
 import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
+import { toRgb } from './Others/toRgb';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -163,12 +164,13 @@ export async function meme(
 				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
 
-			if (options.embed?.author) {
-				embed.setAuthor(options.embed.author);
-			}
-			if (options.embed?.description) {
-				embed.setDescription(options.embed.description);
-			}
+			if (options.embed.fields) embed.setFields(options.embed.fields);
+			if (options.embed.author) embed.setAuthor(options.embed.author);
+			if (options.embed.image) embed.setImage(options.embed.image);
+			if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
+			if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
+			if (options.embed?.title) embed.setTitle(options.embed?.title);
+			if (options.embed?.url) embed.setURL(options.embed?.url);
 
 			await (channel as TextChannel).send({ embeds: [embed] });
 		}, interval);
