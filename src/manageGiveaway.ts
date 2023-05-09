@@ -119,7 +119,7 @@ type rerolly = {
  * @example simplydjs.manageBtn(interaction)
  */
 
-export async function manageBtnRole(
+export async function manageGiveaway(
 	interaction: ButtonInteraction,
 	options: manageBtnOptions = { ticketSys: { timed: true } }
 ): Promise<ticketDelete | rerolly> {

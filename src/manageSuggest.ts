@@ -30,7 +30,7 @@ export type manageSugOptions = {
  * @example simplydjs.manageSug(interaction)
  */
 
-export async function manageSug(
+export async function manageSuggest(
 	interaction: ButtonInteraction,
 	options: manageSugOptions = {}
 ) {

@@ -58,8 +58,6 @@ export { embedCreator } from './src/embedCreator';
 export { buttonPages } from './src/buttonPages';
 export { ghostPing } from './src/ghostPing';
 export { giveawaySystem } from './src/giveaway';
-export { manageBtn } from './src/manageBtnRole';
-export { manageSug } from './src/manageSuggest';
 export { menuPages } from './src/menuPages';
 export { nqn } from './src/nqn';
 export { rps } from './src/rps';
@@ -68,6 +66,15 @@ export { stealEmoji } from './src/DEP-stealEmoji';
 export { suggest } from './src/suggest';
 export { ticketSetup } from './src/ticketSetup';
 export { tictactoe } from './src/tictactoe';
+
+// ------------------------------
+// ------- S Y S T E M S --------
+// ------------------------------
+
+export { manageBtnRole } from './src/manageBtnRole';
+export { manageGiveaway } from './src/manageGiveaway';
+export { manageTicket } from './src/manageTicket';
+export { manageSuggest } from './src/manageSuggest';
 
 // ------------------------------
 // ---- D E P R E C A T E D -----
