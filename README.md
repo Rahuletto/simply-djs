@@ -38,7 +38,7 @@ Simply-DJS Reimagined.
 + suggest.ts (previously suggestSystem.ts)
 # suggestBtn.ts (Removed)
 + ticketSetup.ts (previously ticketSystem.ts)
-- tictactoe.ts
++ tictactoe.ts
 ```
 
 ## Whats new ?
@@ -48,7 +48,8 @@ Simply-DJS Reimagined.
 + Proper Typings and Commenting
 + Totally Promise Based
 + ChatGPT integration in chatbot
-+ Super Customizable embed ! (Make your bot yours)
++ Super Customizable embed ! (Can override default embeds completely.)
++ A New, Efficient and Bug-free tictactoe engine
 
 @@ Variable names that just make sense @@
 @@ Renamed functions @@

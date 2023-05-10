@@ -220,7 +220,6 @@ export async function giveawaySystem(
 
 				ch =
 					options.channel ||
-					// @ts-ignore
 					message.mentions.channels.first() ||
 					message.channel;
 				time = options.time || args[1] || '1h';

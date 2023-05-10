@@ -29,6 +29,7 @@ interface Embeds {
 	request?: CustomizableEmbed;
 	win?: CustomizableEmbed;
 	draw?: CustomizableEmbed;
+	game?: CustomizableEmbed;
 	timeout?: CustomizableEmbed;
 	decline?: CustomizableEmbed;
 }
@@ -214,6 +215,10 @@ export async function rps(
 						})
 					}
 				)
+				.setDescription(
+					options.embed?.request?.description ||
+						'You are invited to play Rock Paper Scissors'
+				)
 				.setColor(options.embed?.request?.color || toRgb(`#406DBC`))
 				.setFooter(
 					options.embed?.request?.footer
@@ -277,20 +282,55 @@ export async function rps(
 					return;
 				}
 
-				requestEmbed
-					.setTitle(`${(message.member.user as User).tag} VS. ${opponent.tag}`)
-					.setDescription('Select 🪨, 📄, or ✂️');
+				const gameEmbed = new EmbedBuilder()
+					.setTitle(
+						options.embed?.game?.title ||
+							`${(message.member.user as User).tag} VS. ${opponent.tag}`
+					)
+					.setAuthor(
+						options.embed?.game?.author || {
+							name: (message.member.user as User).tag,
+							iconURL: (message.member.user as User).displayAvatarURL({
+								forceStatic: false
+							})
+						}
+					)
+					.setDescription(
+						options.embed?.game?.description || 'Select 🪨, 📄, or ✂️'
+					)
+					.setColor(options.embed?.game?.color || toRgb(`#406DBC`))
+					.setFooter(
+						options.embed?.game?.footer
+							? options.embed?.game?.footer
+							: {
+									text: '©️ Rahuletto. npm i simply-djs',
+									iconURL: 'https://i.imgur.com/XFUIwPh.png'
+							  }
+					);
+
+				if (options.embed.game?.fields)
+					gameEmbed.setFields(options.embed?.game?.fields);
+				if (options.embed.game?.author)
+					gameEmbed.setAuthor(options.embed?.game?.author);
+				if (options.embed.game?.image)
+					gameEmbed.setImage(options.embed?.game?.image);
+				if (options.embed.game?.thumbnail)
+					gameEmbed.setThumbnail(options.embed?.game?.thumbnail);
+				if (options.embed.game?.timestamp)
+					gameEmbed.setTimestamp(options.embed?.game?.timestamp);
+				if (options.embed?.game?.url)
+					gameEmbed.setURL(options.embed?.game?.url);
 
 				if (interaction) {
 					await extInteraction.editReply({
 						content: '**Its time.. for RPS.**',
-						embeds: [requestEmbed],
+						embeds: [gameEmbed],
 						components: [rpsComponents]
 					});
 				} else if (!interaction) {
 					await (m as Message).edit({
 						content: '**Its time.. for RPS.**',
-						embeds: [requestEmbed],
+						embeds: [gameEmbed],
 						components: [rpsComponents]
 					});
 				}
