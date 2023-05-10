@@ -192,8 +192,6 @@ export async function calculator(
 			});
 		}
 
-		const time = ms('5m'); // 5 minutes
-
 		let elem = '0';
 
 		const filter = (button: ButtonInteraction) =>
@@ -204,7 +202,7 @@ export async function calculator(
 		const collector = msg.createMessageComponentCollector({
 			filter: filter,
 			componentType: ComponentType.Button,
-			time: time
+			time: ms('5m')
 		});
 
 		collector.on('end', (collected) =>
@@ -297,7 +295,7 @@ export async function calculator(
 					await msg.edit({ embeds: [embed], components: [] }).catch(() => {});
 				}
 			}
-		}, time);
+		}, ms('5m'));
 
 		function addRow(btns: ButtonBuilder[]) {
 			const row1 = new ActionRowBuilder<ButtonBuilder>();

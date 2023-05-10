@@ -1,107 +1,19 @@
-import {
-	MessageEmbed,
-	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
-	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
-	ButtonInteraction,
-	MessageButtonStyle,
-	User,
-	MessageAttachment,
-	GuildMember,
-	TextChannel,
-	Role,
-	EmbedFieldData,
-	GuildMemberManager
-} from 'discord.js';
-
+import { ButtonInteraction, GuildMember } from 'discord.js';
 import gsys from './model/gSys';
 
-// ------------------------------
-// ----- I N T E R F A C E ------
-// ------------------------------
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
- */
-
-interface btnTemplate {
-	style?: MessageButtonStyle;
-	label?: string;
-	emoji?: string;
-}
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#ticketbtn*
- */
-
-interface ticketBtn {
-	close: btnTemplate;
-	reopen: btnTemplate;
-	delete: btnTemplate;
-	transcript: btnTemplate;
-}
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
- */
-
-interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
-
-	credit?: boolean;
-}
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#ticketsys*
- */
-
-interface ticketSys {
-	ticketname?: string;
-	buttons?: ticketBtn;
-	pingRole?: string | string[];
-	category?: string;
-	timed?: boolean;
-	embed?: CustomizableEmbed;
-
-	logChannelId?: string;
-}
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtn#btnrole*
- */
-
-interface btnRole {
-	addedMsg: string;
-	removedMsg: string;
-}
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-export type manageBtnOptions = {
-	ticketSys?: ticketSys;
-	btnRole?: btnRole;
+export type manageGiveawayOptions = {
+	strict?: boolean;
 };
 
 // ------------------------------
 // ------- P R O M I S E --------
 // ------------------------------
 
-type ticketDelete = {
-	type?: 'Delete';
-	channelId?: string;
-	user?: User;
-	data?: MessageAttachment;
-};
-
-type rerolly = {
+type RerollResolve = {
 	type?: 'Reroll';
 	user?: GuildMember | GuildMember[];
 	msgURL?: string;
@@ -112,7 +24,7 @@ type rerolly = {
 // ------------------------------
 
 /**
- * A Button Handler for **simplydjs package functions.** [Except Suggestion Handling !]
+ * A Giveaway Handler for **simplydjs giveaway system.**
  * @param interaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtn***
@@ -121,437 +33,18 @@ type rerolly = {
 
 export async function manageGiveaway(
 	interaction: ButtonInteraction,
-	options: manageBtnOptions = { ticketSys: { timed: true } }
-): Promise<ticketDelete | rerolly> {
+	options: manageGiveawayOptions = {}
+): Promise<RerollResolve> {
 	return new Promise(async (resolve, reject) => {
-		let { client } = interaction;
-
 		if (interaction.isButton()) {
 			try {
 				const member = interaction.member;
 
 				// ------------------------------
-				// ------ B T N - R O L E -------
-				// ------------------------------
-
-				if (interaction.customId.startsWith('role-')) {
-					const roleId = interaction.customId.replace('role-', '');
-
-					const role = await interaction.guild.roles.fetch(roleId, {
-						force: true
-					});
-					if (!role) return;
-					else {
-						await interaction.deferReply({ ephemeral: true });
-						if (
-							!(member.roles as unknown as GuildMemberManager).cache.find(
-								(r: { id: string }) => r.id === role.id
-							)
-						) {
-							member.roles
-								// @ts-ignore
-								.add(role)
-								.catch((err: any) =>
-									interaction.channel.send({
-										content:
-											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
-									})
-								);
-
-							await interaction.editReply({
-								content:
-									options?.btnRole?.addedMsg ||
-									`✅ Added the ${role.toString()} role to you.`
-							});
-						} else if (
-							(member.roles as unknown as GuildMemberManager).cache.find(
-								(r: { id: string }) => r.id === role.id
-							)
-						) {
-							member.roles
-								// @ts-ignore
-								.remove(role)
-								.catch((err: any) =>
-									interaction.channel.send({
-										content:
-											'ERROR: Role is higher than me. `MISSING_PERMISSIONS`'
-									})
-								);
-
-							await interaction.editReply({
-								content:
-									options?.btnRole?.removedMsg ||
-									`❌ Removed the ${role.toString()} role from you.`
-							});
-						}
-					}
-				}
-
-				// ------------------------------
-				// ---- T I C K E T - S Y S -----
-				// ------------------------------
-				else if (interaction.customId === 'create_ticket') {
-					await interaction.deferReply({ ephemeral: true });
-
-					let name = options.ticketSys?.ticketname || `ticket_{tag}`;
-					name = name
-						.replaceAll('{username}', member.user.username)
-						.replaceAll('{tag}', (member.user as User).tag)
-						.replaceAll('{id}', member.user.id);
-
-					const topic = `Ticket has been opened by <@${member.user.id}>`;
-
-					const check = await interaction.guild.channels.cache.find(
-						(ch) => (ch as TextChannel).topic === topic
-					);
-
-					if (check) {
-						await interaction.editReply({
-							content: `You have an pre-existing ticket opened (${check.toString()}). Close it before creating a new one.`
-						});
-					} else if (!check) {
-						let chparent = options.ticketSys?.category || null;
-						const category = interaction.guild.channels.cache.get(
-							options.ticketSys?.category
-						);
-						if (!category) {
-							chparent = null;
-						}
-
-						const ch = await interaction.guild.channels.create(name, {
-							type: 'GUILD_TEXT',
-							topic: topic,
-							parent: chparent,
-							permissionOverwrites: [
-								{
-									id: interaction.guild.roles.everyone,
-									deny: [
-										'VIEW_CHANNEL',
-										'SEND_MESSAGES',
-										'READ_MESSAGE_HISTORY'
-									] //Deny permissions
-								},
-								{
-									id: member.user.id,
-									allow: [
-										'VIEW_CHANNEL',
-										'SEND_MESSAGES',
-										'READ_MESSAGE_HISTORY'
-									]
-								}
-							]
-						});
-
-						await interaction.editReply({
-							content: `🎫 Opened your support ticket in ${ch.toString()}.`
-						});
-
-						const rlz: Role[] = [];
-
-						if (options.ticketSys?.pingRole) {
-							if (Array.isArray(options.ticketSys?.pingRole)) {
-								options.ticketSys?.pingRole.forEach(async (e) => {
-									const roler = await interaction.guild.roles.fetch(e, {
-										force: true
-									});
-
-									if (roler) {
-										rlz.push(roler);
-									}
-								});
-							} else if (!Array.isArray(options.ticketSys?.pingRole)) {
-								const roler = await interaction.guild.roles.fetch(
-									options.ticketSys?.pingRole,
-									{
-										force: true
-									}
-								);
-
-								if (roler) {
-									rlz.push(roler);
-								}
-							}
-
-							rlz.forEach((e) => {
-								ch.permissionOverwrites
-									.create(e, {
-										VIEW_CHANNEL: true,
-										SEND_MESSAGES: true,
-										READ_MESSAGE_HISTORY: true
-									})
-									.catch((e) => {});
-							});
-						}
-
-						let str =
-							'\n\nThis channel will be deleted after 30 minutes to prevent spams.';
-
-						if (options.ticketSys?.timed == false) {
-							str = '';
-						}
-
-						const emb = new MessageEmbed()
-							.setTitle(options.ticketSys?.embed?.title || 'Ticket Created')
-							.setDescription(
-								(
-									options.ticketSys?.embed?.description ||
-									`Ticket has been raised by {user}. The support will reach you shortly.\n\n**User ID**: \`{id}\` | **User Tag**: \`{tag}\`${str}`
-								)
-									.replaceAll('{user}', member.user.toString())
-									.replaceAll('{tag}', (member.user as User).tag)
-									.replaceAll('{id}', member.user.id)
-									.replaceAll('{guild}', interaction.guild.name)
-							)
-							.setThumbnail(interaction.guild.iconURL())
-							.setTimestamp()
-							.setColor(options?.ticketSys?.embed?.color || '#406DBC')
-							.setFooter(
-								options.ticketSys?.embed?.credit === false
-									? options.ticketSys?.embed?.footer
-									: {
-											text: '©️ Rahuletto. npm i simply-djs',
-											iconURL: 'https://i.imgur.com/XFUIwPh.png'
-									  }
-							);
-
-						if (options.ticketSys?.embed?.author)
-							emb.setAuthor(options.ticketSys?.embed?.author);
-
-						const close = new MessageButton()
-							.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
-							.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
-							.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
-							.setCustomId('close_ticket');
-
-						const closerow = new MessageActionRow().addComponents([close]);
-
-						ch.send({
-							content: `Here is your ticket ${member.user.toString()}. | ${rlz.join(
-								','
-							)}`,
-							embeds: [emb],
-							components: [closerow]
-						}).then(async (msg) => {
-							await msg.pin();
-						});
-
-						setTimeout(async () => {
-							await ch.delete().catch(() => {});
-						}, 1000 * 60 * 30);
-					}
-				} else if (interaction.customId === 'close_ticket') {
-					await interaction.deferReply({ ephemeral: true });
-
-					interaction.editReply({ content: 'Locking the channel.' });
-					(interaction.channel as TextChannel).permissionOverwrites
-						.edit(interaction.guild.roles.everyone, {
-							SEND_MESSAGES: false
-						})
-						.catch((err) => {});
-
-					const X_btn = new MessageButton()
-						.setStyle(options.ticketSys?.buttons?.delete?.style || 'DANGER')
-						.setEmoji(options.ticketSys?.buttons?.delete?.emoji || '❌')
-						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Delete')
-						.setCustomId('delete_ticket');
-
-					const open_btn = new MessageButton()
-						.setStyle(options.ticketSys?.buttons?.reopen?.style || 'SUCCESS')
-						.setEmoji(options.ticketSys?.buttons?.reopen?.emoji || '🔓')
-						.setLabel(options.ticketSys?.buttons?.delete?.label || 'Reopen')
-						.setCustomId('open_ticket');
-
-					const tr_btn = new MessageButton()
-						.setStyle(
-							options.ticketSys?.buttons?.transcript?.style || 'PRIMARY'
-						)
-						.setEmoji(options.ticketSys?.buttons?.transcript?.emoji || '📜')
-						.setLabel(
-							options.ticketSys?.buttons?.transcript?.label || 'Transcript'
-						)
-						.setCustomId('tr_ticket');
-
-					const row = new MessageActionRow().addComponents([
-						open_btn,
-						X_btn,
-						tr_btn
-					]);
-
-					await (interaction.message as Message).edit({
-						components: [row]
-					});
-				} else if (interaction.customId === 'tr_ticket') {
-					await interaction.deferReply({ ephemeral: true });
-
-					let messagecollection = await interaction.channel.messages.fetch({
-						limit: 100
-					});
-					const response: string[] = [];
-
-					messagecollection = messagecollection.sort(
-						(a, b) => a.createdTimestamp - b.createdTimestamp
-					);
-
-					messagecollection.forEach((m) => {
-						if (m.author.bot) return;
-						const attachment = m.attachments.first();
-						const url = attachment ? attachment.url : null;
-						if (url !== null) {
-							m.content = url;
-						}
-
-						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
-					});
-
-					await interaction.editReply({
-						content: 'Collecting messages to create logs'
-					});
-
-					let use: GuildMember | string = (
-						interaction.channel as TextChannel
-					).topic
-						.replace(`Ticket has been opened by <@`, '')
-						.replace('>', '');
-
-					use = await interaction.guild.members.fetch(use);
-
-					const attach = new MessageAttachment(
-						Buffer.from(response.join(`\n`), 'utf-8'),
-						`${(use.user as User).tag}.txt`
-					);
-
-					setTimeout(async () => {
-						await interaction.followUp({
-							content: 'Done. Generated the logs',
-							files: [attach],
-							embeds: [],
-							ephemeral: false
-						});
-					}, 2300);
-				} else if (interaction.customId === 'delete_ticket') {
-					await interaction.deferReply({ ephemeral: false });
-
-					const yes = new MessageButton()
-						.setCustomId('yea_del')
-						.setLabel('Delete')
-						.setStyle('DANGER');
-
-					const no = new MessageButton()
-						.setCustomId('dont_del')
-						.setLabel('Cancel')
-						.setStyle('SUCCESS');
-
-					const row = new MessageActionRow().addComponents([yes, no]);
-
-					interaction.editReply({
-						content: 'Are you sure ?? This process is not reversible !',
-						components: [row]
-					});
-				} else if (interaction.customId === 'yea_del') {
-					await (interaction.message as Message).edit({
-						content: 'Deleting the channel..',
-						embeds: [],
-						components: []
-					});
-
-					let messagecollection = await interaction.channel.messages.fetch({
-						limit: 100
-					});
-					const response: string[] = [];
-
-					messagecollection = messagecollection.sort(
-						(a, b) => a.createdTimestamp - b.createdTimestamp
-					);
-
-					messagecollection.forEach((m) => {
-						if (m.author.bot) return;
-						const attachment = m.attachments.first();
-						const url = attachment ? attachment.url : null;
-						if (url !== null) {
-							m.content = url;
-						}
-
-						response.push(`[${m.author.tag} | ${m.author.id}] => ${m.content}`);
-					});
-
-					const attach = new MessageAttachment(
-						Buffer.from(response.join(`\n`), 'utf-8'),
-						`${(interaction.channel as TextChannel).topic}.txt`
-					);
-
-					let use: GuildMember | string = (
-						interaction.channel as TextChannel
-					).topic
-						.replace(`Ticket has been opened by <@`, '')
-						.replace('>', '');
-
-					use = await interaction.guild.members.fetch(use);
-
-					resolve({
-						type: 'Delete',
-						channelId: interaction.channel.id,
-						user: use.user,
-						data: attach
-					});
-
-					if (options.ticketSys?.logChannelId) {
-						let ch = await client.channels.fetch(
-							options.ticketSys?.logChannelId,
-							{
-								cache: true
-							}
-						);
-
-						if (ch) {
-							const log = new MessageEmbed()
-								.setTitle('Ticket deleted')
-								.setDescription(
-									`We found an ticket \`${interaction.channel.name}\` getting deleted by ${use.user}.`
-								)
-								.setTimestamp()
-								.setColor('RED');
-
-							await (ch as TextChannel).send({
-								embeds: [log],
-								files: [attach]
-							});
-						} else return;
-					}
-
-					setTimeout(async () => {
-						await interaction.channel.delete();
-					}, 2000);
-				} else if (interaction.customId === 'dont_del') {
-					await interaction.deferUpdate();
-					(interaction.message as Message).edit({
-						content: 'You denied to delete',
-						components: []
-					});
-				} else if (interaction.customId === 'open_ticket') {
-					await interaction.deferReply({ ephemeral: true });
-
-					interaction.editReply({ content: 'Unlocking the channel.' });
-					(interaction.channel as TextChannel).permissionOverwrites
-						.edit(interaction.guild.roles.everyone, {
-							SEND_MESSAGES: true
-						})
-						.catch((err) => {});
-
-					const close = new MessageButton()
-						.setStyle(options.ticketSys?.buttons?.close?.style || 'DANGER')
-						.setEmoji(options.ticketSys?.buttons?.close?.emoji || '🔒')
-						.setLabel(options.ticketSys?.buttons?.close?.label || 'Close')
-						.setCustomId('close_ticket');
-
-					const closerow: MessageActionRow =
-						new MessageActionRow().addComponents([close]);
-
-					(interaction.message as Message).edit({ components: [closerow] });
-				}
-				// ------------------------------
 				// ------ G I V E A W A Y -------
 				// ------------------------------
-				else if (interaction.customId === 'enter_giveaway') {
+
+				if (interaction.customId === 'enter_giveaway') {
 					await interaction.deferReply({ ephemeral: true });
 					const data = await gsys.findOne({
 						message: interaction.message.id
@@ -766,11 +259,13 @@ export async function manageGiveaway(
 					}, 5200);
 				}
 			} catch (err: any) {
-				console.log(
-					`${chalk.red('Error Occured.')} | ${chalk.magenta(
-						'manageBtn'
-					)} | Error: ${err.stack}`
-				);
+				if (options.strict)
+					throw new SimplyError({
+						function: 'manageGiveaway',
+						title: 'An Error occured when running the function ',
+						tip: err.stack
+					});
+				else console.log(`SimplyError - manageGiveaway | Error: ${err.stack}`);
 			}
 		} else return;
 	});

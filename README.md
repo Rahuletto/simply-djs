@@ -26,7 +26,7 @@ Simply-DJS Reimagined.
 + manageBtnRole.ts (Splitted from manageBtn.ts)
 - manageGiveaway.ts (Splitted from manageBtn.ts)
 - manageSuggest.ts (previously manageSug.ts)
-- manageTicket.ts (Splitted from manageBtn.ts)
++ manageTicket.ts (Splitted from manageBtn.ts)
 # ---------------------------------------------
 
 + meme.ts (automeme.ts)
@@ -54,4 +54,5 @@ Simply-DJS Reimagined.
 @@ Renamed functions @@
 
 - Removed `credit` option
+- Deprecated 6 modules (Renaming things)
 ```

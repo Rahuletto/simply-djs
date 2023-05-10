@@ -5,6 +5,10 @@ import { SimplyError } from './Error/Error';
 // ----- I N T E R F A C E ------
 // ------------------------------
 
+/**
+ * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtnRole#btnRole*
+ */
+
 interface btnRole {
 	add: string;
 	remove: string;
@@ -23,11 +27,11 @@ export type manageBtnRoleOptions = {
 // ------------------------------
 
 /**
- * A Button Handler for **simplydjs package functions.** [Except Suggestion Handling !]
+ * A Button Role Handler for **simplydjs button role system.**
  * @param interaction
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtn***
- * @example simplydjs.manageBtn(interaction)
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtnRole***
+ * @example simplydjs.manageBtnRole(interaction)
  */
 
 export async function manageBtnRole(
