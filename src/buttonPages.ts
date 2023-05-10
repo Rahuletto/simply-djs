@@ -14,31 +14,22 @@ import { SimplyError } from './Error/Error';
 import { off } from 'process';
 import { MessageButtonStyle } from './Others/MessageButtonStyle';
 import { ms } from './Others/ms';
+import { buttonTemplate } from './interfaces/buttonTemplate';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
- */
-
-interface btnTemplate {
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
-	label?: string;
-	emoji?: string;
-}
-
-/**
  * **URL** of the Type: *https://simplyd.js.org/docs/General/embedPages#pagebuttons*
  */
 
 interface Pagebuttons {
-	firstBtn?: btnTemplate;
-	nextBtn?: btnTemplate;
-	backBtn?: btnTemplate;
-	lastBtn?: btnTemplate;
-	deleteBtn?: btnTemplate;
+	firstBtn?: buttonTemplate;
+	nextBtn?: buttonTemplate;
+	backBtn?: buttonTemplate;
+	lastBtn?: buttonTemplate;
+	deleteBtn?: buttonTemplate;
 }
 
 export type pagesOption = {

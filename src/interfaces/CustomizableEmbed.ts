@@ -12,12 +12,13 @@ import {
  * @returns {CustomizableEmbed}
  *
  * @example
- * simplydjs.someFunction(client, {
- *  title: "Example embed",
- *  description: "This is the embed that will be sent by simplydjs",
- *  color: simplydjs.toRgb('#406DBC')
+ * simplydjs.someFunction(interaction, {
+ * 	embed: {
+ * 		title: "Example Embed",
+ * 		description: "This is the embed that will be sent by simplydjs",
+ * 		color: simplydjs.toRgb('#406DBC')
+ * 	}
  * })
- *
  *
  */
 

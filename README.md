@@ -32,7 +32,7 @@ Simply-DJS Reimagined.
 + meme.ts (automeme.ts)
 + menuPages.ts
 + nqn.ts
-- rps.ts
++ rps.ts
 + starboard.ts
 + stealEmoji.ts (Deprecated. Will be removed)
 + suggest.ts (previously suggestSystem.ts)
