@@ -15,12 +15,11 @@ import {
 	TextChannel,
 	User
 } from 'discord.js';
-import { buttonTemplate } from './interfaces/buttonTemplate';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { toRgb } from './Others/toRgb';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { ms } from './Others/ms';
-import { SimplyError } from './Error/Error';
+import { buttonTemplate, CustomizableEmbed } from '../interfaces';
+
+import { MessageButtonStyle, toRgb, ms } from '../misc';
+
+import { SimplyError } from '../error';
 
 // ------------------------------
 // ----- I N T E R F A C E ------

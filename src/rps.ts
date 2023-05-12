@@ -8,12 +8,14 @@ import {
 	ButtonInteraction,
 	ComponentType
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { buttonTemplate } from './interfaces/buttonTemplate';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { toRgb } from './Others/toRgb';
-import { SimplyError } from './Error/Error';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	buttonTemplate,
+	CustomizableEmbed
+} from './interfaces';
+import { MessageButtonStyle, toRgb, ms } from './misc';
+import { SimplyError } from './error/SimplyError';
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/Fun/rps#rpsbuttons*
@@ -44,6 +46,12 @@ export type rpsOptions = {
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
+
+const combinations = {
+	rock: 'scissors',
+	scissors: 'paper',
+	paper: 'rock'
+};
 
 /**
  * A classic RPS game, except this time it's on Discord to play with your pals, how cool is that ?
@@ -262,7 +270,7 @@ export async function rps(
 			const collector = m.createMessageComponentCollector({
 				filter: filter,
 				componentType: ComponentType.Button,
-				time: 30000,
+				time: ms('30s'),
 				maxUsers: 1
 			});
 
@@ -344,7 +352,7 @@ export async function rps(
 
 				const btnCollector = m.createMessageComponentCollector({
 					componentType: ComponentType.Button,
-					time: 30000
+					time: ms('30s')
 				});
 
 				btnCollector.on('collect', async (b: ButtonInteraction) => {
@@ -384,11 +392,6 @@ export async function rps(
 							});
 						}
 					} else {
-						const winnerMap = {
-							rock: 'scissors',
-							scissors: 'paper',
-							paper: 'rock'
-						};
 						if (p1 === p2) {
 							p1 = p1
 								.replace(
@@ -447,7 +450,7 @@ export async function rps(
 									components: []
 								});
 							}
-						} else if (winnerMap[p1 as keyof typeof winnerMap] === p2) {
+						} else if (combinations[p1 as keyof typeof combinations] === p2) {
 							p1 = p1
 								.replace(
 									'scissors',

@@ -1,4 +1,4 @@
-import { ButtonStyle } from 'discord.js';
+import { ExtendedButtonStyle } from './ExtendedButtonStyle';
 
 /**
  * An Object to customize buttons in specific function
@@ -21,7 +21,7 @@ import { ButtonStyle } from 'discord.js';
  */
 
 export interface buttonTemplate {
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+	style?: ExtendedButtonStyle;
 	label?: string;
 	emoji?: string;
 }

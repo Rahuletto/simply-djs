@@ -7,26 +7,24 @@ import {
 	Message,
 	User,
 	InteractionResponse,
-	ComponentType
+	ComponentType,
+	ButtonInteraction
 } from 'discord.js';
 
-import { SimplyError } from './Error/Error';
+import { SimplyError } from './error/SimplyError';
 
-import db from './model/suggestion';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { ms } from './Others/ms';
-import { toRgb } from './Others/toRgb';
+import db from './model/suggest';
+
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	buttonTemplate
+} from './interfaces';
+import {} from './interfaces/CustomizableEmbed';
+import { MessageButtonStyle, ms, toRgb } from './misc';
+
 import { Document as Doc } from 'mongoose';
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/buttonTemplate*
- */
-
-interface buttonTemplate {
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
-	emoji?: string;
-}
 
 /**
  * **URL** of the Type: *https://simplyd.js.org/docs/Systems/suggest#suggestbuttons*
@@ -151,12 +149,12 @@ export async function suggest(
 		const surebtn = new ButtonBuilder()
 			.setStyle(ButtonStyle.Success)
 			.setLabel('Suggest')
-			.setCustomId('send-sug');
+			.setCustomId('send-suggestion');
 
 		const nobtn = new ButtonBuilder()
 			.setStyle(ButtonStyle.Danger)
 			.setLabel('Cancel')
-			.setCustomId('nope-sug');
+			.setCustomId('cancel-suggestion');
 
 		const sendRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
 			surebtn,
@@ -203,7 +201,7 @@ export async function suggest(
 			});
 		}
 
-		const filter = (m: any) =>
+		const filter = (m: ButtonInteraction) =>
 			m.user.id === (message.user ? message.user : message.author).id;
 		const collector = (m as Message).createMessageComponentCollector({
 			filter: filter,
@@ -213,7 +211,7 @@ export async function suggest(
 		});
 
 		collector.on('collect', async (b) => {
-			if (b.customId === 'send-sug') {
+			if (b.customId === 'send-suggestion') {
 				await b.reply({ content: 'Ok, Posted. :+1:', ephemeral: true });
 				await (b.message as Message).delete();
 
@@ -252,7 +250,7 @@ export async function suggest(
 						(options.buttons?.upvote?.style as ButtonStyle) ||
 							ButtonStyle.Primary
 					)
-					.setCustomId('agree-sug');
+					.setCustomId('plus-suggestion');
 
 				const no = new ButtonBuilder()
 					.setEmoji(options.buttons?.downvote?.emoji)
@@ -261,7 +259,7 @@ export async function suggest(
 						(options.buttons?.downvote?.style as ButtonStyle) ||
 							ButtonStyle.Danger
 					)
-					.setCustomId('no-sug');
+					.setCustomId('minus-suggestion');
 
 				const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 					approve,
@@ -278,7 +276,7 @@ export async function suggest(
 
 						await database.save();
 					});
-			} else if (b.customId === 'nope-sug') {
+			} else if (b.customId === 'cancel-suggestion') {
 				(b.message as Message).delete();
 			}
 		});

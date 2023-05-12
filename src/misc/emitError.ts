@@ -1,4 +1,4 @@
-import { errOptions, SimplyError } from '../Error/Error';
+import { errOptions, SimplyError } from '../error/SimplyError';
 
 /**
  * Produce error messages just like Simply DJS

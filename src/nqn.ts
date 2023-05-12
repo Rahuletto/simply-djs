@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { SimplyError } from './Error/Error';
+import { SimplyError } from './error/SimplyError';
 
 // ------------------------------
 // ------- T Y P I N G S --------

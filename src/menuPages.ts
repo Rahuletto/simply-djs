@@ -8,8 +8,8 @@ import {
 } from 'discord.js';
 import { ExtendedInteraction, ExtendedMessage } from './interfaces';
 
-import { SimplyError } from './Error/Error';
-import { ms } from './Others/ms';
+import { SimplyError } from './error/SimplyError';
+import { ms } from './misc';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
@@ -38,7 +38,7 @@ interface dataObject {
 }
 
 export type menuEmbOptions = {
-	type?: 1 | 2;
+	type?: 'Send' | 'Edit';
 	rows?: ActionRowBuilder<StringSelectMenuBuilder>[];
 	embed?: EmbedBuilder;
 
@@ -67,15 +67,15 @@ export async function menuPages(
 	options: menuEmbOptions = {}
 ) {
 	try {
-		const type: number = Number(options.type) || 1;
+		const type: string = options.type || 'Send';
 
-		if (type !== 1 && type !== 2) {
+		if (type !== 'Send' && type !== 'Receive') {
 			if (options.strict)
 				throw new SimplyError({
 					function: 'menuPages',
 					title:
 						'There are only two types. You have provided a type which doesnt exist',
-					tip: 'Type 1: SEND EPHEMERAL MSG | Type 2: EDIT MSG'
+					tip: 'There are only "Send" and "Edit" where "Send" sends a ephemeral message but "Edit" edits the original message'
 				});
 		}
 
@@ -112,7 +112,7 @@ export async function menuPages(
 				label: options.delete?.label || 'Delete',
 				description:
 					options.delete?.description || 'Delete the Select Menu Embed',
-				value: 'delete_menuemb',
+				value: 'delete_menuPages',
 				emoji: options.delete?.emoji || '❌'
 			};
 
@@ -166,15 +166,16 @@ export async function menuPages(
 		collector.on('collect', async (menu: StringSelectMenuInteraction) => {
 			const selected = menu.values[0];
 
-			if (type === 2) {
-				await menu.deferUpdate();
+			await menu.deferUpdate();
+
+			if (type === 'Edit') {
 				if (message.member.user.id !== menu.user.id)
 					menu.followUp({
 						content: "You cannot access other's pagination."
 					});
-			} else await menu.deferReply({ ephemeral: true });
+			}
 
-			if (selected === 'delete_menuemb') {
+			if (selected === 'delete_menuPages') {
 				if (message.member.user.id !== menu.user.id)
 					menu.editReply({
 						content: "You cannot access other's pagination."
@@ -184,9 +185,9 @@ export async function menuPages(
 
 			for (let i = 0; i < data.length; i++) {
 				if (selected === data[i].label) {
-					if (type === 1) {
-						menu.editReply({ embeds: [data[i].embed] });
-					} else if (type === 2) {
+					if (type === 'Send') {
+						menu.followUp({ embeds: [data[i].embed], ephemeral: true });
+					} else if (type === 'Edit') {
 						menu.message.edit({ embeds: [data[i].embed] });
 					}
 				}

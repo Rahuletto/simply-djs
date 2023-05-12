@@ -14,10 +14,13 @@ import {
 	TextChannel,
 	APIEmbed
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { toRgb } from './Others/toRgb';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { SimplyError } from './Error/Error';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed
+} from './interfaces';
+import { toRgb, ms } from './misc';
+import { SimplyError } from './error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -211,13 +214,13 @@ export async function embedCreator(
 					const collector = msg.createMessageComponentCollector({
 						filter: filter,
 						componentType: ComponentType.StringSelect,
-						idle: 1000 * 60 * 3
+						idle: ms('3m')
 					});
 
 					const buttonCltr = msg.createMessageComponentCollector({
 						filter: filter,
 						componentType: ComponentType.Button,
-						idle: 1000 * 60 * 3
+						idle: ms('3m')
 					});
 
 					buttonCltr.on('collect', async (button) => {
@@ -242,7 +245,7 @@ export async function embedCreator(
 
 								const msgCollector = button.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -310,7 +313,7 @@ export async function embedCreator(
 									select.channel.createMessageComponentCollector({
 										componentType: ComponentType.Button,
 										filter: buttonFilter,
-										idle: 60000
+										idle: ms('1m')
 									});
 
 								buttonCollector.on(
@@ -356,7 +359,7 @@ export async function embedCreator(
 							} else if (select.values[0] === 'setAuthor') {
 								const authorSelect = new StringSelectMenuBuilder()
 									.setMaxValues(1)
-									.setCustomId('author-selct')
+									.setCustomId('author-select')
 									.setPlaceholder('Author Options')
 									.addOptions([
 										{
@@ -390,13 +393,13 @@ export async function embedCreator(
 									select.channel.createMessageComponentCollector({
 										componentType: ComponentType.StringSelect,
 										filter: filter,
-										idle: 60000
+										idle: ms('1m')
 									});
 
 								menuCollector.on(
 									'collect',
 									async (menu: StringSelectMenuInteraction) => {
-										if (menu.customId !== 'author-selct') return;
+										if (menu.customId !== 'author-select') return;
 
 										if (menu.values[0] === 'author-name') {
 											menu.reply({
@@ -408,7 +411,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: 30000,
+													time: ms('30s'),
 													max: 1
 												});
 
@@ -446,7 +449,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: 30000,
+													time: ms('30s'),
 													max: 1
 												});
 
@@ -497,7 +500,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: 30000,
+													time: ms('30s'),
 													max: 1
 												});
 
@@ -542,7 +545,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -563,7 +566,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -605,7 +608,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000
+									time: ms('30s')
 								});
 
 								messageCollect.on('collect', async (m: Message) => {
@@ -643,7 +646,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -675,7 +678,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -714,7 +717,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -740,7 +743,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: 30000,
+									time: ms('30s'),
 									max: 1
 								});
 
@@ -761,7 +764,7 @@ export async function embedCreator(
 							} else if (select.values[0] === 'setFooter') {
 								const footerSelect = new StringSelectMenuBuilder()
 									.setMaxValues(1)
-									.setCustomId('footer-selct')
+									.setCustomId('footer-select')
 									.setPlaceholder('Footer Options')
 									.addOptions([
 										{
@@ -790,13 +793,13 @@ export async function embedCreator(
 									select.channel.createMessageComponentCollector({
 										componentType: ComponentType.StringSelect,
 										filter: filter,
-										idle: 60000
+										idle: ms('1m')
 									});
 
 								menuCollector.on(
 									'collect',
 									async (menu: StringSelectMenuInteraction) => {
-										if (menu.customId !== 'footer-selct') return;
+										if (menu.customId !== 'footer-select') return;
 
 										if (menu.values[0] === 'footer-name') {
 											menu.reply({
@@ -808,7 +811,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: 30000,
+													time: ms('30s'),
 													max: 1
 												});
 
@@ -843,7 +846,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: 30000,
+													time: ms('30s'),
 													max: 1
 												});
 
@@ -890,7 +893,7 @@ export async function embedCreator(
 							const content = new ButtonBuilder()
 								.setLabel('Timed Out')
 								.setStyle(ButtonStyle.Danger)
-								.setCustomId('timeout-embedbuilder')
+								.setCustomId('timeout-embedcreator')
 								.setDisabled(true);
 
 							const row = new ActionRowBuilder<ButtonBuilder>().addComponents([

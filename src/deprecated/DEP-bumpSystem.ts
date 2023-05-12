@@ -1,6 +1,6 @@
 import { Client, Message } from 'discord.js';
-import { Deprecated } from './Error/Deprecate';
-import { bumpOptions, bumpReminder } from './bumpReminder';
+import { Deprecated } from '../error';
+import { bumpOptions, bumpReminder } from '../bumpReminder';
 
 /**
  * @deprecated Use {@link bumpReminder()}

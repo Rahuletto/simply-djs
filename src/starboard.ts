@@ -6,9 +6,8 @@ import {
 	MessageReaction,
 	TextChannel
 } from 'discord.js';
-import { SimplyError } from './Error/Error';
-import { ExtendedMessage } from './interfaces';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
+import { SimplyError } from './error/SimplyError';
+import { ExtendedMessage, CustomizableEmbed } from './interfaces';
 
 export type starboardOption = {
 	embed?: CustomizableEmbed;

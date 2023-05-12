@@ -4,10 +4,13 @@ import {
 	Message,
 	PermissionFlagsBits
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { Deprecated } from './Error/Deprecate';
-import { SimplyError } from './Error/Error';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed
+} from '../interfaces';
+import { ms } from '../misc';
+import { Deprecated, SimplyError } from '../error';
 
 export type stealOptions = {
 	embed?: CustomizableEmbed;
@@ -89,7 +92,7 @@ export async function stealEmoji(
 				const messageCollect = interaction.channel.createMessageCollector({
 					filter: filter,
 					max: 1,
-					time: 20 * 1000
+					time: ms('20s')
 				});
 
 				messageCollect.on('collect', async (m: Message) => {
@@ -129,7 +132,7 @@ export async function stealEmoji(
 				const messageCollect = message.channel.createMessageCollector({
 					filter: filter,
 					max: 1,
-					time: 20 * 1000
+					time: ms('20s')
 				});
 
 				messageCollect.on('collect', async (m: Message) => {

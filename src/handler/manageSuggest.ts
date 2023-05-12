@@ -9,9 +9,8 @@ import {
 	User
 } from 'discord.js';
 
-import db from './model/suggestion';
-import { APIMessage, APIEmbed } from 'discord-api-types/v10';
-import { votz } from './model/suggestion';
+import db from '../model/suggest';
+import { Vote } from '../model/suggest';
 
 export type manageSugOptions = {
 	deny?: { color: ColorResolvable };
@@ -45,7 +44,7 @@ export async function manageSuggest(
 				color: options?.accept?.color || 'GREEN'
 			};
 
-			if (button.customId === 'no-sug') {
+			if (button.customId === 'minus-suggestion') {
 				let data = await db.findOne({
 					message: button.message.id
 				});
@@ -86,12 +85,12 @@ export async function manageSuggest(
 					const surebtn = new MessageButton()
 						.setStyle('DANGER')
 						.setLabel('Downvote Suggestion')
-						.setCustomId('no-vote');
+						.setCustomId('downvote-suggestion');
 
 					const nobtn = new MessageButton()
 						.setStyle('PRIMARY')
 						.setLabel('Deny Suggestion')
-						.setCustomId('deny-sug');
+						.setCustomId('deny-suggestion');
 
 					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
 
@@ -106,10 +105,10 @@ export async function manageSuggest(
 					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
 						componentType: 'BUTTON',
-						time: 30000
+						time: ms('30s')
 					});
 					coll.on('collect', async (btn) => {
-						if (btn.customId === 'no-vote') {
+						if (btn.customId === 'downvote-suggestion') {
 							const vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
@@ -162,7 +161,7 @@ export async function manageSuggest(
 									});
 								}
 							}
-						} else if (btn.customId === 'deny-sug') {
+						} else if (btn.customId === 'deny-suggestion') {
 							if (
 								!(button.member.permissions as Permissions).has(
 									Permissions.FLAGS.ADMINISTRATOR
@@ -180,7 +179,7 @@ export async function manageSuggest(
 							const msgCl = btn.channel.createMessageCollector({
 								filter,
 
-								time: 120000
+								time: ms('2m')
 							});
 
 							msgCl.on('collect', (m) => {
@@ -262,7 +261,7 @@ export async function manageSuggest(
 				}
 			}
 
-			if (button.customId === 'agree-sug') {
+			if (button.customId === 'plus-suggestion') {
 				let data = await db.findOne({
 					message: button.message.id
 				});
@@ -303,12 +302,12 @@ export async function manageSuggest(
 					const surebtn = new MessageButton()
 						.setStyle('SUCCESS')
 						.setLabel('Upvote Suggestion')
-						.setCustomId('yes-vote');
+						.setCustomId('upvote-suggestion');
 
 					const nobtn = new MessageButton()
 						.setStyle('PRIMARY')
 						.setLabel('Accept Suggestion')
-						.setCustomId('accept-sug');
+						.setCustomId('accept-suggestion');
 
 					const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
 
@@ -323,10 +322,10 @@ export async function manageSuggest(
 					const coll = (msg as Message).createMessageComponentCollector({
 						filter: ftter,
 						componentType: 'BUTTON',
-						time: 30000
+						time: ms('30s')
 					});
 					coll.on('collect', async (btn) => {
-						if (btn.customId === 'yes-vote') {
+						if (btn.customId === 'upvote-suggestion') {
 							const vt = data.votes.find(
 								(m) => m.user.toString() === btn.user.id
 							);
@@ -378,7 +377,7 @@ export async function manageSuggest(
 									});
 								}
 							}
-						} else if (btn.customId === 'accept-sug') {
+						} else if (btn.customId === 'accept-suggestion') {
 							if (
 								!(button.member.permissions as Permissions).has(
 									Permissions.FLAGS.ADMINISTRATOR
@@ -395,7 +394,7 @@ export async function manageSuggest(
 
 							const msgCl = btn.channel.createMessageCollector({
 								filter,
-								time: 120000
+								time: ms('2m')
 							});
 
 							msgCl.on('collect', (m) => {

@@ -1,5 +1,5 @@
 import { ButtonInteraction, GuildMemberRoleManager, Role } from 'discord.js';
-import { SimplyError } from './Error/Error';
+import { SimplyError } from '../error';
 
 // ------------------------------
 // ----- I N T E R F A C E ------

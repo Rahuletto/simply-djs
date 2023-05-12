@@ -1,5 +1,6 @@
 import { ButtonInteraction, GuildMember } from 'discord.js';
-import gsys from './model/gSys';
+import gsys from '../model/giveaway';
+import { SimplyError } from '../error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -197,7 +198,7 @@ export async function manageGiveaway(
 								})
 								.catch(() => {});
 						});
-					}, 2000);
+					}, ms('2s'));
 
 					setTimeout(async () => {
 						if (!dt) return await msg.delete();

@@ -1,8 +1,8 @@
 import { Client, EmbedBuilder, TextChannel, Message } from 'discord.js';
 
-import db from './model/bumpSys';
-import { toRgb } from '../simplydjs';
-import { SimplyError } from './Error/Error';
+import db from './model/bumpReminder';
+import { toRgb, ms } from './misc';
+import { SimplyError } from './error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -68,8 +68,8 @@ export async function bumpReminder(
 					});
 
 					data.forEach(async (dt) => {
-						if (dt.nxtBump && dt.nxtBump < Date.now()) {
-							dt.nxtBump = undefined;
+						if (dt.nextBump && dt.nextBump < Date.now()) {
+							dt.nextBump = undefined;
 							await dt.save().catch(() => {});
 
 							const cho = await client.channels.fetch(dt.channel, {
@@ -84,7 +84,7 @@ export async function bumpReminder(
 							resolve(true);
 						} else return;
 					});
-				}, 5000);
+				}, ms('5s'));
 			});
 		}
 
@@ -113,7 +113,7 @@ export async function bumpReminder(
 								(message as Message).embeds[0].description &&
 								(message as Message).embeds[0].description.includes('Bump done')
 							) {
-								const timeout = 7200000;
+								const timeout = ms('2h');
 								const time = Date.now() + timeout;
 
 								let data = await db.findOne({
@@ -124,12 +124,12 @@ export async function bumpReminder(
 										counts: [],
 										guild: (message as Message).guild.id,
 										channel: chid[i],
-										nxtBump: time
+										nextBump: time
 									});
 									await data.save().catch(() => {});
 								}
 
-								data.nxtBump = time;
+								data.nextBump = time;
 								await data.save().catch(() => {});
 
 								await (message as Message).channel.send({

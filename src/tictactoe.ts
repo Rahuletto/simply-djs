@@ -8,12 +8,16 @@ import {
 	Message,
 	User
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { toRgb } from './Others/toRgb';
-import { ms } from './Others/ms';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { SimplyError } from './Error/Error';
+
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	ExtendedButtonStyle
+} from './interfaces';
+
+import { toRgb, ms, MessageButtonStyle } from './misc';
+import { SimplyError } from './error/SimplyError';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
@@ -23,7 +27,7 @@ import { SimplyError } from './Error/Error';
  * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tictactoebtntemplate*
  */
 interface tictactoeBtnTemplate {
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+	style?: ExtendedButtonStyle;
 	emoji?: string;
 }
 
@@ -177,12 +181,12 @@ export async function tictactoe(
 			const accept = new ButtonBuilder()
 				.setLabel('Accept')
 				.setStyle(ButtonStyle.Success)
-				.setCustomId('accept-ttt');
+				.setCustomId('accept');
 
 			const deny = new ButtonBuilder()
 				.setLabel('Deny')
 				.setStyle(ButtonStyle.Danger)
-				.setCustomId('deny-ttt');
+				.setCustomId('deny');
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 				accept,
@@ -220,11 +224,11 @@ export async function tictactoe(
 						ephemeral: true
 					});
 
-				if (button.customId == 'deny-ttt') {
+				if (button.customId == 'deny') {
 					await button.deferUpdate();
 
 					collector.stop('decline');
-				} else if (button.customId == 'accept-ttt') {
+				} else if (button.customId == 'accept') {
 					collector.stop();
 
 					if (interaction) {
@@ -612,7 +616,7 @@ export async function tictactoe(
 						const collector = m.createMessageComponentCollector({
 							componentType: ComponentType.Button,
 							max: 1,
-							time: 30000
+							time: ms('30s')
 						});
 
 						collector.on('collect', async (b: ButtonInteraction) => {

@@ -8,13 +8,14 @@ import {
 	ComponentType,
 	ButtonInteraction
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	buttonTemplate
+} from './interfaces';
 
-import { SimplyError } from './Error/Error';
-import { off } from 'process';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { ms } from './Others/ms';
-import { buttonTemplate } from './interfaces/buttonTemplate';
+import { SimplyError } from './error';
+import { MessageButtonStyle, ms } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------

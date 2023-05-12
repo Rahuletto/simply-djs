@@ -1,39 +1,17 @@
+import { Role } from 'discord.js';
 import {
-	MessageEmbed,
-	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
-	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
-	Client,
-	MessageButtonStyle,
-	Role,
-	Permissions,
-	EmbedFieldData
-} from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	buttonTemplate
+} from './interfaces';
 
-import model from './model/gSys';
-import { toRgb } from './Others/toRgb';
+import model from './model/giveaway';
+import { toRgb } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
- */
-
-interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
-
-	credit?: boolean;
-}
 
 interface requirement {
 	type: 'Role' | 'Guild' | 'None';
@@ -41,23 +19,13 @@ interface requirement {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/giveawaybuttons*
  */
 
-interface btnTemplate {
-	style?: MessageButtonStyle;
-	label?: string;
-	emoji?: string;
-}
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/giveawaySystem*
- */
-
-interface gSysButtons {
-	enter?: btnTemplate;
-	end?: btnTemplate;
-	reroll?: btnTemplate;
+interface giveawayButtons {
+	enter?: buttonTemplate;
+	end?: buttonTemplate;
+	reroll?: buttonTemplate;
 }
 
 export type giveawayOptions = {
@@ -66,7 +34,7 @@ export type giveawayOptions = {
 	channel?: MessageChannel;
 	time?: string;
 
-	buttons?: gSysButtons;
+	buttons?: giveawayButtons;
 
 	manager?: Role | string;
 
@@ -74,9 +42,8 @@ export type giveawayOptions = {
 	ping?: string;
 
 	embed?: CustomizableEmbed;
-	fields?: EmbedFieldData[];
 
-	disable?: 'Label' | 'Emoji';
+	type?: 'Label' | 'Emoji' | 'Both';
 };
 
 interface returns {
@@ -298,7 +265,7 @@ export async function giveawaySystem(
 				}
 			];
 
-			options.fields?.forEach((a) => {
+			options.embed?.fields?.forEach((a) => {
 				a.value = a?.value
 					.replaceAll('{hosted}', `<@${message.member.user.id}>`)
 					.replaceAll('{endsAt}', `<t:${endtime}:f>`)
@@ -483,7 +450,7 @@ export async function giveawaySystem(
 										})
 										.catch(() => {});
 								});
-							}, 2000);
+							}, ms('2s'));
 
 							setTimeout(async () => {
 								if (!dt) return await msg.delete();
@@ -570,9 +537,9 @@ export async function giveawaySystem(
 										components: [allComp]
 									});
 								}
-							}, 5200);
+							}, ms('6s'));
 						}
-					}, 5000);
+					}, ms('5s'));
 				});
 		} catch (err: any) {
 			console.log(

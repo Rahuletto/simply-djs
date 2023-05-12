@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import { SimplyError } from './Error/Error';
+import { SimplyError } from './error';
 
-import { https, version } from '../simplydjs';
+import { https } from './misc';
+import { version } from '../simplydjs';
 
 // ------------------------------
 // ------- T Y P I N G S --------

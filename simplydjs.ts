@@ -2,7 +2,7 @@
 // -------- E R R O R S ---------
 // ------------------------------
 
-import { SimplyError } from './src/Error/Error';
+import { SimplyError } from './src/error';
 
 if (+process.version.slice(1, 3) - 0 < 17)
 	throw new SimplyError({
@@ -41,11 +41,7 @@ if (Number(discordJSVersion.slice(0, 2)) < 14)
 
 export const version: string = '4.0.0';
 
-export { https } from './src/Others/https';
-export { toRgb } from './src/Others/toRgb';
-export { MessageButtonStyle } from './src/Others/MessageButtonStyle';
-export { emitError } from './src/Others/emitError';
-export { ms } from './src/Others/ms';
+export * from './src/misc';
 
 export { meme } from './src/meme';
 export { betterBtnRole } from './src/betterBtnRole';
@@ -62,26 +58,26 @@ export { menuPages } from './src/menuPages';
 export { nqn } from './src/nqn';
 export { rps } from './src/rps';
 export { starboard } from './src/starboard';
-export { stealEmoji } from './src/DEP-stealEmoji';
 export { suggest } from './src/suggest';
 export { ticketSetup } from './src/ticketSetup';
 export { tictactoe } from './src/tictactoe';
 
 // ------------------------------
-// ------- S Y S T E M S --------
+// ------ H A N D L E R S -------
 // ------------------------------
 
-export { manageBtnRole } from './src/manageBtnRole';
-export { manageGiveaway } from './src/manageGiveaway';
-export { manageTicket } from './src/manageTicket';
-export { manageSuggest } from './src/manageSuggest';
+export { manageBtnRole } from './src/handler/manageBtnRole';
+export { manageGiveaway } from './src/handler/manageGiveaway';
+export { manageTicket } from './src/handler/manageTicket';
+export { manageSuggest } from './src/handler/manageSuggest';
 
 // ------------------------------
 // ---- D E P R E C A T E D -----
 // ------------------------------
 
-export { bumpSystem } from './src/DEP-bumpSystem';
-export { embedPages } from './src/DEP-embedPages';
-export { ticketSystem } from './src/DEP-ticketSystem';
-export { suggestSystem } from './src/DEP-suggestSystem';
-export { embedCreate } from './src/DEP-embedCreate';
+export { stealEmoji } from './src/deprecated/DEP-stealEmoji';
+export { bumpSystem } from './src/deprecated/DEP-bumpSystem';
+export { embedPages } from './src/deprecated/DEP-embedPages';
+export { ticketSystem } from './src/deprecated/DEP-ticketSystem';
+export { suggestSystem } from './src/deprecated/DEP-suggestSystem';
+export { embedCreate } from './src/deprecated/DEP-embedCreate';

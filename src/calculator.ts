@@ -7,12 +7,17 @@ import {
 	Message,
 	ComponentType
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { toRgb } from './Others/toRgb';
-import { ms } from './Others/ms';
-import { SimplyError } from './Error/Error';
+
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	ExtendedButtonStyle
+} from './interfaces';
+
+import { MessageButtonStyle, toRgb, ms } from './misc';
+
+import { SimplyError } from './error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -23,27 +28,9 @@ import { SimplyError } from './Error/Error';
  */
 
 interface calcButtons {
-	numbers?:
-		| ButtonStyle
-		| 'PRIMARY'
-		| 'SECONDARY'
-		| 'SUCCESS'
-		| 'DANGER'
-		| 'LINK';
-	symbols?:
-		| ButtonStyle
-		| 'PRIMARY'
-		| 'SECONDARY'
-		| 'SUCCESS'
-		| 'DANGER'
-		| 'LINK';
-	delete?:
-		| ButtonStyle
-		| 'PRIMARY'
-		| 'SECONDARY'
-		| 'SUCCESS'
-		| 'DANGER'
-		| 'LINK';
+	numbers?: ExtendedButtonStyle;
+	symbols?: ExtendedButtonStyle;
+	delete?: ExtendedButtonStyle;
 }
 
 export type calcOptions = {

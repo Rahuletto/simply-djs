@@ -1,7 +1,7 @@
 import { APIEmbed } from 'discord.js';
-import { Deprecated } from './Error/Deprecate';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { embedCreator, embedOptions } from './embedCreator';
+import { Deprecated } from '../error';
+import { ExtendedInteraction, ExtendedMessage } from '../interfaces';
+import { embedCreator, embedOptions } from '../embedCreator';
 
 /**
  * @deprecated Use {@link embedCreator()}

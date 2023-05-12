@@ -6,25 +6,18 @@ import {
 	TextChannel,
 	PermissionFlagsBits
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	buttonTemplate
+} from './interfaces';
 
-import { SimplyError } from './Error/Error';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { toRgb } from './Others/toRgb';
+import { SimplyError } from './error/SimplyError';
+import { MessageButtonStyle, toRgb } from './misc';
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
-
-/**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/buttonTemplate*
- */
-
-interface buttonTemplate {
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
-	label?: string;
-	emoji?: string;
-}
 
 export type ticketSetupOptions = {
 	embed?: CustomizableEmbed;

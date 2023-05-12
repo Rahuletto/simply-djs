@@ -1,7 +1,7 @@
 import { EmbedBuilder, Message } from 'discord.js';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { SimplyError } from './Error/Error';
-import { toRgb } from './Others/toRgb';
+import { CustomizableEmbed } from './interfaces';
+import { SimplyError } from './error';
+import { toRgb, ms } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -96,7 +96,7 @@ export async function ghostPing(
 						.then(async (msg: Message) => {
 							setTimeout(() => {
 								msg.delete();
-							}, 10000);
+							}, ms('10s'));
 						});
 				}
 			} catch (err: any) {

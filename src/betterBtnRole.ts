@@ -1,5 +1,4 @@
 import {
-	Client,
 	TextChannel,
 	Role,
 	ButtonBuilder,
@@ -7,9 +6,15 @@ import {
 	ButtonStyle
 } from 'discord.js';
 
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
-import { SimplyError } from './Error/Error';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	ExtendedButtonStyle
+} from './interfaces';
+
+import { MessageButtonStyle } from './misc';
+
+import { SimplyError } from './error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -18,13 +23,14 @@ import { SimplyError } from './Error/Error';
 type button = {
 	label?: string;
 	role?: Role;
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+	style?: ExtendedButtonStyle;
 	emoji?: string;
 };
+
 export type betterbtnOptions = {
 	custom?: boolean;
 	strict?: boolean;
-	type?: 'add' | 'remove';
+	type?: 'Add' | 'Remove';
 	channel?: TextChannel;
 	button?: button;
 	messageId?: string;
@@ -80,7 +86,7 @@ export async function betterBtnRole(
 				});
 		}
 
-		if (options.type === 'add') {
+		if (options.type === 'Add') {
 			try {
 				const label =
 					options.button.label ||
@@ -246,16 +252,16 @@ export async function betterBtnRole(
 			} catch (err: any) {
 				if (options.strict)
 					throw new SimplyError({
-						function: 'betterBtnRole (add)',
+						function: 'betterBtnRole (Add)',
 						title: 'An Error occured when running the function ',
 						tip: err.stack
 					});
 				else
 					console.log(
-						`SimplyError - betterBtnRole (add) | Error: ${err.stack}`
+						`SimplyError - betterBtnRole (Add) | Error: ${err.stack}`
 					);
 			}
-		} else if (options.type === 'remove') {
+		} else if (options.type === 'Remove') {
 			try {
 				if (
 					!msg.components ||
@@ -353,13 +359,13 @@ export async function betterBtnRole(
 			} catch (err: any) {
 				if (options.strict)
 					throw new SimplyError({
-						function: 'betterBtnRole (remove)',
+						function: 'betterBtnRole (Remove)',
 						title: 'An Error occured when running the function ',
 						tip: err.stack
 					});
 				else
 					console.log(
-						`SimplyError - betterBtnRole (remove) | Error: ${err.stack}`
+						`SimplyError - betterBtnRole (Remove) | Error: ${err.stack}`
 					);
 			}
 		}

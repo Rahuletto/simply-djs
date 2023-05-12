@@ -1,9 +1,8 @@
 import { Client, EmbedBuilder, TextChannel, Channel } from 'discord.js';
 
-import { https } from './Others/https';
-import { SimplyError } from './Error/Error';
-import { CustomizableEmbed } from './interfaces/CustomizableEmbed';
-import { toRgb } from './Others/toRgb';
+import { https, toRgb, ms } from './misc';
+import { SimplyError } from './error/SimplyError';
+import { CustomizableEmbed } from './interfaces';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -101,7 +100,7 @@ export async function meme(
 			}
 			interval = options.interval;
 		} else {
-			interval = 600000; // 600k ms (10 minutes)
+			interval = ms('10m'); // 600k ms (10 minutes)
 		}
 
 		setInterval(async () => {

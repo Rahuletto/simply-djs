@@ -1,7 +1,8 @@
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 
-import { https } from './Others/https';
-import { SimplyError } from './Error/Error';
+import { https } from './misc';
+
+import { SimplyError } from './error';
 import { ExtendedMessage } from './interfaces';
 
 import { Configuration, OpenAIApi } from 'openai';

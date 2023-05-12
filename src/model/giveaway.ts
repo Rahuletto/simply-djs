@@ -1,22 +1,22 @@
 import mongoose from 'mongoose';
 
-interface Entri {
+interface Entry {
 	userID: string;
 	guildID: string;
 	messageID: string;
 }
 
-interface req {
+interface Requirement {
 	type: 'guild' | 'role' | 'none';
 	id?: string;
 }
 
-export type gwData = {
+export type giveawayData = {
 	message?: string;
-	entry?: Entri[];
+	entry?: Entry[];
 	entered?: number;
 	winCount?: number;
-	requirements?: req;
+	requirements?: Requirement;
 	endTime?: string;
 	desc?: string;
 	started?: number;
@@ -24,11 +24,11 @@ export type gwData = {
 	host?: string;
 };
 
-const gw = new mongoose.Schema<gwData>({
+const GiveawaySchema = new mongoose.Schema<giveawayData>({
 	message: { type: String }, // Message ID
 	prize: { type: String }, // Prize go brr
 	started: { type: Number }, // GSys started in ms
-	entry: { type: Array<Entri>() }, // Array of Objects
+	entry: { type: Array<Entry>() }, // Array of Objects
 	entered: { type: Number }, // Useless but ok lol
 	winCount: { type: Number }, // How many winners
 	requirements: { type: Object }, // Requirements ;)
@@ -37,4 +37,4 @@ const gw = new mongoose.Schema<gwData>({
 	desc: { type: String } // Giveaway Embed Desc
 });
 
-export default mongoose.model('Giveaway-System', gw);
+export default mongoose.model('Giveaway-System', GiveawaySchema);

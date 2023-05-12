@@ -5,7 +5,7 @@
 Its finally under development. Gosh x_X.
 
 Simply-DJS Reimagined.
-**This will be the smoothest upgrade you ever gonna experience..**
+**We will not totally support legacy system panels**
 
 ## Updated Files
 

@@ -7,10 +7,14 @@ import {
 	ActionRowBuilder,
 	PermissionFlagsBits
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	ExtendedButtonStyle
+} from './interfaces';
 
-import { SimplyError } from './Error/Error';
-import { MessageButtonStyle } from './Others/MessageButtonStyle';
+import { SimplyError } from './error';
+import { MessageButtonStyle } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -20,7 +24,7 @@ interface dataObject {
 	role?: string | Role;
 	label?: string;
 	emoji?: string;
-	style?: ButtonStyle | 'PRIMARY' | 'SECONDARY' | 'SUCCESS' | 'DANGER' | 'LINK';
+	style?: ExtendedButtonStyle;
 	url?: `https://${string}`;
 }
 
