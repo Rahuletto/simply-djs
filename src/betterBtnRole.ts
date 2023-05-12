@@ -63,7 +63,7 @@ export async function betterBtnRole(
 
 		const msg: ExtendedMessage = await (ch as TextChannel).messages
 			.fetch(msgid)
-			.catch((e) => {})
+			.catch(() => {})
 			.then();
 
 		if (!msg) {

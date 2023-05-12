@@ -194,7 +194,7 @@ export async function menuPages(
 			}
 		});
 
-		collector.on('end', async (collected: any, reason: string) => {
+		collector.on('end', async (collected, reason: string) => {
 			if (reason === 'delete') await m.delete();
 			if (collected.size === 0) {
 				m.edit({ embeds: [options.embed], components: [] });

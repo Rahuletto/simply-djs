@@ -281,8 +281,8 @@ export async function suggest(
 			}
 		});
 
-		collector.on('end', async (b) => {
-			if (b.size == 0) {
+		collector.on('end', async (collected) => {
+			if (collected.size == 0) {
 				(m as Message).edit({
 					content: "Timeout.. Didn't post the suggestion.",
 					embeds: [],

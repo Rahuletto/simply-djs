@@ -38,7 +38,7 @@ export async function manageBtnRole(
 	interaction: ButtonInteraction,
 	options: manageBtnRoleOptions = {}
 ): Promise<boolean> {
-	return new Promise(async (resolve, reject) => {
+	return new Promise(async (resolve) => {
 		if (interaction.isButton()) {
 			try {
 				const member = interaction.member;

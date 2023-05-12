@@ -61,7 +61,7 @@ export async function bumpReminder(
 			.setFooter({ text: 'Next bump after 120 minutes. (2 hours)' });
 
 		if ((!options && (message as bumpOptions)) || (!options && !message)) {
-			return new Promise(async (resolve, reject) => {
+			return new Promise(async (resolve) => {
 				setInterval(async () => {
 					const data = await db.find({
 						counts: []
@@ -93,7 +93,7 @@ export async function bumpReminder(
 		let chid: string[] = [];
 
 		if (options && (message as Message).channel) {
-			return new Promise(async (resolve, reject) => {
+			return new Promise(async (resolve) => {
 				if (Array.isArray(options.channelId)) {
 					chid = options.channelId;
 				} else if (!Array.isArray(options.channelId)) {

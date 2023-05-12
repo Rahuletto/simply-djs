@@ -376,7 +376,7 @@ export async function rps(
 					}, 500);
 				});
 
-				btnCollector.on('end', async (coll, reason) => {
+				btnCollector.on('end', async (_collected, reason) => {
 					if (reason === 'time') {
 						if (interaction) {
 							await interaction.editReply({
@@ -607,7 +607,7 @@ export async function rps(
 				});
 			});
 
-			collector.on('end', async (coll, reason) => {
+			collector.on('end', async (_collected, reason) => {
 				if (reason === 'time') {
 					await m.edit({
 						content: '** **',

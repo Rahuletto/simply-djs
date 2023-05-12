@@ -690,7 +690,7 @@ export async function tictactoe(
 				}
 			});
 
-			collector.on('end', (collected, reason: string) => {
+			collector.on('end', (_collected, reason: string) => {
 				if (reason == 'time') {
 					const timeoutEmbed = new EmbedBuilder()
 						.setTitle(options.embed?.timeout?.title || 'Game Timed Out!')

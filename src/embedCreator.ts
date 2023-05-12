@@ -888,7 +888,7 @@ export async function embedCreator(
 							}
 						}
 					);
-					collector.on('end', async (collected: any, reason: string) => {
+					collector.on('end', async (_collected, reason: string) => {
 						if (reason === 'time') {
 							const content = new ButtonBuilder()
 								.setLabel('Timed Out')

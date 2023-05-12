@@ -391,7 +391,7 @@ export async function buttonPages(
 			}
 		});
 
-		collector.on('end', async (collected: any, reason: string) => {
+		collector.on('end', async (_collected, reason: string) => {
 			if (reason === 'del') {
 				await m.delete().catch(() => {});
 			} else {

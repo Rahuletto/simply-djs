@@ -78,7 +78,7 @@ export async function manageTicket(
 	interaction: ButtonInteraction,
 	options: manageTicketOptions = {}
 ): Promise<DeleteResolve> {
-	return new Promise(async (resolve, reject) => {
+	return new Promise(async (resolve) => {
 		const { client } = interaction;
 
 		if (interaction.isButton()) {
@@ -259,7 +259,7 @@ export async function manageTicket(
 						.edit(interaction.guild.roles.everyone, {
 							SendMessages: false
 						})
-						.catch((err) => {});
+						.catch(() => {});
 
 					const deleteBtn = new ButtonBuilder()
 						.setStyle(
@@ -466,7 +466,7 @@ export async function manageTicket(
 						.edit(interaction.guild.roles.everyone, {
 							SendMessages: true
 						})
-						.catch((err) => {});
+						.catch(() => {});
 
 					const close = new ButtonBuilder()
 						.setStyle(

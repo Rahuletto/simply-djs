@@ -1,4 +1,4 @@
-import { EmbedBuilder, Message } from 'discord.js';
+import { EmbedBuilder, Message, User } from 'discord.js';
 import { CustomizableEmbed } from './interfaces';
 import { SimplyError } from './error';
 import { toRgb, ms } from './misc';
@@ -30,7 +30,7 @@ export type ghostOptions = {
 export async function ghostPing(
 	message: Message,
 	options: ghostOptions = { strict: false }
-): Promise<void> {
+): Promise<User> {
 	return new Promise(async (resolve) => {
 		if (message.mentions.users.first()) {
 			try {
@@ -97,6 +97,8 @@ export async function ghostPing(
 							setTimeout(() => {
 								msg.delete();
 							}, ms('10s'));
+
+							resolve(message.mentions.users.first());
 						});
 				}
 			} catch (err: any) {

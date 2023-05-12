@@ -36,7 +36,7 @@ export async function manageGiveaway(
 	interaction: ButtonInteraction,
 	options: manageGiveawayOptions = {}
 ): Promise<RerollResolve> {
-	return new Promise(async (resolve, reject) => {
+	return new Promise(async (resolve) => {
 		if (interaction.isButton()) {
 			try {
 				const member = interaction.member;
