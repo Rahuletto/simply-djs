@@ -944,7 +944,7 @@ async function ai(
 			}
 		)
 
-		.setColor(options.embed?.game?.color || `#406DBC`)
+		.setColor(options.embed?.game?.color || toRgb(`#406DBC`))
 		.setFooter(
 			options.embed?.game?.footer
 				? options.embed?.game?.footer
@@ -966,63 +966,7 @@ async function ai(
 		gameEmbed.setTimestamp(options.embed?.game?.timestamp);
 	if (options.embed?.game?.url) gameEmbed.setURL(options.embed?.game?.url);
 
-	const a1 = new ButtonBuilder()
-		.setStyle(Game.board[0].style)
-		.setEmoji(Game.board[0].emoji)
-		.setCustomId('0')
-		.setDisabled(Game.board[0].disabled);
-
-	const a2 = new ButtonBuilder()
-		.setStyle(Game.board[1].style)
-		.setEmoji(Game.board[1].emoji)
-		.setCustomId('1')
-		.setDisabled(Game.board[1].disabled);
-
-	const a3 = new ButtonBuilder()
-		.setStyle(Game.board[2].style)
-		.setEmoji(Game.board[2].emoji)
-		.setCustomId('2')
-		.setDisabled(Game.board[2].disabled);
-
-	const b1 = new ButtonBuilder()
-		.setStyle(Game.board[3].style)
-		.setEmoji(Game.board[3].emoji)
-		.setCustomId('3')
-		.setDisabled(Game.board[3].disabled);
-
-	const b2 = new ButtonBuilder()
-		.setStyle(Game.board[4].style)
-		.setEmoji(Game.board[4].emoji)
-		.setCustomId('4')
-		.setDisabled(Game.board[4].disabled);
-
-	const b3 = new ButtonBuilder()
-		.setStyle(Game.board[5].style)
-		.setEmoji(Game.board[5].emoji)
-		.setCustomId('5')
-		.setDisabled(Game.board[5].disabled);
-
-	const c1 = new ButtonBuilder()
-		.setStyle(Game.board[6].style)
-		.setEmoji(Game.board[6].emoji)
-		.setCustomId('6')
-		.setDisabled(Game.board[6].disabled);
-	const c2 = new ButtonBuilder()
-		.setStyle(Game.board[7].style)
-		.setEmoji(Game.board[7].emoji)
-		.setCustomId('7')
-		.setDisabled(Game.board[7].disabled);
-
-	const c3 = new ButtonBuilder()
-		.setStyle(Game.board[8].style)
-		.setEmoji(Game.board[8].emoji)
-		.setCustomId('8')
-		.setDisabled(Game.board[8].disabled);
-
-	const a = new ActionRowBuilder<ButtonBuilder>().addComponents([a1, a2, a3]);
-	const b = new ActionRowBuilder<ButtonBuilder>().addComponents([b1, b2, b3]);
-	const c = new ActionRowBuilder<ButtonBuilder>().addComponents([c1, c2, c3]);
-	const buttons = [a, b, c];
+	const buttons = update();
 
 	if (interaction) {
 		message = await extInteraction.followUp({
@@ -1112,8 +1056,8 @@ async function ai(
 		const c = new ActionRowBuilder<ButtonBuilder>().addComponents([c1, c2, c3]);
 		return [a, b, c];
 	}
-	function rec() {
-		const collector = message.createMessageComponentCollector({
+	function recursive() {
+		const aiCollector = message.createMessageComponentCollector({
 			filter: filter,
 			componentType: ComponentType.Button,
 			idle: 30000,
@@ -1121,10 +1065,10 @@ async function ai(
 			max: 1
 		});
 
-		collector.on('collect', async (button: ButtonInteraction) => {
-			await button.deferUpdate();
-
+		aiCollector.on('collect', async (button: ButtonInteraction) => {
 			board[Number(button.customId)] = 'x';
+
+			await button.deferUpdate();
 
 			for (let i = 0; i < board.length; i++) {
 				let elem = board[i];
@@ -1136,16 +1080,31 @@ async function ai(
 					};
 
 					const buttonUpdate = update();
+					if (
+						!isDraw() &&
+						!checkWin(options.x_emoji) &&
+						!checkWin(options.o_emoji)
+					)
+						message.edit({
+							embeds: [
+								gameEmbed
+									.setDescription(
+										`AI is Thinking.. [<@!${opponent.id}>] Your Emoji: ${
+											options.o_emoji || '⭕'
+										}`
+									)
+									.setColor('DarkerGrey')
+							],
+							components: buttonUpdate
+						});
+				}
+			}
 
-					message.edit({
-						embeds: [
-							gameEmbed
-								.setDescription(`${opponent.username} is thinking...`)
-								.setColor(`DarkGrey`)
-						],
-						components: buttonUpdate
-					});
-				} else if (elem == 'o') {
+			await aiEngine();
+
+			for (let i = 0; i < board.length; i++) {
+				let elem = board[i];
+				if (elem == 'o') {
 					Game.board[i] = {
 						style: options.o_style,
 						emoji: options.o_emoji,
@@ -1153,25 +1112,38 @@ async function ai(
 					};
 
 					const buttonUpdate = update();
-
-					message.edit({
-						embeds: [
-							gameEmbed
-								.setDescription(`${opponent.username} is thinking...`)
-								.setColor(`DarkGrey`)
-						],
-						components: buttonUpdate
-					});
+					if (
+						!isDraw() &&
+						!checkWin(options.x_emoji) &&
+						!checkWin(options.o_emoji)
+					)
+						message.edit({
+							embeds: [
+								gameEmbed
+									.setDescription(
+										`Waiting for Input | <@!${
+											msgOrint.member.user.id
+										}> | Your Emoji: ${options.x_emoji || '❌'}`
+									)
+									.setColor(toRgb(`#406DBC`))
+							],
+							components: buttonUpdate
+						});
 				}
 			}
 
-			await aiEngine();
-
-			if (isDraw()) {
+			if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji))
+				setTimeout(() => {
+					recursive();
+				}, 1000);
+			else if (isDraw()) {
 				const drawEmbed = new EmbedBuilder()
 					.setTitle(
 						options.embed?.draw?.title ||
 							`${msgOrint.member.user.username} VS ${opponent.username}`
+					)
+					.setDescription(
+						options.embed?.draw?.description || 'Thats a draw. Try again'
 					)
 
 					.setColor(options.embed?.draw?.color || 'Grey')
@@ -1203,11 +1175,7 @@ async function ai(
 					return message
 						.edit({
 							content: 'Its a Tie!',
-							embeds: [
-								drawEmbed.setDescription(
-									`You have tied. Play again to see who wins.`
-								)
-							],
+							embeds: [drawEmbed],
 							components: buttonsResult
 						})
 						.then((m: Message) => {
@@ -1219,7 +1187,8 @@ async function ai(
 							content: 'Its a Tie !',
 							embeds: [
 								drawEmbed.setDescription(
-									`You have tied. Play again to see who wins.\n` +
+									(options.embed?.draw?.description ||
+										`Thats a draw. Try again\n`) +
 										`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
 											.replaceAll(options.blank_emoji, '➖')
 											.replaceAll(options.o_emoji, '⭕')
@@ -1277,7 +1246,7 @@ async function ai(
 							]
 						})
 						.then((m: Message) => {
-							m.react(options.x_emoji);
+							m.react(options.c_emoji);
 						});
 				else if (!options.result || options.result === 'Embed')
 					return message
@@ -1365,54 +1334,10 @@ async function ai(
 							m.react(options.o_emoji);
 						});
 			}
-
-			for (let i = 0; i < board.length; i++) {
-				let elem = board[i];
-				if (elem == 'x') {
-					Game.board[i] = {
-						style: options.x_style,
-						emoji: options.x_emoji,
-						disabled: true
-					};
-
-					const buttonUpdate = update();
-
-					message.edit({
-						embeds: [
-							gameEmbed
-								.setDescription(`${opponent.username} made the move. Your turn`)
-								.setColor(`#406DBC`)
-						],
-						components: buttonUpdate
-					});
-				} else if (elem == 'o') {
-					Game.board[i] = {
-						style: options.o_style,
-						emoji: options.o_emoji,
-						disabled: true
-					};
-
-					const buttonUpdate = update();
-
-					message.edit({
-						embeds: [
-							gameEmbed
-								.setDescription(`${opponent.username} made the move. Your turn`)
-								.setColor(`#406DBC`)
-						],
-						components: buttonUpdate
-					});
-				}
-			}
-
-			if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji))
-				setTimeout(() => {
-					rec();
-				}, 500);
 		});
 	}
 
-	rec();
+	recursive();
 
 	async function aiEngine() {
 		const res = await https(
