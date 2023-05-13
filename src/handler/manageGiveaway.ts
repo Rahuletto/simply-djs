@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ButtonInteraction, GuildMember } from 'discord.js';
 import gsys from '../model/giveaway';
 import { SimplyError } from '../error';

@@ -8,16 +8,14 @@ import {
 	Message,
 	User
 } from 'discord.js';
-
 import {
-	ExtendedInteraction,
-	ExtendedMessage,
 	CustomizableEmbed,
-	ExtendedButtonStyle
+	ExtendedButtonStyle,
+	ExtendedInteraction,
+	ExtendedMessage
 } from './interfaces';
-
-import { toRgb, ms, MessageButtonStyle } from './misc';
-import { SimplyError } from './error/SimplyError';
+import { MessageButtonStyle, https, ms, toRgb } from './misc';
+import { SimplyError } from './error';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
@@ -102,12 +100,46 @@ export async function tictactoe(
 			const extInteraction = message as ExtendedInteraction;
 			const extMessage = message as ExtendedMessage;
 
+			const x_emoji = options.buttons?.X?.emoji || '❌';
+			const o_emoji = options.buttons?.O?.emoji || '⭕';
+
+			const blank_emoji = options.buttons?.blank?.emoji || '➖';
+
+			if (options.buttons?.blank?.style as string)
+				options.buttons.blank.style = MessageButtonStyle(
+					options.buttons?.blank?.style as string
+				);
+
+			if (options.buttons?.X?.style as string)
+				options.buttons.X.style = MessageButtonStyle(
+					options.buttons?.X?.style as string
+				);
+			if (options.buttons?.O?.style as string)
+				options.buttons.O.style = MessageButtonStyle(
+					options.buttons?.O?.style as string
+				);
+
+			const emptyStyle =
+				(options.buttons?.blank?.style as ButtonStyle) || ButtonStyle.Secondary;
+			const XStyle =
+				(options.buttons?.X?.style as ButtonStyle) || ButtonStyle.Danger;
+			const OStyle =
+				(options.buttons?.O?.style as ButtonStyle) || ButtonStyle.Success;
+
 			if (interaction) {
 				opponent = options.user || extInteraction.options.get('user').user;
+
 				if (!opponent)
-					return extInteraction.followUp({
-						content: "You didn't mention an opponent.",
-						ephemeral: true
+					return ai(message, {
+						blank_emoji: blank_emoji,
+						x_emoji: x_emoji,
+						o_emoji: o_emoji,
+						x_style: XStyle,
+						o_style: OStyle,
+						emptyStyle: emptyStyle,
+						embed: options.embed,
+						buttons: options.buttons,
+						result: options.result
 					});
 
 				if (opponent.bot)
@@ -124,13 +156,21 @@ export async function tictactoe(
 			} else if (!interaction) {
 				opponent = extMessage.mentions.users.first();
 				if (!opponent)
-					return extMessage.reply({
-						content: "You didn't mention an opponent"
+					return ai(message, {
+						blank_emoji: blank_emoji,
+						x_emoji: x_emoji,
+						o_emoji: o_emoji,
+						x_style: XStyle,
+						o_style: OStyle,
+						emptyStyle: emptyStyle,
+						embed: options.embed,
+						buttons: options.buttons,
+						result: options.result
 					});
 
 				if (opponent.bot)
 					return extMessage.reply({
-						content: "You can't play with bots !"
+						content: "You can't play with bots!"
 					});
 
 				if (opponent.id === message.member.user.id)
@@ -218,19 +258,22 @@ export async function tictactoe(
 			});
 
 			collector.on('collect', async (button: ButtonInteraction) => {
-				if (button.user.id !== opponent.id)
+				if (button.user.id !== opponent.id) {
 					await button.reply({
-						content: 'You cannot play the game.',
+						content: `Only <@!${opponent.id}> can use these buttons!`,
 						ephemeral: true
 					});
+					return;
+				}
 
 				if (button.customId == 'deny') {
 					await button.deferUpdate();
 
 					collector.stop('decline');
 				} else if (button.customId == 'accept') {
-					collector.stop();
+					await button.deferUpdate();
 
+					collector.stop();
 					if (interaction) {
 						button.message.delete();
 					}
@@ -239,34 +282,11 @@ export async function tictactoe(
 						Math.random() > 0.5 ? 1 : -1
 					);
 
-					const x_emoji = options.buttons?.X?.emoji || '❌';
-					const o_emoji = options.buttons?.O?.emoji || '⭕';
-
-					const blank_emoji = options.buttons?.blank?.emoji || '➖';
-
-					if (options.buttons?.blank?.style as string)
-						options.buttons.blank.style = MessageButtonStyle(
-							options.buttons?.blank?.style as string
-						);
-					if (options.buttons?.X?.style as string)
-						options.buttons.X.style = MessageButtonStyle(
-							options.buttons?.X?.style as string
-						);
-					if (options.buttons?.O?.style as string)
-						options.buttons.O.style = MessageButtonStyle(
-							options.buttons?.O?.style as string
-						);
-
-					const emptyStyle =
-						(options.buttons?.blank?.style as ButtonStyle) ||
-						ButtonStyle.Secondary;
-					const XStyle =
-						(options.buttons?.X?.style as ButtonStyle) || ButtonStyle.Danger;
-					const OStyle =
-						(options.buttons?.O?.style as ButtonStyle) || ButtonStyle.Success;
-
 					const gameEmbed = new EmbedBuilder()
-						.setTitle(options.embed?.game?.title || `Lets Play Tictactoe`)
+						.setTitle(
+							options.embed?.game?.title ||
+								`${message.member.user.username} VS ${opponent.username}`
+						)
 						.setAuthor(
 							options.embed?.game?.author || {
 								name: (message.member.user as User).tag,
@@ -311,53 +331,15 @@ export async function tictactoe(
 					const Game = {
 						user: 0,
 						userid: '',
-						board: [
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							},
-							{
-								style: emptyStyle,
-								emoji: blank_emoji,
-								disabled: false
-							}
-						]
+						board: Array(9).fill({
+							style: emptyStyle,
+							emoji: blank_emoji,
+							disabled: false
+						}) as {
+							style: ButtonStyle;
+							emoji: string;
+							disabled: boolean;
+						}[]
 					};
 
 					await tictactoeEngine(msg, {
@@ -390,41 +372,6 @@ export async function tictactoe(
 							return [...Game.board].every((cell) => {
 								return cell.emoji == x_emoji || cell.emoji == o_emoji;
 							});
-						}
-
-						if (isDraw()) {
-							if (options.result === 'Button')
-								return m
-									.edit({
-										content: 'Its a Tie!',
-										embeds: [
-											gameEmbed.setDescription(
-												`You have tied. Play again to see who wins.`
-											)
-										]
-									})
-									.then((m: Message) => {
-										m.react(blank_emoji);
-									});
-							else
-								return m
-									.edit({
-										content: 'Its a Tie !',
-										embeds: [
-											gameEmbed.setDescription(
-												`You have tied. Play again to see who wins.\n` +
-													`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
-														.replaceAll(blank_emoji, '➖')
-														.replaceAll(o_emoji, '⭕')
-														.replaceAll(x_emoji, '❌')
-											)
-										],
-										components: []
-									})
-									.then((m) => {
-										m.react(blank_emoji);
-									})
-									.catch(() => {});
 						}
 
 						const a1 = new ButtonBuilder()
@@ -497,13 +444,42 @@ export async function tictactoe(
 						]);
 						const buttons = [a, b, c];
 
+						const winEmbed = new EmbedBuilder()
+							.setTitle(
+								options.embed?.win?.title ||
+									`${message.member.user.username} VS ${opponent.username}`
+							)
+
+							.setColor(options.embed?.win?.color || `DarkGreen`)
+							.setFooter(
+								options.embed?.win?.footer
+									? options.embed?.win?.footer
+									: {
+											text: '©️ Rahuletto. npm i simply-djs',
+											iconURL: 'https://i.imgur.com/XFUIwPh.png'
+									  }
+							);
+
+						if (options.embed?.win?.fields)
+							winEmbed.setFields(options.embed?.win?.fields);
+						if (options.embed?.win?.author)
+							winEmbed.setAuthor(options.embed?.win?.author);
+						if (options.embed?.win?.image)
+							winEmbed.setImage(options.embed?.win?.image);
+						if (options.embed?.win?.thumbnail)
+							winEmbed.setThumbnail(options.embed?.win?.thumbnail);
+						if (options.embed?.win?.timestamp)
+							winEmbed.setTimestamp(options.embed?.win?.timestamp);
+						if (options.embed?.win?.url)
+							winEmbed.setURL(options.embed?.win?.url);
+
 						if (checkWin(o_emoji)) won['O'] = true;
 
 						if (checkWin(x_emoji)) won['X'] = true;
 
 						if (won['O'] == true) {
 							const winner: User | void = await client.users
-								.fetch(players[1])
+								.fetch(players[Game.user === 0 ? 1 : 0])
 								.catch(console.error);
 							resolve(winner as User);
 
@@ -513,18 +489,27 @@ export async function tictactoe(
 										content: `<@${players[Game.user === 0 ? 1 : 0]}> (${
 											client.emojis.cache.get(o_emoji) || '⭕'
 										}) won`,
-										components: buttons,
+										components: disableButtons(buttons),
 
 										embeds: [
-											gameEmbed.setDescription(
-												`<@!${players[Game.user === 0 ? 1 : 0]}> (${
-													client.emojis.cache.get(o_emoji) || '⭕'
-												}) won, That was a nice game.`
-											)
+											winEmbed
+												.setAuthor(
+													options.embed?.win?.author || {
+														name: (winner as User).tag,
+														iconURL: (winner as User).displayAvatarURL({
+															forceStatic: false
+														})
+													}
+												)
+												.setDescription(
+													`<@!${players[Game.user === 0 ? 1 : 0]}> (${
+														client.emojis.cache.get(o_emoji) || '⭕'
+													}) won, That was a nice game.`
+												)
 										]
 									})
 									.then((m: Message) => {
-										m.react('⭕');
+										m.react(o_emoji);
 									});
 							else if (!options.result || options.result === 'Embed')
 								return m
@@ -534,24 +519,33 @@ export async function tictactoe(
 										}) won`,
 
 										embeds: [
-											gameEmbed.setDescription(
-												`<@!${players[Game.user === 0 ? 1 : 0]}> (${
-													client.emojis.cache.get(o_emoji) || '⭕'
-												}) won.. That was a nice game.\n` +
-													`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
-														.replaceAll(blank_emoji, '➖')
-														.replaceAll(o_emoji, '⭕')
-														.replaceAll(x_emoji, '❌')
-											)
+											winEmbed
+												.setAuthor(
+													options.embed?.win?.author || {
+														name: (winner as User).tag,
+														iconURL: (winner as User).displayAvatarURL({
+															forceStatic: false
+														})
+													}
+												)
+												.setDescription(
+													`<@!${players[Game.user === 0 ? 1 : 0]}> (${
+														client.emojis.cache.get(o_emoji) || '⭕'
+													}) won.. That was a nice game.\n` +
+														`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
+															.replaceAll(blank_emoji, '➖')
+															.replaceAll(o_emoji, '⭕')
+															.replaceAll(x_emoji, '❌')
+												)
 										],
 										components: []
 									})
 									.then((m: Message) => {
-										m.react('⭕');
+										m.react(o_emoji);
 									});
 						} else if (won['X'] == true) {
 							const winner: User | void = await client.users
-								.fetch(players[1])
+								.fetch(players[Game.user === 0 ? 1 : 0])
 								.catch(console.error);
 							resolve(winner as User);
 
@@ -561,18 +555,27 @@ export async function tictactoe(
 										content: `<@${players[Game.user === 0 ? 1 : 0]}> (${
 											client.emojis.cache.get(x_emoji) || '❌'
 										}) won`,
-										components: buttons,
+										components: disableButtons(buttons),
 
 										embeds: [
-											gameEmbed.setDescription(
-												`<@!${players[Game.user === 0 ? 1 : 0]}> (${
-													client.emojis.cache.get(x_emoji) || '❌'
-												}) won, That was a nice game.`
-											)
+											winEmbed
+												.setAuthor(
+													options.embed?.win?.author || {
+														name: (winner as User).tag,
+														iconURL: (winner as User).displayAvatarURL({
+															forceStatic: false
+														})
+													}
+												)
+												.setDescription(
+													`<@!${players[Game.user === 0 ? 1 : 0]}> (${
+														client.emojis.cache.get(x_emoji) || '❌'
+													}) won, That was a nice game.`
+												)
 										]
 									})
 									.then((m: Message) => {
-										m.react('❌');
+										m.react(o_emoji);
 									});
 							else if (!options.result || options.result === 'Embed')
 								return m
@@ -582,10 +585,82 @@ export async function tictactoe(
 										}) won`,
 
 										embeds: [
-											gameEmbed.setDescription(
-												`<@!${players[Game.user === 0 ? 1 : 0]}> (${
-													client.emojis.cache.get(x_emoji) || '❌'
-												}) won.. That was a nice game.\n` +
+											winEmbed
+												.setAuthor(
+													options.embed?.win?.author || {
+														name: (winner as User).tag,
+														iconURL: (winner as User).displayAvatarURL({
+															forceStatic: false
+														})
+													}
+												)
+												.setDescription(
+													`<@!${players[Game.user === 0 ? 1 : 0]}> (${
+														client.emojis.cache.get(x_emoji) || '❌'
+													}) won.. That was a nice game.\n` +
+														`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
+															.replaceAll(blank_emoji, '➖')
+															.replaceAll(o_emoji, '⭕')
+															.replaceAll(x_emoji, '❌')
+												)
+										],
+										components: []
+									})
+									.then((m: Message) => {
+										m.react(x_emoji);
+									});
+						}
+						if (isDraw()) {
+							const drawEmbed = new EmbedBuilder()
+								.setTitle(
+									options.embed?.draw?.title ||
+										`${message.member.user.username} VS ${opponent.username}`
+								)
+
+								.setColor(options.embed?.draw?.color || 'Grey')
+								.setFooter(
+									options.embed?.draw?.footer
+										? options.embed?.draw?.footer
+										: {
+												text: '©️ Rahuletto. npm i simply-djs',
+												iconURL: 'https://i.imgur.com/XFUIwPh.png'
+										  }
+								);
+
+							if (options.embed?.draw?.fields)
+								drawEmbed.setFields(options.embed?.draw?.fields);
+							if (options.embed?.draw?.author)
+								drawEmbed.setAuthor(options.embed?.draw?.author);
+							if (options.embed?.draw?.image)
+								drawEmbed.setImage(options.embed?.draw?.image);
+							if (options.embed?.draw?.thumbnail)
+								drawEmbed.setThumbnail(options.embed?.draw?.thumbnail);
+							if (options.embed?.draw?.timestamp)
+								drawEmbed.setTimestamp(options.embed?.draw?.timestamp);
+							if (options.embed?.draw?.url)
+								drawEmbed.setURL(options.embed?.draw?.url);
+
+							if (options.result === 'Button')
+								return m
+									.edit({
+										content: 'Its a Tie!',
+										embeds: [
+											drawEmbed.setDescription(
+												`You have tied. Play again to see who wins.`
+											)
+										],
+										components: buttons
+									})
+									.then((m: Message) => {
+										m.react(blank_emoji);
+									});
+							else
+								return m
+									.edit({
+										content: 'Its a Tie !',
+										embeds: [
+											drawEmbed.setDescription(
+												`You have tied. Play again to see who wins.\n` +
 													`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
 														.replaceAll(blank_emoji, '➖')
 														.replaceAll(o_emoji, '⭕')
@@ -594,21 +669,33 @@ export async function tictactoe(
 										],
 										components: []
 									})
-									.then((m: Message) => {
-										m.react('❌');
-									});
+									.then((m) => {
+										m.react(blank_emoji);
+									})
+									.catch(() => {});
 						}
+
+						const play = await client.users.fetch(players[Game.user]);
 
 						m.edit({
 							content: `<@${Game.userid}>`,
 							embeds: [
-								gameEmbed.setDescription(
-									`Waiting for Input | <@!${Game.userid}> | Your Emoji: ${
-										Game.user == 0
-											? `${client.emojis.cache.get(o_emoji) || '⭕'}`
-											: `${client.emojis.cache.get(x_emoji) || '❌'}`
-									}`
-								)
+								gameEmbed
+									.setAuthor(
+										options.embed?.game?.author || {
+											name: play.tag,
+											iconURL: play.displayAvatarURL({
+												forceStatic: false
+											})
+										}
+									)
+									.setDescription(
+										`Waiting for Input | <@!${Game.userid}> | Your Emoji: ${
+											Game.user == 0
+												? `${client.emojis.cache.get(o_emoji) || '⭕'}`
+												: `${client.emojis.cache.get(x_emoji) || '❌'}`
+										}`
+									)
 							],
 							components: [a, b, c]
 						});
@@ -620,9 +707,31 @@ export async function tictactoe(
 						});
 
 						collector.on('collect', async (b: ButtonInteraction) => {
-							if (b.user.id !== Game.userid) {
+							if (
+								b.user.id !== Game.userid &&
+								b.user.id === (message.member.user as User).id
+							) {
 								b.reply({
-									content: 'You cannot play now',
+									content: `Its not your turn! (<@!${opponent.id}>)`,
+									ephemeral: true
+								});
+							} else if (
+								b.user.id !== Game.userid &&
+								b.user.id === opponent.id
+							) {
+								b.reply({
+									content: `Its not your turn! (<@!${
+										(message.member.user as User).id
+									}>)`,
+									ephemeral: true
+								});
+							} else if (
+								b.user.id !== Game.userid &&
+								b.user.id !== opponent.id &&
+								b.user.id !== (message.member.user as User).id
+							) {
+								b.reply({
+									content: `You cannot play this game!`,
 									ephemeral: true
 								});
 							} else {
@@ -683,7 +792,8 @@ export async function tictactoe(
 								m.edit({
 									content: `<@!${Game.userid}> didn\'t react in time! (30s)`,
 									embeds: [timeoutEmbed],
-									components: []
+
+									components: disableButtons(buttons)
 								});
 						});
 					}
@@ -766,10 +876,559 @@ export async function tictactoe(
 			if (options.strict)
 				throw new SimplyError({
 					function: 'tictactoe',
-					title: 'An Error occured when running the function ',
+					title: 'An Error occured when running the function',
 					tip: err.stack
 				});
 			else console.log(`SimplyError - tictactoe | Error: ${err.stack}`);
 		}
 	});
+}
+
+function disableButtons(components: ActionRowBuilder<ButtonBuilder>[]) {
+	for (let x = 0; x < components.length; x++) {
+		for (let y = 0; y < components[x].components.length; y++) {
+			components[x].components[y] = ButtonBuilder.from(
+				components[x].components[y]
+			);
+
+			components[x].components[y].setDisabled(true);
+		}
+	}
+
+	return components;
+}
+
+async function ai(
+	msgOrint: ExtendedMessage | ExtendedInteraction,
+	options: any = {}
+) {
+	const { client } = msgOrint;
+	let board = ['', '', '', '', '', '', '', '', ''];
+
+	let message: Message<boolean>;
+
+	let interaction: ExtendedInteraction;
+
+	if (msgOrint.commandId) {
+		interaction = msgOrint as ExtendedInteraction;
+	}
+
+	const extInteraction = msgOrint as ExtendedInteraction;
+	const extMessage = msgOrint as ExtendedMessage;
+
+	const Game = {
+		board: Array(9).fill({
+			style: options.emptyStyle,
+			emoji: options.blank_emoji,
+			disabled: false
+		}) as {
+			style: ButtonStyle;
+			emoji: string;
+			disabled: boolean;
+		}[]
+	};
+
+	const opponent = msgOrint.client.user;
+
+	const gameEmbed = new EmbedBuilder()
+		.setTitle(
+			options.embed?.game?.title ||
+				`${msgOrint.member.user.username} VS ${opponent.username}`
+		)
+		.setAuthor(
+			options.embed?.game?.author || {
+				name: (msgOrint.member.user as User).tag,
+				iconURL: (msgOrint.member.user as User).displayAvatarURL({
+					forceStatic: false
+				})
+			}
+		)
+
+		.setColor(options.embed?.game?.color || `#406DBC`)
+		.setFooter(
+			options.embed?.game?.footer
+				? options.embed?.game?.footer
+				: {
+						text: '©️ Rahuletto. npm i simply-djs',
+						iconURL: 'https://i.imgur.com/XFUIwPh.png'
+				  }
+		);
+
+	if (options.embed?.game?.fields)
+		gameEmbed.setFields(options.embed?.game?.fields);
+	if (options.embed?.game?.author)
+		gameEmbed.setAuthor(options.embed?.game?.author);
+	if (options.embed?.game?.image)
+		gameEmbed.setImage(options.embed?.game?.image);
+	if (options.embed?.game?.thumbnail)
+		gameEmbed.setThumbnail(options.embed?.game?.thumbnail);
+	if (options.embed?.game?.timestamp)
+		gameEmbed.setTimestamp(options.embed?.game?.timestamp);
+	if (options.embed?.game?.url) gameEmbed.setURL(options.embed?.game?.url);
+
+	const a1 = new ButtonBuilder()
+		.setStyle(Game.board[0].style)
+		.setEmoji(Game.board[0].emoji)
+		.setCustomId('0')
+		.setDisabled(Game.board[0].disabled);
+
+	const a2 = new ButtonBuilder()
+		.setStyle(Game.board[1].style)
+		.setEmoji(Game.board[1].emoji)
+		.setCustomId('1')
+		.setDisabled(Game.board[1].disabled);
+
+	const a3 = new ButtonBuilder()
+		.setStyle(Game.board[2].style)
+		.setEmoji(Game.board[2].emoji)
+		.setCustomId('2')
+		.setDisabled(Game.board[2].disabled);
+
+	const b1 = new ButtonBuilder()
+		.setStyle(Game.board[3].style)
+		.setEmoji(Game.board[3].emoji)
+		.setCustomId('3')
+		.setDisabled(Game.board[3].disabled);
+
+	const b2 = new ButtonBuilder()
+		.setStyle(Game.board[4].style)
+		.setEmoji(Game.board[4].emoji)
+		.setCustomId('4')
+		.setDisabled(Game.board[4].disabled);
+
+	const b3 = new ButtonBuilder()
+		.setStyle(Game.board[5].style)
+		.setEmoji(Game.board[5].emoji)
+		.setCustomId('5')
+		.setDisabled(Game.board[5].disabled);
+
+	const c1 = new ButtonBuilder()
+		.setStyle(Game.board[6].style)
+		.setEmoji(Game.board[6].emoji)
+		.setCustomId('6')
+		.setDisabled(Game.board[6].disabled);
+	const c2 = new ButtonBuilder()
+		.setStyle(Game.board[7].style)
+		.setEmoji(Game.board[7].emoji)
+		.setCustomId('7')
+		.setDisabled(Game.board[7].disabled);
+
+	const c3 = new ButtonBuilder()
+		.setStyle(Game.board[8].style)
+		.setEmoji(Game.board[8].emoji)
+		.setCustomId('8')
+		.setDisabled(Game.board[8].disabled);
+
+	const a = new ActionRowBuilder<ButtonBuilder>().addComponents([a1, a2, a3]);
+	const b = new ActionRowBuilder<ButtonBuilder>().addComponents([b1, b2, b3]);
+	const c = new ActionRowBuilder<ButtonBuilder>().addComponents([c1, c2, c3]);
+	const buttons = [a, b, c];
+
+	if (interaction) {
+		message = await extInteraction.followUp({
+			embeds: [gameEmbed],
+			components: buttons
+		});
+	} else if (!interaction) {
+		message = await extMessage.reply({
+			embeds: [gameEmbed],
+			components: buttons
+		});
+	}
+
+	const filter = (button: ButtonInteraction) =>
+		button.user.id === msgOrint.member.user.id;
+
+	function checkWin(emoji: string) {
+		return combinations.some((combination) => {
+			return combination.every((index) => {
+				return Game.board[index].emoji == emoji;
+			});
+		});
+	}
+
+	function isDraw() {
+		return [...Game.board].every((cell) => {
+			return cell.emoji == options.x_emoji || cell.emoji == options.o_emoji;
+		});
+	}
+
+	function update() {
+		const a1 = new ButtonBuilder()
+			.setStyle(Game.board[0].style)
+			.setEmoji(Game.board[0].emoji)
+			.setCustomId('0')
+			.setDisabled(Game.board[0].disabled);
+
+		const a2 = new ButtonBuilder()
+			.setStyle(Game.board[1].style)
+			.setEmoji(Game.board[1].emoji)
+			.setCustomId('1')
+			.setDisabled(Game.board[1].disabled);
+
+		const a3 = new ButtonBuilder()
+			.setStyle(Game.board[2].style)
+			.setEmoji(Game.board[2].emoji)
+			.setCustomId('2')
+			.setDisabled(Game.board[2].disabled);
+
+		const b1 = new ButtonBuilder()
+			.setStyle(Game.board[3].style)
+			.setEmoji(Game.board[3].emoji)
+			.setCustomId('3')
+			.setDisabled(Game.board[3].disabled);
+
+		const b2 = new ButtonBuilder()
+			.setStyle(Game.board[4].style)
+			.setEmoji(Game.board[4].emoji)
+			.setCustomId('4')
+			.setDisabled(Game.board[4].disabled);
+
+		const b3 = new ButtonBuilder()
+			.setStyle(Game.board[5].style)
+			.setEmoji(Game.board[5].emoji)
+			.setCustomId('5')
+			.setDisabled(Game.board[5].disabled);
+
+		const c1 = new ButtonBuilder()
+			.setStyle(Game.board[6].style)
+			.setEmoji(Game.board[6].emoji)
+			.setCustomId('6')
+			.setDisabled(Game.board[6].disabled);
+		const c2 = new ButtonBuilder()
+			.setStyle(Game.board[7].style)
+			.setEmoji(Game.board[7].emoji)
+			.setCustomId('7')
+			.setDisabled(Game.board[7].disabled);
+
+		const c3 = new ButtonBuilder()
+			.setStyle(Game.board[8].style)
+			.setEmoji(Game.board[8].emoji)
+			.setCustomId('8')
+			.setDisabled(Game.board[8].disabled);
+
+		const a = new ActionRowBuilder<ButtonBuilder>().addComponents([a1, a2, a3]);
+		const b = new ActionRowBuilder<ButtonBuilder>().addComponents([b1, b2, b3]);
+		const c = new ActionRowBuilder<ButtonBuilder>().addComponents([c1, c2, c3]);
+		return [a, b, c];
+	}
+	function rec() {
+		const collector = message.createMessageComponentCollector({
+			filter: filter,
+			componentType: ComponentType.Button,
+			idle: 30000,
+			maxUsers: 1,
+			max: 1
+		});
+
+		collector.on('collect', async (button: ButtonInteraction) => {
+			await button.deferUpdate();
+
+			board[Number(button.customId)] = 'x';
+
+			for (let i = 0; i < board.length; i++) {
+				let elem = board[i];
+				if (elem == 'x') {
+					Game.board[i] = {
+						style: options.x_style,
+						emoji: options.x_emoji,
+						disabled: true
+					};
+
+					const buttonUpdate = update();
+
+					message.edit({
+						embeds: [
+							gameEmbed
+								.setDescription(`${opponent.username} is thinking...`)
+								.setColor(`DarkGrey`)
+						],
+						components: buttonUpdate
+					});
+				} else if (elem == 'o') {
+					Game.board[i] = {
+						style: options.o_style,
+						emoji: options.o_emoji,
+						disabled: true
+					};
+
+					const buttonUpdate = update();
+
+					message.edit({
+						embeds: [
+							gameEmbed
+								.setDescription(`${opponent.username} is thinking...`)
+								.setColor(`DarkGrey`)
+						],
+						components: buttonUpdate
+					});
+				}
+			}
+
+			await aiEngine();
+
+			if (isDraw()) {
+				const drawEmbed = new EmbedBuilder()
+					.setTitle(
+						options.embed?.draw?.title ||
+							`${msgOrint.member.user.username} VS ${opponent.username}`
+					)
+
+					.setColor(options.embed?.draw?.color || 'Grey')
+					.setFooter(
+						options.embed?.draw?.footer
+							? options.embed?.draw?.footer
+							: {
+									text: '©️ Rahuletto. npm i simply-djs',
+									iconURL: 'https://i.imgur.com/XFUIwPh.png'
+							  }
+					);
+
+				if (options.embed?.draw?.fields)
+					drawEmbed.setFields(options.embed?.draw?.fields);
+				if (options.embed?.draw?.author)
+					drawEmbed.setAuthor(options.embed?.draw?.author);
+				if (options.embed?.draw?.image)
+					drawEmbed.setImage(options.embed?.draw?.image);
+				if (options.embed?.draw?.thumbnail)
+					drawEmbed.setThumbnail(options.embed?.draw?.thumbnail);
+				if (options.embed?.draw?.timestamp)
+					drawEmbed.setTimestamp(options.embed?.draw?.timestamp);
+				if (options.embed?.draw?.url)
+					drawEmbed.setURL(options.embed?.draw?.url);
+
+				const buttonsResult = update();
+
+				if (options.result === 'Button')
+					return message
+						.edit({
+							content: 'Its a Tie!',
+							embeds: [
+								drawEmbed.setDescription(
+									`You have tied. Play again to see who wins.`
+								)
+							],
+							components: buttonsResult
+						})
+						.then((m: Message) => {
+							m.react(options.blank_emoji);
+						});
+				else
+					return message
+						.edit({
+							content: 'Its a Tie !',
+							embeds: [
+								drawEmbed.setDescription(
+									`You have tied. Play again to see who wins.\n` +
+										`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
+											.replaceAll(options.blank_emoji, '➖')
+											.replaceAll(options.o_emoji, '⭕')
+											.replaceAll(options.x_emoji, '❌')
+								)
+							],
+							components: []
+						})
+						.then((m: Message) => {
+							m.react(options.blank_emoji);
+						})
+						.catch(() => {});
+			} else if (checkWin(options.x_emoji)) {
+				const winEmbed = new EmbedBuilder()
+					.setTitle(
+						options.embed?.win?.title ||
+							`${msgOrint.member.user.username} VS ${opponent.username}`
+					)
+
+					.setColor(options.embed?.win?.color || `DarkGreen`)
+					.setFooter(
+						options.embed?.win?.footer
+							? options.embed?.win?.footer
+							: {
+									text: '©️ Rahuletto. npm i simply-djs',
+									iconURL: 'https://i.imgur.com/XFUIwPh.png'
+							  }
+					);
+
+				if (options.embed?.win?.fields)
+					winEmbed.setFields(options.embed?.win?.fields);
+				if (options.embed?.win?.author)
+					winEmbed.setAuthor(options.embed?.win?.author);
+				if (options.embed?.win?.image)
+					winEmbed.setImage(options.embed?.win?.image);
+				if (options.embed?.win?.thumbnail)
+					winEmbed.setThumbnail(options.embed?.win?.thumbnail);
+				if (options.embed?.win?.timestamp)
+					winEmbed.setTimestamp(options.embed?.win?.timestamp);
+				if (options.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
+
+				const buttonsResult = update();
+
+				if (options.result === 'Button')
+					return message
+						.edit({
+							components: disableButtons(buttonsResult),
+
+							embeds: [
+								winEmbed.setDescription(
+									`<@!${msgOrint.member.user.id}> (${
+										client.emojis.cache.get(options.x_emoji) || '❌'
+									}) won, That was a nice game. GG`
+								)
+							]
+						})
+						.then((m: Message) => {
+							m.react(options.x_emoji);
+						});
+				else if (!options.result || options.result === 'Embed')
+					return message
+						.edit({
+							embeds: [
+								winEmbed.setDescription(
+									`<@!${msgOrint.member.user.id}> (${
+										client.emojis.cache.get(options.o_emoji) || '❌'
+									}) won, That was a nice game. GG\n` +
+										`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
+											.replaceAll(options.blank_emoji, '➖')
+											.replaceAll(options.o_emoji, '⭕')
+											.replaceAll(options.x_emoji, '❌')
+								)
+							],
+							components: []
+						})
+						.then((m: Message) => {
+							m.react(options.x_emoji);
+						});
+			} else if (checkWin(options.o_emoji)) {
+				const winEmbed = new EmbedBuilder()
+					.setTitle(
+						options.embed?.win?.title ||
+							`${msgOrint.member.user.username} VS ${opponent.username}`
+					)
+
+					.setColor(options.embed?.win?.color || `DarkGreen`)
+					.setFooter(
+						options.embed?.win?.footer
+							? options.embed?.win?.footer
+							: {
+									text: '©️ Rahuletto. npm i simply-djs',
+									iconURL: 'https://i.imgur.com/XFUIwPh.png'
+							  }
+					);
+
+				if (options.embed?.win?.fields)
+					winEmbed.setFields(options.embed?.win?.fields);
+				if (options.embed?.win?.author)
+					winEmbed.setAuthor(options.embed?.win?.author);
+				if (options.embed?.win?.image)
+					winEmbed.setImage(options.embed?.win?.image);
+				if (options.embed?.win?.thumbnail)
+					winEmbed.setThumbnail(options.embed?.win?.thumbnail);
+				if (options.embed?.win?.timestamp)
+					winEmbed.setTimestamp(options.embed?.win?.timestamp);
+				if (options.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
+
+				const buttonsResult = update();
+
+				if (options.result === 'Button')
+					return message
+						.edit({
+							components: disableButtons(buttonsResult),
+
+							embeds: [
+								winEmbed.setDescription(
+									`${opponent.username} (${
+										client.emojis.cache.get(options.o_emoji) || '⭕'
+									}) won, That was a nice game. GG`
+								)
+							]
+						})
+						.then((m: Message) => {
+							m.react(options.o_emoji);
+						});
+				else if (!options.result || options.result === 'Embed')
+					return message
+						.edit({
+							embeds: [
+								winEmbed.setDescription(
+									`${opponent.username} (${
+										client.emojis.cache.get(options.o_emoji) || '⭕'
+									}) won, That was a nice game. GG\n` +
+										`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
+											.replaceAll(options.blank_emoji, '➖')
+											.replaceAll(options.o_emoji, '⭕')
+											.replaceAll(options.x_emoji, '❌')
+								)
+							],
+							components: []
+						})
+						.then((m: Message) => {
+							m.react(options.o_emoji);
+						});
+			}
+
+			for (let i = 0; i < board.length; i++) {
+				let elem = board[i];
+				if (elem == 'x') {
+					Game.board[i] = {
+						style: options.x_style,
+						emoji: options.x_emoji,
+						disabled: true
+					};
+
+					const buttonUpdate = update();
+
+					message.edit({
+						embeds: [
+							gameEmbed
+								.setDescription(`${opponent.username} made the move. Your turn`)
+								.setColor(`#406DBC`)
+						],
+						components: buttonUpdate
+					});
+				} else if (elem == 'o') {
+					Game.board[i] = {
+						style: options.o_style,
+						emoji: options.o_emoji,
+						disabled: true
+					};
+
+					const buttonUpdate = update();
+
+					message.edit({
+						embeds: [
+							gameEmbed
+								.setDescription(`${opponent.username} made the move. Your turn`)
+								.setColor(`#406DBC`)
+						],
+						components: buttonUpdate
+					});
+				}
+			}
+
+			if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji))
+				setTimeout(() => {
+					rec();
+				}, 500);
+		});
+	}
+
+	rec();
+
+	async function aiEngine() {
+		const res = await https(
+			`ttt-ai.rahulalt.repl.co`,
+			`/ttt?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: {
+					board: board
+				}
+			}
+		);
+
+		if (!res) return;
+
+		board = res.after;
+	}
 }

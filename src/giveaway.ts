@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Role } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -60,7 +62,6 @@ interface returns {
 
 /**
  * A **Powerful** yet simple giveawaySystem | *Required: **manageBtn()***
- * @param client
  * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/givewaySystem***
@@ -68,7 +69,6 @@ interface returns {
  */
 
 export async function giveawaySystem(
-	client: Client,
 	message: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
 ): Promise<returns> {

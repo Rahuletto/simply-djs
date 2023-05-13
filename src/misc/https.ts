@@ -17,6 +17,7 @@ export type httpsOptions = {
 		| 'OPTIONS'
 		| 'TRACE';
 	headers: OutgoingHttpHeaders;
+	body?: Object;
 };
 
 /**
@@ -37,7 +38,7 @@ export function https(
 	}
 ): Promise<any> {
 	return new Promise((resolve, reject) => {
-		request(
+		var req = request(
 			{
 				hostname: host,
 				path: endpoint,
@@ -63,8 +64,10 @@ export function https(
 					}
 				});
 			}
-		)
-			.on('error', reject)
-			.end();
+		).on('error', reject);
+
+		if (options.body) req.write(JSON.stringify(options.body));
+
+		req.end();
 	});
 }
