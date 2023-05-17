@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-interface Entry {
+export interface Entry {
 	userID: string;
 	guildID: string;
 	messageID: string;

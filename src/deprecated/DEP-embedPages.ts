@@ -11,7 +11,7 @@ export async function embedPages(
 	message: ExtendedMessage | ExtendedInteraction,
 	pages: EmbedBuilder[],
 	options: pagesOption = {}
-): Promise<boolean> {
+): Promise<void> {
 	Deprecated({ desc: 'embedPages() is now buttonPages()' });
 	return await buttonPages(message, { embeds: pages, ...options });
 }

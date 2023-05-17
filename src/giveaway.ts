@@ -1,6 +1,17 @@
-// @ts-nocheck
-
-import { Role } from 'discord.js';
+import {
+	ButtonStyle,
+	GuildTextBasedChannel,
+	Guild,
+	Message,
+	PermissionFlagsBits,
+	Role,
+	TextChannel,
+	ButtonBuilder,
+	ActionRowBuilder,
+	Invite,
+	Collection,
+	EmbedBuilder
+} from 'discord.js';
 import {
 	ExtendedInteraction,
 	ExtendedMessage,
@@ -9,13 +20,14 @@ import {
 } from './interfaces';
 
 import model from './model/giveaway';
-import { toRgb } from './misc';
+import { MessageButtonStyle, ms, toRgb } from './misc';
+import { SimplyError } from './error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface requirement {
+interface Requirement {
 	type: 'Role' | 'Guild' | 'None';
 	id: string;
 }
@@ -32,28 +44,29 @@ interface giveawayButtons {
 
 export type giveawayOptions = {
 	prize?: string;
-	winners?: string | number;
-	channel?: MessageChannel;
+	winners?: number;
+	channel?: GuildTextBasedChannel | TextChannel;
 	time?: string;
 
 	buttons?: giveawayButtons;
 
 	manager?: Role | string;
 
-	req?: requirement;
-	ping?: string;
+	requirements?: Requirement;
+	pingRole?: Role | string;
 
 	embed?: CustomizableEmbed;
 
 	type?: 'Label' | 'Emoji' | 'Both';
+	strict?: boolean;
 };
 
-interface returns {
-	message: string;
+export interface GiveawayResolve {
+	message: Message;
 	winners: number;
 	prize: string;
 	endsAt: number;
-	req: string;
+	requirements: { type: 'None' | 'Role' | 'Guild'; value: Guild | Role };
 }
 
 // ------------------------------
@@ -61,47 +74,51 @@ interface returns {
 // ------------------------------
 
 /**
- * A **Powerful** yet simple giveawaySystem | *Required: **manageBtn()***
- * @param message
+ * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()***
+ * @param msgOrint
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/givewaySystem***
  * @example simplydjs.giveawaySystem(client, message)
  */
 
-export async function giveawaySystem(
-	message: ExtendedMessage | ExtendedInteraction,
+export async function giveaway(
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
-): Promise<returns> {
+): Promise<GiveawayResolve> {
 	return new Promise(async (resolve) => {
 		try {
-			let interaction: any;
-			if (message.commandId) {
-				interaction = message;
+			const { client } = msgOrint;
+
+			let interaction: ExtendedInteraction;
+			if (msgOrint.commandId) {
+				interaction = msgOrint as ExtendedInteraction;
 			}
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
+
 			const timeStart: number = Date.now();
-			const int = message as ExtendedInteraction;
-			const mes = message as Message;
 
-			let roly;
+			let manager: Role;
 
-			if (options.manager as Role)
-				roly = await message.member.roles.cache.find(
-					(r: Role) => r.id === (options.manager as Role).id
-				);
+			if (options.manager as Role) manager = options.manager as Role;
 			else if (options.manager as string)
-				roly = await message.member.roles.cache.find(
+				manager = await msgOrint.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
 			if (
 				!(
-					roly ||
-					message?.member?.permissions?.has(Permissions.FLAGS.ADMINISTRATOR)
+					manager ||
+					msgOrint?.member?.permissions?.has(
+						PermissionFlagsBits.ManageEvents
+					) ||
+					msgOrint?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
+					msgOrint?.member?.permissions?.has(PermissionFlagsBits.Administrator)
 				)
 			) {
-				return message.channel.send({
+				return msgOrint.channel.send({
 					content:
-						'You Must Have • Administrator Permission (or) • Giveaway Manager Role'
+						'You must have • `Administrator` (or) `Manage Guild` (or) `Manage Events` Permission or • Giveaway Manager Role'
 				});
 			}
 
@@ -109,17 +126,17 @@ export async function giveawaySystem(
 
 			options.buttons = {
 				enter: {
-					style: options.buttons?.enter?.style || 'SUCCESS',
+					style: options.buttons?.enter?.style || ButtonStyle.Success,
 					label: options.buttons?.enter?.label || '0',
 					emoji: options.buttons?.enter?.emoji || '🎁'
 				},
 				end: {
-					style: options.buttons?.end?.style || 'DANGER',
+					style: options.buttons?.end?.style || ButtonStyle.Danger,
 					label: options.buttons?.end?.label || 'End',
 					emoji: options.buttons?.end?.emoji || '⛔'
 				},
 				reroll: {
-					style: options.buttons?.end?.style || 'PRIMARY',
+					style: options.buttons?.end?.style || ButtonStyle.Primary,
 					label: options.buttons?.end?.label || 'Reroll',
 					emoji: options.buttons?.end?.emoji || '🔁'
 				}
@@ -132,75 +149,106 @@ export async function giveawaySystem(
 						iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					},
 					color: toRgb('#406DBC'),
-					title: 'Giveaways'
+					title: 'Giveaway !'
 				};
 			}
 
-			let ch;
-			let time: any;
-			let winners: any;
-			let prize: any;
-			let req = 'None';
-			let gid: string;
+			let channel: TextChannel;
+			let time: string;
+			let winners: number;
+			let prize: string;
+			let requirements: {
+				type: 'None' | 'Role' | 'Guild';
+				value: Role | Guild | null;
+			} = { type: 'None', value: null };
 
 			let content = '** **';
 
-			if (options.ping) {
-				content = message.guild.roles
-					.fetch(options.ping, { force: true })
-					.toString();
-			}
-			let val: any;
+			if (options.pingRole as Role)
+				content = (options.pingRole as Role).toString();
+			else if (options.pingRole as string)
+				content = (
+					await msgOrint.member.roles.cache.find(
+						(r: Role) => r.id === (options.pingRole as string)
+					)
+				).toString();
 
-			if (options.req?.type === 'Role') {
-				val = await message.guild.roles.fetch(options.req?.id, {
-					force: true
-				});
+			if (options.requirements?.type === 'Role') {
+				const role = await msgOrint.guild.roles.fetch(
+					options.requirements?.id,
+					{
+						force: true
+					}
+				);
 
-				req = 'Role';
-			} else if (options.req?.type === 'Guild') {
-				val = client.guilds.cache.get(options.req?.id);
+				requirements = { type: 'Role', value: role };
+			} else if (options.requirements?.type === 'Guild') {
+				const guild = await client.guilds.cache.get(options.requirements?.id);
 
-				if (!val)
-					return message.channel.send({
+				if (!guild)
+					return extMessage.channel.send({
 						content:
 							'Please add me to that server so i can set the requirement.'
 					});
-				gid = val.id;
 
-				await val.invites.fetch().then((a: any) => {
-					val = `[${val.name}](https://discord.gg/${a.first()})`;
-				});
-				req = 'Guild';
+				requirements = { type: 'Guild', value: guild };
 			}
 
 			if (interaction) {
-				ch =
-					options.channel ||
-					int.options.getChannel('channel') ||
-					interaction.channel;
-				time = options.time || int.options.getString('time') || '1h';
-				winners = options.winners || int.options.getNumber('winners');
-				prize = options.prize || int.options.getString('prize');
+				channel =
+					(options.channel as TextChannel) ||
+					(extInteraction.options.get('channel').channel as TextChannel) ||
+					(interaction.channel as TextChannel);
+				time =
+					options.time ||
+					extInteraction.options.get('time').value.toString() ||
+					'1h';
+				winners =
+					options.winners ||
+					Number(extInteraction.options.get('winners').value);
+				prize =
+					options.prize || extInteraction.options.get('prize').value.toString();
 			} else if (!interaction) {
-				const [...args] = mes.content.split(/ +/g);
+				const [...args] = extMessage.content.split(/ +/g);
 
-				ch =
-					options.channel ||
-					message.mentions.channels.first() ||
-					message.channel;
+				if (!Number(args[2]))
+					return extMessage.reply({
+						content: 'Please provide a number for winners argument'
+					});
+
+				channel =
+					(options.channel as TextChannel) ||
+					(extMessage.mentions.channels.first() as TextChannel) ||
+					(extMessage.channel as TextChannel);
 				time = options.time || args[1] || '1h';
-				winners = args[2] || options.winners;
+				winners = Number(args[2]) || options.winners;
 				prize = options.prize || args.slice(3).join(' ');
 			}
 
-			const enter = new MessageButton()
-				.setCustomId('enter_giveaway')
-				.setStyle(options.buttons?.enter?.style || 'SUCCESS');
+			if (options.buttons?.enter?.style as string)
+				options.buttons.enter.style = MessageButtonStyle(
+					options.buttons?.enter?.style as string
+				);
 
-			if (options.disable === 'Label')
+			if (options.buttons?.end?.style as string)
+				options.buttons.end.style = MessageButtonStyle(
+					options.buttons?.end?.style as string
+				);
+
+			if (options.buttons?.reroll?.style as string)
+				options.buttons.reroll.style = MessageButtonStyle(
+					options.buttons?.reroll?.style as string
+				);
+
+			const enter = new ButtonBuilder()
+				.setCustomId('enter_giveaway')
+				.setStyle(
+					(options.buttons?.enter?.style as ButtonStyle) || ButtonStyle.Primary
+				);
+
+			if (options.type === 'Emoji')
 				enter.setEmoji(options.buttons?.enter?.emoji || '🎁');
-			else if (options.disable === 'Emoji')
+			else if (options.type === 'Label')
 				enter.setLabel(options.buttons?.enter?.label || '0');
 			else {
 				enter
@@ -208,28 +256,32 @@ export async function giveawaySystem(
 					.setLabel(options.buttons?.enter?.label || '0');
 			}
 
-			const end = new MessageButton()
+			const end = new ButtonBuilder()
 				.setCustomId('end_giveaway')
-				.setStyle(options.buttons?.end?.style || 'DANGER');
+				.setStyle(
+					(options.buttons?.end?.style as ButtonStyle) || ButtonStyle.Danger
+				);
 
-			if (options.disable === 'Label')
+			if (options.type === 'Emoji')
 				end.setEmoji(options.buttons?.end?.emoji || '⛔');
-			else if (options.disable === 'Emoji')
+			else if (options.type === 'Label')
 				end.setLabel(options.buttons?.end?.label || 'End');
 			else {
-				end
+				enter
 					.setEmoji(options.buttons?.end?.emoji || '⛔')
 					.setLabel(options.buttons?.end?.label || 'End');
 			}
 
-			const reroll = new MessageButton()
+			const reroll = new ButtonBuilder()
 				.setCustomId('reroll_giveaway')
-				.setStyle(options.buttons?.reroll?.style || 'SUCCESS')
+				.setStyle(
+					(options.buttons?.reroll?.style as ButtonStyle) || ButtonStyle.Success
+				)
 				.setDisabled(true);
 
-			if (options.disable === 'Label')
+			if (options.type === 'Emoji')
 				reroll.setEmoji(options.buttons?.reroll?.emoji || '🔁');
-			else if (options.disable === 'Emoji')
+			else if (options.type === 'Label')
 				reroll.setLabel(options.buttons?.reroll?.label || 'Reroll');
 			else {
 				reroll
@@ -237,13 +289,17 @@ export async function giveawaySystem(
 					.setLabel(options.buttons?.reroll?.label || 'Reroll');
 			}
 
-			const row = new MessageActionRow().addComponents([enter, reroll, end]);
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				enter,
+				reroll,
+				end
+			]);
 
-			time = ms(time);
+			const timeInMS = ms(time);
 
-			const endtime = Number((Date.now() + time).toString().slice(0, -3));
+			const endTime = Number((Date.now() + timeInMS).toString().slice(0, -3));
 
-			options.fields = options.fields || [
+			options.embed.fields = options.embed.fields || [
 				{
 					name: 'Prize',
 					value: `{prize}`
@@ -265,40 +321,44 @@ export async function giveawaySystem(
 				}
 			];
 
-			options.embed?.fields?.forEach((a) => {
-				a.value = a?.value
-					.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-					.replaceAll('{endsAt}', `<t:${endtime}:f>`)
+			let guildInvite: string;
+			if (requirements.type == 'Guild') {
+				await (requirements.value as Guild).invites
+					.fetch()
+					.then((a: Collection<string, Invite>) => {
+						guildInvite = `https://discord.gg/${a.first()}`;
+					});
+			}
+
+			function replacer(str: string) {
+				return str
+					.replaceAll('{hosted}', `<@${msgOrint.member.user.id}>`)
+					.replaceAll('{endsAt}', `<t:${endTime}:f>`)
 					.replaceAll('{prize}', prize)
 					.replaceAll(
 						'{requirements}',
-						req === 'None'
+						requirements.type === 'None'
 							? 'None'
-							: req + ' | ' + (req === 'Role' ? `${val}` : val)
+							: requirements.type +
+									' | ' +
+									(requirements.type === 'Guild'
+										? `${guildInvite}`
+										: `${requirements.value}`)
 					)
-					.replaceAll('{winCount}', winners)
+					.replaceAll('{winCount}', winners.toString())
 					.replaceAll('{entered}', '0');
+			}
+
+			options.embed?.fields?.forEach((a) => {
+				a.value = replacer(a?.value);
 			});
 
-			const embed = new MessageEmbed()
-				.setTitle(
-					(options.embed?.title || 'Giveaway')
-						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-						.replaceAll('{prize}', prize)
-						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
-						.replaceAll(
-							'{requirements}',
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? `${val}` : val)
-						)
-						.replaceAll('{winCount}', winners)
-						.replaceAll('{entered}', '0') || prize
-				)
+			const embed = new EmbedBuilder()
+				.setTitle(replacer(options.embed?.title || 'Giveaway Time !'))
 				.setColor(options.embed?.color || toRgb('#406DBC'))
-				.setTimestamp(Number(Date.now() + time))
+				.setTimestamp(Number(Date.now() + timeInMS))
 				.setFooter(
-					options.embed?.credit === false
+					options.embed?.footer
 						? options.embed?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
@@ -306,290 +366,82 @@ export async function giveawaySystem(
 						  }
 				)
 				.setDescription(
-					(
+					replacer(
 						options.embed?.description ||
-						`Interact with the giveaway using the buttons.`
+							`Interact with the giveaway using the buttons below.`
 					)
-						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-						.replaceAll('{prize}', prize)
-						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
-						.replaceAll(
-							'{requirements}',
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? `${val}` : val)
-						)
-						.replaceAll('{winCount}', winners)
-						.replaceAll('{entered}', '0')
 				)
-				.addFields(options.fields);
+				.setFields(options.embed.fields);
 
-			await ch
+			if (options.embed?.author) embed.setAuthor(options.embed.author);
+			if (options.embed?.image) embed.setImage(options.embed.image);
+			if (options.embed?.thumbnail) embed.setThumbnail(options.embed.thumbnail);
+			if (options.embed?.timestamp) embed.setTimestamp(options.embed.timestamp);
+			if (options.embed?.title) embed.setTitle(options.embed?.title);
+			if (options.embed?.url) embed.setURL(options.embed?.url);
+
+			await channel
 				.send({ content: content, embeds: [embed], components: [row] })
 				.then(async (msg: Message) => {
 					resolve({
-						message: msg.id,
+						message: msg,
 						winners: winners,
 						prize: prize,
-						endsAt: endtime,
-						req:
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? val : gid)
+						endsAt: endTime,
+						requirements: requirements
 					});
 
-					const link = new MessageButton()
+					const link = new ButtonBuilder()
 						.setLabel('View Giveaway.')
-						.setStyle('LINK')
+						.setStyle(ButtonStyle.Link)
 						.setURL(msg.url);
 
-					const rowew = new MessageActionRow().addComponents([link]);
+					const linkRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+						link
+					]);
 
-					if (int && interaction) {
-						await int.followUp({
+					if (interaction) {
+						await extInteraction.followUp({
 							content: 'Giveaway has started.',
-							components: [rowew]
+							components: [linkRow]
 						});
 					} else
-						await message.channel.send({
+						await extMessage.channel.send({
 							content: 'Giveaway has started.',
-							components: [rowew]
+							components: [linkRow]
 						});
 
-					const tim = Number(Date.now() + time);
+					const end = Number(Date.now() + timeInMS);
 
-					const crete = new model({
+					const createDb = new model({
 						message: msg.id,
 						entered: 0,
 						winCount: winners,
 						desc: options.embed?.description || null,
 						requirements: {
-							type: req === 'None' ? 'none' : req.toLowerCase(),
-							id: req === 'Role' ? val : gid
+							type:
+								requirements.type === 'None'
+									? 'none'
+									: requirements.type.toLowerCase(),
+							id: requirements.value.id
 						},
 						started: timeStart,
 						prize: prize,
 						entry: [],
-						endTime: tim,
-						host: message.member.user.id
+						endTime: end,
+						host: msgOrint.member.user.id
 					});
 
-					await crete.save();
-
-					const timer = setInterval(async () => {
-						if (!msg) return;
-						const allComp = await msg?.components[0];
-
-						const dt = await model.findOne({ message: msg.id });
-
-						if (dt.endTime && Number(dt.endTime) < Date.now()) {
-							const embeded = new MessageEmbed()
-								.setTitle('Processing Data...')
-								.setColor(0xcc0000)
-								.setDescription(
-									`Please wait.. We are Processing the winner with some magiks`
-								)
-								.setFooter({
-									text: 'Ending the Giveaway, Scraping the ticket..'
-								});
-
-							clearInterval(timer);
-
-							await msg
-								.edit({ embeds: [embeded], components: [] })
-								.catch(() => {});
-
-							const dispWin: string[] = [];
-
-							const winArr: any[] = [];
-
-							const winCt = dt.winCount;
-
-							const entries = dt.entry;
-
-							for (let i = 0; i < winCt; i++) {
-								const winno = Math.floor(Math.random() * dt.entered);
-
-								winArr.push(entries[winno]);
-							}
-
-							setTimeout(() => {
-								winArr.forEach(async (name) => {
-									await message.guild.members
-										.fetch(name?.userID)
-										.then((user) => {
-											dispWin.push(`<@${user.user.id}>`);
-
-											const embod = new MessageEmbed()
-												.setTitle('You.. Won the Giveaway !')
-												.setDescription(
-													`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
-												)
-												.setColor(0x075fff)
-												.setFooter(
-													options.embed?.credit === false
-														? options.embed?.footer
-														: {
-																text: '©️ Rahuletto. npm i simply-djs',
-																iconURL: 'https://i.imgur.com/XFUIwPh.png'
-														  }
-												);
-
-											const gothe = new MessageButton()
-												.setLabel('View Giveaway')
-												.setStyle('LINK')
-												.setURL(msg.url);
-
-											const entrow = new MessageActionRow().addComponents([
-												gothe
-											]);
-
-											return user
-												.send({ embeds: [embod], components: [entrow] })
-												.catch(() => {});
-										})
-										.catch(() => {});
-								});
-							}, ms('2s'));
-
-							setTimeout(async () => {
-								if (!dt) return await msg.delete();
-								if (dt) {
-									const tim = Number(dt.endTime.slice(0, -3));
-									const f: EmbedFieldData[] = [];
-									if (options.fields) {
-										options.fields.forEach((a) => {
-											a.value = a.value
-												.replaceAll('{hosted}', `<@${dt.host}>`)
-												.replaceAll('{endsAt}', `<t:${tim}:f>`)
-												.replaceAll('{prize}', dt.prize.toString())
-												.replaceAll(
-													'{requirements}',
-													req === 'None'
-														? 'None'
-														: req + ' | ' + (req === 'Role' ? `${val}` : val)
-												)
-												.replaceAll('{winCount}', dt.winCount.toString())
-												.replaceAll('{entered}', dt.entered.toString());
-
-											f.push(a);
-										});
-									}
-
-									if (dt.entered <= 0 || !winArr[0]) {
-										embed
-											.setTitle('No one entered')
-
-											.setFields(f)
-											.setColor('RED')
-											.setFooter(
-												options.embed?.credit === false
-													? options.embed?.footer
-													: {
-															text: '©️ Rahuletto. npm i simply-djs',
-															iconURL: 'https://i.imgur.com/XFUIwPh.png'
-													  }
-											);
-
-										return await msg.edit({
-											embeds: [embed],
-											components: []
-										});
-									}
-
-									embed
-										.setTitle('We got the winner !')
-										.setDescription(
-											`${dispWin.join(', ')} got the prize !\n\n` +
-												(
-													options.embed?.description ||
-													`Interact with the giveaway using the buttons.`
-												)
-													.replaceAll('{hosted}', `<@${dt.host}>`)
-													.replaceAll('{prize}', dt.prize)
-													.replaceAll('{endsAt}', `<t:${dt.endTime}:R>`)
-													.replaceAll(
-														'{requirements}',
-														req === 'None'
-															? 'None'
-															: req + ' | ' + (req === 'Role' ? `${val}` : val)
-													)
-													.replaceAll('{winCount}', dt.winCount.toString())
-													.replaceAll('{entered}', dt.entered.toString())
-										)
-										.setFields(options.fields)
-										.setColor(0x3bb143)
-										.setFooter(
-											options.embed?.credit === false
-												? options.embed?.footer
-												: {
-														text: '©️ Rahuletto. npm i simply-djs',
-														iconURL: 'https://i.imgur.com/XFUIwPh.png'
-												  }
-										);
-
-									allComp.components[0].disabled = true;
-									allComp.components[1].disabled = false;
-									allComp.components[2].disabled = true;
-
-									await msg.edit({
-										embeds: [embed],
-										components: [allComp]
-									});
-								}
-							}, ms('6s'));
-						}
-					}, ms('5s'));
+					await createDb.save();
 				});
 		} catch (err: any) {
-			console.log(
-				`${chalk.red('Error Occured.')} | ${chalk.magenta(
-					'giveaway'
-				)} | Error: ${err.stack}`
-			);
+			if (options.strict)
+				throw new SimplyError({
+					function: 'giveaway',
+					title: 'An Error occured when running the function ',
+					tip: err.stack
+				});
+			else console.log(`SimplyError - giveaway | Error: ${err.stack}`);
 		}
 	});
-}
-
-function ms(str: string) {
-	let sum = 0,
-		time,
-		type,
-		val;
-
-	const arr: string[] = ('' + str)
-		.split(' ')
-		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
-
-	const length = arr.length;
-
-	for (let i = 0; i < length; i++) {
-		time = arr[i];
-		type = time.match(/[wdhms]$/i);
-
-		if (type) {
-			val = Number(time.replace(type[0], ''));
-
-			switch (type[0].toLowerCase()) {
-				case 'w':
-					sum += val * 604800000;
-					break;
-				case 'd':
-					sum += val * 86400000;
-					break;
-				case 'h':
-					sum += val * 3600000;
-					break;
-				case 'm':
-					sum += val * 60000;
-					break;
-				case 's':
-					sum += val * 1000;
-					break;
-			}
-		} else if (!isNaN(parseFloat(time)) && isFinite(parseFloat(time))) {
-			sum += parseFloat(time);
-		}
-	}
-	return sum;
 }

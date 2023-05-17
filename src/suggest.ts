@@ -31,6 +31,7 @@ import { Document as Doc } from 'mongoose';
  */
 
 interface suggestButtons {
+	votedInfo?: buttonTemplate;
 	upvote?: buttonTemplate;
 	downvote?: buttonTemplate;
 }
@@ -114,6 +115,10 @@ export async function suggest(
 			downvote: {
 				style: options.buttons?.downvote?.style || ButtonStyle.Danger,
 				emoji: options.buttons?.downvote?.emoji || '🇽'
+			},
+			votedInfo: {
+				style: options.buttons?.votedInfo?.style || ButtonStyle.Success,
+				emoji: options.buttons?.votedInfo?.emoji || '❓'
 			}
 		};
 
@@ -124,6 +129,10 @@ export async function suggest(
 		if (options?.buttons?.downvote.style as string)
 			options.buttons.downvote.style = MessageButtonStyle(
 				options?.buttons?.downvote.style as string
+			);
+		if (options?.buttons?.votedInfo.style as string)
+			options.buttons.votedInfo.style = MessageButtonStyle(
+				options?.buttons?.votedInfo.style as string
 			);
 
 		const ch =
@@ -261,9 +270,19 @@ export async function suggest(
 					)
 					.setCustomId('minus-suggestion');
 
+				const whoVoted = new ButtonBuilder()
+					.setEmoji(options.buttons?.votedInfo?.emoji)
+					.setLabel('Who Voted ?')
+					.setStyle(
+						(options.buttons?.votedInfo?.style as ButtonStyle) ||
+							ButtonStyle.Success
+					)
+					.setCustomId('who-voted-suggestion');
+
 				const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
 					approve,
-					no
+					no,
+					whoVoted
 				]);
 
 				await (ch as TextChannel)

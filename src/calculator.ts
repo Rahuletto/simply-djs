@@ -62,7 +62,7 @@ export async function calculator(
 	}
 ): Promise<void> {
 	try {
-		const button: any[][] = [[], [], [], [], []];
+		const button: ButtonBuilder[][] = [[], [], [], [], []];
 		const row: ActionRowBuilder<ButtonBuilder>[] = [];
 		const text: string[] = [
 			'Clear',
@@ -104,23 +104,23 @@ export async function calculator(
 		}
 
 		options.buttons = {
-			numbers: options.buttons?.numbers || ButtonStyle.Secondary,
-			symbols: options.buttons?.symbols || ButtonStyle.Primary,
-			delete: options.buttons?.delete || ButtonStyle.Danger
+			numbers: options?.buttons?.numbers || ButtonStyle.Secondary,
+			symbols: options?.buttons?.symbols || ButtonStyle.Primary,
+			delete: options?.buttons?.delete || ButtonStyle.Danger
 		};
-		if (options.buttons.delete as string)
+		if (options?.buttons?.delete as string)
 			options.buttons.delete = MessageButtonStyle(
-				options.buttons.delete as string
+				options?.buttons?.delete as string
 			);
 
-		if (options.buttons.numbers as string)
+		if (options?.buttons?.numbers as string)
 			options.buttons.numbers = MessageButtonStyle(
-				options.buttons.numbers as string
+				options?.buttons?.numbers as string
 			);
 
-		if (options.buttons.symbols as string)
+		if (options?.buttons?.symbols as string)
 			options.buttons.symbols = MessageButtonStyle(
-				options.buttons.symbols as string
+				options?.buttons?.symbols as string
 			);
 
 		let message: ExtendedMessage;
@@ -278,7 +278,7 @@ export async function calculator(
 					embed.setDescription(
 						'Your Time for using the calculator ran out (5 minutes)'
 					);
-					embed.setColor(toRgb(`#c90000`));
+					embed.setColor(toRgb('#c90000'));
 					await msg.edit({ embeds: [embed], components: [] }).catch(() => {});
 				}
 			}

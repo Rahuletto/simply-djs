@@ -415,7 +415,7 @@ export async function embedCreator(
 													max: 1
 												});
 
-											messageCollect.on('collect', async (m: any) => {
+											messageCollect.on('collect', async (m: Message) => {
 												menuCollector.stop();
 												m.delete().catch(() => {});
 

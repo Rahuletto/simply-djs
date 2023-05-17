@@ -6,7 +6,8 @@ import {
 	Message,
 	InteractionResponse,
 	ComponentType,
-	ButtonInteraction
+	ButtonInteraction,
+	CommandInteraction
 } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -65,7 +66,7 @@ export type pagesOption = {
 export async function buttonPages(
 	message: ExtendedMessage | ExtendedInteraction,
 	options: pagesOption = {}
-): Promise<any> {
+): Promise<void> {
 	try {
 		options.skips ??= true;
 		options.delete ??= true;
@@ -215,7 +216,7 @@ export async function buttonPages(
 		else if (options.disable === 'Emoji' || options.disable === 'None')
 			deleteBtn.setLabel(options.buttons?.deleteBtn?.label);
 
-		let btnCollection: any[] = [];
+		let btnCollection: ButtonBuilder[] = [];
 		//Creating the MessageActionRow
 		let pageMovingButtons = new ActionRowBuilder<ButtonBuilder>();
 		if (options.skips == true) {
@@ -238,10 +239,10 @@ export async function buttonPages(
 
 		comps.push(pageMovingButtons);
 
-		let interaction;
+		let interaction: CommandInteraction;
 
 		if (message.commandId) {
-			interaction = message;
+			interaction = message as CommandInteraction;
 		}
 
 		let m: Message | InteractionResponse;
@@ -283,7 +284,7 @@ export async function buttonPages(
 			}
 		}
 
-		const filter = (m: any) =>
+		const filter = (m: ButtonInteraction) =>
 			m.user.id === (message.user ? message.user : message.author).id;
 
 		const collector = m.createMessageComponentCollector({
@@ -395,14 +396,14 @@ export async function buttonPages(
 			if (reason === 'del') {
 				await m.delete().catch(() => {});
 			} else {
-				const disab: any[] = [];
+				const disable: ButtonBuilder[] = [];
 
 				btnCollection.forEach((a) => {
-					disab.push(a.setDisabled(true));
+					disable.push(a.setDisabled(true));
 				});
 
 				pageMovingButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-					disab
+					disable
 				);
 
 				m.edit({ components: [pageMovingButtons] });

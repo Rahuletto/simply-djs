@@ -7,7 +7,7 @@ interface Count {
 
 export type bumpReminderData = {
 	channel: string;
-	nextBump: any;
+	nextBump: number;
 	guild: string;
 	counts: Count[];
 };
@@ -15,7 +15,7 @@ export type bumpReminderData = {
 const BumpSchema = new mongoose.Schema<bumpReminderData>({
 	counts: { type: Array<Count>() }, // Hello
 	channel: { type: String }, // Bump Channel (Auto updates)
-	nextBump: { type: String }, // Next Bump time
+	nextBump: { type: Number }, // Next Bump time
 	guild: { type: String } // Guild
 });
 

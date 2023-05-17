@@ -2,7 +2,7 @@ import {
 	EmbedAuthorData,
 	EmbedFooterData,
 	ColorResolvable,
-	EmbedField
+	APIEmbedField
 } from 'discord.js';
 
 /**
@@ -31,7 +31,7 @@ export interface CustomizableEmbed {
 
 	color?: ColorResolvable;
 	description?: string;
-	fields?: EmbedField[];
+	fields?: APIEmbedField[];
 
 	image?: string;
 

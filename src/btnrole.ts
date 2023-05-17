@@ -10,11 +10,12 @@ import {
 import {
 	ExtendedInteraction,
 	ExtendedMessage,
-	ExtendedButtonStyle
+	ExtendedButtonStyle,
+	CustomizableEmbed
 } from './interfaces';
 
 import { SimplyError } from './error';
-import { MessageButtonStyle } from './misc';
+import { MessageButtonStyle, toRgb } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -29,7 +30,7 @@ interface dataObject {
 }
 
 export type btnOptions = {
-	embed?: EmbedBuilder;
+	embed?: CustomizableEmbed;
 	content?: string;
 	data?: dataObject[];
 	strict?: boolean;
@@ -41,14 +42,14 @@ export type btnOptions = {
 
 /**
  * A **Button Role System** that lets you create button roles with your own message. | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/btnrole***
  * @example simplydjs.btnRole(message, { data: {...} })
  */
 
 export async function btnRole(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: btnOptions = {}
 ): Promise<Message> {
 	try {
@@ -67,39 +68,43 @@ export async function btnRole(
 				);
 		}
 
-		const msg = message as ExtendedMessage;
-		const int = message as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
+		const extInteraction = msgOrInt as ExtendedInteraction;
 
-		if (message.commandId) {
-			if (!int.member.permissions.has(PermissionFlagsBits.Administrator))
-				int.followUp({
+		if (msgOrInt.commandId) {
+			if (
+				!extInteraction.member.permissions.has(
+					PermissionFlagsBits.Administrator
+				)
+			)
+				extInteraction.followUp({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
 			return;
-		} else if (!message.customId) {
-			if (!msg.member.permissions.has(PermissionFlagsBits.Administrator))
-				return await msg.reply({
+		} else if (!msgOrInt.customId) {
+			if (!extMessage.member.permissions.has(PermissionFlagsBits.Administrator))
+				return await extMessage.reply({
 					content: 'You need `ADMINISTRATOR` permission to use this command'
 				});
 		}
 
-		const row: any[] = [];
+		const row: ActionRowBuilder<ButtonBuilder>[] = [];
 		const data = options.data;
 
 		if (data.length <= 5) {
-			const button: any[][] = [[]];
+			const button: ButtonBuilder[][] = [[]];
 			GenButton(data, button, row);
 		} else if (data.length > 5 && data.length <= 10) {
-			const button: any[][] = [[], []];
+			const button: ButtonBuilder[][] = [[], []];
 			GenButton(data, button, row);
 		} else if (data.length > 11 && data.length <= 15) {
-			const button: any[][] = [[], [], []];
+			const button: ButtonBuilder[][] = [[], [], []];
 			GenButton(data, button, row);
 		} else if (data.length > 16 && data.length <= 20) {
-			const button: any[][] = [[], [], [], []];
+			const button: ButtonBuilder[][] = [[], [], [], []];
 			GenButton(data, button, row);
 		} else if (data.length > 21 && data.length <= 25) {
-			const button: any[][] = [[], [], [], [], []];
+			const button: ButtonBuilder[][] = [[], [], [], [], []];
 			GenButton(data, button, row);
 		} else if (data.length > 25) {
 			if (options.strict)
@@ -115,7 +120,11 @@ export async function btnRole(
 		}
 
 		// Generates buttons from the data provided
-		async function GenButton(data: dataObject[], button: any[][], row: any[]) {
+		async function GenButton(
+			data: dataObject[],
+			button: ButtonBuilder[][],
+			row: ActionRowBuilder<ButtonBuilder>[]
+		) {
 			let current = 0;
 
 			for (let i = 0; i < data.length; i++) {
@@ -124,7 +133,7 @@ export async function btnRole(
 				const emoji = data[i].emoji || null;
 				const color = data[i].style || ButtonStyle.Secondary;
 				let url = '';
-				const role: Role | null = message.guild.roles.cache.find(
+				const role: Role | null = msgOrInt.guild.roles.cache.find(
 					(r) => r.id === data[i].role
 				);
 				const label = data[i].label || role?.name;
@@ -152,41 +161,59 @@ export async function btnRole(
 					}`
 				});
 
-			// Embed from the options
-			let emb = options.embed;
+			const embed = new EmbedBuilder()
+				.setColor(options.embed?.color || toRgb('#406DBC'))
+				.setFooter(
+					options.embed?.footer
+						? options.embed?.footer
+						: {
+								text: '©️ Rahuletto. npm i simply-djs',
+								iconURL: 'https://i.imgur.com/XFUIwPh.png'
+						  }
+				);
 
-			if ((message as ExtendedInteraction).commandId) {
+			if (options.embed?.description)
+				embed.setDescription(options.embed?.description);
+			if (options.embed?.fields) embed.setFields(options.embed.fields);
+			if (options.embed?.author) embed.setAuthor(options.embed.author);
+			if (options.embed?.image) embed.setImage(options.embed.image);
+			if (options.embed?.thumbnail) embed.setThumbnail(options.embed.thumbnail);
+			if (options.embed?.timestamp) embed.setTimestamp(options.embed.timestamp);
+			if (options.embed?.title) embed.setTitle(options.embed?.title);
+			if (options.embed?.url) embed.setURL(options.embed?.url);
+
+			if (extInteraction?.commandId) {
 				if (!options.embed) {
-					(message as ExtendedInteraction).followUp({
+					extInteraction.followUp({
 						content: options.content || '** **',
 						components: row
 					});
 				} else
-					(message as ExtendedInteraction).followUp({
+					extInteraction.followUp({
 						content: options.content || '** **',
-						embeds: [emb],
+						embeds: [embed],
 						components: row
 					});
-			} else if (!(message as ExtendedInteraction).commandId) {
+			} else if (!extInteraction?.commandId) {
 				if (!options.embed) {
-					message.channel.send({
+					extMessage.channel.send({
 						content: options.content || '** **',
 						components: row
 					});
 				} else
-					message.channel.send({
+					extMessage.channel.send({
 						content: options.content || '** **',
-						embeds: [emb],
+						embeds: [embed],
 						components: row
 					});
 			}
 
-			function addRow(btns: any[]): ActionRowBuilder<ButtonBuilder> {
-				const row1 = new ActionRowBuilder<ButtonBuilder>();
+			function addRow(btns: ButtonBuilder[]): ActionRowBuilder<ButtonBuilder> {
+				const btnRow = new ActionRowBuilder<ButtonBuilder>();
 
-				row1.addComponents(btns);
+				btnRow.addComponents(btns);
 
-				return row1;
+				return btnRow;
 			}
 
 			function createLink(
@@ -194,29 +221,23 @@ export async function btnRole(
 				url: string,
 				emoji: string
 			): ButtonBuilder {
-				const btn = new ButtonBuilder();
+				const button = new ButtonBuilder();
 				if (!emoji || emoji === null) {
-					btn.setLabel(label).setStyle(ButtonStyle.Link).setURL(url);
+					button.setLabel(label).setStyle(ButtonStyle.Link).setURL(url);
 				} else if (emoji && emoji !== null) {
-					btn
+					button
 						.setLabel(label)
 						.setStyle(ButtonStyle.Link)
 						.setURL(url)
 						.setEmoji(emoji);
 				}
-				return btn;
+				return button;
 			}
 
 			function createButton(
 				label: string,
 				role: Role,
-				color:
-					| ButtonStyle
-					| 'PRIMARY'
-					| 'SECONDARY'
-					| 'SUCCESS'
-					| 'DANGER'
-					| 'LINK',
+				color: ExtendedButtonStyle,
 				emoji: string
 			): ButtonBuilder {
 				if (color as string) color = MessageButtonStyle(color as string);

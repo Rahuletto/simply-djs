@@ -227,7 +227,7 @@ export async function rps(
 					options.embed?.request?.description ||
 						'You are invited to play Rock Paper Scissors'
 				)
-				.setColor(options.embed?.request?.color || toRgb(`#406DBC`))
+				.setColor(options.embed?.request?.color || toRgb('#c90000'))
 				.setFooter(
 					options.embed?.request?.footer
 						? options.embed?.request?.footer
@@ -306,7 +306,7 @@ export async function rps(
 					.setDescription(
 						options.embed?.game?.description || 'Select 🪨, 📄, or ✂️'
 					)
-					.setColor(options.embed?.game?.color || toRgb(`#406DBC`))
+					.setColor(options.embed?.game?.color || toRgb('#406DBC'))
 					.setFooter(
 						options.embed?.game?.footer
 							? options.embed?.game?.footer
@@ -409,7 +409,7 @@ export async function rps(
 
 							const drawEmbed = new EmbedBuilder()
 								.setTitle(options.embed?.draw?.title || 'Draw!')
-								.setColor(options.embed?.draw?.color || toRgb(`#406DBC`))
+								.setColor(options.embed?.draw?.color || toRgb('#406DBC'))
 								.setDescription(
 									options.embed?.draw?.description ||
 										`Both players chose **${p1}**`

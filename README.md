@@ -20,7 +20,7 @@ Simply-DJS Reimagined.
 + embedCreator.ts (previously embedCreate.ts)
 + buttonPages.ts (previously embedPages.ts)
 + ghostPing.ts
-- giveaway.ts
++ giveaway.ts (previously giveawaySystem.ts)
 
 # ---------(Will update last)------------------
 + manageBtnRole.ts (Splitted from manageBtn.ts)
