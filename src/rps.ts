@@ -82,34 +82,34 @@ export async function rps(
 
 		options.buttons = {
 			rock: {
-				style: options.buttons?.rock?.style || ButtonStyle.Primary,
-				label: options.buttons?.rock?.label || 'Rock',
-				emoji: options.buttons?.rock?.emoji || '🪨'
+				style: options?.buttons?.rock?.style || ButtonStyle.Primary,
+				label: options?.buttons?.rock?.label || 'Rock',
+				emoji: options?.buttons?.rock?.emoji || '🪨'
 			},
 			paper: {
-				style: options.buttons?.paper?.style || ButtonStyle.Success,
-				label: options.buttons?.paper?.label || 'Paper',
-				emoji: options.buttons?.paper?.emoji || '📄'
+				style: options?.buttons?.paper?.style || ButtonStyle.Success,
+				label: options?.buttons?.paper?.label || 'Paper',
+				emoji: options?.buttons?.paper?.emoji || '📄'
 			},
 			scissor: {
-				style: options.buttons?.paper?.style || ButtonStyle.Danger,
-				label: options.buttons?.paper?.label || 'Scissor',
-				emoji: options.buttons?.paper?.emoji || '✂️'
+				style: options?.buttons?.paper?.style || ButtonStyle.Danger,
+				label: options?.buttons?.paper?.label || 'Scissor',
+				emoji: options?.buttons?.paper?.emoji || '✂️'
 			}
 		};
 
-		if (options.buttons.rock.style as string)
+		if (options?.buttons?.rock?.style as string)
 			options.buttons.rock.style = MessageButtonStyle(
-				options.buttons.rock.style as string
+				options?.buttons?.rock?.style as string
 			);
 
-		if (options.buttons.paper.style as string)
+		if (options?.buttons?.paper?.style as string)
 			options.buttons.paper.style = MessageButtonStyle(
-				options.buttons.paper.style as string
+				options?.buttons?.paper?.style as string
 			);
-		if (options.buttons.scissor.style as string)
+		if (options?.buttons?.scissor?.style as string)
 			options.buttons.scissor.style = MessageButtonStyle(
-				options.buttons.scissor.style as string
+				options?.buttons?.scissor?.style as string
 			);
 
 		const rock = new ButtonBuilder()
@@ -144,32 +144,32 @@ export async function rps(
 
 		//Embeds
 		const timeoutEmbed = new EmbedBuilder()
-			.setTitle(options.embed?.timeout?.title || 'Game Timed Out!')
-			.setColor(options.embed?.timeout?.color || 'Red')
+			.setTitle(options?.embed?.timeout?.title || 'Game Timed Out!')
+			.setColor(options?.embed?.timeout?.color || 'Red')
 			.setDescription(
-				options.embed?.timeout?.description ||
+				options?.embed?.timeout?.description ||
 					'The opponent didnt respond in time (30s)'
 			)
 			.setFooter(
-				options.embed?.timeout?.footer
-					? options.embed?.timeout?.footer
+				options?.embed?.timeout?.footer
+					? options?.embed?.timeout?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
 							iconURL: 'https://i.imgur.com/XFUIwPh.png'
 					  }
 			);
 
-		if (options.embed?.timeout?.fields)
+		if (options?.embed?.timeout?.fields)
 			timeoutEmbed.setFields(options.embed?.timeout?.fields);
-		if (options.embed?.timeout?.author)
+		if (options?.embed?.timeout?.author)
 			timeoutEmbed.setAuthor(options.embed?.timeout?.author);
-		if (options.embed?.timeout?.image)
+		if (options?.embed?.timeout?.image)
 			timeoutEmbed.setImage(options.embed?.timeout?.image);
-		if (options.embed?.timeout?.thumbnail)
+		if (options?.embed?.timeout?.thumbnail)
 			timeoutEmbed.setThumbnail(options.embed?.timeout?.thumbnail);
-		if (options.embed?.timeout?.timestamp)
+		if (options?.embed?.timeout?.timestamp)
 			timeoutEmbed.setTimestamp(options.embed?.timeout?.timestamp);
-		if (options.embed?.timeout?.url)
+		if (options?.embed?.timeout?.url)
 			timeoutEmbed.setURL(options.embed?.timeout?.url);
 
 		try {
@@ -179,7 +179,7 @@ export async function rps(
 
 			if (message.commandId) {
 				interaction = message as ExtendedInteraction;
-				opponent = options.opponent || interaction.options.get('user').user;
+				opponent = options.opponent || interaction.options.getUser('user');
 			} else {
 				opponent = (message as Message).mentions.members.first()?.user;
 			}
@@ -227,7 +227,7 @@ export async function rps(
 					options.embed?.request?.description ||
 						'You are invited to play Rock Paper Scissors'
 				)
-				.setColor(options.embed?.request?.color || toRgb('#c90000'))
+				.setColor(options.embed?.request?.color || toRgb('#406DBC'))
 				.setFooter(
 					options.embed?.request?.footer
 						? options.embed?.request?.footer
@@ -237,17 +237,17 @@ export async function rps(
 						  }
 				);
 
-			if (options.embed.request?.fields)
+			if (options?.embed?.request?.fields)
 				requestEmbed.setFields(options.embed?.request?.fields);
-			if (options.embed.request?.author)
+			if (options?.embed?.request?.author)
 				requestEmbed.setAuthor(options.embed?.request?.author);
-			if (options.embed.request?.image)
+			if (options?.embed?.request?.image)
 				requestEmbed.setImage(options.embed?.request?.image);
-			if (options.embed.request?.thumbnail)
+			if (options?.embed?.request?.thumbnail)
 				requestEmbed.setThumbnail(options.embed?.request?.thumbnail);
-			if (options.embed.request?.timestamp)
+			if (options?.embed?.request?.timestamp)
 				requestEmbed.setTimestamp(options.embed?.request?.timestamp);
-			if (options.embed?.request?.url)
+			if (options?.embed?.request?.url)
 				requestEmbed.setURL(options.embed?.request?.url);
 
 			let m: Message;
@@ -316,17 +316,17 @@ export async function rps(
 							  }
 					);
 
-				if (options.embed.game?.fields)
+				if (options?.embed?.game?.fields)
 					gameEmbed.setFields(options.embed?.game?.fields);
-				if (options.embed.game?.author)
+				if (options?.embed?.game?.author)
 					gameEmbed.setAuthor(options.embed?.game?.author);
-				if (options.embed.game?.image)
+				if (options?.embed?.game?.image)
 					gameEmbed.setImage(options.embed?.game?.image);
-				if (options.embed.game?.thumbnail)
+				if (options?.embed?.game?.thumbnail)
 					gameEmbed.setThumbnail(options.embed?.game?.thumbnail);
-				if (options.embed.game?.timestamp)
+				if (options?.embed?.game?.timestamp)
 					gameEmbed.setTimestamp(options.embed?.game?.timestamp);
-				if (options.embed?.game?.url)
+				if (options?.embed?.game?.url)
 					gameEmbed.setURL(options.embed?.game?.url);
 
 				if (interaction) {
@@ -423,17 +423,17 @@ export async function rps(
 										  }
 								);
 
-							if (options.embed?.draw?.fields)
+							if (options?.embed?.draw?.fields)
 								drawEmbed.setFields(options.embed?.draw?.fields);
-							if (options.embed?.draw?.author)
+							if (options?.embed?.draw?.author)
 								drawEmbed.setAuthor(options.embed?.draw?.author);
-							if (options.embed?.draw?.image)
+							if (options?.embed?.draw?.image)
 								drawEmbed.setImage(options.embed?.draw?.image);
-							if (options.embed?.draw?.thumbnail)
+							if (options?.embed?.draw?.thumbnail)
 								drawEmbed.setThumbnail(options.embed?.draw?.thumbnail);
-							if (options.embed?.draw?.timestamp)
+							if (options?.embed?.draw?.timestamp)
 								drawEmbed.setTimestamp(options.embed?.draw?.timestamp);
-							if (options.embed?.draw?.url)
+							if (options?.embed?.draw?.url)
 								drawEmbed.setURL(options.embed?.draw?.url);
 
 							if (interaction) {
@@ -495,17 +495,17 @@ export async function rps(
 										  }
 								);
 
-							if (options.embed?.win?.fields)
+							if (options?.embed?.win?.fields)
 								winEmbed.setFields(options.embed?.win?.fields);
-							if (options.embed?.win?.author)
+							if (options?.embed?.win?.author)
 								winEmbed.setAuthor(options.embed?.win?.author);
-							if (options.embed?.win?.image)
+							if (options?.embed?.win?.image)
 								winEmbed.setImage(options.embed?.win?.image);
-							if (options.embed?.win?.thumbnail)
+							if (options?.embed?.win?.thumbnail)
 								winEmbed.setThumbnail(options.embed?.win?.thumbnail);
-							if (options.embed?.win?.timestamp)
+							if (options?.embed?.win?.timestamp)
 								winEmbed.setTimestamp(options.embed?.win?.timestamp);
-							if (options.embed?.win?.url)
+							if (options?.embed?.win?.url)
 								winEmbed.setURL(options.embed?.win?.url);
 
 							//p1 - won
@@ -572,17 +572,17 @@ export async function rps(
 										  }
 								);
 
-							if (options.embed?.win?.fields)
+							if (options?.embed?.win?.fields)
 								winEmbed.setFields(options.embed?.win?.fields);
-							if (options.embed?.win?.author)
+							if (options?.embed?.win?.author)
 								winEmbed.setAuthor(options.embed?.win?.author);
-							if (options.embed?.win?.image)
+							if (options?.embed?.win?.image)
 								winEmbed.setImage(options.embed?.win?.image);
-							if (options.embed?.win?.thumbnail)
+							if (options?.embed?.win?.thumbnail)
 								winEmbed.setThumbnail(options.embed?.win?.thumbnail);
-							if (options.embed?.win?.timestamp)
+							if (options?.embed?.win?.timestamp)
 								winEmbed.setTimestamp(options.embed?.win?.timestamp);
-							if (options.embed?.win?.url)
+							if (options?.embed?.win?.url)
 								winEmbed.setURL(options.embed?.win?.url);
 
 							//p2 - won
@@ -631,17 +631,17 @@ export async function rps(
 								`${opponent.tag} has declined your game request!`
 						);
 
-					if (options.embed?.decline?.fields)
+					if (options?.embed?.decline?.fields)
 						declineEmbed.setFields(options.embed?.decline?.fields);
-					if (options.embed?.decline?.author)
+					if (options?.embed?.decline?.author)
 						declineEmbed.setAuthor(options.embed?.decline?.author);
-					if (options.embed?.decline?.image)
+					if (options?.embed?.decline?.image)
 						declineEmbed.setImage(options.embed?.decline?.image);
-					if (options.embed?.decline?.thumbnail)
+					if (options?.embed?.decline?.thumbnail)
 						declineEmbed.setThumbnail(options.embed?.decline?.thumbnail);
-					if (options.embed?.decline?.timestamp)
+					if (options?.embed?.decline?.timestamp)
 						declineEmbed.setTimestamp(options.embed?.decline?.timestamp);
-					if (options.embed?.decline?.url)
+					if (options?.embed?.decline?.url)
 						declineEmbed.setURL(options.embed?.decline?.url);
 
 					await m.edit({
@@ -652,7 +652,7 @@ export async function rps(
 				}
 			});
 		} catch (err: any) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'rps',
 					title: 'An Error occured when running the function ',

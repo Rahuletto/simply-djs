@@ -31,7 +31,7 @@ export async function connect(
 ): Promise<boolean> {
 	return new Promise(async (resolve, reject) => {
 		if (!db) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'connect',
 					title: 'Provide an valid mongodb uri string.',
@@ -47,7 +47,7 @@ export async function connect(
 		mongoose
 			.connect(db)
 			.then(async () => {
-				if (options.notify !== false) {
+				if (options?.notify !== false) {
 					const json = await https('registry.npmjs.org', '/simply-djs');
 					const v = json['dist-tags'].latest;
 

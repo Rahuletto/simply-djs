@@ -53,7 +53,7 @@ export async function chatbot(
 				cache: true
 			});
 			if (!ch)
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'chatbot',
 						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -85,7 +85,7 @@ export async function chatbot(
 		);
 
 		// For ChatGPT integration.
-		if (options.gptToken) {
+		if (options?.gptToken) {
 			await message.channel.sendTyping();
 
 			const configuration = new Configuration({
@@ -149,7 +149,7 @@ export async function chatbot(
 			allowedMentions: { repliedUser: false }
 		});
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'chatbot',
 				title: 'An Error occured when running the function',

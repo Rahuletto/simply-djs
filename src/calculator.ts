@@ -138,10 +138,10 @@ export async function calculator(
 		}
 
 		const embed = new EmbedBuilder()
-			.setColor(options.embed?.color || toRgb('#406DBC'))
+			.setColor(options?.embed?.color || toRgb('#406DBC'))
 			.setFooter(
-				options.embed?.footer
-					? options.embed?.footer
+				options?.embed?.footer
+					? options?.embed?.footer
 					: {
 							text: '©️ Rahuletto. npm i simply-djs',
 							iconURL: 'https://i.imgur.com/XFUIwPh.png'
@@ -149,16 +149,18 @@ export async function calculator(
 			)
 			.setDescription(
 				'```js\n0\n// Result: 0\n```' +
-					(options.embed?.description ? `\n${options.embed?.description}` : '')
+					(options?.embed?.description
+						? `\n${options?.embed?.description}`
+						: '')
 			);
 
-		if (options.embed.fields) embed.setFields(options.embed.fields);
-		if (options.embed.author) embed.setAuthor(options.embed.author);
-		if (options.embed.image) embed.setImage(options.embed.image);
-		if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-		if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
-		if (options.embed?.title) embed.setTitle(options.embed?.title);
-		if (options.embed?.url) embed.setURL(options.embed?.url);
+		if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+		if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+		if (options?.embed?.image) embed.setImage(options.embed?.image);
+		if (options?.embed?.thumbnail) embed.setThumbnail(options.embed?.thumbnail);
+		if (options?.embed?.timestamp) embed.setTimestamp(options.embed?.timestamp);
+		if (options?.embed?.title) embed.setTitle(options.embed?.title);
+		if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 		let msg: Message;
 
@@ -236,8 +238,8 @@ export async function calculator(
 					`\`\`\`js\n${elem
 						.replaceAll('+', ' + ')
 						.replaceAll('*', ' * ')}\n\t\n\`\`\`` +
-						(options.embed?.description
-							? `\n${options.embed?.description}`
+						(options?.embed?.description
+							? `\n${options?.embed?.description}`
 							: '')
 				);
 				await msg
@@ -342,7 +344,7 @@ export async function calculator(
 			}
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'calculator',
 				title: 'An Error occured when running the function ',

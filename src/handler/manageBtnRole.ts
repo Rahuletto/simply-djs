@@ -61,7 +61,7 @@ export async function manageBtnRole(
 								.add(role)
 								.catch((err: any) => {
 									resolve(false);
-									if (options.strict)
+									if (options?.strict)
 										throw new SimplyError({
 											function: 'manageBtnRole',
 											title: 'Role is higher than the bot. Missing Permissions',
@@ -90,7 +90,7 @@ export async function manageBtnRole(
 								.remove(role)
 								.catch((err: any) => {
 									resolve(false);
-									if (options.strict)
+									if (options?.strict)
 										throw new SimplyError({
 											function: 'manageBtnRole',
 											title: 'Role is higher than the bot. Missing Permissions',
@@ -113,7 +113,7 @@ export async function manageBtnRole(
 					}
 				}
 			} catch (err: any) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'manageBtnRole',
 						title: 'An Error occured when running the function ',

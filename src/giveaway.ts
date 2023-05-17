@@ -100,8 +100,8 @@ export async function giveaway(
 
 			let manager: Role;
 
-			if (options.manager as Role) manager = options.manager as Role;
-			else if (options.manager as string)
+			if (options?.manager as Role) manager = options.manager as Role;
+			else if (options?.manager as string)
 				manager = await msgOrint.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
@@ -164,16 +164,16 @@ export async function giveaway(
 
 			let content = '** **';
 
-			if (options.pingRole as Role)
+			if (options?.pingRole as Role)
 				content = (options.pingRole as Role).toString();
-			else if (options.pingRole as string)
+			else if (options?.pingRole as string)
 				content = (
 					await msgOrint.member.roles.cache.find(
 						(r: Role) => r.id === (options.pingRole as string)
 					)
 				).toString();
 
-			if (options.requirements?.type === 'Role') {
+			if (options?.requirements?.type === 'Role') {
 				const role = await msgOrint.guild.roles.fetch(
 					options.requirements?.id,
 					{
@@ -182,7 +182,7 @@ export async function giveaway(
 				);
 
 				requirements = { type: 'Role', value: role };
-			} else if (options.requirements?.type === 'Guild') {
+			} else if (options?.requirements?.type === 'Guild') {
 				const guild = await client.guilds.cache.get(options.requirements?.id);
 
 				if (!guild)
@@ -225,17 +225,17 @@ export async function giveaway(
 				prize = options.prize || args.slice(3).join(' ');
 			}
 
-			if (options.buttons?.enter?.style as string)
+			if (options?.buttons?.enter?.style as string)
 				options.buttons.enter.style = MessageButtonStyle(
 					options.buttons?.enter?.style as string
 				);
 
-			if (options.buttons?.end?.style as string)
+			if (options?.buttons?.end?.style as string)
 				options.buttons.end.style = MessageButtonStyle(
 					options.buttons?.end?.style as string
 				);
 
-			if (options.buttons?.reroll?.style as string)
+			if (options?.buttons?.reroll?.style as string)
 				options.buttons.reroll.style = MessageButtonStyle(
 					options.buttons?.reroll?.style as string
 				);
@@ -246,9 +246,9 @@ export async function giveaway(
 					(options.buttons?.enter?.style as ButtonStyle) || ButtonStyle.Primary
 				);
 
-			if (options.type === 'Emoji')
+			if (options?.type === 'Emoji')
 				enter.setEmoji(options.buttons?.enter?.emoji || '🎁');
-			else if (options.type === 'Label')
+			else if (options?.type === 'Label')
 				enter.setLabel(options.buttons?.enter?.label || '0');
 			else {
 				enter
@@ -262,9 +262,9 @@ export async function giveaway(
 					(options.buttons?.end?.style as ButtonStyle) || ButtonStyle.Danger
 				);
 
-			if (options.type === 'Emoji')
+			if (options?.type === 'Emoji')
 				end.setEmoji(options.buttons?.end?.emoji || '⛔');
-			else if (options.type === 'Label')
+			else if (options?.type === 'Label')
 				end.setLabel(options.buttons?.end?.label || 'End');
 			else {
 				enter
@@ -279,9 +279,9 @@ export async function giveaway(
 				)
 				.setDisabled(true);
 
-			if (options.type === 'Emoji')
+			if (options?.type === 'Emoji')
 				reroll.setEmoji(options.buttons?.reroll?.emoji || '🔁');
-			else if (options.type === 'Label')
+			else if (options?.type === 'Label')
 				reroll.setLabel(options.buttons?.reroll?.label || 'Reroll');
 			else {
 				reroll
@@ -299,7 +299,7 @@ export async function giveaway(
 
 			const endTime = Number((Date.now() + timeInMS).toString().slice(0, -3));
 
-			options.embed.fields = options.embed.fields || [
+			options.embed.fields = options?.embed?.fields || [
 				{
 					name: 'Prize',
 					value: `{prize}`
@@ -354,12 +354,12 @@ export async function giveaway(
 			});
 
 			const embed = new EmbedBuilder()
-				.setTitle(replacer(options.embed?.title || 'Giveaway Time !'))
-				.setColor(options.embed?.color || toRgb('#406DBC'))
+				.setTitle(replacer(options?.embed?.title || 'Giveaway Time !'))
+				.setColor(options?.embed?.color || toRgb('#406DBC'))
 				.setTimestamp(Number(Date.now() + timeInMS))
 				.setFooter(
-					options.embed?.footer
-						? options.embed?.footer
+					options?.embed?.footer
+						? options?.embed?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/XFUIwPh.png'
@@ -367,18 +367,20 @@ export async function giveaway(
 				)
 				.setDescription(
 					replacer(
-						options.embed?.description ||
+						options?.embed?.description ||
 							`Interact with the giveaway using the buttons below.`
 					)
 				)
-				.setFields(options.embed.fields);
+				.setFields(options?.embed?.fields);
 
-			if (options.embed?.author) embed.setAuthor(options.embed.author);
-			if (options.embed?.image) embed.setImage(options.embed.image);
-			if (options.embed?.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-			if (options.embed?.timestamp) embed.setTimestamp(options.embed.timestamp);
-			if (options.embed?.title) embed.setTitle(options.embed?.title);
-			if (options.embed?.url) embed.setURL(options.embed?.url);
+			if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+			if (options?.embed?.image) embed.setImage(options.embed?.image);
+			if (options?.embed?.thumbnail)
+				embed.setThumbnail(options.embed?.thumbnail);
+			if (options?.embed?.timestamp)
+				embed.setTimestamp(options.embed?.timestamp);
+			if (options?.embed?.title) embed.setTitle(options.embed?.title);
+			if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 			await channel
 				.send({ content: content, embeds: [embed], components: [row] })
@@ -435,7 +437,7 @@ export async function giveaway(
 					await createDb.save();
 				});
 		} catch (err: any) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'giveaway',
 					title: 'An Error occured when running the function ',

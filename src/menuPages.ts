@@ -70,7 +70,7 @@ export async function menuPages(
 		const type: string = options.type || 'Send';
 
 		if (type !== 'Send' && type !== 'Receive') {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'menuPages',
 					title:
@@ -201,7 +201,7 @@ export async function menuPages(
 			}
 		});
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'menuPages',
 				title: 'An Error occured when running the function ',

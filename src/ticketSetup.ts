@@ -47,7 +47,7 @@ export async function ticketSetup(
 		const ch = options.channelId;
 
 		if (!ch || ch == '') {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'ticketSetup',
 					title: 'Provide an channel id to send the system panel.',
@@ -71,7 +71,7 @@ export async function ticketSetup(
 		channel = channel as TextChannel;
 
 		if (!channel) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'ticketSetup',
 					title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -151,13 +151,13 @@ export async function ticketSetup(
 					  }
 			);
 
-		if (options.embed.fields) embed.setFields(options.embed.fields);
-		if (options.embed.author) embed.setAuthor(options.embed.author);
-		if (options.embed.image) embed.setImage(options.embed.image);
-		if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-		if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
-		if (options.embed?.title) embed.setTitle(options.embed?.title);
-		if (options.embed?.url) embed.setURL(options.embed?.url);
+		if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+		if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+		if (options?.embed?.image) embed.setImage(options.embed?.image);
+		if (options?.embed?.thumbnail) embed.setThumbnail(options.embed?.thumbnail);
+		if (options?.embed?.timestamp) embed.setTimestamp(options.embed?.timestamp);
+		if (options?.embed?.title) embed.setTitle(options.embed?.title);
+		if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 		if (interaction) {
 			extInteraction.followUp({
@@ -169,7 +169,7 @@ export async function ticketSetup(
 			channel.send({ embeds: [embed], components: [row] });
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'ticketSetup',
 				title: 'An Error occured when running the function',

@@ -83,7 +83,7 @@ export async function suggest(
 
 			url = attachment ? attachment.url : '';
 
-			if (options.suggestion) suggestion = options?.suggestion;
+			if (options?.suggestion) suggestion = options?.suggestion;
 
 			if (url) suggestion = suggestion + ' ' + url;
 
@@ -139,7 +139,7 @@ export async function suggest(
 			client.channels.cache.get(options?.channelId as string) ||
 			(options?.channelId as TextChannel);
 		if (!ch) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'suggest',
 					title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -171,9 +171,9 @@ export async function suggest(
 		]);
 
 		const embed = new EmbedBuilder()
-			.setTitle(options.embed.title || 'Are you sure ?')
+			.setTitle(options.embed?.title || 'Are you sure ?')
 			.setDescription(
-				options.embed.description ||
+				options.embed?.description ||
 					`Is this your suggestion ? \`${suggestion}\``
 			)
 			.setTimestamp()
@@ -187,13 +187,13 @@ export async function suggest(
 					  }
 			);
 
-		if (options.embed.fields) embed.setFields(options.embed.fields);
-		if (options.embed.author) embed.setAuthor(options.embed.author);
-		if (options.embed.image) embed.setImage(options.embed.image);
-		if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-		if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
-		if (options.embed?.title) embed.setTitle(options.embed?.title);
-		if (options.embed?.url) embed.setURL(options.embed?.url);
+		if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+		if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+		if (options?.embed?.image) embed.setImage(options.embed?.image);
+		if (options?.embed?.thumbnail) embed.setThumbnail(options.embed?.thumbnail);
+		if (options?.embed?.timestamp) embed.setTimestamp(options.embed?.timestamp);
+		if (options?.embed?.title) embed.setTitle(options.embed?.title);
+		if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 		let m: Message | InteractionResponse;
 
@@ -310,7 +310,7 @@ export async function suggest(
 			}
 		});
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'suggest',
 				title: 'An Error occured when running the function',

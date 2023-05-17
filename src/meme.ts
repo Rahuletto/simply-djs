@@ -40,7 +40,7 @@ export async function meme(
 
 		if (!ch) {
 			// If user is strict, throw an error or just console log.
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'meme',
 					title: 'Channel/channelId is not specified',
@@ -81,9 +81,9 @@ export async function meme(
 
 		let interval;
 
-		if (options.interval) {
-			if (options.interval < 60000) {
-				if (options.strict)
+		if (options?.interval) {
+			if (options?.interval < 60000) {
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'meme',
 						title: 'Provide an interval time above 60000ms',
@@ -114,7 +114,7 @@ export async function meme(
 
 			// If its unavailable, throw an error.
 			if (!channel) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'meme',
 						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -163,18 +163,20 @@ export async function meme(
 				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
 
-			if (options.embed.fields) embed.setFields(options.embed.fields);
-			if (options.embed.author) embed.setAuthor(options.embed.author);
-			if (options.embed.image) embed.setImage(options.embed.image);
-			if (options.embed.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-			if (options.embed.timestamp) embed.setTimestamp(options.embed.timestamp);
-			if (options.embed?.title) embed.setTitle(options.embed?.title);
-			if (options.embed?.url) embed.setURL(options.embed?.url);
+			if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+			if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+			if (options?.embed?.image) embed.setImage(options.embed?.image);
+			if (options?.embed?.thumbnail)
+				embed.setThumbnail(options.embed?.thumbnail);
+			if (options?.embed?.timestamp)
+				embed.setTimestamp(options.embed?.timestamp);
+			if (options?.embed?.title) embed.setTitle(options.embed?.title);
+			if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 			await (channel as TextChannel).send({ embeds: [embed] });
 		}, interval);
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'meme',
 				title: 'An Error occured when running the function ',

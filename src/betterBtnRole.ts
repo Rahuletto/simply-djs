@@ -56,10 +56,10 @@ export async function betterBtnRole(
 		const { client } = interaction;
 
 		const ch =
-			options.channel || interaction.options.get('channel', true).channel;
+			options?.channel || interaction.options.get('channel', true).channel;
 		const msgid: string =
-			options.messageId || String(interaction.options.get('message').value);
-		const role = options.button.role || interaction.options.get('role').role;
+			options?.messageId || String(interaction.options.get('message').value);
+		const role = options?.button?.role || interaction.options.get('role').role;
 
 		const msg: ExtendedMessage = await (ch as TextChannel).messages
 			.fetch(msgid)
@@ -67,7 +67,7 @@ export async function betterBtnRole(
 			.then();
 
 		if (!msg) {
-			if (options.custom === true) reject('NO_MSG');
+			if (options?.custom === true) reject('NO_MSG');
 			else
 				return interaction.followUp({
 					content:
@@ -77,7 +77,7 @@ export async function betterBtnRole(
 		}
 
 		if (msg.author.id !== client.user.id) {
-			if (options.custom === true) reject('OTHER_MSG');
+			if (options?.custom === true) reject('OTHER_MSG');
 			else
 				return interaction.followUp({
 					content:
@@ -86,7 +86,7 @@ export async function betterBtnRole(
 				});
 		}
 
-		if (options.type === 'Add') {
+		if (options?.type === 'Add') {
 			try {
 				const label =
 					options.button.label ||
@@ -114,7 +114,7 @@ export async function betterBtnRole(
 									components: msg.components
 								});
 
-								if (options.custom === true) return resolve('DONE');
+								if (options?.custom === true) return resolve('DONE');
 								else
 									return interaction.followUp({
 										content:
@@ -159,7 +159,7 @@ export async function betterBtnRole(
 							const linkRow =
 								new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
-							if (options.custom === true) return resolve('DONE');
+							if (options?.custom === true) return resolve('DONE');
 							else
 								interaction.followUp({
 									content: 'Done.. Added the button to the message.',
@@ -172,7 +172,7 @@ export async function betterBtnRole(
 						});
 				} else {
 					if (msg.components.length === 5) {
-						if (options.custom === true) return reject('OVERLOAD');
+						if (options?.custom === true) return reject('OVERLOAD');
 						else
 							return interaction.followUp({
 								content:
@@ -204,7 +204,7 @@ export async function betterBtnRole(
 								const linkRow =
 									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
-								if (options.custom === true) return resolve('DONE');
+								if (options?.custom === true) return resolve('DONE');
 								else
 									interaction.followUp({
 										content:
@@ -236,7 +236,7 @@ export async function betterBtnRole(
 								const linkRow =
 									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
-								if (options.custom === true) return resolve('DONE');
+								if (options?.custom === true) return resolve('DONE');
 								else
 									return interaction.followUp({
 										content: 'Done.. Added the button to the message',
@@ -250,7 +250,7 @@ export async function betterBtnRole(
 					}
 				}
 			} catch (err: any) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'betterBtnRole (Add)',
 						title: 'An Error occured when running the function ',
@@ -261,14 +261,14 @@ export async function betterBtnRole(
 						`SimplyError - betterBtnRole (Add) | Error: ${err.stack}`
 					);
 			}
-		} else if (options.type === 'Remove') {
+		} else if (options?.type === 'Remove') {
 			try {
 				if (
 					!msg.components ||
 					msg.components.length === 0 ||
 					!msg.components[0]
 				) {
-					if (options.custom === true) return reject('NO_BTN');
+					if (options?.custom === true) return reject('NO_BTN');
 					else
 						return interaction.followUp({
 							content:
@@ -306,7 +306,7 @@ export async function betterBtnRole(
 													link
 												]);
 
-											if (options.custom === true) return resolve('DONE');
+											if (options?.custom === true) return resolve('DONE');
 											else
 												return interaction.followUp({
 													content: 'Done.. Removed the button from the message',
@@ -332,7 +332,7 @@ export async function betterBtnRole(
 													link
 												]);
 
-											if (options.custom === true) return resolve('DONE');
+											if (options?.custom === true) return resolve('DONE');
 											else
 												return interaction.followUp({
 													content:
@@ -344,7 +344,7 @@ export async function betterBtnRole(
 								}
 							} else if (i === msg.components.length - 1) {
 								if (o === msg.components[i].components.length - 1) {
-									if (options.custom === true) return reject('NOT_FOUND');
+									if (options?.custom === true) return reject('NOT_FOUND');
 									else
 										return interaction.followUp({
 											content:
@@ -357,7 +357,7 @@ export async function betterBtnRole(
 					}
 				}
 			} catch (err: any) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'betterBtnRole (Remove)',
 						title: 'An Error occured when running the function ',

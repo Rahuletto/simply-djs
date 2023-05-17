@@ -187,15 +187,15 @@ export async function stealEmoji(
 									  }
 							);
 
-						if (options.embed.fields) embed.setFields(options.embed.fields);
-						if (options.embed.author) embed.setAuthor(options.embed.author);
-						if (options.embed.image) embed.setImage(options.embed.image);
-						if (options.embed.thumbnail)
-							embed.setThumbnail(options.embed.thumbnail);
-						if (options.embed.timestamp)
-							embed.setTimestamp(options.embed.timestamp);
-						if (options.embed?.title) embed.setTitle(options.embed?.title);
-						if (options.embed?.url) embed.setURL(options.embed?.url);
+						if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+						if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+						if (options?.embed?.image) embed.setImage(options.embed?.image);
+						if (options?.embed?.thumbnail)
+							embed.setThumbnail(options.embed?.thumbnail);
+						if (options?.embed?.timestamp)
+							embed.setTimestamp(options.embed?.timestamp);
+						if (options?.embed?.title) embed.setTitle(options.embed?.title);
+						if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 						if (interaction) {
 							await extInteraction.followUp({
@@ -211,7 +211,7 @@ export async function stealEmoji(
 						}
 					})
 					.catch((err) => {
-						if (options.strict)
+						if (options?.strict)
 							throw new SimplyError({
 								function: 'stealEmoji',
 								title: 'An Error occured when running the function ',
@@ -265,15 +265,15 @@ export async function stealEmoji(
 									  }
 							);
 
-						if (options.embed.author) embed.setAuthor(options.embed.author);
-						if (options.embed.image) embed.setImage(options.embed.image);
-						if (options.embed.thumbnail)
-							embed.setThumbnail(options.embed.thumbnail);
-						if (options.embed.timestamp)
-							embed.setTimestamp(options.embed.timestamp);
-						if (options.embed?.title) embed.setTitle(options.embed?.title);
-						if (options.embed?.url) embed.setURL(options.embed?.url);
-						if (options.embed.fields) embed.setFields(options.embed.fields);
+						if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+						if (options?.embed?.image) embed.setImage(options.embed?.image);
+						if (options?.embed?.thumbnail)
+							embed.setThumbnail(options.embed?.thumbnail);
+						if (options?.embed?.timestamp)
+							embed.setTimestamp(options.embed?.timestamp);
+						if (options?.embed?.title) embed.setTitle(options.embed?.title);
+						if (options?.embed?.url) embed.setURL(options.embed?.url);
+						if (options?.embed?.fields) embed.setFields(options.embed?.fields);
 
 						if (interaction) {
 							await extInteraction.followUp({
@@ -289,7 +289,7 @@ export async function stealEmoji(
 						}
 					})
 					.catch((err) => {
-						if (options.strict)
+						if (options?.strict)
 							throw new SimplyError({
 								function: 'stealEmoji',
 								title: 'An Error occured when running the function ',
@@ -300,7 +300,7 @@ export async function stealEmoji(
 			}
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'stealEmoji',
 				title: 'An Error occured when running the function ',

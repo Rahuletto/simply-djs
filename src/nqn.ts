@@ -65,7 +65,7 @@ export async function nqn(message: Message, options: nqnOptions = {}) {
 			});
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'nqn',
 				title: 'An Error occured when running the function ',

@@ -49,7 +49,7 @@ export async function starboard(
 		Number.isNaN(minimumRequired) ||
 		minimumRequired == 0
 	) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'starboard',
 				title: `Minimum number of stars [min] option is not a number.`,
@@ -66,7 +66,7 @@ export async function starboard(
 	}
 
 	if (!options.channelId) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'starboard',
 				title: `Provide an Channel ID to set the starboard channel`
@@ -85,7 +85,7 @@ export async function starboard(
 			if (!extMessage.guild) return;
 
 			if (!starboard) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'starboard',
 						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -128,7 +128,7 @@ export async function starboard(
 				if (!react.message.guild) return;
 
 				if (!starboard) {
-					if (options.strict)
+					if (options?.strict)
 						throw new SimplyError({
 							function: 'starboard',
 							title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
@@ -167,7 +167,7 @@ export async function starboard(
 
 				const embed = new EmbedBuilder()
 					.setAuthor(
-						options.embed?.author || {
+						options?.embed?.author || {
 							name: fetch.author.tag,
 							iconURL: fetch.author.displayAvatarURL()
 						}
@@ -178,11 +178,11 @@ export async function starboard(
 					.setURL(fetch.url)
 					.setFooter({ text: '⭐ | ID: ' + fetch.id });
 
-				if (options.embed.fields) embed.setFields(options.embed.fields);
-				if (options.embed.thumbnail)
-					embed.setThumbnail(options.embed.thumbnail);
-				if (options.embed.timestamp)
-					embed.setTimestamp(options.embed.timestamp);
+				if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+				if (options?.embed?.thumbnail)
+					embed.setThumbnail(options.embed?.thumbnail);
+				if (options?.embed?.timestamp)
+					embed.setTimestamp(options.embed?.timestamp);
 
 				if (url) {
 					embed.setImage(url);
@@ -235,7 +235,7 @@ export async function starboard(
 			}
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'starboard',
 				title: 'An Error occured when running the function ',

@@ -167,7 +167,7 @@ export async function tictactoe(
 				(options.buttons?.O?.style as ButtonStyle) || ButtonStyle.Success;
 
 			if (interaction) {
-				opponent = options.user || extInteraction.options.get('user').user;
+				opponent = options.user || extInteraction.options.getUser('user');
 
 				if (!opponent)
 					return ai(message, {
@@ -243,19 +243,19 @@ export async function tictactoe(
 						  }
 				);
 
-			if (options.embed?.request?.fields)
-				requestEmbed.setFields(options.embed.request?.fields);
-			if (options.embed?.request?.author)
-				requestEmbed.setAuthor(options.embed.request?.author);
-			if (options.embed?.request?.image)
-				requestEmbed.setImage(options.embed.request?.image);
-			if (options.embed?.request?.thumbnail)
-				requestEmbed.setThumbnail(options.embed.request?.thumbnail);
-			if (options.embed?.request?.timestamp)
-				requestEmbed.setTimestamp(options.embed.request?.timestamp);
-			if (options.embed?.request?.title)
+			if (options?.embed?.request?.fields)
+				requestEmbed.setFields(options.embed?.request?.fields);
+			if (options?.embed?.request?.author)
+				requestEmbed.setAuthor(options.embed?.request?.author);
+			if (options?.embed?.request?.image)
+				requestEmbed.setImage(options.embed?.request?.image);
+			if (options?.embed?.request?.thumbnail)
+				requestEmbed.setThumbnail(options.embed?.request?.thumbnail);
+			if (options?.embed?.request?.timestamp)
+				requestEmbed.setTimestamp(options.embed?.request?.timestamp);
+			if (options?.embed?.request?.title)
 				requestEmbed.setTitle(options.embed?.request?.title);
-			if (options.embed?.request?.url)
+			if (options?.embed?.request?.url)
 				requestEmbed.setURL(options.embed?.request?.url);
 
 			const accept = new ButtonBuilder()
@@ -347,17 +347,17 @@ export async function tictactoe(
 								  }
 						);
 
-					if (options.embed?.game?.fields)
+					if (options?.embed?.game?.fields)
 						gameEmbed.setFields(options.embed?.game?.fields);
-					if (options.embed?.game?.author)
+					if (options?.embed?.game?.author)
 						gameEmbed.setAuthor(options.embed?.game?.author);
-					if (options.embed?.game?.image)
+					if (options?.embed?.game?.image)
 						gameEmbed.setImage(options.embed?.game?.image);
-					if (options.embed?.game?.thumbnail)
+					if (options?.embed?.game?.thumbnail)
 						gameEmbed.setThumbnail(options.embed?.game?.thumbnail);
-					if (options.embed?.game?.timestamp)
+					if (options?.embed?.game?.timestamp)
 						gameEmbed.setTimestamp(options.embed?.game?.timestamp);
-					if (options.embed?.game?.url)
+					if (options?.embed?.game?.url)
 						gameEmbed.setURL(options.embed?.game?.url);
 
 					let msg: Message = await button.message.edit({
@@ -501,17 +501,17 @@ export async function tictactoe(
 									  }
 							);
 
-						if (options.embed?.win?.fields)
+						if (options?.embed?.win?.fields)
 							winEmbed.setFields(options.embed?.win?.fields);
-						if (options.embed?.win?.author)
+						if (options?.embed?.win?.author)
 							winEmbed.setAuthor(options.embed?.win?.author);
-						if (options.embed?.win?.image)
+						if (options?.embed?.win?.image)
 							winEmbed.setImage(options.embed?.win?.image);
-						if (options.embed?.win?.thumbnail)
+						if (options?.embed?.win?.thumbnail)
 							winEmbed.setThumbnail(options.embed?.win?.thumbnail);
-						if (options.embed?.win?.timestamp)
+						if (options?.embed?.win?.timestamp)
 							winEmbed.setTimestamp(options.embed?.win?.timestamp);
-						if (options.embed?.win?.url)
+						if (options?.embed?.win?.url)
 							winEmbed.setURL(options.embed?.win?.url);
 
 						if (checkWin(o_emoji)) won['O'] = true;
@@ -555,7 +555,7 @@ export async function tictactoe(
 									.then((m: Message) => {
 										m.react(client.emojis.cache.get(o_emoji) || '⭕');
 									});
-							else if (options.type === 'Embed')
+							else if (options?.type === 'Embed')
 								return m
 									.edit({
 										content: `<@${players[Game.user === 0 ? 1 : 0]}> (${
@@ -625,7 +625,7 @@ export async function tictactoe(
 									.then((m: Message) => {
 										m.react(client.emojis.cache.get(x_emoji) || '❌');
 									});
-							else if (options.type === 'Embed')
+							else if (options?.type === 'Embed')
 								return m
 									.edit({
 										content: `<@${players[Game.user === 0 ? 1 : 0]}> (${
@@ -678,17 +678,17 @@ export async function tictactoe(
 										  }
 								);
 
-							if (options.embed?.draw?.fields)
+							if (options?.embed?.draw?.fields)
 								drawEmbed.setFields(options.embed?.draw?.fields);
-							if (options.embed?.draw?.author)
+							if (options?.embed?.draw?.author)
 								drawEmbed.setAuthor(options.embed?.draw?.author);
-							if (options.embed?.draw?.image)
+							if (options?.embed?.draw?.image)
 								drawEmbed.setImage(options.embed?.draw?.image);
-							if (options.embed?.draw?.thumbnail)
+							if (options?.embed?.draw?.thumbnail)
 								drawEmbed.setThumbnail(options.embed?.draw?.thumbnail);
-							if (options.embed?.draw?.timestamp)
+							if (options?.embed?.draw?.timestamp)
 								drawEmbed.setTimestamp(options.embed?.draw?.timestamp);
-							if (options.embed?.draw?.url)
+							if (options?.embed?.draw?.url)
 								drawEmbed.setURL(options.embed?.draw?.url);
 
 							if (!options.type || options.type === 'Button')
@@ -857,17 +857,17 @@ export async function tictactoe(
 										  }
 								);
 
-							if (options.embed?.timeout?.fields)
+							if (options?.embed?.timeout?.fields)
 								timeoutEmbed.setFields(options.embed?.timeout?.fields);
-							if (options.embed?.timeout?.author)
+							if (options?.embed?.timeout?.author)
 								timeoutEmbed.setAuthor(options.embed?.timeout?.author);
-							if (options.embed?.timeout?.image)
+							if (options?.embed?.timeout?.image)
 								timeoutEmbed.setImage(options.embed?.timeout?.image);
-							if (options.embed?.timeout?.thumbnail)
+							if (options?.embed?.timeout?.thumbnail)
 								timeoutEmbed.setThumbnail(options.embed?.timeout?.thumbnail);
-							if (options.embed?.timeout?.timestamp)
+							if (options?.embed?.timeout?.timestamp)
 								timeoutEmbed.setTimestamp(options.embed?.timeout?.timestamp);
-							if (options.embed?.timeout?.url)
+							if (options?.embed?.timeout?.url)
 								timeoutEmbed.setURL(options.embed?.timeout?.url);
 
 							if (collected.size === 0 && reason == 'idle')
@@ -919,17 +919,17 @@ export async function tictactoe(
 								  }
 						);
 
-					if (options.embed?.timeout?.fields)
+					if (options?.embed?.timeout?.fields)
 						timeoutEmbed.setFields(options.embed?.timeout?.fields);
-					if (options.embed?.timeout?.author)
+					if (options?.embed?.timeout?.author)
 						timeoutEmbed.setAuthor(options.embed?.timeout?.author);
-					if (options.embed?.timeout?.image)
+					if (options?.embed?.timeout?.image)
 						timeoutEmbed.setImage(options.embed?.timeout?.image);
-					if (options.embed?.timeout?.thumbnail)
+					if (options?.embed?.timeout?.thumbnail)
 						timeoutEmbed.setThumbnail(options.embed?.timeout?.thumbnail);
-					if (options.embed?.timeout?.timestamp)
+					if (options?.embed?.timeout?.timestamp)
 						timeoutEmbed.setTimestamp(options.embed?.timeout?.timestamp);
-					if (options.embed?.timeout?.url)
+					if (options?.embed?.timeout?.url)
 						timeoutEmbed.setURL(options.embed?.timeout?.url);
 
 					(m as Message).edit({
@@ -954,17 +954,17 @@ export async function tictactoe(
 								`${opponent.tag} has declined your game request!`
 						);
 
-					if (options.embed?.decline?.fields)
+					if (options?.embed?.decline?.fields)
 						declineEmbed.setFields(options.embed?.decline?.fields);
-					if (options.embed?.decline?.author)
+					if (options?.embed?.decline?.author)
 						declineEmbed.setAuthor(options.embed?.decline?.author);
-					if (options.embed?.decline?.image)
+					if (options?.embed?.decline?.image)
 						declineEmbed.setImage(options.embed?.decline?.image);
-					if (options.embed?.decline?.thumbnail)
+					if (options?.embed?.decline?.thumbnail)
 						declineEmbed.setThumbnail(options.embed?.decline?.thumbnail);
-					if (options.embed?.decline?.timestamp)
+					if (options?.embed?.decline?.timestamp)
 						declineEmbed.setTimestamp(options.embed?.decline?.timestamp);
-					if (options.embed?.decline?.url)
+					if (options?.embed?.decline?.url)
 						declineEmbed.setURL(options.embed?.decline?.url);
 
 					m.edit({
@@ -975,7 +975,7 @@ export async function tictactoe(
 			});
 		} catch (err: any) {
 			{
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'tictactoe',
 						title: 'An Error occured when running the function ',
@@ -1071,17 +1071,17 @@ async function ai(
 				  }
 		);
 
-	if (options.embed?.game?.fields)
+	if (options?.embed?.game?.fields)
 		gameEmbed.setFields(options.embed?.game?.fields);
-	if (options.embed?.game?.author)
+	if (options?.embed?.game?.author)
 		gameEmbed.setAuthor(options.embed?.game?.author);
-	if (options.embed?.game?.image)
+	if (options?.embed?.game?.image)
 		gameEmbed.setImage(options.embed?.game?.image);
-	if (options.embed?.game?.thumbnail)
+	if (options?.embed?.game?.thumbnail)
 		gameEmbed.setThumbnail(options.embed?.game?.thumbnail);
-	if (options.embed?.game?.timestamp)
+	if (options?.embed?.game?.timestamp)
 		gameEmbed.setTimestamp(options.embed?.game?.timestamp);
-	if (options.embed?.game?.url) gameEmbed.setURL(options.embed?.game?.url);
+	if (options?.embed?.game?.url) gameEmbed.setURL(options.embed?.game?.url);
 
 	const buttons = update();
 
@@ -1248,6 +1248,8 @@ async function ai(
 			}
 		}
 
+		aiTurn = false;
+
 		const buttonUpdateY = update();
 		if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji)) {
 			message.edit({
@@ -1287,17 +1289,17 @@ async function ai(
 						  }
 				);
 
-			if (options.embed?.win?.fields)
+			if (options?.embed?.win?.fields)
 				winEmbed.setFields(options.embed?.win?.fields);
-			if (options.embed?.win?.author)
+			if (options?.embed?.win?.author)
 				winEmbed.setAuthor(options.embed?.win?.author);
-			if (options.embed?.win?.image)
+			if (options?.embed?.win?.image)
 				winEmbed.setImage(options.embed?.win?.image);
-			if (options.embed?.win?.thumbnail)
+			if (options?.embed?.win?.thumbnail)
 				winEmbed.setThumbnail(options.embed?.win?.thumbnail);
-			if (options.embed?.win?.timestamp)
+			if (options?.embed?.win?.timestamp)
 				winEmbed.setTimestamp(options.embed?.win?.timestamp);
-			if (options.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
+			if (options?.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
 
 			const buttonsResult = update();
 
@@ -1317,7 +1319,7 @@ async function ai(
 					.then((m: Message) => {
 						m.react(options.x_emoji);
 					});
-			else if (options.type === 'Embed')
+			else if (options?.type === 'Embed')
 				return message
 					.edit({
 						embeds: [
@@ -1357,17 +1359,17 @@ async function ai(
 						  }
 				);
 
-			if (options.embed?.win?.fields)
+			if (options?.embed?.win?.fields)
 				winEmbed.setFields(options.embed?.win?.fields);
-			if (options.embed?.win?.author)
+			if (options?.embed?.win?.author)
 				winEmbed.setAuthor(options.embed?.win?.author);
-			if (options.embed?.win?.image)
+			if (options?.embed?.win?.image)
 				winEmbed.setImage(options.embed?.win?.image);
-			if (options.embed?.win?.thumbnail)
+			if (options?.embed?.win?.thumbnail)
 				winEmbed.setThumbnail(options.embed?.win?.thumbnail);
-			if (options.embed?.win?.timestamp)
+			if (options?.embed?.win?.timestamp)
 				winEmbed.setTimestamp(options.embed?.win?.timestamp);
-			if (options.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
+			if (options?.embed?.win?.url) winEmbed.setURL(options.embed?.win?.url);
 
 			const buttonsResult = update();
 
@@ -1387,7 +1389,7 @@ async function ai(
 					.then((m: Message) => {
 						m.react(options.o_emoji);
 					});
-			else if (options.type === 'Embed')
+			else if (options?.type === 'Embed')
 				return message
 					.edit({
 						embeds: [
@@ -1430,17 +1432,17 @@ async function ai(
 						  }
 				);
 
-			if (options.embed?.draw?.fields)
+			if (options?.embed?.draw?.fields)
 				drawEmbed.setFields(options.embed?.draw?.fields);
-			if (options.embed?.draw?.author)
+			if (options?.embed?.draw?.author)
 				drawEmbed.setAuthor(options.embed?.draw?.author);
-			if (options.embed?.draw?.image)
+			if (options?.embed?.draw?.image)
 				drawEmbed.setImage(options.embed?.draw?.image);
-			if (options.embed?.draw?.thumbnail)
+			if (options?.embed?.draw?.thumbnail)
 				drawEmbed.setThumbnail(options.embed?.draw?.thumbnail);
-			if (options.embed?.draw?.timestamp)
+			if (options?.embed?.draw?.timestamp)
 				drawEmbed.setTimestamp(options.embed?.draw?.timestamp);
-			if (options.embed?.draw?.url) drawEmbed.setURL(options.embed?.draw?.url);
+			if (options?.embed?.draw?.url) drawEmbed.setURL(options.embed?.draw?.url);
 
 			const buttonsResult = update();
 
@@ -1500,17 +1502,17 @@ async function ai(
 								iconURL: 'https://i.imgur.com/XFUIwPh.png'
 						  }
 				);
-			if (options.embed?.timeout?.fields)
+			if (options?.embed?.timeout?.fields)
 				timeoutEmbed.setFields(options.embed?.timeout?.fields);
-			if (options.embed?.timeout?.author)
+			if (options?.embed?.timeout?.author)
 				timeoutEmbed.setAuthor(options.embed?.timeout?.author);
-			if (options.embed?.timeout?.image)
+			if (options?.embed?.timeout?.image)
 				timeoutEmbed.setImage(options.embed?.timeout?.image);
-			if (options.embed?.timeout?.thumbnail)
+			if (options?.embed?.timeout?.thumbnail)
 				timeoutEmbed.setThumbnail(options.embed?.timeout?.thumbnail);
-			if (options.embed?.timeout?.timestamp)
+			if (options?.embed?.timeout?.timestamp)
 				timeoutEmbed.setTimestamp(options.embed?.timeout?.timestamp);
-			if (options.embed?.timeout?.url)
+			if (options?.embed?.timeout?.url)
 				timeoutEmbed.setURL(options.embed?.timeout?.url);
 			if (aiTurn != true)
 				if (!options.type || options.type === 'Button')

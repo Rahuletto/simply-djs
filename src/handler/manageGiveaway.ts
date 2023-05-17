@@ -387,7 +387,7 @@ export async function manageGiveaway(
 				// 			if (dt) {
 				// 				const tim = Number(dt.endTime.slice(0, -3));
 				// 				const f: EmbedFieldData[] = [];
-				// 				if (options.fields) {
+				// 				if (options?.fields) {
 				// 					options.fields.forEach((a) => {
 				// 						a.value = a.value
 				// 							.replaceAll('{hosted}', `<@${dt.host}>`)
@@ -471,7 +471,7 @@ export async function manageGiveaway(
 				// 	}
 				// }, ms('5s'));
 			} catch (err: any) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'manageGiveaway',
 						title: 'An Error occured when running the function ',

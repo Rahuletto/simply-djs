@@ -66,7 +66,7 @@ export function https(
 			}
 		).on('error', reject);
 
-		if (options.body) req.write(JSON.stringify(options.body));
+		if (options?.body) req.write(JSON.stringify(options.body));
 
 		req.end();
 	});

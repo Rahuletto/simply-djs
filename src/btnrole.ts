@@ -53,8 +53,8 @@ export async function btnRole(
 	options: btnOptions = {}
 ): Promise<Message> {
 	try {
-		if (!options.data) {
-			if (options.strict)
+		if (!options?.data) {
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'btnRole',
 					title: 'Expected data object in options',
@@ -63,7 +63,7 @@ export async function btnRole(
 			else
 				console.log(
 					`SimplyError - btnRole | Error:  Expected data object in options.. Received ${
-						options.data || 'undefined'
+						options?.data || 'undefined'
 					}`
 				);
 		}
@@ -107,7 +107,7 @@ export async function btnRole(
 			const button: ButtonBuilder[][] = [[], [], [], [], []];
 			GenButton(data, button, row);
 		} else if (data.length > 25) {
-			if (options.strict)
+			if (options?.strict)
 				throw new SimplyError({
 					function: 'btnRole',
 					title: 'Reached the limit of 25 buttons..',
@@ -172,15 +172,17 @@ export async function btnRole(
 						  }
 				);
 
-			if (options.embed?.description)
+			if (options?.embed?.description)
 				embed.setDescription(options.embed?.description);
-			if (options.embed?.fields) embed.setFields(options.embed.fields);
-			if (options.embed?.author) embed.setAuthor(options.embed.author);
-			if (options.embed?.image) embed.setImage(options.embed.image);
-			if (options.embed?.thumbnail) embed.setThumbnail(options.embed.thumbnail);
-			if (options.embed?.timestamp) embed.setTimestamp(options.embed.timestamp);
-			if (options.embed?.title) embed.setTitle(options.embed?.title);
-			if (options.embed?.url) embed.setURL(options.embed?.url);
+			if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+			if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+			if (options?.embed?.image) embed.setImage(options.embed?.image);
+			if (options?.embed?.thumbnail)
+				embed.setThumbnail(options.embed?.thumbnail);
+			if (options?.embed?.timestamp)
+				embed.setTimestamp(options.embed?.timestamp);
+			if (options?.embed?.title) embed.setTitle(options.embed?.title);
+			if (options?.embed?.url) embed.setURL(options.embed?.url);
 
 			if (extInteraction?.commandId) {
 				if (!options.embed) {
@@ -255,7 +257,7 @@ export async function btnRole(
 			}
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'btnRole',
 				title: 'An Error occured when running the function ',

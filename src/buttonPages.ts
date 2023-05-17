@@ -86,80 +86,80 @@ export async function buttonPages(
 
 		let comps: ActionRowBuilder<ButtonBuilder>[];
 
-		if (options.rows) {
+		if (options?.rows) {
 			if (!Array.isArray(options.rows)) {
-				if (options.strict)
+				if (options?.strict)
 					throw new SimplyError({
 						function: 'buttonPages',
 						title: `Provide an array for the rows`,
 						tip: `Expected an array of MessageActionRows. Received ${
-							options.rows || 'undefined'
+							options?.rows || 'undefined'
 						}`
 					});
 				else
 					console.log(
 						`SimplyError - buttonPages | Provide an array for the rows\n\n` +
 							`Expected an array of MessageActionRows. Received ${
-								options.rows || 'undefined'
+								options?.rows || 'undefined'
 							}`
 					);
 			}
 
-			comps = options.rows;
+			comps = options?.rows;
 		} else {
 			comps = [];
 		}
 
 		options.buttons = {
 			firstBtn: {
-				style: options.buttons?.firstBtn?.style || ButtonStyle.Primary,
-				emoji: options.buttons?.firstBtn?.emoji || '⏪',
-				label: options.buttons?.firstBtn?.label || 'First'
+				style: options?.buttons?.firstBtn?.style || ButtonStyle.Primary,
+				emoji: options?.buttons?.firstBtn?.emoji || '⏪',
+				label: options?.buttons?.firstBtn?.label || 'First'
 			},
 			nextBtn: {
-				style: options.buttons?.nextBtn?.style || ButtonStyle.Success,
-				emoji: options.buttons?.nextBtn?.emoji || '▶️',
-				label: options.buttons?.nextBtn?.label || 'Next'
+				style: options?.buttons?.nextBtn?.style || ButtonStyle.Success,
+				emoji: options?.buttons?.nextBtn?.emoji || '▶️',
+				label: options?.buttons?.nextBtn?.label || 'Next'
 			},
 			backBtn: {
-				style: options.buttons?.backBtn?.style || ButtonStyle.Success,
-				emoji: options.buttons?.backBtn?.emoji || '◀️',
-				label: options.buttons?.backBtn?.label || 'Back'
+				style: options?.buttons?.backBtn?.style || ButtonStyle.Success,
+				emoji: options?.buttons?.backBtn?.emoji || '◀️',
+				label: options?.buttons?.backBtn?.label || 'Back'
 			},
 			lastBtn: {
-				style: options.buttons?.lastBtn?.style || ButtonStyle.Primary,
-				emoji: options.buttons?.lastBtn?.emoji || '⏩',
-				label: options.buttons?.lastBtn?.label || 'Last'
+				style: options?.buttons?.lastBtn?.style || ButtonStyle.Primary,
+				emoji: options?.buttons?.lastBtn?.emoji || '⏩',
+				label: options?.buttons?.lastBtn?.label || 'Last'
 			},
 
 			deleteBtn: {
-				style: options.buttons?.deleteBtn?.style || ButtonStyle.Danger,
-				emoji: options.buttons?.deleteBtn?.emoji || '🗑',
-				label: options.buttons?.deleteBtn?.label || 'Delete'
+				style: options?.buttons?.deleteBtn?.style || ButtonStyle.Danger,
+				emoji: options?.buttons?.deleteBtn?.emoji || '🗑',
+				label: options?.buttons?.deleteBtn?.label || 'Delete'
 			}
 		};
 
-		if (options.buttons?.firstBtn?.style as string)
+		if (options?.buttons?.firstBtn?.style as string)
 			options.buttons.firstBtn.style = MessageButtonStyle(
 				options.buttons?.firstBtn?.style as string
 			);
 
-		if (options.buttons?.nextBtn?.style as string)
+		if (options?.buttons?.nextBtn?.style as string)
 			options.buttons.nextBtn.style = MessageButtonStyle(
 				options.buttons?.nextBtn?.style as string
 			);
 
-		if (options.buttons?.backBtn?.style as string)
+		if (options?.buttons?.backBtn?.style as string)
 			options.buttons.backBtn.style = MessageButtonStyle(
 				options.buttons?.backBtn?.style as string
 			);
 
-		if (options.buttons?.lastBtn?.style as string)
+		if (options?.buttons?.lastBtn?.style as string)
 			options.buttons.lastBtn.style = MessageButtonStyle(
 				options.buttons?.lastBtn?.style as string
 			);
 
-		if (options.buttons?.deleteBtn?.style as string)
+		if (options?.buttons?.deleteBtn?.style as string)
 			options.buttons.deleteBtn.style = MessageButtonStyle(
 				options.buttons?.deleteBtn?.style as string
 			);
@@ -168,32 +168,32 @@ export async function buttonPages(
 		const firstBtn = new ButtonBuilder()
 			.setCustomId('first_embed')
 
-			.setStyle(options.buttons?.firstBtn?.style as ButtonStyle);
+			.setStyle(options?.buttons?.firstBtn?.style as ButtonStyle);
 
-		if (options.disable === 'Label' || options.disable === 'None')
-			firstBtn.setEmoji(options.buttons?.firstBtn?.emoji);
-		else if (options.disable === 'Emoji' || options.disable === 'None')
-			firstBtn.setLabel(options.buttons?.firstBtn?.label);
+		if (options?.disable === 'Label' || options?.disable === 'None')
+			firstBtn.setEmoji(options?.buttons?.firstBtn?.emoji);
+		else if (options?.disable === 'Emoji' || options?.disable === 'None')
+			firstBtn.setLabel(options?.buttons?.firstBtn?.label);
 
 		const forwardBtn = new ButtonBuilder()
 			.setCustomId('forward_button_embed')
-			.setStyle(options.buttons?.nextBtn?.style as ButtonStyle);
+			.setStyle(options?.buttons?.nextBtn?.style as ButtonStyle);
 
-		if (options.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options?.disable === 'None')
 			forwardBtn.setEmoji(options.buttons?.nextBtn?.emoji);
-		else if (options.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options.disable === 'None')
 			forwardBtn.setLabel(options.buttons?.nextBtn?.label);
 
 		const backBtn = new ButtonBuilder()
 			.setCustomId('back_button_embed')
 			.setStyle(options.buttons?.backBtn?.style as ButtonStyle);
 
-		if (options.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options.disable === 'None')
 			backBtn.setEmoji(options.buttons?.backBtn?.emoji);
-		else if (options.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options.disable === 'None')
 			backBtn.setLabel(options.buttons?.backBtn?.label);
 
-		if (options.dynamic) {
+		if (options?.dynamic) {
 			firstBtn.setDisabled(true);
 			backBtn.setDisabled(true);
 		}
@@ -202,31 +202,31 @@ export async function buttonPages(
 			.setCustomId('last_embed')
 			.setStyle(options.buttons?.lastBtn?.style as ButtonStyle);
 
-		if (options.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options.disable === 'None')
 			lastBtn.setEmoji(options.buttons?.lastBtn?.emoji);
-		else if (options.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options.disable === 'None')
 			lastBtn.setLabel(options.buttons?.lastBtn?.label);
 
 		const deleteBtn = new ButtonBuilder()
 			.setCustomId('delete_embed')
 			.setStyle(options.buttons?.deleteBtn?.style as ButtonStyle);
 
-		if (options.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options.disable === 'None')
 			deleteBtn.setEmoji(options.buttons?.deleteBtn?.emoji);
-		else if (options.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options.disable === 'None')
 			deleteBtn.setLabel(options.buttons?.deleteBtn?.label);
 
 		let btnCollection: ButtonBuilder[] = [];
 		//Creating the MessageActionRow
 		let pageMovingButtons = new ActionRowBuilder<ButtonBuilder>();
-		if (options.skips == true) {
-			if (options.delete) {
+		if (options?.skips == true) {
+			if (options?.delete) {
 				btnCollection = [firstBtn, backBtn, deleteBtn, forwardBtn, lastBtn];
 			} else {
 				btnCollection = [firstBtn, backBtn, forwardBtn, lastBtn];
 			}
 		} else {
-			if (options.delete) {
+			if (options?.delete) {
 				btnCollection = [backBtn, deleteBtn, forwardBtn];
 			} else {
 				btnCollection = [backBtn, forwardBtn];
@@ -252,7 +252,7 @@ export async function buttonPages(
 		const extMessage = message as ExtendedMessage;
 
 		if (interaction) {
-			if (options.count) {
+			if (options?.count) {
 				await extInteraction.followUp({
 					embeds: [pages[0].setFooter({ text: `Page 1/${pages.length}` })],
 					components: comps,
@@ -269,7 +269,7 @@ export async function buttonPages(
 			}
 			m = await extInteraction.fetchReply();
 		} else if (!interaction) {
-			if (options.count) {
+			if (options?.count) {
 				m = await extMessage.reply({
 					embeds: [pages[0].setFooter({ text: `Page 1/${pages.length}` })],
 					components: comps,
@@ -311,11 +311,11 @@ export async function buttonPages(
 				currentPage = 0;
 			}
 
-			if (options.dynamic) {
+			if (options?.dynamic) {
 				if (currentPage === 0) {
 					const btn = comps[0].components[0];
 					btn.setDisabled(true);
-					if (options.skips) {
+					if (options?.skips) {
 						const skip = comps[0].components[1];
 						skip.setDisabled(true);
 						comps[0].components[1] = skip;
@@ -325,7 +325,7 @@ export async function buttonPages(
 				} else {
 					const btn = comps[0].components[0];
 					btn.setDisabled(false);
-					if (options.skips) {
+					if (options?.skips) {
 						const skip = comps[0].components[1];
 						skip.setDisabled(false);
 						comps[0].components[1] = skip;
@@ -333,7 +333,7 @@ export async function buttonPages(
 					comps[0].components[0] = btn;
 				}
 				if (currentPage === pages.length - 1) {
-					if (options.skips) {
+					if (options?.skips) {
 						const bt = comps[0].components[3];
 						const inde = comps[0].components[4];
 
@@ -350,7 +350,7 @@ export async function buttonPages(
 						comps[0].components[2] = bt;
 					}
 				} else {
-					if (options.skips) {
+					if (options?.skips) {
 						const bt = comps[0].components[3];
 						const inde = comps[0].components[4];
 
@@ -370,7 +370,7 @@ export async function buttonPages(
 			}
 
 			if (b.customId !== 'delete_embed') {
-				if (options.count) {
+				if (options?.count) {
 					m.edit({
 						embeds: [
 							pages[currentPage].setFooter({
@@ -410,7 +410,7 @@ export async function buttonPages(
 			}
 		});
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'buttonPages',
 				title: 'An Error occured when running the function ',

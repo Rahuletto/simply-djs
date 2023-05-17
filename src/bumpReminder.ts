@@ -94,15 +94,15 @@ export async function bumpReminder(
 
 		if (options && (message as Message).channel) {
 			return new Promise(async (resolve) => {
-				if (Array.isArray(options.channelId)) {
-					chid = options.channelId;
-				} else if (!Array.isArray(options.channelId)) {
-					chid.push(options.channelId);
+				if (Array.isArray(options?.channelId)) {
+					chid = options?.channelId;
+				} else if (!Array.isArray(options?.channelId)) {
+					chid.push(options?.channelId);
 				}
 
 				options.embed = {
-					remind: options.embed?.remind || reminder,
-					thank: options.embed?.thank || thankyou
+					remind: options?.embed?.remind || reminder,
+					thank: options?.embed?.thank || thankyou
 				};
 
 				if ((message as Message).author.id === '302050872383242240') {
@@ -134,7 +134,7 @@ export async function bumpReminder(
 
 								await (message as Message).channel.send({
 									content: options.content || '\u200b',
-									embeds: [options.embed?.thank || thankyou]
+									embeds: [options?.embed?.thank || thankyou]
 								});
 
 								resolve(true);
@@ -145,7 +145,7 @@ export async function bumpReminder(
 			});
 		}
 	} catch (err: any) {
-		if (options.strict)
+		if (options?.strict)
 			throw new SimplyError({
 				function: 'bumpReminder',
 				title: 'An Error occured when running the function ',

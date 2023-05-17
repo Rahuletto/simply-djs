@@ -4,11 +4,11 @@
 
 import { SimplyError } from './src/error';
 
-if (+process.version.slice(1, 3) - 0 < 17)
+if (+process.version.slice(1, 3) - 0 < 16)
 	throw new SimplyError({
 		function: 'simply-djs [CORE]',
-		title: `NodeJS Version 17 or newer is required, but you are using ${process.version}.`,
-		tip: `Install nodejs 17 or higher in https://nodejs.org/`
+		title: `NodeJS Version 16 or newer is required, but you are using ${process.version}.`,
+		tip: `Install nodejs 16 or higher in https://nodejs.org/`
 	});
 
 try {
