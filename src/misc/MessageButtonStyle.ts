@@ -1,7 +1,7 @@
 import { ButtonStyle } from 'discord.js';
 
 export function MessageButtonStyle(style: string) {
-	if (style == undefined) return ButtonStyle.Secondary;
+	if (style == undefined) return;
 
 	const combination = [
 		{ key: 'PRIMARY', value: ButtonStyle.Primary },
@@ -12,6 +12,6 @@ export function MessageButtonStyle(style: string) {
 	];
 
 	const buttonstyle = combination.find((o) => o.key == style);
-	if (!buttonstyle || buttonstyle == undefined) return ButtonStyle.Secondary;
+	if (!buttonstyle || buttonstyle == undefined) return;
 	return buttonstyle.value;
 }

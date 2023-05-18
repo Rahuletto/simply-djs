@@ -28,14 +28,14 @@ export type stealOptions = {
  *
  *
  * How cool is **stealing an emoji** from another server ? Feel the power with this function
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/stealEmoji***
  * @example simplydjs.stealEmoji(interaction)
  */
 
 export async function stealEmoji(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: stealOptions = {}
 ) {
 	Deprecated({
@@ -43,8 +43,8 @@ export async function stealEmoji(
 	});
 	try {
 		let interaction: ExtendedInteraction;
-		if (message.commandId) {
-			interaction = message as ExtendedInteraction;
+		if (msgOrInt.commandId) {
+			interaction = msgOrInt as ExtendedInteraction;
 
 			if (
 				!interaction.member.permissions.has(
@@ -57,17 +57,17 @@ export async function stealEmoji(
 					ephemeral: true
 				});
 		} else if (
-			!message.member.permissions.has(
+			!msgOrInt.member.permissions.has(
 				PermissionFlagsBits.ManageGuildExpressions
 			)
 		)
-			return message.channel.send({
+			return msgOrInt.channel.send({
 				content:
 					'You Must Have • Manage Guild Expressions (Manage Emojis and Stickers) Permission'
 			});
 
-		const extInteraction = interaction as ExtendedInteraction;
-		const extMessage = message as ExtendedMessage;
+		const extInteraction = msgOrInt as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
 
 		let attachment: Attachment;
 		let emoji: string;
@@ -115,9 +115,9 @@ export async function stealEmoji(
 				});
 			} else emojiCalc(emoji);
 		} else if (!interaction) {
-			const [...args] = (message as ExtendedMessage).content.split(/ +/g);
+			const [...args] = extMessage.content.split(/ +/g);
 
-			attachment = (message as ExtendedMessage).attachments?.first();
+			attachment = extMessage.attachments?.first();
 
 			name = options?.name || args[2] || 'emojiURL';
 			emoji = options?.emoji || attachment?.url || args[1];
@@ -129,7 +129,7 @@ export async function stealEmoji(
 				});
 				const filter = (msg: Message) => msg.author.id === extMessage.author.id;
 
-				const messageCollect = message.channel.createMessageCollector({
+				const messageCollect = msgOrInt.channel.createMessageCollector({
 					filter: filter,
 					max: 1,
 					time: ms('20s')
@@ -158,7 +158,7 @@ export async function stealEmoji(
 
 		async function emojiCalc(msg: string) {
 			if (msg.startsWith('http')) {
-				message.guild.emojis
+				msgOrInt.guild.emojis
 					.create({
 						reason: 'Stole an emoji using a bot.',
 						attachment: emoji,
@@ -237,7 +237,7 @@ export async function stealEmoji(
 					emoji[1] +
 					(emoji && !animated ? '.png?v=1' : '.gif?v=1');
 
-				message.guild.emojis
+				msgOrInt.guild.emojis
 					.create({
 						reason: 'Stole an emoji using a bot.',
 						attachment: url,

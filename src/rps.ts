@@ -56,14 +56,14 @@ const combinations = {
 /**
  * A classic RPS game, except this time it's on Discord to play with your pals, how cool is that ?
  *
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/rps***
- * @example simplydjs.rps(message)
+ * @example simplydjs.rps(interaction)
  */
 
 export async function rps(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: rpsOptions = {}
 ) {
 	return new Promise(async (resolve) => {
@@ -177,21 +177,21 @@ export async function rps(
 
 			let interaction: ExtendedInteraction;
 
-			if (message.commandId) {
-				interaction = message as ExtendedInteraction;
+			if (msgOrInt.commandId) {
+				interaction = msgOrInt as ExtendedInteraction;
 				opponent = options.opponent || interaction.options.getUser('user');
 			} else {
-				opponent = (message as Message).mentions.members.first()?.user;
+				opponent = (msgOrInt as Message).mentions.members.first()?.user;
 			}
 
-			const extInteraction = message as ExtendedInteraction;
-			const extMessage = message as Message;
+			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrInt as Message;
 
 			if (!interaction) {
 				if (!opponent) return extMessage.reply('No opponent mentioned!');
 				if (opponent.bot)
 					return extMessage.reply('You cannot play against bots');
-				if (opponent.id === message.member.user.id)
+				if (opponent.id === msgOrInt.member.user.id)
 					return extMessage.reply('You cannot play with yourself!');
 			} else if (interaction) {
 				if (!opponent)
@@ -204,7 +204,7 @@ export async function rps(
 						content: "You can't play against bots",
 						ephemeral: true
 					});
-				if (opponent.id === message.member.user.id)
+				if (opponent.id === msgOrInt.member.user.id)
 					return await extInteraction.followUp({
 						content: 'You cannot play with yourself!',
 						ephemeral: true
@@ -217,8 +217,8 @@ export async function rps(
 				)
 				.setAuthor(
 					options.embed?.request?.author || {
-						name: (message.member.user as User).tag,
-						iconURL: (message.member.user as User).displayAvatarURL({
+						name: (msgOrInt.member.user as User).tag,
+						iconURL: (msgOrInt.member.user as User).displayAvatarURL({
 							forceStatic: false
 						})
 					}
@@ -266,18 +266,15 @@ export async function rps(
 				});
 			}
 
-			const filter = (b: ButtonInteraction) => b.user.id === opponent.id;
 			const collector = m.createMessageComponentCollector({
-				filter: filter,
 				componentType: ComponentType.Button,
-				time: ms('30s'),
-				maxUsers: 1
+				time: ms('30s')
 			});
 
 			collector.on('collect', async (button: ButtonInteraction) => {
 				if (button.user.id !== opponent.id) {
 					await button.reply({
-						content: 'You cannot play the game.',
+						content: `Only <@!${opponent.id}> can use these buttons!`,
 						ephemeral: true
 					});
 					return;
@@ -293,12 +290,12 @@ export async function rps(
 				const gameEmbed = new EmbedBuilder()
 					.setTitle(
 						options.embed?.game?.title ||
-							`${(message.member.user as User).tag} VS. ${opponent.tag}`
+							`${(msgOrInt.member.user as User).tag} VS. ${opponent.tag}`
 					)
 					.setAuthor(
 						options.embed?.game?.author || {
-							name: (message.member.user as User).tag,
-							iconURL: (message.member.user as User).displayAvatarURL({
+							name: (msgOrInt.member.user as User).tag,
+							iconURL: (msgOrInt.member.user as User).displayAvatarURL({
 								forceStatic: false
 							})
 						}
@@ -345,7 +342,7 @@ export async function rps(
 
 				collector.stop();
 				const ids: Set<string> = new Set();
-				ids.add(message.member.user.id);
+				ids.add(msgOrInt.member.user.id);
 				ids.add(opponent.id);
 
 				let p1: string, p2: string;
@@ -356,20 +353,19 @@ export async function rps(
 				});
 
 				btnCollector.on('collect', async (b: ButtonInteraction) => {
+					await b.deferUpdate();
 					if (!ids.has(b.user.id)) {
-						await button.reply({
+						await b.followUp({
 							content: 'You cannot play the game.',
 							ephemeral: true
 						});
 						return;
 					}
 
-					await b.deferUpdate();
-
 					ids.delete(b.user.id);
 
 					if (b.user.id === opponent.id) p1 = b.customId;
-					if (b.user.id === message.member.user.id) p2 = b.customId;
+					if (b.user.id === msgOrInt.member.user.id) p2 = b.customId;
 
 					setTimeout(() => {
 						if (ids.size == 0) btnCollector.stop();
@@ -556,7 +552,7 @@ export async function rps(
 							const winEmbed = new EmbedBuilder()
 								.setTitle(
 									options.embed?.win?.title ||
-										`${(message.member.user as User).tag} Won !`
+										`${(msgOrInt.member.user as User).tag} Won !`
 								)
 								.setColor(options.embed?.win?.color || 'Green')
 								.setDescription(
@@ -592,7 +588,7 @@ export async function rps(
 									embeds: [winEmbed],
 									components: []
 								});
-								resolve(message.member.user);
+								resolve(msgOrInt.member.user);
 							} else if (!interaction) {
 								await (m as Message).edit({
 									content: '** **',
@@ -601,7 +597,7 @@ export async function rps(
 								});
 							}
 
-							resolve(message.member.user);
+							resolve(msgOrInt.member.user);
 						}
 					}
 				});
@@ -614,7 +610,7 @@ export async function rps(
 						embeds: [timeoutEmbed],
 						components: []
 					});
-				} else if (reason === 'decline') {
+				} else if (reason == 'decline') {
 					const declineEmbed = new EmbedBuilder()
 						.setColor(options.embed?.decline?.color || 'Red')
 						.setFooter(

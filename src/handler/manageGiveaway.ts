@@ -33,7 +33,7 @@ export type manageGiveawayOptions = {
 // ------- P R O M I S E --------
 // ------------------------------
 
-type RerollResolve = {
+export type RerollResolve = {
 	type?: 'Reroll';
 	user?: GuildMember | GuildMember[];
 	url?: string;

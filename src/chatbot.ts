@@ -41,7 +41,7 @@ export async function chatbot(
 	const { client } = message;
 
 	if (message.author.bot) return;
-	if (options && options.toggle === false) return;
+	if (options && options?.toggle === false) return;
 
 	let channels = [];
 	if (Array.isArray(options.channelId)) channels = options.channelId;
@@ -49,9 +49,7 @@ export async function chatbot(
 
 	try {
 		for (const channel of channels) {
-			const ch = await client.channels.fetch(channel, {
-				cache: true
-			});
+			const ch = await client.channels.cache.get(channel);
 			if (!ch)
 				if (options?.strict)
 					throw new SimplyError({
@@ -89,7 +87,7 @@ export async function chatbot(
 			await message.channel.sendTyping();
 
 			const configuration = new Configuration({
-				apiKey: options.gptToken
+				apiKey: options?.gptToken
 			});
 			const openai = new OpenAIApi(configuration);
 

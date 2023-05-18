@@ -29,7 +29,7 @@ export type starboardOption = {
  * @param reaction
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/starboard***
- * @example simplydjs.starboard(client, reaction, { channelId: '1234567890123' })
+ * @example simplydjs.starboard(reaction, { channelId: '1234567890123' })
  */
 
 export async function starboard(
@@ -78,9 +78,7 @@ export async function starboard(
 	}
 	try {
 		if (extMessage || (reactionOrMessage as ExtendedMessage).id) {
-			let starboard = await client.channels.fetch(options.channelId, {
-				cache: true
-			});
+			let starboard = await client.channels.cache.get(options.channelId);
 
 			if (!extMessage.guild) return;
 

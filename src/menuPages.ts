@@ -56,14 +56,14 @@ export type menuEmbOptions = {
 
 /**
  * An Embed paginator using Select Menus
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/menuPages***
  * @example simplydjs.menuPages(interaction, { data: {...} })
  */
 
 export async function menuPages(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: menuEmbOptions = {}
 ) {
 	try {
@@ -109,11 +109,11 @@ export async function menuPages(
 			options.delete?.enable === true
 		) {
 			const delopt = {
-				label: options.delete?.label || 'Delete',
+				label: options?.delete?.label || 'Delete',
 				description:
 					options.delete?.description || 'Delete the Select Menu Embed',
 				value: 'delete_menuPages',
-				emoji: options.delete?.emoji || '❌'
+				emoji: options?.delete?.emoji || '❌'
 			};
 
 			menuOptions.push(delopt);
@@ -140,12 +140,12 @@ export async function menuPages(
 		}
 
 		let interaction: ExtendedInteraction;
-		if (message.commandId) {
-			interaction = message as ExtendedInteraction;
+		if (msgOrInt.commandId) {
+			interaction = msgOrInt as ExtendedInteraction;
 		}
 
-		const extInteraction = message as ExtendedInteraction;
-		const extMessage = message as ExtendedMessage;
+		const extInteraction = msgOrInt as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
 
 		let m: Message;
 
@@ -169,14 +169,14 @@ export async function menuPages(
 			await menu.deferUpdate();
 
 			if (type === 'Edit') {
-				if (message.member.user.id !== menu.user.id)
+				if (msgOrInt.member.user.id !== menu.user.id)
 					menu.followUp({
 						content: "You cannot access other's pagination."
 					});
 			}
 
 			if (selected === 'delete_menuPages') {
-				if (message.member.user.id !== menu.user.id)
+				if (msgOrInt.member.user.id !== menu.user.id)
 					menu.editReply({
 						content: "You cannot access other's pagination."
 					});

@@ -8,10 +8,10 @@ import { ExtendedInteraction, ExtendedMessage } from '../interfaces';
  */
 
 export async function embedPages(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	pages: EmbedBuilder[],
 	options: pagesOption = {}
 ): Promise<void> {
 	Deprecated({ desc: 'embedPages() is now buttonPages()' });
-	return await buttonPages(message, { embeds: pages, ...options });
+	return await buttonPages(msgOrInt, { embeds: pages, ...options });
 }

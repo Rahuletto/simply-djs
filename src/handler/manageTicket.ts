@@ -55,7 +55,7 @@ export type manageTicketOptions = {
 // ------- P R O M I S E --------
 // ------------------------------
 
-type DeleteResolve = {
+export type DeleteResolve = {
 	type?: 'Delete';
 	channelId?: string;
 	user?: User;
@@ -124,7 +124,7 @@ export async function manageTicket(
 						const pingRolePermissions: OverwriteResolvable[] = [];
 						const roles: (Role | string)[] = [];
 
-						options.pingRoles.forEach((r) => {
+						options?.pingRoles?.forEach((r) => {
 							roles.push(r);
 
 							pingRolePermissions.push({
@@ -154,6 +154,14 @@ export async function manageTicket(
 									] //Deny permissions
 								},
 								{
+									id: client.user.id,
+									allow: [
+										PermissionFlagsBits.ViewChannel,
+										PermissionFlagsBits.SendMessages,
+										PermissionFlagsBits.ReadMessageHistory
+									]
+								},
+								{
 									id: member,
 									allow: [
 										PermissionFlagsBits.ViewChannel,
@@ -169,10 +177,10 @@ export async function manageTicket(
 						});
 
 						const embed = new EmbedBuilder()
-							.setTitle(options.embed?.title || 'Ticket Created')
+							.setTitle(options?.embed?.title || 'Ticket Created')
 							.setDescription(
 								(
-									options.embed?.description ||
+									options?.embed?.description ||
 									`Ticket has been raised by {user}. The support will reach you shortly.\n\n**User ID**: \`{id}\` | **User Tag**: \`{tag}\``
 								)
 									.replaceAll('{user}', member.user.toString())
@@ -194,15 +202,15 @@ export async function manageTicket(
 									  }
 							);
 
-						if (options?.embed?.fields) embed.setFields(options.embed?.fields);
-						if (options?.embed?.author) embed.setAuthor(options.embed?.author);
-						if (options?.embed?.image) embed.setImage(options.embed?.image);
+						if (options?.embed?.fields) embed.setFields(options?.embed?.fields);
+						if (options?.embed?.author) embed.setAuthor(options?.embed?.author);
+						if (options?.embed?.image) embed.setImage(options?.embed?.image);
 						if (options?.embed?.thumbnail)
-							embed.setThumbnail(options.embed?.thumbnail);
+							embed.setThumbnail(options?.embed?.thumbnail);
 						if (options?.embed?.timestamp)
-							embed.setTimestamp(options.embed?.timestamp);
-						if (options?.embed?.title) embed.setTitle(options.embed?.title);
-						if (options?.embed?.url) embed.setURL(options.embed?.url);
+							embed.setTimestamp(options?.embed?.timestamp);
+						if (options?.embed?.title) embed.setTitle(options?.embed?.title);
+						if (options?.embed?.url) embed.setURL(options?.embed?.url);
 
 						if (options?.buttons?.close?.style as string)
 							options.buttons.close.style = MessageButtonStyle(
@@ -256,7 +264,7 @@ export async function manageTicket(
 					});
 
 					(interaction.channel as TextChannel).permissionOverwrites
-						.edit(interaction.guild.roles.everyone, {
+						.edit(member, {
 							SendMessages: false
 						})
 						.catch(() => {});
@@ -373,7 +381,7 @@ export async function manageTicket(
 						content: 'Are you sure ?? This process is not reversible !',
 						components: [row]
 					});
-				} else if (interaction.customId === 'yea_del') {
+				} else if (interaction.customId === 'yes_delete') {
 					await interaction.message.edit({
 						content: 'Deleting the channel..',
 						embeds: [],
@@ -426,9 +434,7 @@ export async function manageTicket(
 					});
 
 					if (options?.logChannelId) {
-						let ch = await client.channels.fetch(options?.logChannelId, {
-							cache: true
-						});
+						let ch = await client.channels.cache.get(options?.logChannelId);
 
 						if (ch) {
 							const log = new EmbedBuilder()
@@ -449,7 +455,7 @@ export async function manageTicket(
 					setTimeout(async () => {
 						await interaction.channel.delete();
 					}, ms('5s'));
-				} else if (interaction.customId === 'dont_del') {
+				} else if (interaction.customId === 'cancel') {
 					await interaction.deferUpdate();
 
 					interaction.message.edit({
@@ -463,7 +469,7 @@ export async function manageTicket(
 					});
 
 					(interaction.channel as TextChannel).permissionOverwrites
-						.edit(interaction.guild.roles.everyone, {
+						.edit(member, {
 							SendMessages: true
 						})
 						.catch(() => {});

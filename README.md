@@ -29,7 +29,7 @@ Simply-DJS Reimagined.
 + manageTicket.ts (Splitted from manageBtn.ts)
 # ---------------------------------------------
 
-+ meme.ts (automeme.ts)
++ meme.ts (previously automeme.ts)
 + menuPages.ts
 + nqn.ts
 + rps.ts
@@ -55,5 +55,5 @@ Simply-DJS Reimagined.
 @@ Renamed functions @@
 
 - Removed `credit` option
-- Deprecated 6 modules (Renaming things)
+- Deprecated 10 modules (Renaming things)
 ```

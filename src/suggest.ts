@@ -50,24 +50,24 @@ export type suggestOption = {
 
 /**
  * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
- * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
+ * @example simplydjs.suggest(interaction, { channelId: '1234567890123' })
  */
 
 export async function suggest(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: suggestOption = { strict: false }
 ) {
 	try {
-		const { client } = message;
+		const { client } = msgOrInt;
 		let url: string;
 		let suggestion: string;
 
 		let interaction: ExtendedInteraction;
-		if (message.commandId || !message.content) {
-			interaction = message as ExtendedInteraction;
+		if (msgOrInt.commandId || !msgOrInt.content) {
+			interaction = msgOrInt as ExtendedInteraction;
 
 			suggestion =
 				options.suggestion ||
@@ -78,8 +78,8 @@ export async function suggest(
 					content: 'Provide a suggestion to post.',
 					ephemeral: true
 				});
-		} else if (!message.commandId && message.content) {
-			const attachment = (message as Message).attachments?.first();
+		} else if (!msgOrInt.commandId && msgOrInt.content) {
+			const attachment = (msgOrInt as Message).attachments?.first();
 
 			url = attachment ? attachment.url : '';
 
@@ -87,13 +87,13 @@ export async function suggest(
 
 			if (url) suggestion = suggestion + ' ' + url;
 
-			if (!options.suggestion && (message as Message)) {
-				const [...args] = (message as Message).content?.split(/ +/g);
+			if (!options.suggestion && (msgOrInt as Message)) {
+				const [...args] = (msgOrInt as Message).content?.split(/ +/g);
 				suggestion = args.slice(1).join(' ');
 			}
 
 			if (suggestion === '' || !suggestion)
-				return message.reply({ content: 'Provide a suggestion to post.' });
+				return msgOrInt.reply({ content: 'Provide a suggestion to post.' });
 		}
 
 		if (!options.embed) {
@@ -204,14 +204,14 @@ export async function suggest(
 				ephemeral: true
 			});
 		} else if (!interaction) {
-			m = await message.reply({
+			m = await msgOrInt.reply({
 				embeds: [embed],
 				components: [sendRow]
 			});
 		}
 
 		const filter = (m: ButtonInteraction) =>
-			m.user.id === (message.user ? message.user : message.author).id;
+			m.user.id === msgOrInt.member.user.id;
 		const collector = (m as Message).createMessageComponentCollector({
 			filter: filter,
 			max: 1,
@@ -227,8 +227,8 @@ export async function suggest(
 				const suggestEmb = new EmbedBuilder()
 					.setDescription(suggestion)
 					.setAuthor({
-						name: (message.member.user as User).tag,
-						iconURL: (message.member.user as User).displayAvatarURL({
+						name: (msgOrInt.member.user as User).tag,
+						iconURL: (msgOrInt.member.user as User).displayAvatarURL({
 							forceStatic: false
 						})
 					})
@@ -290,7 +290,7 @@ export async function suggest(
 					.then(async (ms) => {
 						const database: Doc = new db({
 							message: ms.id,
-							author: message.member.user.id
+							author: msgOrInt.member.user.id
 						});
 
 						await database.save();

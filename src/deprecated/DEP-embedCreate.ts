@@ -8,9 +8,9 @@ import { embedCreator, embedOptions } from '../embedCreator';
  */
 
 export async function embedCreate(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: embedOptions = {}
 ): Promise<APIEmbed> {
 	Deprecated({ desc: 'embedCreate() is now embedCreator()' });
-	return await embedCreator(message, options);
+	return await embedCreator(msgOrInt, options);
 }

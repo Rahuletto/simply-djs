@@ -14,7 +14,7 @@ import {
 import db from '../model/suggest';
 import { Vote } from '../model/suggest';
 
-export type manageSugOptions = {
+export type manageSuggestOptions = {
 	deny?: { color: ColorResolvable };
 	accept?: { color: ColorResolvable };
 };
@@ -33,7 +33,7 @@ export type manageSugOptions = {
 
 export async function manageSuggest(
 	interaction: ButtonInteraction,
-	options: manageSugOptions = {}
+	options: manageSuggestOptions = {}
 ) {
 	const button = interaction;
 	if (button.isButton()) {
@@ -488,7 +488,7 @@ export async function manageSuggest(
 				const l: any[] = [];
 				const d: any[] = [];
 
-				if (data.votes === [] || !data.votes) {
+				if (data.votes == [] || !data.votes) {
 					l.length = 0;
 					d.length = 0;
 				} else {

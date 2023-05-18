@@ -8,9 +8,9 @@ import { suggest, suggestOption } from '../suggest';
  */
 
 export async function suggestSystem(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: suggestOption = { strict: false }
 ): Promise<Message | InteractionResponse> {
 	Deprecated({ desc: 'suggestSystem() is now suggest()' });
-	return await suggest(message, options);
+	return await suggest(msgOrInt, options);
 }

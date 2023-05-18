@@ -4,7 +4,8 @@ import {
 	ActionRowBuilder,
 	ButtonStyle,
 	TextChannel,
-	PermissionFlagsBits
+	PermissionFlagsBits,
+	MessageMentions
 } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -33,40 +34,51 @@ export type ticketSetupOptions = {
 /**
  * A Flexible yet Powerful Ticket System | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  *
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/ticketSetup***
  * @example simplydjs.ticketSetup(interaction, { channelId: '0123456789012' })
  */
 
 export async function ticketSetup(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: ticketSetupOptions = { strict: false }
 ) {
 	try {
-		const ch = options.channelId;
+		const { client } = msgOrInt;
+		let channel;
+		let interaction: ExtendedInteraction;
+		if (msgOrInt.commandId) {
+			interaction = msgOrInt as ExtendedInteraction;
 
-		if (!ch || ch == '') {
+			channel =
+				client.channels.cache.get(options?.channelId as string) ||
+				interaction.options.get('channel').channel;
+		} else if (!msgOrInt.commandId && msgOrInt.content) {
+			channel =
+				client.channels.cache.get(options?.channelId as string) ||
+				(msgOrInt.mentions as MessageMentions).channels.first();
+		}
+		const extInteraction = msgOrInt as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
+
+		if (!channel || !channel.id) {
 			if (options?.strict)
 				throw new SimplyError({
 					function: 'ticketSetup',
 					title: 'Provide an channel id to send the system panel.',
 					tip: `Expected channelId as string in options.. | Received ${
-						ch || 'undefined'
+						options.channelId || 'undefined'
 					}`
 				});
 			else
 				console.log(
 					`SimplyError - ticketSetup | Provide an channel id to send the system panel.\n\n` +
 						`Expected channelId as string in options.. | Received ${
-							ch || 'undefined'
+							options.channelId || 'undefined'
 						}`
 				);
 		}
-
-		let channel = await message.client.channels.fetch(ch, {
-			cache: true
-		});
 
 		channel = channel as TextChannel;
 
@@ -87,14 +99,7 @@ export async function ticketSetup(
 				);
 		}
 
-		let interaction: ExtendedInteraction;
-		if (message.commandId) {
-			interaction = message as ExtendedInteraction;
-		}
-		const extInteraction = message as ExtendedInteraction;
-		const extMessage = message as ExtendedMessage;
-
-		if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
+		if (!msgOrInt.member.permissions.has(PermissionFlagsBits.Administrator)) {
 			if (interaction) {
 				return await extInteraction.followUp({
 					content: 'You are not an admin to create a Ticket Panel',
@@ -140,7 +145,7 @@ export async function ticketSetup(
 				options.embed?.description ||
 					'🎫 Open a ticket by interacting with the button 🎫'
 			)
-			.setThumbnail(message.guild.iconURL())
+			.setThumbnail(msgOrInt.guild.iconURL())
 			.setTimestamp()
 			.setFooter(
 				options.embed?.footer

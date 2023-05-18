@@ -37,14 +37,14 @@ export type embedOptions = {
 
 /**
  * Lets you create embeds with **an interactive builder**
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/embedCreator***
- * @example simplydjs.embedCreate(message)
+ * @example simplydjs.embedCreate(interaction)
  */
 
 export async function embedCreator(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: embedOptions = {}
 ): Promise<APIEmbed> {
 	return new Promise(async (resolve) => {
@@ -168,14 +168,14 @@ export async function embedCreator(
 
 			let interaction: ExtendedInteraction;
 
-			if (message.commandId) {
-				interaction = message as ExtendedInteraction;
+			if (msgOrInt.commandId) {
+				interaction = msgOrInt as ExtendedInteraction;
 			}
 
 			let msg: Message;
 
-			const extInteraction = message as ExtendedInteraction;
-			const extMessage = message as ExtendedMessage;
+			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrInt as ExtendedMessage;
 
 			if (interaction) {
 				msg = await extInteraction.followUp({
@@ -201,17 +201,17 @@ export async function embedCreator(
 				)
 				.setColor(toRgb('#2F3136'));
 
-			message.channel
+			msgOrInt.channel
 				.send({ content: '** **', embeds: [creator] })
 				.then(async (preview) => {
 					const filter = (m: BaseInteraction) =>
-						m.user.id === message.member.user.id;
+						m.user.id === msgOrInt.member.user.id;
 
 					const messageFilter = (m: Message) =>
-						message.member.user.id === m.author.id;
+						msgOrInt.member.user.id === m.author.id;
 
 					const buttonFilter = (m: ButtonInteraction) =>
-						message.member.user.id === m.user.id;
+						msgOrInt.member.user.id === m.user.id;
 
 					const collector = msg.createMessageComponentCollector({
 						filter: filter,
@@ -236,7 +236,7 @@ export async function embedCreator(
 							msg.delete().catch(() => {});
 						} else if (button.customId === 'setDone') {
 							if (
-								message.member.permissions.has(
+								msgOrInt.member.permissions.has(
 									PermissionFlagsBits.Administrator
 								)
 							) {
@@ -268,13 +268,13 @@ export async function embedCreator(
 									}
 								});
 							} else if (
-								!message.member.permissions.has(
+								!msgOrInt.member.permissions.has(
 									PermissionFlagsBits.Administrator
 								)
 							) {
 								button.reply({ content: 'Done 👍', ephemeral: true });
 
-								message.channel.send({
+								msgOrInt.channel.send({
 									content: preview.content,
 									embeds: [preview.embeds[0]]
 								});
@@ -692,7 +692,7 @@ export async function embedCreator(
 										m.attachments.first()?.url ||
 										'';
 									if (!isthumb) {
-										message.reply(
+										msgOrInt.reply(
 											'That is not a image url/image attachment. Please provide me a image url or attachment.'
 										);
 										return;

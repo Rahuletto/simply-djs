@@ -133,7 +133,7 @@ export async function bumpReminder(
 								await data.save().catch(() => {});
 
 								await (message as Message).channel.send({
-									content: options.content || '\u200b',
+									content: options?.content || '\u200b',
 									embeds: [options?.embed?.thank || thankyou]
 								});
 

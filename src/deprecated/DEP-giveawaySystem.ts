@@ -7,9 +7,9 @@ import { GiveawayResolve, giveaway, giveawayOptions } from '../giveaway';
  */
 
 export async function giveawaySystem(
-	msgOrint: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
 ): Promise<GiveawayResolve> {
-	Deprecated({ desc: 'embedCreate() is now embedCreator()' });
-	return await giveaway(msgOrint, options);
+	Deprecated({ desc: 'giveawaySystem() is now giveaway()' });
+	return await giveaway(msgOrInt, options);
 }

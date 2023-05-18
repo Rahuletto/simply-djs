@@ -45,14 +45,14 @@ export type calcOptions = {
 
 /**
  * An Unique **calculator** which can be *used inside Discord*
- * @param interaction
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/calculator***
  * @example simplydjs.calculator(interaction)
  */
 
 export async function calculator(
-	interaction: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: calcOptions = {
 		buttons: {
 			numbers: ButtonStyle.Secondary,
@@ -125,8 +125,8 @@ export async function calculator(
 
 		let message: ExtendedMessage;
 
-		if (!interaction.commandId) {
-			message = interaction as ExtendedMessage;
+		if (!msgOrInt.commandId) {
+			message = msgOrInt as ExtendedMessage;
 		}
 
 		for (let i = 0; i < text.length; i++) {
@@ -164,8 +164,8 @@ export async function calculator(
 
 		let msg: Message;
 
-		const extInteraction = interaction as ExtendedInteraction;
-		const extMessage = interaction as ExtendedMessage;
+		const extInteraction = msgOrInt as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
 
 		if (!message) {
 			await extInteraction.reply({
@@ -184,8 +184,7 @@ export async function calculator(
 		let elem = '0';
 
 		const filter = (button: ButtonInteraction) =>
-			button.user?.id ===
-				(interaction.user ? interaction.user : interaction.author).id &&
+			button.user?.id === msgOrInt.member.user.id &&
 			button.customId.startsWith('cal-');
 
 		const collector = msg.createMessageComponentCollector({
@@ -296,23 +295,17 @@ export async function calculator(
 
 		function createButton(
 			label: string | number,
-			style:
-				| ButtonStyle
-				| 'PRIMARY'
-				| 'SECONDARY'
-				| 'SUCCESS'
-				| 'DANGER'
-				| 'LINK' = options.buttons?.numbers
+			style: ExtendedButtonStyle = options?.buttons?.numbers
 		) {
-			if (label === 'Clear') style = options.buttons?.delete;
-			else if (label === 'Delete') style = options.buttons?.delete;
-			else if (label === 'Back') style = options.buttons?.delete;
-			else if (label === 'π') style = options.buttons?.numbers;
-			else if (label === '%') style = options.buttons?.numbers;
-			else if (label === '^') style = options.buttons?.numbers;
-			else if (label === '.') style = options.buttons?.symbols;
+			if (label === 'Clear') style = options?.buttons?.delete;
+			else if (label === 'Delete') style = options?.buttons?.delete;
+			else if (label === 'Back') style = options?.buttons?.delete;
+			else if (label === 'π') style = options?.buttons?.numbers;
+			else if (label === '%') style = options?.buttons?.numbers;
+			else if (label === '^') style = options?.buttons?.numbers;
+			else if (label === '.') style = options?.buttons?.symbols;
 			else if (label === '=') style = 'SUCCESS';
-			else if (isNaN(Number(label))) style = options.buttons?.symbols;
+			else if (isNaN(Number(label))) style = options?.buttons?.symbols;
 
 			const btn = new ButtonBuilder()
 				.setLabel(label.toString())

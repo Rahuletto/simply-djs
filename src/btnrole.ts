@@ -157,20 +157,20 @@ export async function btnRole(
 					function: 'btnRole',
 					title: 'Provide an embed (or) content in the options.',
 					tip: `Expected embed (or) content options to send. Received ${
-						options.embed || options.content || 'undefined'
+						options.embed || undefined
 					}`
 				});
 
 			const embed = new EmbedBuilder()
-				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setFooter(
-					options.embed?.footer
-						? options.embed?.footer
+					options?.embed?.footer
+						? options?.embed?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/XFUIwPh.png'
 						  }
-				);
+				)
+				.setColor(options?.embed?.color || toRgb('#406DBC'));
 
 			if (options?.embed?.description)
 				embed.setDescription(options.embed?.description);
@@ -187,7 +187,7 @@ export async function btnRole(
 			if (extInteraction?.commandId) {
 				if (!options.embed) {
 					extInteraction.followUp({
-						content: options.content || '** **',
+						content: options?.content || '** **',
 						components: row
 					});
 				} else

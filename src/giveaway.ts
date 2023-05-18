@@ -75,26 +75,26 @@ export interface GiveawayResolve {
 
 /**
  * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()***
- * @param msgOrint
+ * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/givewaySystem***
- * @example simplydjs.giveawaySystem(client, message)
+ * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/giveway***
+ * @example simplydjs.giveaway(interaction)
  */
 
 export async function giveaway(
-	msgOrint: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
 ): Promise<GiveawayResolve> {
 	return new Promise(async (resolve) => {
 		try {
-			const { client } = msgOrint;
+			const { client } = msgOrInt;
 
 			let interaction: ExtendedInteraction;
-			if (msgOrint.commandId) {
-				interaction = msgOrint as ExtendedInteraction;
+			if (msgOrInt.commandId) {
+				interaction = msgOrInt as ExtendedInteraction;
 			}
-			const extInteraction = msgOrint as ExtendedInteraction;
-			const extMessage = msgOrint as ExtendedMessage;
+			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrInt as ExtendedMessage;
 
 			const timeStart: number = Date.now();
 
@@ -102,21 +102,21 @@ export async function giveaway(
 
 			if (options?.manager as Role) manager = options.manager as Role;
 			else if (options?.manager as string)
-				manager = await msgOrint.member.roles.cache.find(
+				manager = await msgOrInt.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
 			if (
 				!(
 					manager ||
-					msgOrint?.member?.permissions?.has(
+					msgOrInt?.member?.permissions?.has(
 						PermissionFlagsBits.ManageEvents
 					) ||
-					msgOrint?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
-					msgOrint?.member?.permissions?.has(PermissionFlagsBits.Administrator)
+					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
+					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.Administrator)
 				)
 			) {
-				return msgOrint.channel.send({
+				return msgOrInt.channel.send({
 					content:
 						'You must have • `Administrator` (or) `Manage Guild` (or) `Manage Events` Permission or • Giveaway Manager Role'
 				});
@@ -168,13 +168,13 @@ export async function giveaway(
 				content = (options.pingRole as Role).toString();
 			else if (options?.pingRole as string)
 				content = (
-					await msgOrint.member.roles.cache.find(
+					await msgOrInt.member.roles.cache.find(
 						(r: Role) => r.id === (options.pingRole as string)
 					)
 				).toString();
 
 			if (options?.requirements?.type === 'Role') {
-				const role = await msgOrint.guild.roles.fetch(
+				const role = await msgOrInt.guild.roles.fetch(
 					options.requirements?.id,
 					{
 						force: true
@@ -332,7 +332,7 @@ export async function giveaway(
 
 			function replacer(str: string) {
 				return str
-					.replaceAll('{hosted}', `<@${msgOrint.member.user.id}>`)
+					.replaceAll('{hosted}', `<@${msgOrInt.member.user.id}>`)
 					.replaceAll('{endsAt}', `<t:${endTime}:f>`)
 					.replaceAll('{prize}', prize)
 					.replaceAll(
@@ -431,7 +431,7 @@ export async function giveaway(
 						prize: prize,
 						entry: [],
 						endTime: end,
-						host: msgOrint.member.user.id
+						host: msgOrInt.member.user.id
 					});
 
 					await createDb.save();

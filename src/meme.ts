@@ -108,9 +108,7 @@ export async function meme(
 			var channel: Channel;
 			if (clientOrChannel as Channel) channel = clientOrChannel as Channel;
 			else if (clientOrChannel as Client)
-				channel = await (clientOrChannel as Client).channels.fetch(ch, {
-					cache: true
-				});
+				channel = await (clientOrChannel as Client).channels.cache.get(ch);
 
 			// If its unavailable, throw an error.
 			if (!channel) {

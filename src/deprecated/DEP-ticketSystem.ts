@@ -8,9 +8,9 @@ import { Message } from 'discord.js';
  */
 
 export async function ticketSystem(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: ticketSetupOptions = { strict: false }
 ): Promise<Message> {
 	Deprecated({ desc: 'ticketSystem() is now ticketSetup()' });
-	return await ticketSetup(message, options);
+	return await ticketSetup(msgOrInt, options);
 }

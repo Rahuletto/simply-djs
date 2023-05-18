@@ -57,14 +57,14 @@ export type pagesOption = {
 /**
  * An *powerful yet customizable* **Embed Paginator**
  *
- * @param message
+ * @param msgOrInt
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/General/buttonPages***
- * @example simplydjs.buttonPages(message, [embed1, embed2] )
+ * @example simplydjs.buttonPages(interaction, [embed1, embed2] )
  */
 
 export async function buttonPages(
-	message: ExtendedMessage | ExtendedInteraction,
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: pagesOption = {}
 ): Promise<void> {
 	try {
@@ -141,7 +141,7 @@ export async function buttonPages(
 
 		if (options?.buttons?.firstBtn?.style as string)
 			options.buttons.firstBtn.style = MessageButtonStyle(
-				options.buttons?.firstBtn?.style as string
+				options?.buttons?.firstBtn?.style as string
 			);
 
 		if (options?.buttons?.nextBtn?.style as string)
@@ -151,17 +151,17 @@ export async function buttonPages(
 
 		if (options?.buttons?.backBtn?.style as string)
 			options.buttons.backBtn.style = MessageButtonStyle(
-				options.buttons?.backBtn?.style as string
+				options?.buttons?.backBtn?.style as string
 			);
 
 		if (options?.buttons?.lastBtn?.style as string)
 			options.buttons.lastBtn.style = MessageButtonStyle(
-				options.buttons?.lastBtn?.style as string
+				options?.buttons?.lastBtn?.style as string
 			);
 
 		if (options?.buttons?.deleteBtn?.style as string)
 			options.buttons.deleteBtn.style = MessageButtonStyle(
-				options.buttons?.deleteBtn?.style as string
+				options?.buttons?.deleteBtn?.style as string
 			);
 
 		//Defining all buttons
@@ -181,16 +181,16 @@ export async function buttonPages(
 
 		if (options?.disable === 'Label' || options?.disable === 'None')
 			forwardBtn.setEmoji(options.buttons?.nextBtn?.emoji);
-		else if (options?.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options?.disable === 'None')
 			forwardBtn.setLabel(options.buttons?.nextBtn?.label);
 
 		const backBtn = new ButtonBuilder()
 			.setCustomId('back_button_embed')
 			.setStyle(options.buttons?.backBtn?.style as ButtonStyle);
 
-		if (options?.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options?.disable === 'None')
 			backBtn.setEmoji(options.buttons?.backBtn?.emoji);
-		else if (options?.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options?.disable === 'None')
 			backBtn.setLabel(options.buttons?.backBtn?.label);
 
 		if (options?.dynamic) {
@@ -200,20 +200,20 @@ export async function buttonPages(
 
 		const lastBtn = new ButtonBuilder()
 			.setCustomId('last_embed')
-			.setStyle(options.buttons?.lastBtn?.style as ButtonStyle);
+			.setStyle(options?.buttons?.lastBtn?.style as ButtonStyle);
 
-		if (options?.disable === 'Label' || options.disable === 'None')
-			lastBtn.setEmoji(options.buttons?.lastBtn?.emoji);
-		else if (options?.disable === 'Emoji' || options.disable === 'None')
-			lastBtn.setLabel(options.buttons?.lastBtn?.label);
+		if (options?.disable === 'Label' || options?.disable === 'None')
+			lastBtn.setEmoji(options?.buttons?.lastBtn?.emoji);
+		else if (options?.disable === 'Emoji' || options?.disable === 'None')
+			lastBtn.setLabel(options?.buttons?.lastBtn?.label);
 
 		const deleteBtn = new ButtonBuilder()
 			.setCustomId('delete_embed')
 			.setStyle(options.buttons?.deleteBtn?.style as ButtonStyle);
 
-		if (options?.disable === 'Label' || options.disable === 'None')
+		if (options?.disable === 'Label' || options?.disable === 'None')
 			deleteBtn.setEmoji(options.buttons?.deleteBtn?.emoji);
-		else if (options?.disable === 'Emoji' || options.disable === 'None')
+		else if (options?.disable === 'Emoji' || options?.disable === 'None')
 			deleteBtn.setLabel(options.buttons?.deleteBtn?.label);
 
 		let btnCollection: ButtonBuilder[] = [];
@@ -241,15 +241,15 @@ export async function buttonPages(
 
 		let interaction: CommandInteraction;
 
-		if (message.commandId) {
-			interaction = message as CommandInteraction;
+		if (msgOrInt.commandId) {
+			interaction = msgOrInt as CommandInteraction;
 		}
 
 		let m: Message | InteractionResponse;
-		const pages = options.embeds;
+		const pages = options?.embeds;
 
-		const extInteraction = message as ExtendedInteraction;
-		const extMessage = message as ExtendedMessage;
+		const extInteraction = msgOrInt as ExtendedInteraction;
+		const extMessage = msgOrInt as ExtendedMessage;
 
 		if (interaction) {
 			if (options?.count) {
@@ -285,10 +285,10 @@ export async function buttonPages(
 		}
 
 		const filter = (m: ButtonInteraction) =>
-			m.user.id === (message.user ? message.user : message.author).id;
+			m.user.id === (msgOrInt.user ? msgOrInt.user : msgOrInt.author).id;
 
 		const collector = m.createMessageComponentCollector({
-			time: options.timeout || ms('2m'),
+			time: options?.timeout || ms('2m'),
 			filter: filter,
 			componentType: ComponentType.Button
 		});
