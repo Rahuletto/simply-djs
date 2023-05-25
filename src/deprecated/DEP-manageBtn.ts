@@ -7,6 +7,7 @@ import {
 	manageTicketOptions
 } from '../handler/manageTicket';
 import {
+	EndResolve,
 	RerollResolve,
 	manageGiveaway,
 	manageGiveawayOptions
@@ -30,7 +31,7 @@ export async function manageBtn(
 	Deprecated({
 		desc: 'manageBtn() is separated to three handlers. manageBtnRole() | manageTicket() | manageGiveaway()'
 	});
-	let resolve: boolean | RerollResolve | DeleteResolve;
+	let resolve: boolean | RerollResolve | DeleteResolve | EndResolve;
 	resolve = await manageBtnRole(interaction, options as manageBtnRoleOptions);
 	resolve = await manageGiveaway(interaction, options as manageGiveawayOptions);
 	resolve = await manageTicket(interaction, options as manageTicketOptions);

@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
+import { Progress } from '../suggest';
 
 export interface Vote {
-	user: number | string;
+	userId: number | string;
 	vote: 'up' | 'down';
 }
 
@@ -9,12 +10,14 @@ export type suggestionData = {
 	message: string;
 	author: string;
 	votes: Array<Vote>;
+	progress: Progress;
 };
 
 const SuggestionSchema = new mongoose.Schema<suggestionData>({
 	message: { type: String }, // Message ID
-	author: { type: String }, // Author of Suggestion to wave
-	votes: { type: Array<Vote>() } // Array of votes
+	author: { type: String }, // Author of Suggestion
+	votes: { type: Array<Vote>() }, // Array of votes
+	progress: { type: Object }
 });
 
 export default mongoose.model('Suggest-System', SuggestionSchema);

@@ -34,33 +34,33 @@ export type ticketSetupOptions = {
 /**
  * A Flexible yet Powerful Ticket System | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  *
- * @param msgOrInt
+ * @param msgOrint
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/ticketSetup***
  * @example simplydjs.ticketSetup(interaction, { channelId: '0123456789012' })
  */
 
 export async function ticketSetup(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: ticketSetupOptions = { strict: false }
 ) {
 	try {
-		const { client } = msgOrInt;
+		const { client } = msgOrint;
 		let channel;
 		let interaction: ExtendedInteraction;
-		if (msgOrInt.commandId) {
-			interaction = msgOrInt as ExtendedInteraction;
+		if (msgOrint.commandId) {
+			interaction = msgOrint as ExtendedInteraction;
 
 			channel =
 				client.channels.cache.get(options?.channelId as string) ||
 				interaction.options.get('channel').channel;
-		} else if (!msgOrInt.commandId && msgOrInt.content) {
+		} else if (!msgOrint.commandId && msgOrint.content) {
 			channel =
 				client.channels.cache.get(options?.channelId as string) ||
-				(msgOrInt.mentions as MessageMentions).channels.first();
+				(msgOrint.mentions as MessageMentions).channels.first();
 		}
-		const extInteraction = msgOrInt as ExtendedInteraction;
-		const extMessage = msgOrInt as ExtendedMessage;
+		const extInteraction = msgOrint as ExtendedInteraction;
+		const extMessage = msgOrint as ExtendedMessage;
 
 		if (!channel || !channel.id) {
 			if (options?.strict)
@@ -99,7 +99,7 @@ export async function ticketSetup(
 				);
 		}
 
-		if (!msgOrInt.member.permissions.has(PermissionFlagsBits.Administrator)) {
+		if (!msgOrint.member.permissions.has(PermissionFlagsBits.Administrator)) {
 			if (interaction) {
 				return await extInteraction.followUp({
 					content: 'You are not an admin to create a Ticket Panel',
@@ -145,7 +145,7 @@ export async function ticketSetup(
 				options.embed?.description ||
 					'🎫 Open a ticket by interacting with the button 🎫'
 			)
-			.setThumbnail(msgOrInt.guild.iconURL())
+			.setThumbnail(msgOrint.guild.iconURL())
 			.setTimestamp()
 			.setFooter(
 				options.embed?.footer

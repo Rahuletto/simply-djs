@@ -82,3 +82,5 @@ export { ticketSystem } from './src/deprecated/DEP-ticketSystem';
 export { suggestSystem } from './src/deprecated/DEP-suggestSystem';
 export { embedCreate } from './src/deprecated/DEP-embedCreate';
 export { giveawaySystem } from './src/deprecated/DEP-giveawaySystem';
+export { manageBtn } from './src/deprecated/DEP-manageBtn';
+export { manageSug } from './src/deprecated/DEP-manageSug';

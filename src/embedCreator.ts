@@ -12,7 +12,10 @@ import {
 	PermissionFlagsBits,
 	ComponentType,
 	TextChannel,
-	APIEmbed
+	APIEmbed,
+	ModalBuilder,
+	TextInputStyle,
+	TextInputBuilder
 } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -222,12 +225,12 @@ export async function embedCreator(
 					const buttonCltr = msg.createMessageComponentCollector({
 						filter: filter,
 						componentType: ComponentType.Button,
-						idle: ms('3m')
+						idle: ms('5m')
 					});
 
 					buttonCltr.on('collect', async (button) => {
 						if (button.customId === 'setDelete') {
-							button.reply({
+							await button.reply({
 								content: 'Deleting your request.',
 								ephemeral: true
 							});
@@ -240,7 +243,7 @@ export async function embedCreator(
 									PermissionFlagsBits.Administrator
 								)
 							) {
-								button.reply({
+								await button.reply({
 									content: 'Provide me a channel to send the embed.',
 									ephemeral: true
 								});
@@ -254,7 +257,7 @@ export async function embedCreator(
 								msgCollector.on('collect', async (m: Message) => {
 									if (m.mentions.channels.first()) {
 										const ch = m.mentions.channels.first() as TextChannel;
-										button.editReply({ content: 'Done 👍' });
+										await button.editReply({ content: 'Done 👍' });
 
 										ch.send({
 											content: preview.content,
@@ -365,9 +368,9 @@ export async function embedCreator(
 									.setPlaceholder('Author Options')
 									.addOptions([
 										{
-											label: 'Author name',
-											description: 'Set the author name',
-											value: 'author-name'
+											label: 'Author text',
+											description: 'Set the author text',
+											value: 'author-text'
 										},
 										{
 											label: 'Author icon',
@@ -403,41 +406,64 @@ export async function embedCreator(
 									async (menu: StringSelectMenuInteraction) => {
 										if (menu.customId !== 'author-select') return;
 
-										if (menu.values[0] === 'author-name') {
-											menu.reply({
-												content: 'Send me an Author name',
-												ephemeral: true,
-												components: []
+										if (menu.values[0] === 'author-text') {
+											const name = new TextInputBuilder()
+												.setLabel('Send me the author text')
+												.setCustomId('author')
+												.setStyle(TextInputStyle.Short)
+												.setRequired(false);
+
+											const modalRow =
+												new ActionRowBuilder<TextInputBuilder>().setComponents([
+													name
+												]);
+
+											const modal = new ModalBuilder()
+												.setCustomId('author-text-modal')
+												.setTitle('Author text')
+												.addComponents(modalRow);
+
+											await menu.showModal(modal);
+
+											const submitted = await menu.awaitModalSubmit({
+												time: ms('30s'),
+
+												filter: (i) => i.user.id === menu.user.id
 											});
 
-											const messageCollect =
-												select.channel.createMessageCollector({
-													filter: messageFilter,
-													time: ms('30s'),
-													max: 1
-												});
+											if (submitted) {
+												const author =
+													submitted.fields.getTextInputValue('author');
 
-											messageCollect.on('collect', async (m: Message) => {
-												menuCollector.stop();
-												m.delete().catch(() => {});
+												if (author.toLowerCase() === 'cancel') {
+													await submitted.reply({
+														content: `You have cancelled.`,
+														ephemeral: true
+													});
+												} else {
+													await submitted.reply({
+														content: `Done ! Setting the author text in your embed`,
+														ephemeral: true
+													});
 
-												preview
-													.edit({
-														content: preview.content,
-														embeds: [
-															EmbedBuilder.from(preview.embeds[0]).setAuthor({
-																name: m.content,
-																iconURL: preview.embeds[0].author?.iconURL
-																	? preview.embeds[0].author?.iconURL
-																	: '',
-																url: preview.embeds[0].author?.url
-																	? preview.embeds[0].author?.url
-																	: ''
-															})
-														]
-													})
-													.catch(() => {});
-											});
+													preview
+														.edit({
+															content: preview.content,
+															embeds: [
+																EmbedBuilder.from(preview.embeds[0]).setAuthor({
+																	name: author,
+																	iconURL: preview.embeds[0].author?.iconURL
+																		? preview.embeds[0].author?.iconURL
+																		: null,
+																	url: preview.embeds[0].author?.url
+																		? preview.embeds[0].author?.url
+																		: null
+																})
+															]
+														})
+														.catch(() => {});
+												}
+											}
 										}
 
 										if (menu.values[0] === 'author-icon') {
@@ -461,7 +487,7 @@ export async function embedCreator(
 														/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 													) != null ||
 													m.attachments.first()?.url ||
-													'';
+													null;
 												if (!isthumb)
 													menu.followUp({
 														content:
@@ -479,12 +505,14 @@ export async function embedCreator(
 															EmbedBuilder.from(preview.embeds[0]).setAuthor({
 																name: preview.embeds[0].author?.name
 																	? preview.embeds[0].author?.name
-																	: '',
+																	: null,
 																iconURL:
-																	m.content || m.attachments.first()?.url || '',
+																	m.content ||
+																	m.attachments.first()?.url ||
+																	null,
 																url: preview.embeds[0].author?.url
 																	? preview.embeds[0].author?.url
-																	: ''
+																	: null
 															})
 														]
 													})
@@ -493,29 +521,50 @@ export async function embedCreator(
 										}
 
 										if (menu.values[0] === 'author-url') {
-											menu.reply({
-												content: 'Send me a Author HTTPS Url',
-												ephemeral: true,
-												components: []
+											const name = new TextInputBuilder()
+												.setLabel('Send me the author link url')
+												.setCustomId('link')
+												.setStyle(TextInputStyle.Short)
+												.setRequired(false);
+
+											const modalRow =
+												new ActionRowBuilder<TextInputBuilder>().setComponents([
+													name
+												]);
+
+											const modal = new ModalBuilder()
+												.setCustomId('author-url-modal')
+												.setTitle('Author link URL')
+												.addComponents(modalRow);
+
+											await menu.showModal(modal);
+
+											const submitted = await menu.awaitModalSubmit({
+												time: ms('30s'),
+
+												filter: (i) => i.user.id === menu.user.id
 											});
 
-											const messageCollect =
-												select.channel.createMessageCollector({
-													filter: messageFilter,
-													time: ms('30s'),
-													max: 1
-												});
+											if (submitted) {
+												const link = submitted.fields.getTextInputValue('link');
 
-											messageCollect.on('collect', async (m: Message) => {
-												if (!m.content.startsWith('http')) {
-													m.delete().catch(() => {});
-													menu.editReply(
-														'A URL should start with http protocol. Please give a valid URL.'
-													);
+												if (link.toLowerCase() === 'cancel') {
+													await submitted.reply({
+														content: `You have cancelled.`,
+														ephemeral: true
+													});
+												} else if (!link.startsWith('http')) {
+													await submitted.reply({
+														content:
+															'A URL should start with http/https protocol. Please give a valid URL.',
+														ephemeral: true
+													});
 													return;
 												} else {
-													menuCollector.stop();
-													m.delete().catch(() => {});
+													await submitted.reply({
+														content: `Done ! Setting the author url link in your embed`,
+														ephemeral: true
+													});
 
 													preview
 														.edit({
@@ -524,41 +573,64 @@ export async function embedCreator(
 																EmbedBuilder.from(preview.embeds[0]).setAuthor({
 																	name: preview.embeds[0].author?.name
 																		? preview.embeds[0].author?.name
-																		: '',
+																		: null,
 																	iconURL: preview.embeds[0].author?.iconURL
 																		? preview.embeds[0].author?.iconURL
-																		: '',
-																	url: m.content || ''
+																		: null,
+																	url: link || null
 																})
 															]
 														})
 														.catch(() => {});
 												}
-											});
+											}
 										}
 									}
 								);
 							} else if (select.values[0] === 'setMessage') {
-								select.reply({
-									content:
-										'Tell me the text you want for message outside the embed',
-									ephemeral: true
-								});
+								const message = new TextInputBuilder()
+									.setLabel('Send me what message to set')
+									.setCustomId('message')
+									.setStyle(TextInputStyle.Paragraph)
+									.setRequired(false);
 
-								const messageCollect = select.channel.createMessageCollector({
-									filter: messageFilter,
+								const modalRow =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										message
+									]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('set-message')
+									.setTitle('Set Message')
+									.addComponents(modalRow);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
 									time: ms('30s'),
-									max: 1
+
+									filter: (i) => i.user.id === select.user.id
 								});
 
-								messageCollect.on('collect', async (m: Message) => {
-									messageCollect.stop();
-									m.delete().catch(() => {});
+								if (submitted) {
+									const message = submitted.fields.getTextInputValue('message');
 
-									preview
-										.edit({ content: m.content, embeds: [preview.embeds[0]] })
-										.catch(() => {});
-								});
+									if (message.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
+											ephemeral: true
+										});
+									} else {
+										await submitted.reply({
+											content: `Done ! Setting the content outside the embed`,
+											ephemeral: true
+										});
+
+										preview
+											.edit({ content: message, embeds: [preview.embeds[0]] })
+											.catch(() => {});
+									}
+								}
 							} else if (select.values[0] === 'setThumbnail') {
 								select.reply({
 									content:
@@ -578,7 +650,7 @@ export async function embedCreator(
 											/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 										) != null ||
 										m.attachments.first()?.url ||
-										'';
+										null;
 									if (!isthumb) {
 										select.followUp({
 											content:
@@ -596,82 +668,121 @@ export async function embedCreator(
 											content: preview.content,
 											embeds: [
 												EmbedBuilder.from(preview.embeds[0]).setThumbnail(
-													m.content || m.attachments.first()?.url || ''
+													m.content || m.attachments.first()?.url || null
 												)
 											]
 										})
 										.catch(() => {});
 								});
 							} else if (select.values[0] === 'setColor') {
-								select.reply({
-									content: 'Tell me the color you need for embed',
-									ephemeral: true
+								const color = new TextInputBuilder()
+									.setLabel('Send me the hex code to set')
+									.setCustomId('color')
+									.setStyle(TextInputStyle.Short)
+									.setRequired(false);
+
+								const modalRow =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										color
+									]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('set-color')
+									.setTitle('Set Color')
+									.addComponents(modalRow);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
+									time: ms('30s'),
+
+									filter: (i) => i.user.id === select.user.id
 								});
 
-								const messageCollect = select.channel.createMessageCollector({
-									filter: messageFilter,
-									time: ms('30s')
-								});
+								if (submitted) {
+									const hex = submitted.fields.getTextInputValue('color');
 
-								messageCollect.on('collect', async (m: Message) => {
-									if (/^#[0-9A-F]{6}$/i.test(m.content)) {
-										m.delete().catch(() => {});
-										messageCollect.stop();
+									if (hex.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
+											ephemeral: true
+										});
+									} else if (/^#[0-9A-F]{6}$/i.test(hex)) {
 										preview
 											.edit({
 												content: preview.content,
 												embeds: [
 													EmbedBuilder.from(preview.embeds[0]).setColor(
-														toRgb(m.content)
+														toRgb(hex)
 													)
 												]
 											})
-											.catch(() => {
-												select.followUp({
-													content: 'Please provide me a valid hex code',
+											.then(async () => {
+												await submitted.reply({
+													content: `Done ! Setting the color on the embed`,
+													ephemeral: true
+												});
+											})
+											.catch(async () => {
+												await submitted.reply({
+													content: `Please provide a valid hex code`,
 													ephemeral: true
 												});
 											});
-									} else {
-										await select.followUp({
-											content: 'Please provide me a valid hex code',
+									}
+								}
+							} else if (select.values[0] === 'setURL') {
+								const url = new TextInputBuilder()
+									.setLabel('Send me the URL to set as hyperlink')
+									.setCustomId('url')
+									.setStyle(TextInputStyle.Short)
+									.setRequired(false);
+
+								const modalRow =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([url]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('set-url')
+									.setTitle('Set URL')
+									.addComponents(modalRow);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
+									time: ms('30s'),
+
+									filter: (i) => i.user.id === select.user.id
+								});
+
+								if (submitted) {
+									const url = submitted.fields.getTextInputValue('url');
+
+									if (url.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
 											ephemeral: true
 										});
-									}
-								});
-							} else if (select.values[0] === 'setURL') {
-								select.reply({
-									content:
-										'Tell me what URL you want for embed title (hyperlink for embed title)',
-									ephemeral: true
-								});
-
-								const messageCollect = select.channel.createMessageCollector({
-									filter: messageFilter,
-									time: ms('30s'),
-									max: 1
-								});
-
-								messageCollect.on('collect', async (m: Message) => {
-									if (!m.content.startsWith('http')) {
-										m.delete().catch(() => {});
-										select.editReply(
-											'A URL should start with http protocol. Please give a valid URL.'
-										);
-										return;
+									} else if (!url.startsWith('http')) {
+										await submitted.reply({
+											content: `A URL should start with http protocol. Please give a valid URL.`,
+											ephemeral: true
+										});
 									} else {
-										m.delete().catch(() => {});
-										messageCollect.stop();
+										await submitted.reply({
+											content: `Done ! Setting the url hyperlink in embed`,
+											ephemeral: true
+										});
+
 										preview
 											.edit({
 												content: preview.content,
 												embeds: [
-													EmbedBuilder.from(preview.embeds[0]).setURL(m.content)
+													EmbedBuilder.from(preview.embeds[0]).setURL(url)
 												]
 											})
 											.catch(() => {});
 									}
-								});
+								}
 							} else if (select.values[0] === 'setImage') {
 								select.reply({
 									content: 'Send me the image you need for embed',
@@ -690,7 +801,7 @@ export async function embedCreator(
 											/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 										) != null ||
 										m.attachments.first()?.url ||
-										'';
+										null;
 									if (!isthumb) {
 										msgOrInt.reply(
 											'That is not a image url/image attachment. Please provide me a image url or attachment.'
@@ -712,57 +823,106 @@ export async function embedCreator(
 										.catch(() => {});
 								});
 							} else if (select.values[0] === 'setTitle') {
-								select.reply({
-									content: 'Tell me what text you want for embed title',
-									ephemeral: true
-								});
+								const title = new TextInputBuilder()
+									.setLabel('Send me the title to set in embed')
+									.setCustomId('title')
+									.setStyle(TextInputStyle.Short)
+									.setRequired(false);
 
-								const messageCollect = select.channel.createMessageCollector({
-									filter: messageFilter,
+								const modalRow =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										title
+									]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('set-title')
+									.setTitle('Set Title')
+									.addComponents(modalRow);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
 									time: ms('30s'),
-									max: 1
+
+									filter: (i) => i.user.id === select.user.id
 								});
 
-								messageCollect.on('collect', async (m: Message) => {
-									m.delete().catch(() => {});
-									messageCollect.stop();
+								if (submitted) {
+									const title = submitted.fields.getTextInputValue('title');
 
-									preview
-										.edit({
-											content: preview.content,
-											embeds: [
-												EmbedBuilder.from(preview.embeds[0]).setTitle(m.content)
-											]
-										})
-										.catch(() => {});
-								});
+									if (title.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
+											ephemeral: true
+										});
+									} else {
+										await submitted.reply({
+											content: `Done ! Setting the title in embed`,
+											ephemeral: true
+										});
+
+										preview
+											.edit({
+												content: preview.content,
+												embeds: [
+													EmbedBuilder.from(preview.embeds[0]).setTitle(title)
+												]
+											})
+											.catch(() => {});
+									}
+								}
 							} else if (select.values[0] === 'setDescription') {
-								select.reply({
-									content:
-										'Tell me what text you need for the embed description',
-									ephemeral: true
-								});
+								const description = new TextInputBuilder()
+									.setLabel('Send me the description to set in embed')
+									.setCustomId('description')
+									.setStyle(TextInputStyle.Paragraph)
+									.setRequired(false);
 
-								const messageCollect = select.channel.createMessageCollector({
-									filter: messageFilter,
+								const modalRow =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										description
+									]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('set-description')
+									.setTitle('Set Description')
+									.addComponents(modalRow);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
 									time: ms('30s'),
-									max: 1
+
+									filter: (i) => i.user.id === select.user.id
 								});
 
-								messageCollect.on('collect', async (m: Message) => {
-									m.delete().catch(() => {});
-									messageCollect.stop();
-									preview
-										.edit({
-											content: preview.content,
-											embeds: [
-												EmbedBuilder.from(preview.embeds[0]).setDescription(
-													m.content
-												)
-											]
-										})
-										.catch(() => {});
-								});
+								if (submitted) {
+									const description =
+										submitted.fields.getTextInputValue('description');
+
+									if (description.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
+											ephemeral: true
+										});
+									} else {
+										await submitted.reply({
+											content: `Done ! Setting the description in embed`,
+											ephemeral: true
+										});
+
+										preview
+											.edit({
+												content: preview.content,
+												embeds: [
+													EmbedBuilder.from(preview.embeds[0]).setDescription(
+														description
+													)
+												]
+											})
+											.catch(() => {});
+									}
+								}
 							} else if (select.values[0] === 'setFooter') {
 								const footerSelect = new StringSelectMenuBuilder()
 									.setMaxValues(1)
@@ -770,9 +930,9 @@ export async function embedCreator(
 									.setPlaceholder('Footer Options')
 									.addOptions([
 										{
-											label: 'Footer name',
-											description: 'Set the footer name',
-											value: 'footer-name'
+											label: 'Footer text',
+											description: 'Set the footer text',
+											value: 'footer-text'
 										},
 										{
 											label: 'Footer icon',
@@ -795,7 +955,7 @@ export async function embedCreator(
 									select.channel.createMessageComponentCollector({
 										componentType: ComponentType.StringSelect,
 										filter: filter,
-										idle: ms('1m')
+										idle: ms('30s')
 									});
 
 								menuCollector.on(
@@ -803,38 +963,61 @@ export async function embedCreator(
 									async (menu: StringSelectMenuInteraction) => {
 										if (menu.customId !== 'footer-select') return;
 
-										if (menu.values[0] === 'footer-name') {
-											menu.reply({
-												content: 'Send me an Footer name',
-												ephemeral: true,
-												components: []
+										if (menu.values[0] === 'footer-text') {
+											const footerText = new TextInputBuilder()
+												.setLabel('Send me the Footer text')
+												.setCustomId('footer-text')
+												.setStyle(TextInputStyle.Short)
+												.setRequired(false);
+
+											const modalRow =
+												new ActionRowBuilder<TextInputBuilder>().setComponents([
+													footerText
+												]);
+
+											const modal = new ModalBuilder()
+												.setCustomId('set-footer')
+												.setTitle('Set Footer text')
+												.addComponents(modalRow);
+
+											await menu.showModal(modal);
+
+											const submitted = await menu.awaitModalSubmit({
+												time: ms('30s'),
+
+												filter: (i) => i.user.id === menu.user.id
 											});
 
-											const messageCollect =
-												select.channel.createMessageCollector({
-													filter: messageFilter,
-													time: ms('30s'),
-													max: 1
-												});
+											if (submitted) {
+												const footerText =
+													submitted.fields.getTextInputValue('footer-text');
 
-											messageCollect.on('collect', async (m: Message) => {
-												menuCollector.stop();
-												m.delete().catch(() => {});
+												if (footerText.toLowerCase() === 'cancel') {
+													await submitted.reply({
+														content: `You have cancelled.`,
+														ephemeral: true
+													});
+												} else {
+													await submitted.reply({
+														content: `Done ! Setting the footer text in embed`,
+														ephemeral: true
+													});
 
-												preview
-													.edit({
-														content: preview.content,
-														embeds: [
-															EmbedBuilder.from(preview.embeds[0]).setFooter({
-																text: m.content,
-																iconURL: preview.embeds[0].footer?.iconURL
-																	? preview.embeds[0].footer?.iconURL
-																	: ''
-															})
-														]
-													})
-													.catch(() => {});
-											});
+													preview
+														.edit({
+															content: preview.content,
+															embeds: [
+																EmbedBuilder.from(preview.embeds[0]).setFooter({
+																	text: footerText,
+																	iconURL: preview.embeds[0].footer?.iconURL
+																		? preview.embeds[0].footer?.iconURL
+																		: null
+																})
+															]
+														})
+														.catch(() => {});
+												}
+											}
 										}
 
 										if (menu.values[0] === 'footer-icon') {
@@ -858,7 +1041,7 @@ export async function embedCreator(
 														/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
 													) != null ||
 													m.attachments.first()?.url ||
-													'';
+													null;
 												if (!isthumb) {
 													menu.followUp({
 														content:
@@ -876,9 +1059,11 @@ export async function embedCreator(
 														content: preview.content,
 														embeds: [
 															EmbedBuilder.from(preview.embeds[0]).setFooter({
-																text: preview.embeds[0].footer?.text || '',
+																text: preview.embeds[0].footer?.text || null,
 																iconURL:
-																	m.content || m.attachments.first()?.url || ''
+																	m.content ||
+																	m.attachments.first()?.url ||
+																	null
 															})
 														]
 													})

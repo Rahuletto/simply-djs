@@ -36,11 +36,18 @@ interface suggestButtons {
 	downvote?: buttonTemplate;
 }
 
+export interface Progress {
+	up: string;
+	down: string;
+	blank: string;
+}
+
 export type suggestOption = {
 	embed?: CustomizableEmbed;
 	channelId?: string | TextChannel;
 	suggestion?: string;
 	buttons?: suggestButtons;
+	progress?: Progress;
 	strict: boolean;
 };
 
@@ -50,24 +57,24 @@ export type suggestOption = {
 
 /**
  * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
- * @param msgOrInt
+ * @param msgOrint
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
- * @example simplydjs.suggest(interaction, { channelId: '1234567890123' })
+ * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
  */
 
 export async function suggest(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: suggestOption = { strict: false }
 ) {
 	try {
-		const { client } = msgOrInt;
+		const { client } = msgOrint;
 		let url: string;
 		let suggestion: string;
 
 		let interaction: ExtendedInteraction;
-		if (msgOrInt.commandId || !msgOrInt.content) {
-			interaction = msgOrInt as ExtendedInteraction;
+		if (msgOrint.commandId || !msgOrint.content) {
+			interaction = msgOrint as ExtendedInteraction;
 
 			suggestion =
 				options.suggestion ||
@@ -78,8 +85,8 @@ export async function suggest(
 					content: 'Provide a suggestion to post.',
 					ephemeral: true
 				});
-		} else if (!msgOrInt.commandId && msgOrInt.content) {
-			const attachment = (msgOrInt as Message).attachments?.first();
+		} else if (!msgOrint.commandId && msgOrint.content) {
+			const attachment = (msgOrint as Message).attachments?.first();
 
 			url = attachment ? attachment.url : '';
 
@@ -87,13 +94,13 @@ export async function suggest(
 
 			if (url) suggestion = suggestion + ' ' + url;
 
-			if (!options.suggestion && (msgOrInt as Message)) {
-				const [...args] = (msgOrInt as Message).content?.split(/ +/g);
+			if (!options.suggestion && (msgOrint as Message)) {
+				const [...args] = (msgOrint as Message).content?.split(/ +/g);
 				suggestion = args.slice(1).join(' ');
 			}
 
 			if (suggestion === '' || !suggestion)
-				return msgOrInt.reply({ content: 'Provide a suggestion to post.' });
+				return msgOrint.reply({ content: 'Provide a suggestion to post.' });
 		}
 
 		if (!options.embed) {
@@ -171,10 +178,10 @@ export async function suggest(
 		]);
 
 		const embed = new EmbedBuilder()
-			.setTitle(options.embed?.title || 'Are you sure ?')
+			.setTitle(options.embed?.title || 'Are you sure?')
 			.setDescription(
 				options.embed?.description ||
-					`Is this your suggestion ? \`${suggestion}\``
+					`Is this your suggestion ? \`\`\`${suggestion}\`\`\``
 			)
 			.setTimestamp()
 			.setColor(options.embed?.color || toRgb('#406DBC'))
@@ -204,14 +211,22 @@ export async function suggest(
 				ephemeral: true
 			});
 		} else if (!interaction) {
-			m = await msgOrInt.reply({
+			m = await msgOrint.reply({
 				embeds: [embed],
 				components: [sendRow]
 			});
 		}
 
-		const filter = (m: ButtonInteraction) =>
-			m.user.id === msgOrInt.member.user.id;
+		const filter = (m: ButtonInteraction) => {
+			if (m.user.id === (msgOrint.member.user as User).id) return true;
+			m.reply({
+				content: `Only <@!${
+					(msgOrint.member.user as User).id
+				}> can use these buttons!`,
+				ephemeral: true
+			});
+			return false;
+		};
 		const collector = (m as Message).createMessageComponentCollector({
 			filter: filter,
 			max: 1,
@@ -227,8 +242,8 @@ export async function suggest(
 				const suggestEmb = new EmbedBuilder()
 					.setDescription(suggestion)
 					.setAuthor({
-						name: (msgOrInt.member.user as User).tag,
-						iconURL: (msgOrInt.member.user as User).displayAvatarURL({
+						name: (msgOrint.member.user as User).tag,
+						iconURL: (msgOrint.member.user as User).displayAvatarURL({
 							forceStatic: false
 						})
 					})
@@ -248,7 +263,9 @@ export async function suggest(
 						},
 						{
 							name: 'Percentage',
-							value: `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ [0% - 0%]`
+							value: `${(options?.progress?.blank || '⬛').repeat(
+								10
+							)} [0% - 0%]`
 						}
 					);
 
@@ -272,7 +289,7 @@ export async function suggest(
 
 				const whoVoted = new ButtonBuilder()
 					.setEmoji(options.buttons?.votedInfo?.emoji)
-					.setLabel('Who Voted ?')
+					.setLabel('Who Voted?')
 					.setStyle(
 						(options.buttons?.votedInfo?.style as ButtonStyle) ||
 							ButtonStyle.Success
@@ -290,7 +307,10 @@ export async function suggest(
 					.then(async (ms) => {
 						const database: Doc = new db({
 							message: ms.id,
-							author: msgOrInt.member.user.id
+							author: msgOrint.member.user.id,
+							progress: options?.progress
+								? options?.progress
+								: { blank: '⬛', up: '🟩', down: '🟥' }
 						});
 
 						await database.save();

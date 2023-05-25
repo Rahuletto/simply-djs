@@ -89,40 +89,40 @@ const combinations = [
 
 /**
  * One line implementation of a super enjoyable **tictactoe game**.
- * @param msgOrInt
+ * @param message
  * @param options
  * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/tictactoe***
  * @example simplydjs.tictactoe(interaction)
  */
 
 export async function tictactoe(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	message: ExtendedMessage | ExtendedInteraction,
 	options: tictactoeOptions = {}
 ): Promise<User> {
 	return new Promise(async (resolve) => {
 		try {
-			const { client } = msgOrInt;
+			const { client } = message;
 
 			let interaction: ExtendedInteraction;
 
-			if ((msgOrInt as ExtendedInteraction).commandId) {
-				interaction = msgOrInt as ExtendedInteraction;
+			if ((message as ExtendedInteraction).commandId) {
+				interaction = message as ExtendedInteraction;
 			}
 
 			let opponent: User;
 
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = message as ExtendedInteraction;
+			const extMessage = message as ExtendedMessage;
 
-			let id = limiter.findIndex((a) => a.guild == msgOrInt.guild.id);
+			let id = limiter.findIndex((a) => a.guild == message.guild.id);
 			if (!limiter[id] || !limiter[id].guild) {
 				limiter.push({
-					guild: msgOrInt.guild.id,
+					guild: message.guild.id,
 					limit: 0
 				});
 
 				id = limiter.findIndex(
-					(a: { guild: string; limit: number }) => a.guild == msgOrInt.guild.id
+					(a: { guild: string; limit: number }) => a.guild == message.guild.id
 				);
 			}
 
@@ -170,7 +170,7 @@ export async function tictactoe(
 				opponent = options.user || extInteraction.options.getUser('user');
 
 				if (!opponent)
-					return ai(msgOrInt, {
+					return ai(message, {
 						blank_emoji: blank_emoji,
 						x_emoji: x_emoji,
 						o_emoji: o_emoji,
@@ -188,7 +188,7 @@ export async function tictactoe(
 						ephemeral: true
 					});
 
-				if (opponent.id == (msgOrInt as ExtendedInteraction).user.id)
+				if (opponent.id == (message as ExtendedInteraction).user.id)
 					return extInteraction.reply({
 						content: 'You cannot play with yourself!',
 						ephemeral: true
@@ -196,7 +196,7 @@ export async function tictactoe(
 			} else if (!interaction) {
 				opponent = extMessage.mentions.users.first();
 				if (!opponent)
-					return ai(msgOrInt, {
+					return ai(message, {
 						blank_emoji,
 						x_emoji,
 						o_emoji,
@@ -213,7 +213,7 @@ export async function tictactoe(
 						content: "You can't play with bots!"
 					});
 
-				if (opponent.id === msgOrInt.member.user.id)
+				if (opponent.id === message.member.user.id)
 					return extMessage.reply({
 						content: 'You cannot play with yourself!'
 					});
@@ -229,8 +229,8 @@ export async function tictactoe(
 				)
 				.setAuthor(
 					options?.embed?.request?.author || {
-						name: (msgOrInt.member.user as User).tag,
-						iconURL: (msgOrInt.member.user as User).displayAvatarURL()
+						name: (message.member.user as User).tag,
+						iconURL: (message.member.user as User).displayAvatarURL()
 					}
 				)
 				.setColor(options.embed?.request?.color || toRgb('#406DBC'))
@@ -278,7 +278,7 @@ export async function tictactoe(
 			if (interaction) {
 				m = await extInteraction.followUp({
 					content: `<@${opponent.id}>, You got a tictactoe request from ${
-						(msgOrInt.member.user as User).tag
+						(message.member.user as User).tag
 					}`,
 					embeds: [requestEmbed],
 					components: [row]
@@ -286,7 +286,7 @@ export async function tictactoe(
 			} else if (!interaction) {
 				m = await extMessage.reply({
 					content: `<@${opponent.id}>, You got a tictactoe request from ${
-						(msgOrInt.member.user as User).tag
+						(message.member.user as User).tag
 					}`,
 					embeds: [requestEmbed],
 					components: [row]
@@ -316,23 +316,20 @@ export async function tictactoe(
 				} else if (button.customId == 'accept-ttt') {
 					await button.deferUpdate();
 					collector.stop();
-					if (interaction) {
-						button.message.delete();
-					}
 
-					const players = [msgOrInt.member.user.id, opponent.id].sort(() =>
+					const players = [message.member.user.id, opponent.id].sort(() =>
 						Math.random() > 0.5 ? 1 : -1
 					);
 
 					const gameEmbed = new EmbedBuilder()
 						.setTitle(
 							options.embed?.game?.title ||
-								`${msgOrInt.member.user.username} VS ${opponent.username}`
+								`${message.member.user.username} VS ${opponent.username}`
 						)
 						.setAuthor(
 							options.embed?.game?.author || {
-								name: (msgOrInt.member.user as User).tag,
-								iconURL: (msgOrInt.member.user as User).displayAvatarURL({
+								name: (message.member.user as User).tag,
+								iconURL: (message.member.user as User).displayAvatarURL({
 									forceStatic: false
 								})
 							}
@@ -488,7 +485,7 @@ export async function tictactoe(
 						const winEmbed = new EmbedBuilder()
 							.setTitle(
 								options.embed?.win?.title ||
-									`${msgOrInt.member.user.username} VS ${opponent.username}`
+									`${message.member.user.username} VS ${opponent.username}`
 							)
 
 							.setColor(options.embed?.win?.color || `DarkGreen`)
@@ -665,7 +662,7 @@ export async function tictactoe(
 							const drawEmbed = new EmbedBuilder()
 								.setTitle(
 									options.embed?.draw?.title ||
-										`${msgOrInt.member.user.username} VS ${opponent.username}`
+										`${message.member.user.username} VS ${opponent.username}`
 								)
 
 								.setColor(options.embed?.draw?.color || 'Grey')
@@ -760,7 +757,7 @@ export async function tictactoe(
 						collector.on('collect', async (b: ButtonInteraction) => {
 							if (
 								b.user.id !== Game.userid &&
-								b.user.id === (msgOrInt.member.user as User).id
+								b.user.id === (message.member.user as User).id
 							) {
 								b.reply({
 									content: `It's <@!${opponent.id}>'s' turn!`,
@@ -772,14 +769,14 @@ export async function tictactoe(
 							) {
 								b.reply({
 									content: `It's <@!${
-										(msgOrInt.member.user as User).id
+										(message.member.user as User).id
 									}>'s' turn!`,
 									ephemeral: true
 								});
 							} else if (
 								b.user.id !== Game.userid &&
 								b.user.id !== opponent.id &&
-								b.user.id !== (msgOrInt.member.user as User).id
+								b.user.id !== (message.member.user as User).id
 							) {
 								b.reply({
 									content: `You cannot play this game!`,
@@ -788,28 +785,24 @@ export async function tictactoe(
 							} else if (
 								b.user.id === Game.userid &&
 								(b.user.id === opponent.id ||
-									b.user.id === msgOrInt.member.user.id) &&
+									b.user.id === message.member.user.id) &&
 								Game.board[Number(b.customId)].emoji === x_emoji
 							) {
 								b.reply({
 									content: `That position is pre-occupied by ${
-										client.emojis.cache.get(
-											Game.board[Number(b.customId)].emoji
-										) || '❌'
+										client.emojis.cache.get(x_emoji) || '❌'
 									}!`,
 									ephemeral: true
 								});
 							} else if (
 								b.user.id === Game.userid &&
 								(b.user.id === opponent.id ||
-									b.user.id === msgOrInt.member.user.id) &&
+									b.user.id === message.member.user.id) &&
 								Game.board[Number(b.customId)].emoji === o_emoji
 							) {
 								b.reply({
 									content: `That position is pre-occupied by ${
-										client.emojis.cache.get(
-											Game.board[Number(b.customId)].emoji
-										) || '⭕'
+										client.emojis.cache.get(o_emoji) || '⭕'
 									}!`,
 									ephemeral: true
 								});
@@ -988,34 +981,34 @@ export async function tictactoe(
 }
 
 async function ai(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: aiOptions = {}
 ) {
-	const { client } = msgOrInt;
+	const { client } = msgOrint;
 	let board = ['', '', '', '', '', '', '', '', ''];
 
 	let message: Message<boolean>;
 
 	let interaction: ExtendedInteraction;
 
-	if ((msgOrInt as ExtendedInteraction).commandId) {
-		interaction = msgOrInt as ExtendedInteraction;
+	if ((msgOrint as ExtendedInteraction).commandId) {
+		interaction = msgOrint as ExtendedInteraction;
 	}
 
-	const extInteraction = msgOrInt as ExtendedInteraction;
-	const extMessage = msgOrInt as ExtendedMessage;
+	const extInteraction = msgOrint as ExtendedInteraction;
+	const extMessage = msgOrint as ExtendedMessage;
 
 	let id = limiter.findIndex(
-		(a: { guild: string; limit: number }) => a.guild == msgOrInt.guild.id
+		(a: { guild: string; limit: number }) => a.guild == msgOrint.guild.id
 	);
 
 	if (!limiter[id] || !limiter[id].guild) {
 		limiter.push({
-			guild: msgOrInt.guild.id,
+			guild: msgOrint.guild.id,
 			limit: 0
 		});
 
-		id = limiter.findIndex((a) => a.guild == msgOrInt.guild.id);
+		id = limiter.findIndex((a) => a.guild == msgOrint.guild.id);
 	}
 
 	if (limiter[id].limit >= 1) {
@@ -1041,23 +1034,23 @@ async function ai(
 		}[]
 	};
 
-	const opponent = msgOrInt.client.user;
+	const opponent = msgOrint.client.user;
 
 	const gameEmbed = new EmbedBuilder()
 		.setTitle(
 			options.embed?.game?.title ||
-				`${msgOrInt.member.user.username} VS ${opponent.username}`
+				`${msgOrint.member.user.username} VS ${opponent.username}`
 		)
 		.setAuthor(
 			options.embed?.game?.author || {
-				name: (msgOrInt.member.user as User).tag,
-				iconURL: (msgOrInt.member.user as User).displayAvatarURL({
+				name: (msgOrint.member.user as User).tag,
+				iconURL: (msgOrint.member.user as User).displayAvatarURL({
 					forceStatic: false
 				})
 			}
 		)
 		.setDescription(
-			`Waiting for Input | <@!${msgOrInt.member.user.id}> | Your Emoji: ${
+			`Waiting for Input | <@!${msgOrint.member.user.id}> | Your Emoji: ${
 				client.emojis.cache.get(options.x_emoji) || '❌'
 			}`
 		)
@@ -1173,7 +1166,7 @@ async function ai(
 	}
 
 	const filter = (interaction: ButtonInteraction) => {
-		if (interaction.user.id === msgOrInt.member.user.id) return true;
+		if (interaction.user.id === msgOrint.member.user.id) return true;
 		interaction.reply({
 			content: `You cannot play this game!`,
 			ephemeral: true
@@ -1192,7 +1185,23 @@ async function ai(
 		if (!button.deferred) await button.deferUpdate();
 		if (aiTurn) {
 			await button.followUp({
-				content: `It's not your turn! (<@!${opponent.id}>)`,
+				content: `It's <@!${opponent.id}>'s turn!`,
+				ephemeral: true
+			});
+			return;
+		} else if (Game.board[Number(button.customId)].emoji === options.x_emoji) {
+			await button.followUp({
+				content: `That position is pre-occupied by ${
+					client.emojis.cache.get(options.x_emoji) || '❌'
+				}!`,
+				ephemeral: true
+			});
+			return;
+		} else if (Game.board[Number(button.customId)].emoji === options.o_emoji) {
+			await button.followUp({
+				content: `That position is pre-occupied by ${
+					client.emojis.cache.get(options.o_emoji) || '⭕'
+				}!`,
 				ephemeral: true
 			});
 			return;
@@ -1202,7 +1211,7 @@ async function ai(
 
 		const buttonInitial = update();
 		await message.edit({
-			components: disableButtons(buttonInitial)
+			components: buttonInitial
 		});
 
 		for (let i = 0; i < board.length; i++) {
@@ -1229,7 +1238,7 @@ async function ai(
 						)
 						.setColor(`DarkerGrey`)
 				],
-				components: disableButtons(buttonUpdateX)
+				components: buttonUpdateX
 			});
 
 		if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji)) {
@@ -1257,7 +1266,7 @@ async function ai(
 					gameEmbed
 						.setDescription(
 							`Waiting for Input | <@!${
-								msgOrInt.member.user.id
+								msgOrint.member.user.id
 							}> | Your Emoji: ${
 								client.emojis.cache.get(options.x_emoji) || '❌'
 							}`
@@ -1276,7 +1285,7 @@ async function ai(
 			const winEmbed = new EmbedBuilder()
 				.setTitle(
 					options.embed?.win?.title ||
-						`${msgOrInt.member.user.username} VS ${opponent.username}`
+						`${msgOrint.member.user.username} VS ${opponent.username}`
 				)
 
 				.setColor(options.embed?.win?.color || `DarkGreen`)
@@ -1310,7 +1319,7 @@ async function ai(
 
 						embeds: [
 							winEmbed.setDescription(
-								`<@!${msgOrInt.member.user.id}> (${
+								`<@!${msgOrint.member.user.id}> (${
 									client.emojis.cache.get(options.x_emoji) || '❌'
 								}) won, That was a nice game. GG`
 							)
@@ -1324,7 +1333,7 @@ async function ai(
 					.edit({
 						embeds: [
 							winEmbed.setDescription(
-								`<@!${msgOrInt.member.user.id}> (${
+								`<@!${msgOrint.member.user.id}> (${
 									client.emojis.cache.get(options.o_emoji) || '❌'
 								}) won, That was a nice game. GG\n` +
 									`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
@@ -1346,7 +1355,7 @@ async function ai(
 			const winEmbed = new EmbedBuilder()
 				.setTitle(
 					options.embed?.win?.title ||
-						`${msgOrInt.member.user.username} VS ${opponent.username}`
+						`${msgOrint.member.user.username} VS ${opponent.username}`
 				)
 
 				.setColor(options.embed?.win?.color || `DarkGreen`)
@@ -1416,7 +1425,7 @@ async function ai(
 			const drawEmbed = new EmbedBuilder()
 				.setTitle(
 					options.embed?.draw?.title ||
-						`${msgOrInt.member.user.username} VS ${opponent.username}`
+						`${msgOrint.member.user.username} VS ${opponent.username}`
 				)
 				.setDescription(
 					options.embed?.draw?.description || 'Thats a draw. Try again'
@@ -1517,13 +1526,13 @@ async function ai(
 			if (aiTurn != true)
 				if (!options.type || options.type === 'Button')
 					message.edit({
-						content: `<@${msgOrInt.member.user.id}> did not respond in time!`,
+						content: `<@${msgOrint.member.user.id}> did not respond in time!`,
 						embeds: [timeoutEmbed],
 						components: disableButtons(buttonsResult)
 					});
 				else
 					message.edit({
-						content: `<@${msgOrInt.member.user.id}> did not respond in time!`,
+						content: `<@${msgOrint.member.user.id}> did not respond in time!`,
 						embeds: [
 							timeoutEmbed.setDescription(
 								`The opponent didnt respond in time (30s)\n` +
@@ -1559,9 +1568,10 @@ async function ai(
 	});
 
 	async function aiEngine(b: string[]): Promise<string[]> {
-		const res = await https(
+		let res;
+		res = await https(
 			`ttt-ai.rahulalt.repl.co`,
-			`/ttt?uid=${msgOrInt.member.user.id}&ai=o&hard=true`,
+			`/ttt?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
 			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

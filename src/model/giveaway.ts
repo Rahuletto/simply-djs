@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
+import { GiveawayEmbeds } from '../giveaway';
 
 export interface Entry {
-	userID: string;
-	guildID: string;
-	messageID: string;
+	userId: string;
+	guildId: string;
+	messageId: string;
 }
 
 interface Requirement {
@@ -18,10 +19,11 @@ export type giveawayData = {
 	winCount?: number;
 	requirements?: Requirement;
 	endTime?: string;
-	desc?: string;
+	description?: string;
 	started?: number;
 	prize?: string;
 	host?: string;
+	embeds: GiveawayEmbeds;
 };
 
 const GiveawaySchema = new mongoose.Schema<giveawayData>({
@@ -34,7 +36,8 @@ const GiveawaySchema = new mongoose.Schema<giveawayData>({
 	requirements: { type: Object }, // Requirements ;)
 	endTime: { type: String }, // in ms
 	host: { type: String },
-	desc: { type: String } // Giveaway Embed Desc
+	description: { type: String }, // Giveaway Embed Desc
+	embeds: { type: Object }
 });
 
 export default mongoose.model('Giveaway-System', GiveawaySchema);

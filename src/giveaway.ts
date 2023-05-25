@@ -10,7 +10,9 @@ import {
 	ActionRowBuilder,
 	Invite,
 	Collection,
-	EmbedBuilder
+	EmbedBuilder,
+	GuildMember,
+	APIEmbedField
 } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -19,9 +21,10 @@ import {
 	buttonTemplate
 } from './interfaces';
 
-import model from './model/giveaway';
-import { MessageButtonStyle, ms, toRgb } from './misc';
+import model, { Entry } from './model/giveaway';
+import { MessageButtonStyle, disableButtons, ms, toRgb } from './misc';
 import { SimplyError } from './error';
+import { EndResolve } from './handler/manageGiveaway';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -42,6 +45,12 @@ interface giveawayButtons {
 	reroll?: buttonTemplate;
 }
 
+export interface GiveawayEmbeds {
+	giveaway?: CustomizableEmbed;
+	load?: CustomizableEmbed;
+	result?: CustomizableEmbed;
+}
+
 export type giveawayOptions = {
 	prize?: string;
 	winners?: number;
@@ -55,7 +64,7 @@ export type giveawayOptions = {
 	requirements?: Requirement;
 	pingRole?: Role | string;
 
-	embed?: CustomizableEmbed;
+	embed?: GiveawayEmbeds;
 
 	type?: 'Label' | 'Emoji' | 'Both';
 	strict?: boolean;
@@ -84,7 +93,7 @@ export interface GiveawayResolve {
 export async function giveaway(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = {}
-): Promise<GiveawayResolve> {
+): Promise<GiveawayResolve | EndResolve> {
 	return new Promise(async (resolve) => {
 		try {
 			const { client } = msgOrInt;
@@ -144,12 +153,14 @@ export async function giveaway(
 
 			if (!options.embed) {
 				options.embed = {
-					footer: {
-						text: '©️ Rahuletto. npm i simply-djs',
-						iconURL: 'https://i.imgur.com/XFUIwPh.png'
-					},
-					color: toRgb('#406DBC'),
-					title: 'Giveaway !'
+					giveaway: {
+						footer: {
+							text: '©️ Rahuletto. npm i simply-djs',
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
+						},
+						color: toRgb('#406DBC'),
+						title: 'Giveaway !'
+					}
 				};
 			}
 
@@ -197,17 +208,18 @@ export async function giveaway(
 			if (interaction) {
 				channel =
 					(options.channel as TextChannel) ||
-					(extInteraction.options.get('channel').channel as TextChannel) ||
+					(extInteraction.options.get('channel')?.channel as TextChannel) ||
 					(interaction.channel as TextChannel);
 				time =
 					options.time ||
-					extInteraction.options.get('time').value.toString() ||
+					extInteraction.options.get('time')?.value.toString() ||
 					'1h';
 				winners =
 					options.winners ||
-					Number(extInteraction.options.get('winners').value);
+					Number(extInteraction.options.get('winners')?.value);
 				prize =
-					options.prize || extInteraction.options.get('prize').value.toString();
+					options.prize ||
+					extInteraction.options.get('prize')?.value?.toString();
 			} else if (!interaction) {
 				const [...args] = extMessage.content.split(/ +/g);
 
@@ -218,11 +230,11 @@ export async function giveaway(
 
 				channel =
 					(options.channel as TextChannel) ||
-					(extMessage.mentions.channels.first() as TextChannel) ||
+					(extMessage.mentions?.channels?.first() as TextChannel) ||
 					(extMessage.channel as TextChannel);
 				time = options.time || args[1] || '1h';
 				winners = Number(args[2]) || options.winners;
-				prize = options.prize || args.slice(3).join(' ');
+				prize = options.prize || args.slice(3)?.join(' ');
 			}
 
 			if (options?.buttons?.enter?.style as string)
@@ -267,7 +279,7 @@ export async function giveaway(
 			else if (options?.type === 'Label')
 				end.setLabel(options.buttons?.end?.label || 'End');
 			else {
-				enter
+				end
 					.setEmoji(options.buttons?.end?.emoji || '⛔')
 					.setLabel(options.buttons?.end?.label || 'End');
 			}
@@ -299,7 +311,7 @@ export async function giveaway(
 
 			const endTime = Number((Date.now() + timeInMS).toString().slice(0, -3));
 
-			options.embed.fields = options?.embed?.fields || [
+			options.embed.giveaway.fields = options?.embed?.giveaway?.fields || [
 				{
 					name: 'Prize',
 					value: `{prize}`
@@ -349,17 +361,19 @@ export async function giveaway(
 					.replaceAll('{entered}', '0');
 			}
 
-			options.embed?.fields?.forEach((a) => {
+			options.embed?.giveaway?.fields?.forEach((a) => {
 				a.value = replacer(a?.value);
 			});
 
 			const embed = new EmbedBuilder()
-				.setTitle(replacer(options?.embed?.title || 'Giveaway Time !'))
-				.setColor(options?.embed?.color || toRgb('#406DBC'))
+				.setTitle(
+					replacer(options?.embed?.giveaway?.title || 'Giveaway Time !')
+				)
+				.setColor(options?.embed?.giveaway?.color || toRgb('#406DBC'))
 				.setTimestamp(Number(Date.now() + timeInMS))
 				.setFooter(
-					options?.embed?.footer
-						? options?.embed?.footer
+					options?.embed?.giveaway?.footer
+						? options?.embed?.giveaway?.footer
 						: {
 								text: '©️ Rahuletto. npm i simply-djs',
 								iconURL: 'https://i.imgur.com/XFUIwPh.png'
@@ -367,20 +381,24 @@ export async function giveaway(
 				)
 				.setDescription(
 					replacer(
-						options?.embed?.description ||
+						options?.embed?.giveaway?.description ||
 							`Interact with the giveaway using the buttons below.`
 					)
 				)
-				.setFields(options?.embed?.fields);
+				.setFields(options?.embed?.giveaway?.fields);
 
-			if (options?.embed?.author) embed.setAuthor(options.embed?.author);
-			if (options?.embed?.image) embed.setImage(options.embed?.image);
-			if (options?.embed?.thumbnail)
-				embed.setThumbnail(options.embed?.thumbnail);
-			if (options?.embed?.timestamp)
-				embed.setTimestamp(options.embed?.timestamp);
-			if (options?.embed?.title) embed.setTitle(options.embed?.title);
-			if (options?.embed?.url) embed.setURL(options.embed?.url);
+			if (options?.embed?.giveaway?.author)
+				embed.setAuthor(options.embed?.giveaway?.author);
+			if (options?.embed?.giveaway?.image)
+				embed.setImage(options.embed?.giveaway?.image);
+			if (options?.embed?.giveaway?.thumbnail)
+				embed.setThumbnail(options.embed?.giveaway?.thumbnail);
+			if (options?.embed?.giveaway?.timestamp)
+				embed.setTimestamp(options.embed?.giveaway?.timestamp);
+			if (options?.embed?.giveaway?.title)
+				embed.setTitle(options.embed?.giveaway?.title);
+			if (options?.embed?.giveaway?.url)
+				embed.setURL(options.embed?.giveaway?.url);
 
 			await channel
 				.send({ content: content, embeds: [embed], components: [row] })
@@ -419,13 +437,14 @@ export async function giveaway(
 						message: msg.id,
 						entered: 0,
 						winCount: winners,
-						desc: options.embed?.description || null,
+						description: options.embed?.giveaway?.description || null,
+						embeds: options.embed,
 						requirements: {
 							type:
-								requirements.type === 'None'
+								requirements?.type === 'None'
 									? 'none'
-									: requirements.type.toLowerCase(),
-							id: requirements.value.id
+									: requirements?.type?.toLowerCase(),
+							id: requirements?.value?.id
 						},
 						started: timeStart,
 						prize: prize,
@@ -435,6 +454,214 @@ export async function giveaway(
 					});
 
 					await createDb.save();
+
+					const timer = setInterval(async () => {
+						if (!msg) return;
+
+						const components = ActionRowBuilder.from(msg?.components[0]);
+
+						const data = await model.findOne({ message: msg.id });
+
+						if (data.endTime && Number(data.endTime) < Date.now()) {
+							const loadEmbed = new EmbedBuilder()
+								.setTitle(data?.embeds?.load?.title || 'Processing Tickets...')
+								.setColor(data?.embeds?.load?.color || toRgb('#cc0000'))
+								.setDescription(
+									data?.embeds?.load?.description ||
+										`Please wait.. We are shuffling the members to pick a winner.`
+								)
+								.setFooter(
+									data?.embeds?.load?.footer || {
+										text: 'Ending the Giveaway, Scraping the ticket..'
+									}
+								);
+
+							if (data?.embeds?.load?.fields)
+								loadEmbed.setFields(data?.embeds?.load?.fields);
+							if (data?.embeds?.load?.author)
+								loadEmbed.setAuthor(data?.embeds?.load?.author);
+							if (data?.embeds?.load?.image)
+								loadEmbed.setImage(data?.embeds?.load?.image);
+							if (data?.embeds?.load?.thumbnail)
+								loadEmbed.setThumbnail(data?.embeds?.load?.thumbnail);
+							if (data?.embeds?.load?.timestamp)
+								loadEmbed.setTimestamp(data?.embeds?.load?.timestamp);
+							if (data?.embeds?.load?.title)
+								loadEmbed.setTitle(data?.embeds?.load?.title);
+							if (data?.embeds?.load?.url)
+								loadEmbed.setURL(data?.embeds?.load?.url);
+
+							clearInterval(timer);
+
+							await msg
+								.edit({ embeds: [loadEmbed], components: [] })
+								.catch(() => {});
+
+							const displayWinner: string[] = [];
+
+							const winnerArray: Entry[] = [];
+
+							const winnerCount = data.winCount;
+
+							const entries = data.entry;
+
+							for (let i = 0; i < winnerCount; i++) {
+								const win = Math.floor(Math.random() * data.entered);
+
+								if (entries.length != 0) winnerArray.push(entries[win]);
+							}
+							const oldFields = msg.embeds[0].fields;
+
+							const resultWinner: GuildMember[] = [];
+
+							setTimeout(() => {
+								winnerArray.forEach(async (name) => {
+									await interaction.guild.members
+										.fetch(name?.userId)
+										.then((member) => {
+											resultWinner.push(member);
+											displayWinner.push(`<@${member.user.id}>`);
+
+											const dmEmbed: EmbedBuilder = new EmbedBuilder()
+												.setTitle('You, Won the Giveaway !')
+												.setDescription(
+													`You just won \`${data.prize}\` in the Giveaway at \`${member.guild.name}\` Go claim it fast !`
+												)
+												.setColor('DarkGreen')
+												.setFooter(
+													data?.embeds?.result?.footer || {
+														text: 'GG winner. Now i feel jealous of you UwU'
+													}
+												);
+
+											const linkButton = new ButtonBuilder()
+												.setLabel('View Giveaway')
+												.setStyle(ButtonStyle.Link)
+												.setURL(msg.url);
+
+											const linkRow =
+												new ActionRowBuilder<ButtonBuilder>().addComponents([
+													linkButton
+												]);
+
+											return member
+												.send({ embeds: [dmEmbed], components: [linkRow] })
+												.catch(() => {});
+										})
+										.catch(() => {});
+								});
+							}, ms('2s'));
+
+							setTimeout(async () => {
+								if (!data) return await msg.delete();
+								if (data) {
+									const embed = EmbedBuilder.from(msg.embeds[0]);
+
+									const time = Number(data.endTime);
+									const fields: APIEmbedField[] = [];
+									data?.embeds?.result?.fields.forEach((a) => {
+										if (a.name === 'Requirements') return;
+										a.value = a.value
+											.replaceAll('{hosted}', `<@${data.host}>`)
+											.replaceAll('{endsAt}', `<t:${time}:f>`)
+											.replaceAll('{prize}', data.prize.toString())
+
+											.replaceAll('{winCount}', data.winCount.toString())
+											.replaceAll('{entered}', data.entered.toString());
+
+										fields.push(a);
+									});
+
+									if (
+										data.entered <= 0 ||
+										entries.length == 0 ||
+										!winnerArray[0]
+									) {
+										embed
+											.setTitle('No one entered')
+
+											.setFields(fields || oldFields)
+											.setColor(toRgb('#cc0000'))
+											.setFooter({
+												text: 'Ahh man, Its ok lets get another giveaway goin.'
+											});
+
+										return await msg.edit({
+											embeds: [embed],
+											components: disableButtons([
+												components as ActionRowBuilder<ButtonBuilder>
+											])
+										});
+									}
+
+									const b1 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[0]
+									).setDisabled(true);
+									const b2 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[1]
+									).setDisabled(false);
+									const b3 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[2]
+									).setDisabled(true);
+
+									const buttonRow =
+										new ActionRowBuilder<ButtonBuilder>().setComponents([
+											b1,
+											b2,
+											b3
+										]);
+
+									const resultEmbed = new EmbedBuilder()
+										.setTitle(
+											data?.embeds?.result?.title || 'And the winner is,'
+										)
+										.setColor(data?.embeds?.result?.color || 'DarkGreen')
+										.setDescription(
+											data?.embeds?.result?.description.replaceAll(
+												'{winners}',
+												displayWinner.join(', ')
+											) ||
+												`${displayWinner.join(
+													', '
+												)} won the prize !\nGet in touch with the staff members to collect your prize.`
+										)
+										.setFooter(
+											data?.embeds?.result?.footer || {
+												text: 'GG winner. Now i feel jealous of you UwU'
+											}
+										)
+										.setFields(fields || oldFields);
+
+									if (data?.embeds?.result?.author)
+										resultEmbed.setAuthor(data?.embeds?.result?.author);
+									if (data?.embeds?.result?.image)
+										resultEmbed.setImage(data?.embeds?.result?.image);
+									if (data?.embeds?.result?.thumbnail)
+										resultEmbed.setThumbnail(data?.embeds?.result?.thumbnail);
+									if (data?.embeds?.result?.timestamp)
+										resultEmbed.setTimestamp(data?.embeds?.result?.timestamp);
+									if (data?.embeds?.result?.title)
+										resultEmbed.setTitle(data?.embeds?.result?.title);
+									if (data?.embeds?.result?.url)
+										resultEmbed.setURL(data?.embeds?.result?.url);
+
+									await msg.edit({
+										embeds: [resultEmbed],
+										components: [buttonRow]
+									});
+
+									resolve({
+										type: 'End',
+										url: msg.url,
+										user: resultWinner
+									});
+								}
+							}, ms('6s'));
+						}
+					}, timeInMS);
 				});
 		} catch (err: any) {
 			if (options?.strict)
