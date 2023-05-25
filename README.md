@@ -7,7 +7,7 @@ Its finally under development. Gosh x_X.
 Simply-DJS Reimagined.
 **We will not totally support legacy system panels**
 
-## Updated Files
+## Converted all files
 
 ```diff
 + betterBtnRole.ts
@@ -24,8 +24,8 @@ Simply-DJS Reimagined.
 
 # ---------(Will update last)------------------
 + manageBtnRole.ts (Splitted from manageBtn.ts)
-- manageGiveaway.ts (Splitted from manageBtn.ts)
-- manageSuggest.ts (previously manageSug.ts)
++ manageGiveaway.ts (Splitted from manageBtn.ts)
++ manageSuggest.ts (previously manageSug.ts)
 + manageTicket.ts (Splitted from manageBtn.ts)
 # ---------------------------------------------
 
@@ -38,6 +38,37 @@ Simply-DJS Reimagined.
 + suggest.ts (previously suggestSystem.ts)
 # suggestBtn.ts (Removed)
 + ticketSetup.ts (previously ticketSystem.ts)
++ tictactoe.ts
+```
+
+## Tested functions
+
+```diff
+- betterBtnRole.ts
+- btnrole.ts
+- bumpReminder.ts
++ calculator.ts
+- chatbot.ts
+
++ connect.ts
++ embedCreator.ts
+- buttonPages.ts
+- ghostPing.ts
++ giveaway.ts
+
+- manageBtnRole.ts
++ manageGiveaway.ts
++ manageSuggest.ts
++ manageTicket.ts
+
+- meme.ts
+- menuPages.ts
+- nqn.ts
++ rps.ts
+- starboard.ts
+- stealEmoji.ts
++ suggest.ts
++ ticketSetup.ts
 + tictactoe.ts
 ```
 
