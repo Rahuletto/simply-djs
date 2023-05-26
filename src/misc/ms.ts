@@ -42,19 +42,19 @@ export function ms(str: string) {
 
 			// Actual conversion from human-readable time to ms
 			switch (type[0].toLowerCase()) {
-				case 'w':
+				case 'w': // weeks
 					sum += val * 604800000;
 					break;
-				case 'd':
+				case 'd': // days
 					sum += val * 86400000;
 					break;
-				case 'h':
+				case 'h': // hours
 					sum += val * 3600000;
 					break;
-				case 'm':
+				case 'm': // minutes
 					sum += val * 60000;
 					break;
-				case 's':
+				case 's': // seconds
 					sum += val * 1000;
 					break;
 			}

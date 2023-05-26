@@ -38,6 +38,7 @@ export function https(
 	}
 ): Promise<any> {
 	return new Promise((resolve, reject) => {
+		// Using node:https request function
 		var req = request(
 			{
 				hostname: host,
@@ -52,22 +53,28 @@ export function https(
 						await https(host, response.headers.location.replace(host, ''))
 					);
 
+				// Data stream
+
 				let data = '';
 
 				response.on('error', reject);
 				response.on('data', (chunk) => (data += chunk));
 				response.on('end', async () => {
 					try {
+						// Resolve any objects
 						resolve(JSON.parse(data));
 					} catch (e) {
+						// Some API sends html file as error. So this throws error if there is some
 						reject(`HttpsError | An Error Occured\n\n${e}`);
 					}
 				});
 			}
 		).on('error', reject);
 
+		// Write body into the request if its other than GET method
 		if (options?.body) req.write(JSON.stringify(options.body));
 
+		// closes the request
 		req.end();
 	});
 }

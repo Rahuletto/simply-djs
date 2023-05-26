@@ -6,12 +6,12 @@
 # Folders
 src/
 node_modules/
-.husky
-.vscode
-.github
+.husky/
+.vscode/
+.github/
 
 # Files
-/tsconfig.json
-/simplydjs.ts
+tsconfig.json
+simplydjs.ts
 test.js
 gitpush.sh

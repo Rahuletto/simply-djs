@@ -80,7 +80,7 @@ Simply-DJS Reimagined.
 + Totally Promise Based
 + ChatGPT integration in chatbot
 + Super Customizable embed ! (Can override default embeds completely.)
-+ A New, Efficient and Bug-free tictactoe engine
++ A New, Efficient and Bug-free tictactoe & suggest engine
 
 @@ Variable names that just make sense @@
 @@ Renamed functions @@

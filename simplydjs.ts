@@ -4,6 +4,7 @@
 
 import { SimplyError } from './src/error';
 
+// Get the node version
 if (+process.version.slice(1, 3) - 0 < 16)
 	throw new SimplyError({
 		function: 'simply-djs [CORE]',
@@ -14,11 +15,14 @@ if (+process.version.slice(1, 3) - 0 < 16)
 try {
 	require('discord.js');
 } catch (e) {
-	throw new SimplyError({
-		function: 'simply-djs [CORE]',
-		title: 'Discord.JS is required for this package to run',
-		tip: 'This package is optimized to run with discord.js'
-	});
+	// Emit a warning if there is no discord.js
+	process.emitWarning(
+		new SimplyError({
+			function: 'simply-djs [CORE]',
+			title: 'Discord.JS is required for this package to run',
+			tip: 'This package is optimized to run with discord.js'
+		})
+	);
 }
 
 const { version: discordJSVersion } = require(require('path').join(
@@ -27,6 +31,8 @@ const { version: discordJSVersion } = require(require('path').join(
 	'..',
 	'package.json'
 ));
+
+// Get Discord.JS version using their package.json
 
 if (Number(discordJSVersion.slice(0, 2)) < 14)
 	throw new SimplyError({

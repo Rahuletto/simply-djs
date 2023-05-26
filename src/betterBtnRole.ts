@@ -20,20 +20,29 @@ import { SimplyError } from './error';
 // ------- T Y P I N G S --------
 // ------------------------------
 
-type button = {
+interface Button {
 	label?: string;
 	role?: Role;
 	style?: ExtendedButtonStyle;
 	emoji?: string;
-};
+}
+
+interface MessageContents {
+	invalidMessage?: string;
+	otherUserMessage?: string;
+	update?: string;
+	success?: string;
+	overload?: string;
+	noButton?: string;
+}
 
 export type betterbtnOptions = {
-	custom?: boolean;
 	strict?: boolean;
 	type?: 'Add' | 'Remove';
 	channel?: TextChannel;
-	button?: button;
+	button?: Button;
 	messageId?: string;
+	contents?: MessageContents;
 };
 
 // ------------------------------
@@ -52,42 +61,61 @@ export async function betterBtnRole(
 	interaction: ExtendedInteraction,
 	options: betterbtnOptions = {}
 ): Promise<string> {
-	return new Promise(async (resolve, reject) => {
+	return new Promise(async () => {
 		const { client } = interaction;
 
+		// Get all options from CommandInteraction (a.k.a.) slash command.
 		const ch =
 			options?.channel || interaction.options.get('channel', true).channel;
 		const msgid: string =
 			options?.messageId || String(interaction.options.get('message').value);
 		const role = options?.button?.role || interaction.options.get('role').role;
 
+		// Fetch the message using the provided message id
 		const msg: ExtendedMessage = await (ch as TextChannel).messages
 			.fetch(msgid)
 			.catch(() => {})
 			.then();
 
+		// If there is no message throw error (if strict)
 		if (!msg) {
-			if (options?.custom === true) reject('NO_MSG');
+			if (options?.strict === true)
+				throw new SimplyError({
+					title:
+						'Cannot find any messages with that message id in the channel you specified',
+					tip: 'Please check if the provided channel and messageId is correct',
+					function: 'betterBtnRole'
+				});
 			else
 				return interaction.followUp({
 					content:
+						options?.contents?.invalidMessage ||
 						'Cannot find any messages with that message id in the channel you specified',
 					ephemeral: true
 				});
 		}
 
+		// If condition to check if the message is sent by the bot
 		if (msg.author.id !== client.user.id) {
-			if (options?.custom === true) reject('OTHER_MSG');
+			if (options?.strict === true)
+				throw new SimplyError({
+					title: "Cannot make other user's message a button role",
+					tip: 'Provide a message which I sent.',
+					function: 'betterBtnRole'
+				});
 			else
 				return interaction.followUp({
 					content:
+						options?.contents?.otherUserMessage ||
 						"Cannot make other user's message a button role ! Provide a message which I sent.",
 					ephemeral: true
 				});
 		}
 
+		// The "Add" type
 		if (options?.type === 'Add') {
 			try {
+				// Get all button properties from CommandInteraction (a.k.a) slash command
 				const label =
 					options.button.label ||
 					String(interaction.options.get('label').value) ||
@@ -114,13 +142,12 @@ export async function betterBtnRole(
 									components: msg.components
 								});
 
-								if (options?.custom === true) return resolve('DONE');
-								else
-									return interaction.followUp({
-										content:
-											'The message has the button with the same role already.. Re-adding it now..',
-										ephemeral: true
-									});
+								return interaction.followUp({
+									content:
+										options?.contents?.update ||
+										'Found a button with same role. Updating the existing button role.',
+									ephemeral: true
+								});
 							}
 						}
 					}
@@ -159,25 +186,24 @@ export async function betterBtnRole(
 							const linkRow =
 								new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
-							if (options?.custom === true) return resolve('DONE');
-							else
-								interaction.followUp({
-									content: 'Done.. Added the button to the message.',
-									components: [linkRow],
-									ephemeral: true
-								});
+							interaction.followUp({
+								content:
+									options?.contents?.success ||
+									'Done.. Added the button to the message.',
+								components: [linkRow],
+								ephemeral: true
+							});
 						})
 						.catch((err) => {
 							interaction.followUp({ content: `\`${err.stack}\`` });
 						});
 				} else {
 					if (msg.components.length === 5) {
-						if (options?.custom === true) return reject('OVERLOAD');
-						else
-							return interaction.followUp({
-								content:
-									'Sorry.. I have no space to send buttons in that message..'
-							});
+						return interaction.followUp({
+							content:
+								options?.contents?.overload ||
+								'Sorry.. I have no space to send buttons in that message..'
+						});
 					}
 
 					// Get the available space in the message
@@ -203,15 +229,13 @@ export async function betterBtnRole(
 
 								const linkRow =
 									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
-
-								if (options?.custom === true) return resolve('DONE');
-								else
-									interaction.followUp({
-										content:
-											'Found a button with same role. Updating the existing button role.',
-										components: [linkRow],
-										ephemeral: true
-									});
+								interaction.followUp({
+									content:
+										options?.contents?.update ||
+										'Found a button with same role. Updating the existing button role.',
+									components: [linkRow],
+									ephemeral: true
+								});
 							})
 							.catch((err) => {
 								interaction.followUp({ content: `\`${err.stack}\`` });
@@ -236,13 +260,13 @@ export async function betterBtnRole(
 								const linkRow =
 									new ActionRowBuilder<ButtonBuilder>().addComponents([link]);
 
-								if (options?.custom === true) return resolve('DONE');
-								else
-									return interaction.followUp({
-										content: 'Done.. Added the button to the message',
-										components: [linkRow],
-										ephemeral: true
-									});
+								return interaction.followUp({
+									content:
+										options?.contents?.success ||
+										'Done.. Added the button to the message',
+									components: [linkRow],
+									ephemeral: true
+								});
 							})
 							.catch((err) => {
 								interaction.followUp({ content: `\`${err.stack}\`` });
@@ -268,13 +292,12 @@ export async function betterBtnRole(
 					msg.components.length === 0 ||
 					!msg.components[0]
 				) {
-					if (options?.custom === true) return reject('NO_BTN');
-					else
-						return interaction.followUp({
-							content:
-								'There is no button role in that message.. Try using correct message ID that has button roles',
-							ephemeral: true
-						});
+					return interaction.followUp({
+						content:
+							options?.contents?.noButton ||
+							'There is no button role in that message.. Try using correct message ID that has button roles',
+						ephemeral: true
+					});
 				} else if (msg.components) {
 					for (let i = 0; msg.components.length > i; i++) {
 						for (let o = 0; msg.components[i].components.length > o; o++) {
@@ -306,13 +329,13 @@ export async function betterBtnRole(
 													link
 												]);
 
-											if (options?.custom === true) return resolve('DONE');
-											else
-												return interaction.followUp({
-													content: 'Done.. Removed the button from the message',
-													components: [linkRow],
-													ephemeral: true
-												});
+											return interaction.followUp({
+												content:
+													options?.contents?.success ||
+													'Done.. Removed the button from the message',
+												components: [linkRow],
+												ephemeral: true
+											});
 										});
 								} else {
 									await msg
@@ -332,25 +355,23 @@ export async function betterBtnRole(
 													link
 												]);
 
-											if (options?.custom === true) return resolve('DONE');
-											else
-												return interaction.followUp({
-													content:
-														'Done.. Removed the button from the message.',
-													components: [linkRow],
-													ephemeral: true
-												});
+											return interaction.followUp({
+												content:
+													options?.contents?.success ||
+													'Done.. Removed the button from the message.',
+												components: [linkRow],
+												ephemeral: true
+											});
 										});
 								}
 							} else if (i === msg.components.length - 1) {
 								if (o === msg.components[i].components.length - 1) {
-									if (options?.custom === true) return reject('NOT_FOUND');
-									else
-										return interaction.followUp({
-											content:
-												'I cant identify a button role with that role in that message.',
-											ephemeral: true
-										});
+									return interaction.followUp({
+										content:
+											options?.contents?.noButton ||
+											'I cant identify a button role with that role in that message.',
+										ephemeral: true
+									});
 								}
 							}
 						}

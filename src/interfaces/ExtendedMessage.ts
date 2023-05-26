@@ -1,7 +1,7 @@
 import { GuildMember, Message } from 'discord.js';
 
 /**
- * A class extension of the Message object of the disocrd.js framework
+ * A class extension of the Message object of the discord.js framework
  * which aims to reduce errors and apply the best developer practices.
  * @param {user} Discord.GuildMember Member type for Message object due to it missing.
  * @param {commandId} string Parameter used by simply-djs to get command-id's.

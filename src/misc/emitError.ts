@@ -12,5 +12,6 @@ export async function emitError(
 		tip: 'Get ya help here -> [https://discord.gg/3JzDV9T5Fn]'
 	}
 ) {
+	// Just throws the SimplyError
 	throw new SimplyError(options);
 }
