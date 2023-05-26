@@ -7,6 +7,8 @@ Its finally done. Gosh X_x
 Simply-DJS Reimagined.
 **We will not support legacy system panels**
 
+- Thank you `CyberJack#6350` and `N_Ved#6537` for helping me
+
 ## Tested functions
 
 ```diff
