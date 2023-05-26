@@ -1,13 +1,13 @@
 {
 	"name": "simply-djs",
-	"version": "4.0.0",
+	"version": "4.0.0-beta-1",
 	"description": "The easiest way to build sophisticated systems in your Discord bots.",
 	"main": "lib/simplydjs.js",
 	"typings": "typings/simplydjs.d.ts",
 	"scripts": {
 		"test": "node test",
 		"git": "sh ./gitpush.sh",
-		"dev": "npm publish --tag dev",
+		"beta": "npm publish --tag beta",
 		"prepare": "husky install"
 	},
 	"keywords": [

@@ -8,14 +8,14 @@ import {
 	Message,
 	ButtonInteraction,
 	StringSelectMenuInteraction,
-	BaseInteraction,
 	PermissionFlagsBits,
 	ComponentType,
 	TextChannel,
 	APIEmbed,
 	ModalBuilder,
 	TextInputStyle,
-	TextInputBuilder
+	TextInputBuilder,
+	MessageComponentInteraction
 } from 'discord.js';
 import {
 	ExtendedInteraction,
@@ -207,14 +207,26 @@ export async function embedCreator(
 			msgOrInt.channel
 				.send({ content: '** **', embeds: [creator] })
 				.then(async (preview) => {
-					const filter = (m: BaseInteraction) =>
-						m.user.id === msgOrInt.member.user.id;
+					const filter = (m: MessageComponentInteraction) => {
+						if (m.user.id === msgOrInt.member.user.id) return true;
+						m.reply({
+							content: `Only <@!${msgOrInt.member.user.id}> can use these buttons!`,
+							ephemeral: true
+						});
+						return false;
+					};
 
 					const messageFilter = (m: Message) =>
 						msgOrInt.member.user.id === m.author.id;
 
-					const buttonFilter = (m: ButtonInteraction) =>
-						msgOrInt.member.user.id === m.user.id;
+					const buttonFilter = (m: ButtonInteraction) => {
+						if (m.user.id === msgOrInt.member.user.id) return true;
+						m.reply({
+							content: `Only <@!${msgOrInt.member.user.id}> can use these buttons!`,
+							ephemeral: true
+						});
+						return false;
+					};
 
 					const collector = msg.createMessageComponentCollector({
 						filter: filter,

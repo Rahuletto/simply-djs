@@ -8,7 +8,9 @@ import {
 	GuildMember,
 	GuildMemberRoleManager,
 	Message,
-	Role
+	Role,
+	PermissionFlagsBits,
+	PermissionsBitField
 } from 'discord.js';
 import model, { Entry } from '../model/giveaway';
 import { SimplyError } from '../error';
@@ -164,6 +166,20 @@ export async function manageGiveaway(
 					interaction.customId === 'end_giveaway' ||
 					interaction.customId === 'reroll_giveaway'
 				) {
+					if (
+						!(interaction.member.permissions as PermissionsBitField).has(
+							PermissionFlagsBits.Administrator
+						) ||
+						!(interaction.member.permissions as PermissionsBitField).has(
+							PermissionFlagsBits.ManageEvents
+						)
+					)
+						return await interaction.reply({
+							content:
+								'You cannot end/reroll the giveaway. You do not have the required permissions. `Administrator` (or) `Manage Events`',
+							ephemeral: true
+						});
+
 					await interaction.deferUpdate();
 
 					const msg = interaction.message as Message;
@@ -241,14 +257,12 @@ export async function manageGiveaway(
 									displayWinner.push(`<@${member.user.id}>`);
 
 									const dmEmbed: EmbedBuilder = new EmbedBuilder()
-										.setTitle('You, Won the Giveaway !')
+										.setTitle('You, Won the Giveaway!')
 										.setDescription(
 											`You just won \`${data.prize}\` in the Giveaway at \`${member.guild.name}\` Go claim it fast !`
 										)
 										.setColor('DarkGreen')
-										.setFooter({
-											text: 'GG winner. Now i feel jealous of you UwU'
-										});
+										.setFooter({ text: 'GG winner.' });
 
 									const linkButton = new ButtonBuilder()
 										.setLabel('View Giveaway')
@@ -295,7 +309,7 @@ export async function manageGiveaway(
 									.setFields(fields || oldFields)
 									.setColor(toRgb('#cc0000'))
 									.setFooter({
-										text: 'Ahh man, Its ok lets get another giveaway goin.'
+										text: 'Ohh man, Its ok lets get another giveaway goin.'
 									});
 
 								return await msg.edit({
@@ -336,9 +350,7 @@ export async function manageGiveaway(
 										)} won the prize!\nGet in touch with the staff members to collect your prize.`
 								)
 								.setFooter(
-									data?.embeds?.result?.footer || {
-										text: 'GG winner. Now i feel jealous of you UwU'
-									}
+									data?.embeds?.result?.footer || { text: 'GG winner.' }
 								)
 								.setFields(fields || oldFields);
 

@@ -199,7 +199,7 @@ export async function giveaway(
 				if (!guild)
 					return extMessage.channel.send({
 						content:
-							'Please add me to that server so i can set the requirement.'
+							'Please add me to that server so I can set the requirement.'
 					});
 
 				requirements = { type: 'Guild', value: guild };
@@ -366,9 +366,7 @@ export async function giveaway(
 			});
 
 			const embed = new EmbedBuilder()
-				.setTitle(
-					replacer(options?.embed?.giveaway?.title || 'Giveaway Time !')
-				)
+				.setTitle(replacer(options?.embed?.giveaway?.title || 'Giveaway Time!'))
 				.setColor(options?.embed?.giveaway?.color || toRgb('#406DBC'))
 				.setTimestamp(Number(Date.now() + timeInMS))
 				.setFooter(
@@ -472,7 +470,7 @@ export async function giveaway(
 								)
 								.setFooter(
 									data?.embeds?.load?.footer || {
-										text: 'Ending the Giveaway, Scraping the ticket..'
+										text: 'Ending the Giveaway, Choosing a winner...'
 									}
 								);
 
@@ -523,15 +521,13 @@ export async function giveaway(
 											displayWinner.push(`<@${member.user.id}>`);
 
 											const dmEmbed: EmbedBuilder = new EmbedBuilder()
-												.setTitle('You, Won the Giveaway !')
+												.setTitle('You, Won the Giveaway!')
 												.setDescription(
 													`You just won \`${data.prize}\` in the Giveaway at \`${member.guild.name}\` Go claim it fast !`
 												)
 												.setColor('DarkGreen')
 												.setFooter(
-													data?.embeds?.result?.footer || {
-														text: 'GG winner. Now i feel jealous of you UwU'
-													}
+													data?.embeds?.result?.footer || { text: 'GG winner.' }
 												);
 
 											const linkButton = new ButtonBuilder()
@@ -583,7 +579,7 @@ export async function giveaway(
 											.setFields(fields || oldFields)
 											.setColor(toRgb('#cc0000'))
 											.setFooter({
-												text: 'Ahh man, Its ok lets get another giveaway goin.'
+												text: 'Ohh man, Its ok lets get another giveaway goin.'
 											});
 
 										return await msg.edit({
@@ -629,9 +625,7 @@ export async function giveaway(
 												)} won the prize !\nGet in touch with the staff members to collect your prize.`
 										)
 										.setFooter(
-											data?.embeds?.result?.footer || {
-												text: 'GG winner. Now i feel jealous of you UwU'
-											}
+											data?.embeds?.result?.footer || { text: 'GG winner.' }
 										)
 										.setFields(fields || oldFields);
 

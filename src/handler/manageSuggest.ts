@@ -137,12 +137,11 @@ export async function manageSuggest(
 					denyCollector.on('collect', async (btn) => {
 						if (btn.customId === 'downvote-suggestion') {
 							const myVote = data.votes.find(
-								(m) => m.userId?.toString() === btn.user.id
+								(m) => m.userId.toString() === btn.user.id
 							);
 							let total: Vote[] =
-								data.votes.filter(
-									(m) => m.userId?.toString() !== btn.user.id
-								) || [];
+								data.votes.filter((m) => m.userId.toString() !== btn.user.id) ||
+								[];
 
 							if (!Array.isArray(total)) {
 								total = [total];
@@ -264,12 +263,11 @@ export async function manageSuggest(
 					)
 				) {
 					const myVote = data.votes.find(
-						(m) => m?.userId?.toString() === button.user.id
+						(m) => m.userId.toString() === button.user.id
 					);
 					let total: Vote[] =
-						data.votes.filter(
-							(m) => m?.userId?.toString() !== button.user.id
-						) || [];
+						data.votes.filter((m) => m.userId.toString() !== button.user.id) ||
+						[];
 
 					if (!Array.isArray(total)) {
 						total = [total];
@@ -401,12 +399,11 @@ export async function manageSuggest(
 					acceptCollector.on('collect', async (btn) => {
 						if (btn.customId === 'upvote-suggestion') {
 							const myVote = data.votes.find(
-								(m) => m.userId?.toString() === btn.user.id
+								(m) => m.userId.toString() === btn.user.id
 							);
 							let total: Vote[] =
-								data.votes.filter(
-									(m) => m.userId?.toString() !== btn.user.id
-								) || [];
+								data.votes.filter((m) => m.userId.toString() !== btn.user.id) ||
+								[];
 
 							if (!Array.isArray(total)) {
 								total = [total];
@@ -527,10 +524,10 @@ export async function manageSuggest(
 					)
 				) {
 					const myVote = data.votes.find(
-						(m) => m.userId?.toString() === button.user.id
+						(m) => m.userId.toString() === button.user.id
 					);
 					let total: Vote[] =
-						data.votes.filter((m) => m.userId?.toString() !== button.user.id) ||
+						data.votes.filter((m) => m.userId.toString() !== button.user.id) ||
 						[];
 
 					if (!Array.isArray(total)) {

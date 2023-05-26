@@ -1,45 +1,11 @@
-# Simply-DJS v4.0.0
+# Simply-DJS v4.0.0-beta-1
 
 ## Support for Discord.JS v14
 
-Its finally under development. Gosh x_X.
+Its finally done. Gosh X_x
 
 Simply-DJS Reimagined.
-**We will not totally support legacy system panels**
-
-## Converted all files
-
-```diff
-+ betterBtnRole.ts
-+ btnrole.ts
-+ bumpReminder.ts (previously bumpSys.ts)
-+ calculator.ts
-+ chatbot.ts
-# clickBtn.ts (Removed)
-+ connect.ts
-+ embedCreator.ts (previously embedCreate.ts)
-+ buttonPages.ts (previously embedPages.ts)
-+ ghostPing.ts
-+ giveaway.ts (previously giveawaySystem.ts)
-
-# ---------(Will update last)------------------
-+ manageBtnRole.ts (Splitted from manageBtn.ts)
-+ manageGiveaway.ts (Splitted from manageBtn.ts)
-+ manageSuggest.ts (previously manageSug.ts)
-+ manageTicket.ts (Splitted from manageBtn.ts)
-# ---------------------------------------------
-
-+ meme.ts (previously automeme.ts)
-+ menuPages.ts
-+ nqn.ts
-+ rps.ts
-+ starboard.ts
-+ stealEmoji.ts (Deprecated. Will be removed)
-+ suggest.ts (previously suggestSystem.ts)
-# suggestBtn.ts (Removed)
-+ ticketSetup.ts (previously ticketSystem.ts)
-+ tictactoe.ts
-```
+**We will not support legacy system panels**
 
 ## Tested functions
 
@@ -88,3 +54,5 @@ Simply-DJS Reimagined.
 - Removed `credit` option
 - Deprecated 10 modules (Renaming things)
 ```
+
+## Docs will be up very soon
