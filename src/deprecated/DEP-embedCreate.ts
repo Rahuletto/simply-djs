@@ -1,6 +1,6 @@
 import { APIEmbed } from 'discord.js';
 import { Deprecated } from '../error';
-import { ExtendedInteraction, ExtendedMessage } from '../interfaces';
+import { ExtendedInteraction, ExtendedMessage } from '../typedef';
 import { embedCreator, embedOptions } from '../embedCreator';
 
 /**

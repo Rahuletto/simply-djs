@@ -12,7 +12,7 @@ import {
 	ExtendedMessage,
 	ExtendedButtonStyle,
 	CustomizableEmbed
-} from './interfaces';
+} from './typedef';
 
 import { SimplyError } from './error';
 import { MessageButtonStyle, toRgb } from './misc';

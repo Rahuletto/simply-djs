@@ -10,7 +10,7 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	ExtendedButtonStyle
-} from './interfaces';
+} from './typedef';
 
 import { MessageButtonStyle } from './misc';
 

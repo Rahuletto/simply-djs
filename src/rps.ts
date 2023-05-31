@@ -13,7 +13,7 @@ import {
 	ExtendedMessage,
 	buttonTemplate,
 	CustomizableEmbed
-} from './interfaces';
+} from './typedef';
 import { MessageButtonStyle, toRgb, ms } from './misc';
 import { SimplyError } from './error/SimplyError';
 

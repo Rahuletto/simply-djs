@@ -7,7 +7,7 @@ import {
 	TextChannel
 } from 'discord.js';
 import { SimplyError } from './error/SimplyError';
-import { ExtendedMessage, CustomizableEmbed } from './interfaces';
+import { ExtendedMessage, CustomizableEmbed } from './typedef';
 
 export type starboardOption = {
 	embed?: CustomizableEmbed;
@@ -77,7 +77,7 @@ export async function starboard(
 			);
 	}
 	try {
-		if (extMessage || (reactionOrMessage as ExtendedMessage).id) {
+		if (extMessage || !(reactionOrMessage as MessageReaction).message) {
 			let starboard = await client.channels.cache.get(options.channelId);
 
 			if (!extMessage.guild) return;
@@ -120,6 +120,7 @@ export async function starboard(
 				if (minmax < minimumRequired) return;
 
 				let starboard = await client.channels.fetch(options.channelId, {
+					force: true,
 					cache: true
 				});
 
@@ -156,7 +157,7 @@ export async function starboard(
 					}
 				}
 
-				const fetch = await react.message.fetch();
+				const fetch = await react.message.fetch(true);
 
 				const attachment = fetch.attachments.first();
 				const url = attachment ? attachment.url : null;

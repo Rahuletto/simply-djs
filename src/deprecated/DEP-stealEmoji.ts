@@ -8,7 +8,7 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	CustomizableEmbed
-} from '../interfaces';
+} from '../typedef';
 import { ms } from '../misc';
 import { Deprecated, SimplyError } from '../error';
 

@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { Deprecated } from '../error';
 import { buttonPages, pagesOption } from '../buttonPages';
-import { ExtendedInteraction, ExtendedMessage } from '../interfaces';
+import { ExtendedInteraction, ExtendedMessage } from '../typedef';
 
 /**
  * @deprecated Use {@link buttonPages()}

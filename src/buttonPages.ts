@@ -13,7 +13,7 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	buttonTemplate
-} from './interfaces';
+} from './typedef';
 
 import { SimplyError } from './error';
 import { MessageButtonStyle, ms } from './misc';

@@ -1,5 +1,5 @@
 import { Deprecated } from '../error';
-import { ExtendedInteraction, ExtendedMessage } from '../interfaces';
+import { ExtendedInteraction, ExtendedMessage } from '../typedef';
 import { GiveawayResolve, giveaway, giveawayOptions } from '../giveaway';
 import { EndResolve } from '../handler/manageGiveaway';
 

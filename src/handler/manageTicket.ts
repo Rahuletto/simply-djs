@@ -15,7 +15,7 @@ import {
 	TextChannel,
 	User
 } from 'discord.js';
-import { buttonTemplate, CustomizableEmbed } from '../interfaces';
+import { buttonTemplate, CustomizableEmbed } from '../typedef';
 
 import { MessageButtonStyle, toRgb, ms } from '../misc';
 

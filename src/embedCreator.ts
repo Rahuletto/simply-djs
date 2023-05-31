@@ -21,7 +21,7 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	CustomizableEmbed
-} from './interfaces';
+} from './typedef';
 import { toRgb, ms } from './misc';
 import { SimplyError } from './error';
 

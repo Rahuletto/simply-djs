@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message, User } from 'discord.js';
-import { CustomizableEmbed } from './interfaces';
+import { CustomizableEmbed } from './typedef';
 import { SimplyError } from './error';
 import { toRgb, ms } from './misc';
 

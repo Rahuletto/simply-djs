@@ -2,7 +2,7 @@ import { Client, EmbedBuilder, TextChannel, Channel } from 'discord.js';
 
 import { https, toRgb, ms } from './misc';
 import { SimplyError } from './error/SimplyError';
-import { CustomizableEmbed } from './interfaces';
+import { CustomizableEmbed } from './typedef';
 
 // ------------------------------
 // ------- T Y P I N G S --------

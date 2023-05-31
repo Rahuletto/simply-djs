@@ -1,6 +1,6 @@
 import { OutgoingHttpHeaders } from 'http2';
 import { request } from 'https';
-
+import { HttpsError } from '../error';
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -63,13 +63,15 @@ export function https(
 					try {
 						// Resolve any objects
 						resolve(JSON.parse(data));
-					} catch (e) {
+					} catch (e: any) {
 						// Some API sends html file as error. So this throws error if there is some
-						reject(`HttpsError | An Error Occured\n\n${e}`);
+						throw new HttpsError({
+							error: e.stack
+						});
 					}
 				});
 			}
-		).on('error', reject);
+		);
 
 		// Write body into the request if its other than GET method
 		if (options?.body) req.write(JSON.stringify(options.body));

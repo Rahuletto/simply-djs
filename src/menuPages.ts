@@ -6,7 +6,7 @@ import {
 	ComponentType,
 	StringSelectMenuInteraction
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import { ExtendedInteraction, ExtendedMessage } from './typedef';
 
 import { SimplyError } from './error/SimplyError';
 import { ms } from './misc';

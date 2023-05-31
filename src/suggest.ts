@@ -20,8 +20,8 @@ import {
 	ExtendedMessage,
 	CustomizableEmbed,
 	buttonTemplate
-} from './interfaces';
-import {} from './interfaces/CustomizableEmbed';
+} from './typedef';
+import {} from './typedef/CustomizableEmbed';
 import { MessageButtonStyle, ms, toRgb } from './misc';
 
 import { Document as Doc } from 'mongoose';

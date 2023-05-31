@@ -1,5 +1,5 @@
 import { Deprecated } from '../error';
-import { ExtendedMessage, ExtendedInteraction } from '../interfaces';
+import { ExtendedMessage, ExtendedInteraction } from '../typedef';
 import { InteractionResponse, Message } from 'discord.js';
 import { suggest, suggestOption } from '../suggest';
 

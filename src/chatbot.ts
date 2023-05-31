@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { https } from './misc';
 
 import { SimplyError } from './error';
-import { ExtendedMessage } from './interfaces';
+import { ExtendedMessage } from './typedef';
 
 import { Configuration, OpenAIApi } from 'openai';
 
@@ -68,7 +68,7 @@ export async function chatbot(
 		}
 
 		//Return if the channel of the message is not a chatbot channel
-		if (!channels.includes(message.channel.id)) return;
+		if (!channels.includes(message.channel.id)) return null;
 
 		const ranges = [
 			'\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
@@ -111,6 +111,8 @@ export async function chatbot(
 		input = input.replace(/<a?:.+:\d+>/gm, '');
 		input = input.replace(regg, '');
 
+		if (!input || input == '') return;
+
 		options.name ??= 'Simply-DJS';
 		options.developer ??= 'Rahuletto';
 
@@ -130,7 +132,10 @@ export async function chatbot(
 		await message.channel.sendTyping();
 
 		// Get data from the api made by the same team
-		const jsonRes = await https(`simplyapi.js.org`, url.pathname);
+		const jsonRes = await https(
+			`simplyapi.js.org`,
+			url.pathname + '?' + params.toString()
+		);
 
 		const chatbotReply = jsonRes.reply // Just replacing any mass mentions just in case
 			.replace(/@everyone/g, '`@everyone`')

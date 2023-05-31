@@ -12,8 +12,9 @@ import {
 	CustomizableEmbed,
 	ExtendedButtonStyle,
 	ExtendedInteraction,
-	ExtendedMessage
-} from './interfaces';
+	ExtendedMessage,
+	buttonTemplate
+} from './typedef';
 import { MessageButtonStyle, disableButtons, https, ms, toRgb } from './misc';
 import { SimplyError } from './error';
 
@@ -24,21 +25,13 @@ const limiter: { guild: string; limit: number }[] = [];
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tictactoebtntemplate*
- */
-interface tictactoeBtnTemplate {
-	style?: ExtendedButtonStyle;
-	emoji?: string;
-}
-
-/**
  * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tictactoebuttons*
  */
 
 interface tictactoeButtons {
-	X?: tictactoeBtnTemplate;
-	O?: tictactoeBtnTemplate;
-	blank?: tictactoeBtnTemplate;
+	X?: buttonTemplate;
+	O?: buttonTemplate;
+	blank?: buttonTemplate;
 }
 
 interface Embeds {
@@ -54,6 +47,7 @@ export type tictactoeOptions = {
 	embed?: Embeds;
 	user?: User;
 	type?: 'Button' | 'Embed';
+	limitGames: number;
 
 	buttons?: tictactoeButtons;
 
@@ -61,6 +55,7 @@ export type tictactoeOptions = {
 };
 
 type aiOptions = {
+	limitGames: number;
 	blank_emoji?: string;
 	x_emoji?: string;
 	o_emoji?: string;
@@ -97,7 +92,7 @@ const combinations = [
 
 export async function tictactoe(
 	message: ExtendedMessage | ExtendedInteraction,
-	options: tictactoeOptions = {}
+	options: tictactoeOptions = { limitGames: 5 }
 ): Promise<User> {
 	return new Promise(async (resolve) => {
 		try {
@@ -126,7 +121,7 @@ export async function tictactoe(
 				);
 			}
 
-			if (limiter[id].limit >= 1) {
+			if (limiter[id].limit >= options?.limitGames || 5) {
 				if (interaction)
 					return extInteraction.reply({
 						content:
@@ -171,6 +166,7 @@ export async function tictactoe(
 
 				if (!opponent)
 					return ai(message, {
+						limitGames: options?.limitGames || 5,
 						blank_emoji: blank_emoji,
 						x_emoji: x_emoji,
 						o_emoji: o_emoji,
@@ -197,6 +193,7 @@ export async function tictactoe(
 				opponent = extMessage.mentions.users.first();
 				if (!opponent)
 					return ai(message, {
+						limitGames: options?.limitGames || 5,
 						blank_emoji,
 						x_emoji,
 						o_emoji,
@@ -982,7 +979,7 @@ export async function tictactoe(
 
 async function ai(
 	msgOrint: ExtendedMessage | ExtendedInteraction,
-	options: aiOptions = {}
+	options: aiOptions = { limitGames: 5 }
 ) {
 	const { client } = msgOrint;
 	let board = ['', '', '', '', '', '', '', '', ''];
@@ -1011,7 +1008,7 @@ async function ai(
 		id = limiter.findIndex((a) => a.guild == msgOrint.guild.id);
 	}
 
-	if (limiter[id].limit >= 1) {
+	if (limiter[id].limit >= options?.limitGames || 5) {
 		if (interaction)
 			return extInteraction.followUp({
 				content: 'Sorry, There is a game happening right now. Please try later.'
@@ -1570,8 +1567,8 @@ async function ai(
 	async function aiEngine(b: string[]): Promise<string[]> {
 		let res;
 		res = await https(
-			`ttt-ai.rahulalt.repl.co`,
-			`/ttt?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
+			`simplyapi.js.org`,
+			`/api/tictactoe?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
 			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

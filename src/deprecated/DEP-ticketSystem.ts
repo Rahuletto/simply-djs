@@ -1,6 +1,6 @@
 import { Deprecated } from '../error';
 import { ticketSetup, ticketSetupOptions } from '../ticketSetup';
-import { ExtendedMessage, ExtendedInteraction } from '../interfaces';
+import { ExtendedMessage, ExtendedInteraction } from '../typedef';
 import { Message } from 'discord.js';
 
 /**

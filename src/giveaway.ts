@@ -19,7 +19,7 @@ import {
 	ExtendedMessage,
 	CustomizableEmbed,
 	buttonTemplate
-} from './interfaces';
+} from './typedef';
 
 import model, { Entry } from './model/giveaway';
 import { MessageButtonStyle, disableButtons, ms, toRgb } from './misc';

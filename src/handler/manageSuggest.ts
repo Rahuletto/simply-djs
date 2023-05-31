@@ -17,7 +17,7 @@ import {
 
 import db, { Vote } from '../model/suggest';
 import { ms, toRgb } from '../misc';
-import { CustomizableEmbed } from '../interfaces';
+import { CustomizableEmbed } from '../typedef';
 import { SimplyError } from '../error';
 
 interface Embeds {
@@ -602,10 +602,19 @@ export async function manageSuggest(
 					const array = getUsers().filter((val) => val.vote === 'down');
 					return array;
 				}
-				function mapUsers(array: Vote[], _type: 'up' | 'down') {
+				function mapUsersID(array: Vote[], _type: 'up' | 'down') {
 					let myString = '';
 					array.forEach((val) => {
 						myString += `<@${val.userId}>\n`;
+					});
+					return myString;
+				}
+				function mapUsersTag(array: Vote[], _type: 'up' | 'down') {
+					let myString = '';
+					array.forEach((val) => {
+						myString += `${
+							button.client.users.cache.get(val.userId.toString()).tag
+						}\n`;
 					});
 					return myString;
 				}
@@ -613,18 +622,86 @@ export async function manageSuggest(
 					{
 						name: `Upvoters`,
 						value: `${
-							mapUsers(getLikes(), 'up') || 'Nobody Has Upvoted This Suggestion'
+							mapUsersID(getLikes(), 'up') ||
+							'Nobody Has Upvoted This Suggestion'
 						}`
 					},
 					{
 						name: `Downvoters`,
 						value: `${
-							mapUsers(getDislikes(), 'down') ||
+							mapUsersID(getDislikes(), 'down') ||
 							'Nobody Has Downvoted This Suggestion'
 						}`
 					}
 				);
-				button.reply({ embeds: [whoemb], ephemeral: true });
+				let tagbtn = new ButtonBuilder()
+					.setLabel('Show User Tags')
+					.setEmoji('#️⃣')
+					.setStyle(ButtonStyle.Secondary)
+					.setCustomId('tag');
+				let idbtn = new ButtonBuilder()
+					.setLabel('Show User Mentions')
+					.setEmoji('👥')
+					.setStyle(ButtonStyle.Secondary)
+					.setCustomId('id');
+				let actt = new ActionRowBuilder<ButtonBuilder>().addComponents([
+					tagbtn
+				]);
+				let acti = new ActionRowBuilder<ButtonBuilder>().addComponents([idbtn]);
+
+				const msg: Message = await button.reply({
+					embeds: [whoemb],
+					components: [actt],
+					ephemeral: true,
+					fetchReply: true
+				});
+
+				const filter = (b: ButtonInteraction) => button.user.id === b.user.id;
+				const collector = (msg as Message).createMessageComponentCollector({
+					filter: filter,
+					componentType: ComponentType.Button,
+					idle: ms('30s')
+				});
+				collector.on('collect', async (i) => {
+					i.deferUpdate();
+					if (i.customId === 'tag') {
+						whoemb = new EmbedBuilder().setColor(toRgb('#406DBC')).addFields(
+							{
+								name: `Upvoters`,
+								value: `${
+									mapUsersTag(getLikes(), 'up') ||
+									'Nobody Has Upvoted This Suggestion'
+								}`
+							},
+							{
+								name: `Downvoters`,
+								value: `${
+									mapUsersTag(getDislikes(), 'down') ||
+									'Nobody Has Downvoted This Suggestion'
+								}`
+							}
+						);
+						button.editReply({ embeds: [whoemb], components: [acti] });
+					} else if (i.customId === 'id') {
+						whoemb = new EmbedBuilder().setColor(toRgb('#406DBC')).addFields(
+							{
+								name: `Upvoters`,
+								value: `${
+									mapUsersID(getLikes(), 'up') ||
+									'Nobody Has Upvoted This Suggestion'
+								}`
+							},
+							{
+								name: `Downvoters`,
+								value: `${
+									mapUsersID(getDislikes(), 'down') ||
+									'Nobody Has Downvoted This Suggestion'
+								}`
+							}
+						);
+						button.editReply({ embeds: [whoemb], components: [actt] });
+					}
+				});
 			}
 
 			async function calc(embed: Embed, message: Message) {
@@ -694,7 +771,7 @@ export async function manageSuggest(
 
 				dislikeBtn.setLabel(amtDislikes.toString());
 
-				embed.fields[1].value = `${progress} [${upPercent || 0}% : ${
+				embed.fields[1].value = `${progress} [${upPercent || 0}% - ${
 					downPercent || 0
 				}%]`;
 
