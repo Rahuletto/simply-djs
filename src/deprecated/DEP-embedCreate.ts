@@ -1,7 +1,7 @@
 import { APIEmbed } from 'discord.js';
 import { Deprecated } from '../error';
 import { ExtendedInteraction, ExtendedMessage } from '../typedef';
-import { embedCreator, embedOptions } from '../embedCreator';
+import { embedCreator, embedCreatorOptions } from '../embedCreator';
 
 /**
  * @deprecated Use {@link embedCreator()}
@@ -9,7 +9,7 @@ import { embedCreator, embedOptions } from '../embedCreator';
 
 export async function embedCreate(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: embedOptions = {}
+	options: embedCreatorOptions = {}
 ): Promise<APIEmbed> {
 	Deprecated({ desc: 'embedCreate() is now embedCreator()' });
 	return await embedCreator(msgOrInt, options);

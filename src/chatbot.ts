@@ -11,6 +11,10 @@ import { Configuration, OpenAIApi } from 'openai';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/fun/chatbot#chatbotoptions
+ */
+
 export type chatbotOptions = {
 	strict?: boolean;
 	channelId?: string | string[];
@@ -27,10 +31,10 @@ export type chatbotOptions = {
 /**
  * A chatbot system that is both technically advanced and intelligent, and is your buddy.
  *
- * **URL** of the api: *https://simplyapi.js.org*
+ * **Documentation Url** of the api: *https://simplyapi.js.org*
  * @param message
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/chatbot***
+ * @link `Documentation:` https://simplyd.js.org/docs/Fun/chatbot
  * @example simplydjs.chatbot(client, message)
  */
 

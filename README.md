@@ -7,16 +7,18 @@ Its finally done. Gosh X_x
 Simply-DJS Reimagined.
 **We will not support legacy system panels**
 
-- Thank you `CyberJack#6350` and `N_Ved#6537` for helping me
+- Thank you `CyberJack#6350` for helping me
+
+# Beta docs: [simplydjs docs](https://simplyd.pages.dev)
 
 ## Tested functions
 
 ```diff
 - betterBtnRole.ts
-- btnrole.ts
+- btnRole.ts
 - bumpReminder.ts
 + calculator.ts
-- chatbot.ts
++ chatbot.ts
 
 + connect.ts
 + embedCreator.ts
@@ -31,30 +33,31 @@ Simply-DJS Reimagined.
 
 - meme.ts
 - menuPages.ts
-- nqn.ts
 + rps.ts
 - starboard.ts
-- stealEmoji.ts
 + suggest.ts
 + ticketSetup.ts
 + tictactoe.ts
+
+# Deprecated
+- stealEmoji.ts
+- nqn.ts
 ```
 
 ## Whats new ?
 
 ```diff
 + All new `strict` mode.
++ Documented every thing thats possible
 + Proper Typings and Commenting
-+ Totally Promise Based
 + ChatGPT integration in chatbot
 + Super Customizable embed ! (Can override default embeds completely.)
-+ A New, Efficient and Bug-free tictactoe & suggest engine
++ A New, Efficient and Bug-free systems
 
-@@ Variable names that just make sense @@
+
+@@ Names that just make sense @@
 @@ Renamed functions @@
 
 - Removed `credit` option
-- Deprecated 10 modules (Renaming things)
+- Deprecated few function (Renaming things)
 ```
-
-## Docs will be up very soon

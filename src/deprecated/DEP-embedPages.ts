@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { Deprecated } from '../error';
-import { buttonPages, pagesOption } from '../buttonPages';
+import { buttonPages, pagesOptions } from '../buttonPages';
 import { ExtendedInteraction, ExtendedMessage } from '../typedef';
 
 /**
@@ -10,7 +10,7 @@ import { ExtendedInteraction, ExtendedMessage } from '../typedef';
 export async function embedPages(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
 	pages: EmbedBuilder[],
-	options: pagesOption = {}
+	options: pagesOptions = {}
 ): Promise<void> {
 	Deprecated({ desc: 'embedPages() is now buttonPages()' });
 	return await buttonPages(msgOrInt, { embeds: pages, ...options });

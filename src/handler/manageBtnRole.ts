@@ -6,10 +6,10 @@ import { SimplyError } from '../error';
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageBtnRole#btnRole*
+ * **Documentation Url** of the type: *https://simplyd.js.org/docs/handler/manageBtnRole#btnrolereplies*
  */
 
-interface btnRole {
+export interface BtnRoleReplies {
 	add: string;
 	remove: string;
 }
@@ -17,8 +17,12 @@ interface btnRole {
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/handler/manageBtnRole#managebtnroleoptions
+ */
+
 export type manageBtnRoleOptions = {
-	reply?: btnRole;
+	reply?: BtnRoleReplies;
 	strict?: boolean;
 };
 
@@ -28,30 +32,30 @@ export type manageBtnRoleOptions = {
 
 /**
  * A Button Role Handler for **simplydjs button role system.**
- * @param interaction
+ * @param button
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageBtnRole***
+ * @link `Documentation:` https://simplyd.js.org/docs/hhandler/manageBtnRole
  * @example simplydjs.manageBtnRole(interaction)
  */
 
 export async function manageBtnRole(
-	interaction: ButtonInteraction,
+	button: ButtonInteraction,
 	options: manageBtnRoleOptions = {}
 ): Promise<boolean> {
 	return new Promise(async (resolve) => {
-		if (interaction.isButton()) {
+		if (button.isButton()) {
 			try {
-				const member = interaction.member;
+				const member = button.member;
 
-				if (interaction.customId.startsWith('role-')) {
-					const roleId = interaction.customId.replace('role-', '');
+				if (button.customId.startsWith('role-')) {
+					const roleId = button.customId.replace('role-', '');
 
-					const role = await interaction.guild.roles.fetch(roleId, {
+					const role = await button.guild.roles.fetch(roleId, {
 						force: true
 					});
 					if (!role) return;
 					else {
-						await interaction.deferReply({ ephemeral: true });
+						await button.deferReply({ ephemeral: true });
 						if (
 							!(member.roles as GuildMemberRoleManager).cache.find(
 								(r: Role) => r.id === role.id
@@ -68,13 +72,13 @@ export async function manageBtnRole(
 											tip: err.stack
 										});
 									else
-										interaction.channel.send({
+										button.channel.send({
 											content:
 												'ERROR: Role is higher than me. `Missing Permissions`'
 										});
 								});
 
-							await interaction.editReply({
+							await button.editReply({
 								content:
 									options?.reply?.add ||
 									`✅ Added the ${role.toString()} role to you.`
@@ -97,13 +101,13 @@ export async function manageBtnRole(
 											tip: err.stack
 										});
 									else
-										interaction.channel.send({
+										button.channel.send({
 											content:
 												'ERROR: Role is higher than me. `Missing Permissions`'
 										});
 								});
 
-							await interaction.editReply({
+							await button.editReply({
 								content:
 									options?.reply?.remove ||
 									`❌ Removed the ${role.toString()} role from you.`

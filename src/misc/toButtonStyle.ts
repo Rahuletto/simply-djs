@@ -1,6 +1,13 @@
 import { ButtonStyle } from 'discord.js';
 
-export function MessageButtonStyle(style: string) {
+/**
+ * Converts your old button style string to [ButtonStyle](https://discord-api-types.dev/api/discord-api-types-v10/enum/ButtonStyle)
+ * @param style
+ * @link `Documentation:` https://simplyd.js.org/docs/misc/toButtonStyle
+ * @example simplydjs.toButtonStyle("PRIMARY")
+ */
+
+export function toButtonStyle(style: string) {
 	// The style options are optional so if its undefined just don't care
 	if (style == undefined) return;
 

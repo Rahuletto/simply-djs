@@ -1,4 +1,5 @@
 import {
+	APIMessageComponentEmoji,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonInteraction,
@@ -10,12 +11,11 @@ import {
 } from 'discord.js';
 import {
 	CustomizableEmbed,
-	ExtendedButtonStyle,
 	ExtendedInteraction,
 	ExtendedMessage,
-	buttonTemplate
+	CustomizableButton
 } from './typedef';
-import { MessageButtonStyle, disableButtons, https, ms, toRgb } from './misc';
+import { toButtonStyle, disableButtons, https, ms, toRgb } from './misc';
 import { SimplyError } from './error';
 
 const limiter: { guild: string; limit: number }[] = [];
@@ -25,16 +25,20 @@ const limiter: { guild: string; limit: number }[] = [];
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Fun/tictactoe#tictactoebuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/fun/tictactoe#tictactoebuttons
  */
 
-interface tictactoeButtons {
-	X?: buttonTemplate;
-	O?: buttonTemplate;
-	blank?: buttonTemplate;
+export interface TictactoeButtons {
+	X?: CustomizableButton;
+	O?: CustomizableButton;
+	blank?: CustomizableButton;
 }
 
-interface Embeds {
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/fun/tictactoe#tictactoeembeds
+ */
+
+export interface TictactoeEmbeds {
 	request?: CustomizableEmbed;
 	win?: CustomizableEmbed;
 	draw?: CustomizableEmbed;
@@ -43,28 +47,19 @@ interface Embeds {
 	decline?: CustomizableEmbed;
 }
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/fun/tictactoe#tictactoeoptions
+ */
+
 export type tictactoeOptions = {
-	embed?: Embeds;
+	embed?: TictactoeEmbeds;
 	user?: User;
 	type?: 'Button' | 'Embed';
-	limitGames: number;
+	max: number;
 
-	buttons?: tictactoeButtons;
+	buttons?: TictactoeButtons;
 
 	strict?: boolean;
-};
-
-type aiOptions = {
-	limitGames: number;
-	blank_emoji?: string;
-	x_emoji?: string;
-	o_emoji?: string;
-	x_style?: ButtonStyle;
-	o_style?: ButtonStyle;
-	emptyStyle?: ButtonStyle;
-	embed?: Embeds;
-	buttons?: tictactoeButtons;
-	type?: 'Button' | 'Embed';
 };
 
 // ------------------------------
@@ -86,13 +81,13 @@ const combinations = [
  * One line implementation of a super enjoyable **tictactoe game**.
  * @param message
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/tictactoe***
+ * @link `Documentation:` https://simplyd.js.org/docs/Fun/tictactoe
  * @example simplydjs.tictactoe(interaction)
  */
 
 export async function tictactoe(
 	message: ExtendedMessage | ExtendedInteraction,
-	options: tictactoeOptions = { limitGames: 5 }
+	options: tictactoeOptions = { max: 5 }
 ): Promise<User> {
 	return new Promise(async (resolve) => {
 		try {
@@ -121,7 +116,7 @@ export async function tictactoe(
 				);
 			}
 
-			if (limiter[id].limit >= options?.limitGames || 5) {
+			if (limiter[id].limit >= options?.max || 5) {
 				if (interaction)
 					return extInteraction.reply({
 						content:
@@ -134,23 +129,29 @@ export async function tictactoe(
 					});
 			}
 
-			const x_emoji = options.buttons?.X?.emoji || '❌';
-			const o_emoji = options.buttons?.O?.emoji || '⭕';
+			const x_emoji =
+				(options.buttons?.X?.emoji as APIMessageComponentEmoji)?.id ||
+				options.buttons?.X?.emoji ||
+				'❌';
+			const o_emoji =
+				(options.buttons?.O?.emoji as APIMessageComponentEmoji)?.id ||
+				options.buttons?.O?.emoji ||
+				'⭕';
 
 			const blank_emoji = options.buttons?.blank?.emoji || '➖';
 
 			if (options?.buttons?.blank?.style as string)
-				options.buttons.blank.style = MessageButtonStyle(
+				options.buttons.blank.style = toButtonStyle(
 					options?.buttons?.blank?.style as string
 				);
 
 			if (options?.buttons?.X?.style as string)
-				options.buttons.X.style = MessageButtonStyle(
+				options.buttons.X.style = toButtonStyle(
 					options?.buttons?.X?.style as string
 				);
 
 			if (options?.buttons?.O?.style as string)
-				options.buttons.O.style = MessageButtonStyle(
+				options.buttons.O.style = toButtonStyle(
 					options?.buttons?.O?.style as string
 				);
 
@@ -166,7 +167,7 @@ export async function tictactoe(
 
 				if (!opponent)
 					return ai(message, {
-						limitGames: options?.limitGames || 5,
+						max: options?.max || 5,
 						blank_emoji: blank_emoji,
 						x_emoji: x_emoji,
 						o_emoji: o_emoji,
@@ -193,7 +194,7 @@ export async function tictactoe(
 				opponent = extMessage.mentions.users.first();
 				if (!opponent)
 					return ai(message, {
-						limitGames: options?.limitGames || 5,
+						max: options?.max || 5,
 						blank_emoji,
 						x_emoji,
 						o_emoji,
@@ -977,9 +978,23 @@ export async function tictactoe(
 	});
 }
 
+// for ai (not useful for user)
+type aiOptions = {
+	max: number;
+	blank_emoji?: string;
+	x_emoji?: string;
+	o_emoji?: string;
+	x_style?: ButtonStyle;
+	o_style?: ButtonStyle;
+	emptyStyle?: ButtonStyle;
+	embed?: TictactoeEmbeds;
+	buttons?: TictactoeButtons;
+	type?: 'Button' | 'Embed';
+};
+
 async function ai(
 	msgOrint: ExtendedMessage | ExtendedInteraction,
-	options: aiOptions = { limitGames: 5 }
+	options: aiOptions = { max: 5 }
 ) {
 	const { client } = msgOrint;
 	let board = ['', '', '', '', '', '', '', '', ''];
@@ -1008,7 +1023,7 @@ async function ai(
 		id = limiter.findIndex((a) => a.guild == msgOrint.guild.id);
 	}
 
-	if (limiter[id].limit >= options?.limitGames || 5) {
+	if (limiter[id].limit >= options?.max || 5) {
 		if (interaction)
 			return extInteraction.followUp({
 				content: 'Sorry, There is a game happening right now. Please try later.'
@@ -1564,7 +1579,7 @@ async function ai(
 		}
 	});
 
-	async function aiEngine(b: string[]): Promise<string[]> {
+	async function aiEngine(boardArray: string[]): Promise<string[]> {
 		let res;
 		res = await https(
 			`simplyapi.js.org`,
@@ -1573,7 +1588,7 @@ async function ai(
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: {
-					board: b
+					board: boardArray
 				}
 			}
 		);

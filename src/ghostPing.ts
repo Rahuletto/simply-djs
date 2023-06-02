@@ -7,6 +7,10 @@ import { toRgb, ms } from './misc';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/ghostPing#ghostoptions
+ */
+
 export type ghostOptions = {
 	strict: boolean;
 	embed?: CustomizableEmbed;
@@ -23,7 +27,7 @@ export type ghostOptions = {
  *
  * @param message
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/ghostPing***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/ghostPing
  * @example simplydjs.ghostPing(message)
  */
 

@@ -1,9 +1,9 @@
 {
 	"name": "simply-djs",
-	"version": "4.0.0-beta-1",
-	"description": "The easiest way to build sophisticated systems in your Discord bots.",
+	"version": "4.0.0-beta-2",
+	"description": "The simplest way to build complex Discord bots.",
 	"main": "lib/simplydjs.js",
-	"typings": "typings/simplydjs.d.ts",
+	"types": "typings/simplydjs.d.ts",
 	"scripts": {
 		"test": "node test",
 		"git": "sh ./gitpush.sh",
@@ -95,7 +95,7 @@
 	],
 	"homepage": "https://simplyd.js.org",
 	"author": "Rahuletto",
-	"license": "CC BY-NC-ND 4.0",
+	"license": "CC-BY-NC-ND-4.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Rahuletto/simply-djs"
@@ -111,6 +111,7 @@
 		"discord.js": "^14.10.2",
 		"husky": "^8.0.3",
 		"openai": "^3.2.1",
-		"pretty-quick": "^3.1.3"
+		"pretty-quick": "^3.1.3",
+		"typescript": "^5.1.3"
 	}
 }

@@ -29,7 +29,11 @@ import { SimplyError } from './error';
 // ------- T Y P I N G S --------
 // ------------------------------
 
-export type embedOptions = {
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/embedCreator#embedcreatoroptions
+ */
+
+export type embedCreatorOptions = {
 	strict?: boolean;
 	embed?: CustomizableEmbed;
 };
@@ -42,13 +46,13 @@ export type embedOptions = {
  * Lets you create embeds with **an interactive builder**
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/embedCreator***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/embedCreator
  * @example simplydjs.embedCreate(interaction)
  */
 
 export async function embedCreator(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: embedOptions = {}
+	options: embedCreatorOptions = {}
 ): Promise<APIEmbed> {
 	return new Promise(async (resolve) => {
 		try {
@@ -144,7 +148,7 @@ export async function embedCreator(
 				.setTitle(options.embed?.title || 'Embed Generator')
 				.setDescription(
 					options.embed?.description ||
-						'Select any ***option*** from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
+						'Select any option from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
 				)
 				.setImage(
 					'https://media.discordapp.net/attachments/885411032128978955/955066865347076226/unknown.png'

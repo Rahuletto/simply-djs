@@ -8,6 +8,10 @@ import { version } from '../simplydjs';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/connect#connectoptions
+ */
+
 export type connectOptions = {
 	strict?: boolean;
 	notify?: boolean;
@@ -18,10 +22,10 @@ export type connectOptions = {
 // ------------------------------
 
 /**
- * Connect to a mongo database to access some of the simply-djs functions ! *Requires* ***[mongodb uri](https://mongodb.com/)***
- * @param db mongoDbUri
+ * Connect to a mongo database to access some of the simply-djs functions ! *Requires* [mongodb uri](https://mongodb.com/)
+ * @param db
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/connect***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/connect
  * @example simplydjs.connect('mongoURI')
  */
 

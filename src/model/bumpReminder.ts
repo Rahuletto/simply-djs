@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-interface Count {
+export interface Count {
 	user: string;
 	count: number;
 }

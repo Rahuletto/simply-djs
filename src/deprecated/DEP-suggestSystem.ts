@@ -1,7 +1,7 @@
 import { Deprecated } from '../error';
 import { ExtendedMessage, ExtendedInteraction } from '../typedef';
 import { InteractionResponse, Message } from 'discord.js';
-import { suggest, suggestOption } from '../suggest';
+import { suggest, suggestOptions } from '../suggest';
 
 /**
  * @deprecated Use {@link suggest()}
@@ -9,7 +9,7 @@ import { suggest, suggestOption } from '../suggest';
 
 export async function suggestSystem(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: suggestOption = { strict: false }
+	options: suggestOptions = { strict: false }
 ): Promise<Message | InteractionResponse> {
 	Deprecated({ desc: 'suggestSystem() is now suggest()' });
 	return await suggest(msgOrInt, options);

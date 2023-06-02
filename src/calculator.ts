@@ -15,7 +15,7 @@ import {
 	ExtendedButtonStyle
 } from './typedef';
 
-import { MessageButtonStyle, toRgb, ms } from './misc';
+import { toButtonStyle, toRgb, ms } from './misc';
 
 import { SimplyError } from './error';
 
@@ -24,18 +24,22 @@ import { SimplyError } from './error';
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/calculator#calcbuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/calculator#calculatorbuttons
  */
 
-interface calcButtons {
+export interface CalculatorButtons {
 	numbers?: ExtendedButtonStyle;
 	symbols?: ExtendedButtonStyle;
 	delete?: ExtendedButtonStyle;
 }
 
-export type calcOptions = {
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/calculator#calculatoroptions
+ */
+
+export type calculatorOptions = {
 	embed?: CustomizableEmbed;
-	buttons?: calcButtons;
+	buttons?: CalculatorButtons;
 	strict?: boolean;
 };
 
@@ -47,13 +51,13 @@ export type calcOptions = {
  * An Unique **calculator** which can be *used inside Discord*
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/calculator***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/calculator
  * @example simplydjs.calculator(interaction)
  */
 
 export async function calculator(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: calcOptions = {
+	options: calculatorOptions = {
 		buttons: {
 			numbers: ButtonStyle.Secondary,
 			symbols: ButtonStyle.Primary,
@@ -109,17 +113,17 @@ export async function calculator(
 			delete: options?.buttons?.delete || ButtonStyle.Danger
 		};
 		if (options?.buttons?.delete as string)
-			options.buttons.delete = MessageButtonStyle(
+			options.buttons.delete = toButtonStyle(
 				options?.buttons?.delete as string
 			);
 
 		if (options?.buttons?.numbers as string)
-			options.buttons.numbers = MessageButtonStyle(
+			options.buttons.numbers = toButtonStyle(
 				options?.buttons?.numbers as string
 			);
 
 		if (options?.buttons?.symbols as string)
-			options.buttons.symbols = MessageButtonStyle(
+			options.buttons.symbols = toButtonStyle(
 				options?.buttons?.symbols as string
 			);
 

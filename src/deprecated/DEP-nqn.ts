@@ -1,9 +1,13 @@
 import { Message, TextChannel } from 'discord.js';
-import { SimplyError } from './error/SimplyError';
+import { Deprecated, SimplyError } from '../error';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
+
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/deprecated/nqn#nqnoptions
+ */
 
 export type nqnOptions = {
 	strict?: boolean;
@@ -14,13 +18,19 @@ export type nqnOptions = {
 // ------------------------------
 
 /**
+ * @deprecated Removed from the package
+ *
  * NQN bot feature. But you have the power to do it.
  * @param message
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/nqn***
+ * @link `Documentation:` https://simplyd.js.org/docs/deprecated/nqn
  * @example simplydjs.nqn(message)
  */
 
 export async function nqn(message: Message, options: nqnOptions = {}) {
+	Deprecated({
+		desc: 'Removed nqn() from the package. Please use other package or our code in github.'
+	});
+
 	try {
 		const { client } = message;
 

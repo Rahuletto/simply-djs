@@ -12,6 +12,10 @@ import {
 import { ms } from '../misc';
 import { Deprecated, SimplyError } from '../error';
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/deprecated/stealEmoji#stealoptions
+ */
+
 export type stealOptions = {
 	embed?: CustomizableEmbed;
 	emoji?: string;
@@ -30,7 +34,7 @@ export type stealOptions = {
  * How cool is **stealing an emoji** from another server ? Feel the power with this function
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/stealEmoji***
+ * @link `Documentation:` https://simplyd.js.org/docs/deprecated/stealEmoji
  * @example simplydjs.stealEmoji(interaction)
  */
 

@@ -6,28 +6,30 @@ import {
 	ButtonStyle
 } from 'discord.js';
 
-import {
-	ExtendedInteraction,
-	ExtendedMessage,
-	ExtendedButtonStyle
-} from './typedef';
+import { ExtendedInteraction, ExtendedMessage } from './typedef';
 
-import { MessageButtonStyle } from './misc';
+import { toButtonStyle } from './misc';
 
 import { SimplyError } from './error';
+import { CustomizableButton } from './typedef/CustomizableButton';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface Button {
-	label?: string;
-	role?: Role;
-	style?: ExtendedButtonStyle;
-	emoji?: string;
-}
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/betterBtnRole#buttons
+ */
 
-interface MessageContents {
+type Buttons = {
+	role?: Role;
+} & CustomizableButton;
+
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/betterBtnRole#messagecontents
+ */
+
+export interface MessageContents {
 	invalidMessage?: string;
 	otherUserMessage?: string;
 	update?: string;
@@ -36,11 +38,15 @@ interface MessageContents {
 	noButton?: string;
 }
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/systems/betterBtnRole#betterbtnoptions
+ */
+
 export type betterbtnOptions = {
 	strict?: boolean;
 	type?: 'Add' | 'Remove';
 	channel?: TextChannel;
-	button?: Button;
+	button?: Buttons;
 	messageId?: string;
 	contents?: MessageContents;
 };
@@ -53,14 +59,14 @@ export type betterbtnOptions = {
  * A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  * @param interaction
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/betterBtnRole***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/betterBtnRole
  * @example simplydjs.betterBtnRole(client, interaction)
  */
 
 export async function betterBtnRole(
 	interaction: ExtendedInteraction,
 	options: betterbtnOptions = {}
-): Promise<string> {
+): Promise<void> {
 	return new Promise(async () => {
 		const { client } = interaction;
 
@@ -153,7 +159,7 @@ export async function betterBtnRole(
 					}
 				}
 
-				if (color as string) color = MessageButtonStyle(color as string);
+				if (color as string) color = toButtonStyle(color as string);
 
 				const btn = new ButtonBuilder()
 					.setLabel(label)

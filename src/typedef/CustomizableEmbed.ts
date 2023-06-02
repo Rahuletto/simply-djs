@@ -8,7 +8,7 @@ import {
 /**
  * An Object to customize any embed that is sent from the simply-djs package
  *
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ * **Documentation Url** of the type: *https://simplyd.js.org/docs/typedef/CustomizableEmbed*
  * @returns {CustomizableEmbed}
  *
  * @example
@@ -22,17 +22,16 @@ import {
  *
  */
 
-export interface CustomizableEmbed {
+export type CustomizableEmbed = {
 	author?: EmbedAuthorData;
 	title?: string;
 	url?: string;
-
-	thumbnail?: string;
 
 	color?: ColorResolvable;
 	description?: string;
 	fields?: APIEmbedField[];
 
+	thumbnail?: string;
 	image?: string;
 
 	footer?: EmbedFooterData;
@@ -40,4 +39,4 @@ export interface CustomizableEmbed {
 	// Removed the credit option
 
 	/** credit?: boolean; */
-}
+};

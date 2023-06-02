@@ -9,7 +9,11 @@ import {
 import { SimplyError } from './error/SimplyError';
 import { ExtendedMessage, CustomizableEmbed } from './typedef';
 
-export type starboardOption = {
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/starboard#starboardoptions
+ */
+
+export type starboardOptions = {
 	embed?: CustomizableEmbed;
 	channelId?: string;
 	min?: number;
@@ -28,13 +32,13 @@ export type starboardOption = {
  * `NOTE:` **Only Use it in `messageReactionAdd`, `messageReactionRemove` and `messageDelete` events.**
  * @param reaction
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/starboard***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/starboard
  * @example simplydjs.starboard(reaction, { channelId: '1234567890123' })
  */
 
 export async function starboard(
 	reactionOrMessage: MessageReaction | ExtendedMessage,
-	options: starboardOption = {}
+	options: starboardOptions = {}
 ) {
 	const { client } = reactionOrMessage;
 	const minimumRequired = options.min || 2;

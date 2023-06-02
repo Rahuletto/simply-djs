@@ -7,7 +7,7 @@ export interface Entry {
 	messageId: string;
 }
 
-interface Requirement {
+export interface Requirement {
 	type: 'guild' | 'role' | 'none';
 	id?: string;
 }

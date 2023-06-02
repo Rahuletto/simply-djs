@@ -8,6 +8,10 @@ import { CustomizableEmbed } from './typedef';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/systems/meme#memeoptions
+ */
+
 export type memeOptions = {
 	embed?: CustomizableEmbed;
 	channelId?: string;
@@ -25,7 +29,7 @@ export type memeOptions = {
  * The memes are sent automatically, so others will able to laugh at the jokes without having to do anything !
  * @param clientOrChannel
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/meme***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/meme
  * @example simplydjs.meme(client, { channelId: '1234567890123' })
  * @example simplydjs.meme(channel, { sub: ["coding", "memes"] })
  */

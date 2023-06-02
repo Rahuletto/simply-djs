@@ -12,29 +12,33 @@ import {
 import {
 	ExtendedInteraction,
 	ExtendedMessage,
-	buttonTemplate
+	CustomizableButton
 } from './typedef';
 
 import { SimplyError } from './error';
-import { MessageButtonStyle, ms } from './misc';
+import { toButtonStyle, ms } from './misc';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/embedPages#pagebuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/buttonPages#pagebuttons
  */
 
-interface Pagebuttons {
-	firstBtn?: buttonTemplate;
-	nextBtn?: buttonTemplate;
-	backBtn?: buttonTemplate;
-	lastBtn?: buttonTemplate;
-	deleteBtn?: buttonTemplate;
+export interface Pagebuttons {
+	firstBtn?: CustomizableButton;
+	nextBtn?: CustomizableButton;
+	backBtn?: CustomizableButton;
+	lastBtn?: CustomizableButton;
+	deleteBtn?: CustomizableButton;
 }
 
-export type pagesOption = {
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/buttonPages#pagesoptions
+ */
+
+export type pagesOptions = {
 	buttons?: Pagebuttons;
 
 	skips?: boolean;
@@ -59,13 +63,13 @@ export type pagesOption = {
  *
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/buttonPages***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/buttonPages
  * @example simplydjs.buttonPages(interaction, [embed1, embed2] )
  */
 
 export async function buttonPages(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: pagesOption = {}
+	options: pagesOptions = {}
 ): Promise<void> {
 	try {
 		options.skips ??= true;
@@ -140,27 +144,27 @@ export async function buttonPages(
 		};
 
 		if (options?.buttons?.firstBtn?.style as string)
-			options.buttons.firstBtn.style = MessageButtonStyle(
+			options.buttons.firstBtn.style = toButtonStyle(
 				options?.buttons?.firstBtn?.style as string
 			);
 
 		if (options?.buttons?.nextBtn?.style as string)
-			options.buttons.nextBtn.style = MessageButtonStyle(
+			options.buttons.nextBtn.style = toButtonStyle(
 				options.buttons?.nextBtn?.style as string
 			);
 
 		if (options?.buttons?.backBtn?.style as string)
-			options.buttons.backBtn.style = MessageButtonStyle(
+			options.buttons.backBtn.style = toButtonStyle(
 				options?.buttons?.backBtn?.style as string
 			);
 
 		if (options?.buttons?.lastBtn?.style as string)
-			options.buttons.lastBtn.style = MessageButtonStyle(
+			options.buttons.lastBtn.style = toButtonStyle(
 				options?.buttons?.lastBtn?.style as string
 			);
 
 		if (options?.buttons?.deleteBtn?.style as string)
-			options.buttons.deleteBtn.style = MessageButtonStyle(
+			options.buttons.deleteBtn.style = toButtonStyle(
 				options?.buttons?.deleteBtn?.style as string
 			);
 

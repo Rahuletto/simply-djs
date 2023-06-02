@@ -11,18 +11,23 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	CustomizableEmbed,
-	buttonTemplate
+	CustomizableButton
 } from './typedef';
 
 import { SimplyError } from './error/SimplyError';
-import { MessageButtonStyle, toRgb } from './misc';
+import { toButtonStyle, toRgb } from './misc';
+
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/systems/ticketSetup#ticketsetupoptions
+ */
+
 export type ticketSetupOptions = {
 	embed?: CustomizableEmbed;
-	button?: buttonTemplate;
+	button?: CustomizableButton;
 	channelId?: string;
 	strict: boolean;
 };
@@ -36,7 +41,7 @@ export type ticketSetupOptions = {
  *
  * @param msgOrint
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/ticketSetup***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/ticketSetup
  * @example simplydjs.ticketSetup(interaction, { channelId: '0123456789012' })
  */
 
@@ -113,9 +118,7 @@ export async function ticketSetup(
 		}
 
 		if (options?.button?.style as string)
-			options.button.style = MessageButtonStyle(
-				options?.button?.style as string
-			);
+			options.button.style = toButtonStyle(options?.button?.style as string);
 
 		const ticketbtn = new ButtonBuilder()
 			.setStyle((options?.button?.style as ButtonStyle) || ButtonStyle.Primary)

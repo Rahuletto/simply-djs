@@ -11,23 +11,27 @@ import {
 import {
 	ExtendedInteraction,
 	ExtendedMessage,
-	buttonTemplate,
+	CustomizableButton,
 	CustomizableEmbed
 } from './typedef';
-import { MessageButtonStyle, toRgb, ms } from './misc';
+import { toButtonStyle, toRgb, ms } from './misc';
 import { SimplyError } from './error/SimplyError';
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Fun/rps#rpsbuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/fun/rps#rpsbuttons
  */
 
-interface rpsButtons {
-	rock?: buttonTemplate;
-	paper?: buttonTemplate;
-	scissor?: buttonTemplate;
+export interface RpsButtons {
+	rock?: CustomizableButton;
+	paper?: CustomizableButton;
+	scissor?: CustomizableButton;
 }
 
-interface Embeds {
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/fun/rps#rpsembeds
+ */
+
+export interface RpsEmbeds {
 	request?: CustomizableEmbed;
 	win?: CustomizableEmbed;
 	draw?: CustomizableEmbed;
@@ -36,9 +40,13 @@ interface Embeds {
 	decline?: CustomizableEmbed;
 }
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/fun/rps#rpsoptions
+ */
+
 export type rpsOptions = {
-	embed?: Embeds;
-	buttons?: rpsButtons;
+	embed?: RpsEmbeds;
+	buttons?: RpsButtons;
 	opponent?: User;
 
 	strict?: boolean;
@@ -58,7 +66,7 @@ const combinations = {
  *
  * @param msgOrint
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Fun/rps***
+ * @link `Documentation:` https://simplyd.js.org/docs/Fun/rps
  * @example simplydjs.rps(interaction)
  */
 
@@ -99,16 +107,16 @@ export async function rps(
 		};
 
 		if (options?.buttons?.rock?.style as string)
-			options.buttons.rock.style = MessageButtonStyle(
+			options.buttons.rock.style = toButtonStyle(
 				options?.buttons?.rock?.style as string
 			);
 
 		if (options?.buttons?.paper?.style as string)
-			options.buttons.paper.style = MessageButtonStyle(
+			options.buttons.paper.style = toButtonStyle(
 				options?.buttons?.paper?.style as string
 			);
 		if (options?.buttons?.scissor?.style as string)
-			options.buttons.scissor.style = MessageButtonStyle(
+			options.buttons.scissor.style = toButtonStyle(
 				options?.buttons?.scissor?.style as string
 			);
 

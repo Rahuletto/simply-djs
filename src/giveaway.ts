@@ -18,11 +18,11 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	CustomizableEmbed,
-	buttonTemplate
+	CustomizableButton
 } from './typedef';
 
 import model, { Entry } from './model/giveaway';
-import { MessageButtonStyle, disableButtons, ms, toRgb } from './misc';
+import { toButtonStyle, disableButtons, ms, toRgb } from './misc';
 import { SimplyError } from './error';
 import { EndResolve } from './handler/manageGiveaway';
 
@@ -30,20 +30,28 @@ import { EndResolve } from './handler/manageGiveaway';
 // ------- T Y P I N G S --------
 // ------------------------------
 
-interface Requirement {
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#requirements
+ */
+
+export interface Requirements {
 	type: 'Role' | 'Guild' | 'None';
 	id: string;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/giveawaybuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#giveawaybuttons
  */
 
-interface giveawayButtons {
-	enter?: buttonTemplate;
-	end?: buttonTemplate;
-	reroll?: buttonTemplate;
+export interface GiveawayButtons {
+	enter?: CustomizableButton;
+	end?: CustomizableButton;
+	reroll?: CustomizableButton;
 }
+
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#giveawayembeds
+ */
 
 export interface GiveawayEmbeds {
 	giveaway?: CustomizableEmbed;
@@ -51,17 +59,21 @@ export interface GiveawayEmbeds {
 	result?: CustomizableEmbed;
 }
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/systems/giveaway#giveawayoptions
+ */
+
 export type giveawayOptions = {
 	prize?: string;
 	winners?: number;
 	channel?: GuildTextBasedChannel | TextChannel;
 	time?: string;
 
-	buttons?: giveawayButtons;
+	buttons?: GiveawayButtons;
 
 	manager?: Role | string;
 
-	requirements?: Requirement;
+	requirements?: Requirements;
 	pingRole?: Role | string;
 
 	embed?: GiveawayEmbeds;
@@ -69,6 +81,14 @@ export type giveawayOptions = {
 	type?: 'Label' | 'Emoji' | 'Both';
 	strict?: boolean;
 };
+
+// ------------------------------
+// ------ R E S O L V E S -------
+// ------------------------------
+
+/**
+ * **Documentation Url** of the resolve: https://simplyd.js.org/docs/systems/giveaway#giveawayresolve
+ */
 
 export interface GiveawayResolve {
 	message: Message;
@@ -83,10 +103,10 @@ export interface GiveawayResolve {
 // ------------------------------
 
 /**
- * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()***
+ * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/giveway***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/giveway
  * @example simplydjs.giveaway(interaction)
  */
 
@@ -238,17 +258,17 @@ export async function giveaway(
 			}
 
 			if (options?.buttons?.enter?.style as string)
-				options.buttons.enter.style = MessageButtonStyle(
+				options.buttons.enter.style = toButtonStyle(
 					options.buttons?.enter?.style as string
 				);
 
 			if (options?.buttons?.end?.style as string)
-				options.buttons.end.style = MessageButtonStyle(
+				options.buttons.end.style = toButtonStyle(
 					options.buttons?.end?.style as string
 				);
 
 			if (options?.buttons?.reroll?.style as string)
-				options.buttons.reroll.style = MessageButtonStyle(
+				options.buttons.reroll.style = toButtonStyle(
 					options.buttons?.reroll?.style as string
 				);
 

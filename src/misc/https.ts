@@ -5,6 +5,10 @@ import { HttpsError } from '../error';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/misc/https#httpsoptions
+ */
+
 export type httpsOptions = {
 	method:
 		| 'GET'
@@ -25,7 +29,7 @@ export type httpsOptions = {
  * @param host
  * @param endpoint
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Others/https***
+ * @link `Documentation:` https://simplyd.js.org/docs/misc/https
  * @example simplydjs.https("postman-echo.com", "/get") // An Echo endpoint
  */
 

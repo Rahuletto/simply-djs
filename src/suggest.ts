@@ -19,22 +19,25 @@ import {
 	ExtendedInteraction,
 	ExtendedMessage,
 	CustomizableEmbed,
-	buttonTemplate
+	CustomizableButton
 } from './typedef';
-import {} from './typedef/CustomizableEmbed';
-import { MessageButtonStyle, ms, toRgb } from './misc';
+import { toButtonStyle, ms, toRgb } from './misc';
 
 import { Document as Doc } from 'mongoose';
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Systems/suggest#suggestbuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#suggestbuttons
  */
 
-interface suggestButtons {
-	votedInfo?: buttonTemplate;
-	upvote?: buttonTemplate;
-	downvote?: buttonTemplate;
+export interface SuggestButtons {
+	votedInfo?: CustomizableButton;
+	upvote?: CustomizableButton;
+	downvote?: CustomizableButton;
 }
+
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#progress
+ */
 
 export interface Progress {
 	up: string;
@@ -42,11 +45,15 @@ export interface Progress {
 	blank: string;
 }
 
-export type suggestOption = {
+/**
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#suggestoptions
+ */
+
+export type suggestOptions = {
 	embed?: CustomizableEmbed;
 	channelId?: string | TextChannel;
 	suggestion?: string;
-	buttons?: suggestButtons;
+	buttons?: SuggestButtons;
 	progress?: Progress;
 	strict: boolean;
 };
@@ -59,13 +66,13 @@ export type suggestOption = {
  * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
  * @param msgOrint
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/suggestSystem
  * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
  */
 
 export async function suggest(
 	msgOrint: ExtendedMessage | ExtendedInteraction,
-	options: suggestOption = { strict: false }
+	options: suggestOptions = { strict: false }
 ) {
 	try {
 		const { client } = msgOrint;
@@ -130,15 +137,15 @@ export async function suggest(
 		};
 
 		if (options?.buttons?.upvote.style as string)
-			options.buttons.upvote.style = MessageButtonStyle(
+			options.buttons.upvote.style = toButtonStyle(
 				options?.buttons?.upvote.style as string
 			);
 		if (options?.buttons?.downvote.style as string)
-			options.buttons.downvote.style = MessageButtonStyle(
+			options.buttons.downvote.style = toButtonStyle(
 				options?.buttons?.downvote.style as string
 			);
 		if (options?.buttons?.votedInfo.style as string)
-			options.buttons.votedInfo.style = MessageButtonStyle(
+			options.buttons.votedInfo.style = toButtonStyle(
 				options?.buttons?.votedInfo.style as string
 			);
 

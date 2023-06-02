@@ -15,9 +15,9 @@ import {
 	TextChannel,
 	User
 } from 'discord.js';
-import { buttonTemplate, CustomizableEmbed } from '../typedef';
+import { CustomizableButton, CustomizableEmbed } from '../typedef';
 
-import { MessageButtonStyle, toRgb, ms } from '../misc';
+import { toButtonStyle, toRgb, ms } from '../misc';
 
 import { SimplyError } from '../error';
 
@@ -26,23 +26,27 @@ import { SimplyError } from '../error';
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Handler/manageTicket#ticketbuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/handler/manageTicket#ticketbuttons
  */
 
-interface ticketButtons {
-	close: buttonTemplate;
-	reopen: buttonTemplate;
-	delete: buttonTemplate;
-	transcript: buttonTemplate;
+export interface TicketButtons {
+	close: CustomizableButton;
+	reopen: CustomizableButton;
+	delete: CustomizableButton;
+	transcript: CustomizableButton;
 }
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/handler/manageTicket#manageticketoptions
+ */
+
 export type manageTicketOptions = {
 	ticketname?: string;
-	buttons?: ticketButtons;
+	buttons?: TicketButtons;
 	pingRoles?: Role[] | string[];
 	category?: string;
 	embed?: CustomizableEmbed;
@@ -54,6 +58,10 @@ export type manageTicketOptions = {
 // ------------------------------
 // ------- P R O M I S E --------
 // ------------------------------
+
+/**
+ * **Documentation Url** of the resolve: https://simplyd.js.org/docs/handler/manageTicket#deleteresolve
+ */
 
 export type DeleteResolve = {
 	type?: 'Delete';
@@ -68,28 +76,28 @@ export type DeleteResolve = {
 
 /**
  * A Ticket Handler for **simplydjs ticket system.**
- * @param interaction
+ * @param button
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageTicket***
+ * @link `Documentation:` https://simplyd.js.org/docs/handler/manageTicket
  * @example simplydjs.manageTicket(interaction)
  */
 
 export async function manageTicket(
-	interaction: ButtonInteraction,
+	button: ButtonInteraction,
 	options: manageTicketOptions = {}
 ): Promise<DeleteResolve> {
 	return new Promise(async (resolve) => {
-		const { client } = interaction;
+		const { client } = button;
 
-		if (interaction.isButton()) {
+		if (button.isButton()) {
 			try {
-				const member = interaction.member as GuildMember;
+				const member = button.member as GuildMember;
 
 				// ------------------------------
 				// ---- T I C K E T - S Y S -----
 				// ------------------------------
-				if (interaction.customId === 'create_ticket') {
-					await interaction.deferReply({ ephemeral: true });
+				if (button.customId === 'create_ticket') {
+					await button.deferReply({ ephemeral: true });
 
 					let name = options?.ticketname || `ticket_{tag}`;
 
@@ -100,20 +108,18 @@ export async function manageTicket(
 
 					const topic = `Ticket has been opened by <@${member.user.id}>`;
 
-					const existing = interaction.guild.channels.cache.find(
+					const existing = button.guild.channels.cache.find(
 						(ch) => (ch as TextChannel).topic === topic
 					);
 
 					if (existing) {
-						await interaction.editReply({
+						await button.editReply({
 							content: `You have an existing ticket opened (${existing.toString()}). Close it before creating a new one.`
 						});
 					} else if (!existing) {
 						let chparent: CategoryChannel | null;
 
-						const category = interaction.guild.channels.cache.get(
-							options?.category
-						);
+						const category = button.guild.channels.cache.get(options?.category);
 
 						if (!category) {
 							chparent = null;
@@ -137,7 +143,7 @@ export async function manageTicket(
 							});
 						});
 
-						const channel = await interaction.guild.channels.create({
+						const channel = await button.guild.channels.create({
 							name: name,
 							type: ChannelType.GuildText,
 							topic: topic,
@@ -146,7 +152,7 @@ export async function manageTicket(
 							permissionOverwrites: [
 								...pingRolePermissions,
 								{
-									id: interaction.guild.roles.everyone,
+									id: button.guild.roles.everyone,
 									deny: [
 										PermissionFlagsBits.ViewChannel,
 										PermissionFlagsBits.SendMessages,
@@ -172,7 +178,7 @@ export async function manageTicket(
 							]
 						});
 
-						await interaction.editReply({
+						await button.editReply({
 							content: `🎫 Opened your support ticket in ${channel.toString()}.`
 						});
 
@@ -186,11 +192,9 @@ export async function manageTicket(
 									.replaceAll('{user}', member.user.toString())
 									.replaceAll('{tag}', (member.user as User).tag)
 									.replaceAll('{id}', member.user.id)
-									.replaceAll('{guild}', interaction.guild.name)
+									.replaceAll('{guild}', button.guild.name)
 							)
-							.setThumbnail(
-								options.embed?.thumbnail || interaction.guild.iconURL()
-							)
+							.setThumbnail(options.embed?.thumbnail || button.guild.iconURL())
 							.setTimestamp()
 							.setColor(options?.embed?.color || toRgb('#406DBC'))
 							.setFooter(
@@ -213,22 +217,22 @@ export async function manageTicket(
 						if (options?.embed?.url) embed.setURL(options?.embed?.url);
 
 						if (options?.buttons?.close?.style as string)
-							options.buttons.close.style = MessageButtonStyle(
+							options.buttons.close.style = toButtonStyle(
 								options?.buttons?.close?.style as string
 							);
 
 						if (options?.buttons?.reopen?.style as string)
-							options.buttons.reopen.style = MessageButtonStyle(
+							options.buttons.reopen.style = toButtonStyle(
 								options?.buttons?.reopen?.style as string
 							);
 
 						if (options?.buttons?.delete?.style as string)
-							options.buttons.delete.style = MessageButtonStyle(
+							options.buttons.delete.style = toButtonStyle(
 								options?.buttons?.delete?.style as string
 							);
 
 						if (options?.buttons?.transcript?.style as string)
-							options.buttons.transcript.style = MessageButtonStyle(
+							options.buttons.transcript.style = toButtonStyle(
 								options?.buttons?.transcript?.style as string
 							);
 
@@ -257,13 +261,13 @@ export async function manageTicket(
 								await msg.pin();
 							});
 					}
-				} else if (interaction.customId === 'close_ticket') {
-					await interaction.reply({
+				} else if (button.customId === 'close_ticket') {
+					await button.reply({
 						content: 'Locking the channel.',
 						ephemeral: true
 					});
 
-					(interaction.channel as TextChannel).permissionOverwrites
+					(button.channel as TextChannel).permissionOverwrites
 						.edit(member, {
 							SendMessages: false
 						})
@@ -302,13 +306,13 @@ export async function manageTicket(
 						transcriptBtn
 					]);
 
-					await interaction.message.edit({
+					await button.message.edit({
 						components: [row]
 					});
-				} else if (interaction.customId === 'tr_ticket') {
-					await interaction.deferReply({ ephemeral: true });
+				} else if (button.customId === 'tr_ticket') {
+					await button.deferReply({ ephemeral: true });
 
-					let messages = await interaction.channel.messages.fetch({
+					let messages = await button.channel.messages.fetch({
 						limit: 100
 					});
 
@@ -332,17 +336,15 @@ export async function manageTicket(
 						);
 					});
 
-					await interaction.editReply({
+					await button.editReply({
 						content: 'Collecting messages to create logs'
 					});
 
-					let user: GuildMember | string = (
-						interaction.channel as TextChannel
-					).topic
+					let user: GuildMember | string = (button.channel as TextChannel).topic
 						.replace(`Ticket has been opened by <@`, '')
 						.replace('>', '');
 
-					user = await interaction.guild.members.fetch(user);
+					user = await button.guild.members.fetch(user);
 
 					const attach = new AttachmentBuilder(
 						Buffer.from(response.join(`\n`), 'utf-8'),
@@ -352,15 +354,15 @@ export async function manageTicket(
 					);
 
 					setTimeout(async () => {
-						await interaction.followUp({
+						await button.followUp({
 							content: 'Done. Generated the logs',
 							files: [attach],
 							embeds: [],
 							ephemeral: false
 						});
 					}, ms('3s'));
-				} else if (interaction.customId === 'delete_ticket') {
-					await interaction.deferReply({ ephemeral: false });
+				} else if (button.customId === 'delete_ticket') {
+					await button.deferReply({ ephemeral: false });
 
 					const del = new ButtonBuilder()
 						.setCustomId('yes_delete')
@@ -377,18 +379,18 @@ export async function manageTicket(
 						cancel
 					]);
 
-					interaction.editReply({
+					button.editReply({
 						content: 'Are you sure ?? This process is not reversible !',
 						components: [row]
 					});
-				} else if (interaction.customId === 'yes_delete') {
-					await interaction.message.edit({
+				} else if (button.customId === 'yes_delete') {
+					await button.message.edit({
 						content: 'Deleting the channel..',
 						embeds: [],
 						components: []
 					});
 
-					let messages = await interaction.channel.messages.fetch({
+					let messages = await button.channel.messages.fetch({
 						limit: 100
 					});
 					const response: string[] = [];
@@ -411,13 +413,11 @@ export async function manageTicket(
 						);
 					});
 
-					let user: GuildMember | string = (
-						interaction.channel as TextChannel
-					).topic
+					let user: GuildMember | string = (button.channel as TextChannel).topic
 						.replace(`Ticket has been opened by <@`, '')
 						.replace('>', '');
 
-					user = await interaction.guild.members.fetch(user);
+					user = await button.guild.members.fetch(user);
 
 					const attach = new AttachmentBuilder(
 						Buffer.from(response.join(`\n`), 'utf-8'),
@@ -428,7 +428,7 @@ export async function manageTicket(
 
 					resolve({
 						type: 'Delete',
-						channelId: interaction.channel.id,
+						channelId: button.channel.id,
 						user: user.user,
 						data: attach
 					});
@@ -440,7 +440,7 @@ export async function manageTicket(
 							const log = new EmbedBuilder()
 								.setTitle('Ticket deleted')
 								.setDescription(
-									`Ticket with the name: \`${interaction.channel.name}\` got deleted. Opened by: ${user.user}.`
+									`Ticket with the name: \`${button.channel.name}\` got deleted. Opened by: ${user.user}.`
 								)
 								.setTimestamp()
 								.setColor('Red');
@@ -453,22 +453,22 @@ export async function manageTicket(
 					}
 
 					setTimeout(async () => {
-						await interaction.channel.delete();
+						await button.channel.delete();
 					}, ms('5s'));
-				} else if (interaction.customId === 'cancel') {
-					await interaction.deferUpdate();
+				} else if (button.customId === 'cancel') {
+					await button.deferUpdate();
 
-					interaction.message.edit({
+					button.message.edit({
 						content: 'You cancelled to delete',
 						components: []
 					});
-				} else if (interaction.customId === 'open_ticket') {
-					await interaction.reply({
+				} else if (button.customId === 'open_ticket') {
+					await button.reply({
 						content: 'Unlocking the channel.',
 						ephemeral: true
 					});
 
-					(interaction.channel as TextChannel).permissionOverwrites
+					(button.channel as TextChannel).permissionOverwrites
 						.edit(member, {
 							SendMessages: true
 						})
@@ -487,7 +487,7 @@ export async function manageTicket(
 						close
 					]);
 
-					(interaction.message as Message).edit({ components: [row] });
+					(button.message as Message).edit({ components: [row] });
 				}
 			} catch (err: any) {
 				if (options?.strict)

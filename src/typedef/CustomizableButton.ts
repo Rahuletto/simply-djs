@@ -3,8 +3,8 @@ import { ExtendedButtonStyle } from './ExtendedButtonStyle';
 /**
  * An Object to customize buttons in specific function
  *
- * **URL** of the Type: *https://simplyd.js.org/docs/types/buttonTemplate*
- * @returns {buttonTemplate}
+ * **Documentation Url** of the type: *https://simplyd.js.org/docs/typedef/CustomizableButton*
+ * @returns {CustomizableButton}
  *
  * @example
  * simplydjs.someFunction(client, {
@@ -20,7 +20,7 @@ import { ExtendedButtonStyle } from './ExtendedButtonStyle';
  *
  */
 
-export interface buttonTemplate {
+export interface CustomizableButton {
 	style?: ExtendedButtonStyle;
 	label?: string;
 	emoji?: string;

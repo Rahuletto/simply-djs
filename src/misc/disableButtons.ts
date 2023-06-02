@@ -3,7 +3,7 @@ import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 /**
  * Disable all buttons in a row
  * @param components
- * @link `Documentation:` ***https://simplyd.js.org/docs/Others/disableButtons***
+ * @link `Documentation:` https://simplyd.js.org/docs/misc/disableButtons
  * @example simplydjs.disableButtons(row)
  */
 

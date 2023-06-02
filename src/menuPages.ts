@@ -16,10 +16,10 @@ import { ms } from './misc';
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#deleteoption*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/menuPages#deleteoption
  */
 
-interface deleteOption {
+export interface deleteOption {
 	enable?: boolean;
 	label?: string;
 	description?: string;
@@ -27,17 +27,21 @@ interface deleteOption {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#dataobject*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/menuPages#dataobject
  */
 
-interface dataObject {
+export interface dataObject {
 	label?: string;
 	description?: string;
 	embed?: EmbedBuilder;
 	emoji?: string;
 }
 
-export type menuEmbOptions = {
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/menuPages#menupagesoption
+ */
+
+export type menuPagesOptions = {
 	type?: 'Send' | 'Edit';
 	rows?: ActionRowBuilder<StringSelectMenuBuilder>[];
 	embed?: EmbedBuilder;
@@ -58,13 +62,13 @@ export type menuEmbOptions = {
  * An Embed paginator using Select Menus
  * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/menuPages***
+ * @link `Documentation:` https://simplyd.js.org/docs/general/menuPages
  * @example simplydjs.menuPages(interaction, { data: {...} })
  */
 
 export async function menuPages(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: menuEmbOptions = {}
+	options: menuPagesOptions = {}
 ) {
 	try {
 		const type: string = options.type || 'Send';

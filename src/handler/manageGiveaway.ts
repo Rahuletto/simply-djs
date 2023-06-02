@@ -20,6 +20,10 @@ import { disableButtons, ms, toRgb } from '../misc';
 // ------- T Y P I N G S --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the options: *https://simplyd.js.org/docs/handler/manageGiveaway#managegiveawayoptions*
+ */
+
 export type manageGiveawayOptions = {
 	strict?: boolean;
 };
@@ -28,11 +32,19 @@ export type manageGiveawayOptions = {
 // ------- P R O M I S E --------
 // ------------------------------
 
+/**
+ * **Documentation Url** of the resolve: https://simplyd.js.org/docs/handler/manageGiveaway#rerollresolve
+ */
+
 export type RerollResolve = {
 	type?: 'Reroll';
 	user?: GuildMember[];
 	url?: string;
 };
+
+/**
+ * **Documentation Url** of the resolve: https://simplyd.js.org/docs/handler/manageGiveaway#endresolve
+ */
 
 export type EndResolve = {
 	type?: 'End';
@@ -46,33 +58,33 @@ export type EndResolve = {
 
 /**
  * A Giveaway Handler for **simplydjs giveaway system.**
- * @param interaction
+ * @param button
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Handler/manageGiveaway***
+ * @link `Documentation:` https://simplyd.js.org/docs/handler/manageGiveaway
  * @example simplydjs.manageGiveaway(interaction)
  */
 
 export async function manageGiveaway(
-	interaction: ButtonInteraction,
+	button: ButtonInteraction,
 	options: manageGiveawayOptions = {}
 ): Promise<RerollResolve | EndResolve> {
 	return new Promise(async (resolve) => {
-		if (interaction.isButton()) {
+		if (button.isButton()) {
 			try {
-				const member = interaction.member;
+				const member = button.member;
 
 				// ------------------------------
 				// ------ G I V E A W A Y -------
 				// ------------------------------
 
-				if (interaction.customId === 'enter_giveaway') {
-					await interaction.deferUpdate();
+				if (button.customId === 'enter_giveaway') {
+					await button.deferUpdate();
 					const data = await model.findOne({
-						message: interaction.message.id
+						message: button.message.id
 					});
 
 					if (Number(data.endTime) < Date.now())
-						return await interaction.followUp({
+						return await button.followUp({
 							content: 'Wait a second, This event has already ended',
 							ephemeral: true
 						});
@@ -84,7 +96,7 @@ export async function manageGiveaway(
 						if (entries) {
 							await model.findOneAndUpdate(
 								{
-									message: interaction.message.id
+									message: button.message.id
 								},
 								{
 									$pull: { entry: { userId: member.user.id } }
@@ -94,7 +106,7 @@ export async function manageGiveaway(
 							data.entered = data.entered - 1;
 
 							await data.save().then(async () => {
-								return await interaction.followUp({
+								return await button.followUp({
 									content: "You've left the giveaway.",
 									ephemeral: true
 								});
@@ -102,26 +114,26 @@ export async function manageGiveaway(
 						} else if (!entries) {
 							if (data?.requirements?.type === 'role') {
 								if (
-									!(
-										interaction.member.roles as GuildMemberRoleManager
-									).cache.find((r: Role) => r.id === data?.requirements?.id)
+									!(button.member.roles as GuildMemberRoleManager).cache.find(
+										(r: Role) => r.id === data?.requirements?.id
+									)
 								)
-									return await interaction.followUp({
+									return await button.followUp({
 										content:
 											"You do not fall under the requirements. (You don't have the required role)",
 										ephemeral: true
 									});
 							}
 							if (data?.requirements?.type === 'guild') {
-								const guild = interaction.client.guilds.cache.get(
+								const guild = button.client.guilds.cache.get(
 									data?.requirements?.id
 								);
 								const isMember = await guild.members.fetch(
-									interaction.member.user.id
+									button.member.user.id
 								);
 
 								if (!isMember)
-									return await interaction.followUp({
+									return await button.followUp({
 										content:
 											'You do not fall under the requirements. (You are not in the required guild)',
 										ephemeral: true
@@ -130,31 +142,29 @@ export async function manageGiveaway(
 
 							data.entry.push({
 								userId: member.user.id,
-								guildId: interaction.guild.id,
-								messageId: interaction.message.id
+								guildId: button.guild.id,
+								messageId: button.message.id
 							});
 
 							data.entered = data.entered + 1;
 
 							await data.save().then(async () => {
-								await interaction.followUp({
+								await button.followUp({
 									content: "You've entered the giveaway.",
 									ephemeral: true
 								});
 							});
 						}
 
-						const embeds = interaction.message.embeds[0];
+						const embeds = button.message.embeds[0];
 
-						const row = ActionRowBuilder.from(
-							interaction.message.components[0]
-						);
+						const row = ActionRowBuilder.from(button.message.components[0]);
 
 						(row.components[0] as ButtonBuilder).setLabel(
 							data.entered.toString()
 						);
 
-						const message = interaction.message as Message;
+						const message = button.message as Message;
 						message.edit({
 							embeds: [embeds],
 							components: [row as ActionRowBuilder<ButtonBuilder>]
@@ -163,26 +173,26 @@ export async function manageGiveaway(
 				}
 
 				if (
-					interaction.customId === 'end_giveaway' ||
-					interaction.customId === 'reroll_giveaway'
+					button.customId === 'end_giveaway' ||
+					button.customId === 'reroll_giveaway'
 				) {
 					if (
-						!(interaction.member.permissions as PermissionsBitField).has(
+						!(button.member.permissions as PermissionsBitField).has(
 							PermissionFlagsBits.Administrator
 						) ||
-						!(interaction.member.permissions as PermissionsBitField).has(
+						!(button.member.permissions as PermissionsBitField).has(
 							PermissionFlagsBits.ManageEvents
 						)
 					)
-						return await interaction.reply({
+						return await button.reply({
 							content:
 								'You cannot end/reroll the giveaway. You do not have the required permissions. `Administrator` (or) `Manage Events`',
 							ephemeral: true
 						});
 
-					await interaction.deferUpdate();
+					await button.deferUpdate();
 
-					const msg = interaction.message as Message;
+					const msg = button.message as Message;
 
 					const components = ActionRowBuilder.from(msg.components[0]);
 
@@ -193,7 +203,7 @@ export async function manageGiveaway(
 					const loadEmbed = new EmbedBuilder()
 						.setTitle(
 							data?.embeds?.load?.title ||
-								(interaction.customId === 'reroll_giveaway'
+								(button.customId === 'reroll_giveaway'
 									? 'Rerolling the giveaway'
 									: 'Processing Giveaway...')
 						)
@@ -250,7 +260,7 @@ export async function manageGiveaway(
 
 					setTimeout(() => {
 						winnerArray.forEach(async (name) => {
-							await interaction.guild.members
+							await button.guild.members
 								.fetch(name.userId)
 								.then((member) => {
 									resultWinner.push(member);
@@ -285,7 +295,7 @@ export async function manageGiveaway(
 					setTimeout(async () => {
 						if (!data) return await msg.delete();
 						if (data) {
-							const embed = EmbedBuilder.from(interaction.message.embeds[0]);
+							const embed = EmbedBuilder.from(button.message.embeds[0]);
 
 							const time = Number(data.endTime);
 							const fields: APIEmbedField[] = [];
@@ -372,7 +382,7 @@ export async function manageGiveaway(
 								components: [buttonRow]
 							});
 
-							if (interaction.customId === 'reroll_giveaway') {
+							if (button.customId === 'reroll_giveaway') {
 								resolve({
 									type: 'Reroll',
 									url: msg.url,

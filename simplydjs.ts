@@ -45,48 +45,49 @@ if (Number(discordJSVersion.slice(0, 2)) < 14)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '4.0.0-beta-1';
+export const version: string = '4.0.0-beta-2';
 
 export * from './src/misc';
+export * from './src/typedef';
 
-export { meme } from './src/meme';
-export { betterBtnRole } from './src/betterBtnRole';
-export { btnRole } from './src/btnRole';
-export { bumpReminder } from './src/bumpReminder';
-export { calculator } from './src/calculator';
-export { connect } from './src/connect';
-export { chatbot } from './src/chatbot';
-export { embedCreator } from './src/embedCreator';
-export { buttonPages } from './src/buttonPages';
-export { ghostPing } from './src/ghostPing';
-export { giveaway } from './src/giveaway';
-export { menuPages } from './src/menuPages';
-export { nqn } from './src/nqn';
-export { rps } from './src/rps';
-export { starboard } from './src/starboard';
-export { suggest } from './src/suggest';
-export { ticketSetup } from './src/ticketSetup';
-export { tictactoe } from './src/tictactoe';
+export * from './src/meme';
+export * from './src/betterBtnRole';
+export * from './src/btnRole';
+export * from './src/bumpReminder';
+export * from './src/calculator';
+export * from './src/connect';
+export * from './src/chatbot';
+export * from './src/embedCreator';
+export * from './src/buttonPages';
+export * from './src/ghostPing';
+export * from './src/giveaway';
+export * from './src/menuPages';
+export * from './src/rps';
+export * from './src/starboard';
+export * from './src/suggest';
+export * from './src/ticketSetup';
+export * from './src/tictactoe';
 
 // ------------------------------
 // ------ H A N D L E R S -------
 // ------------------------------
 
-export { manageBtnRole } from './src/handler/manageBtnRole';
-export { manageGiveaway } from './src/handler/manageGiveaway';
-export { manageTicket } from './src/handler/manageTicket';
-export { manageSuggest } from './src/handler/manageSuggest';
+export * from './src/handler/manageBtnRole';
+export * from './src/handler/manageGiveaway';
+export * from './src/handler/manageTicket';
+export * from './src/handler/manageSuggest';
 
 // ------------------------------
 // ---- D E P R E C A T E D -----
 // ------------------------------
 
-export { stealEmoji } from './src/deprecated/DEP-stealEmoji';
-export { bumpSystem } from './src/deprecated/DEP-bumpSystem';
-export { embedPages } from './src/deprecated/DEP-embedPages';
-export { ticketSystem } from './src/deprecated/DEP-ticketSystem';
-export { suggestSystem } from './src/deprecated/DEP-suggestSystem';
-export { embedCreate } from './src/deprecated/DEP-embedCreate';
-export { giveawaySystem } from './src/deprecated/DEP-giveawaySystem';
-export { manageBtn } from './src/deprecated/DEP-manageBtn';
-export { manageSug } from './src/deprecated/DEP-manageSug';
+export * from './src/deprecated/DEP-stealEmoji';
+export * from './src/deprecated/DEP-bumpSystem';
+export * from './src/deprecated/DEP-embedPages';
+export * from './src/deprecated/DEP-ticketSystem';
+export * from './src/deprecated/DEP-suggestSystem';
+export * from './src/deprecated/DEP-embedCreate';
+export * from './src/deprecated/DEP-giveawaySystem';
+export * from './src/deprecated/DEP-manageBtn';
+export * from './src/deprecated/DEP-manageSug';
+export * from './src/deprecated/DEP-nqn';
