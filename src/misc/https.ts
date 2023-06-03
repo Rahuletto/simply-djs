@@ -1,6 +1,7 @@
-import { OutgoingHttpHeaders } from 'http2';
-import { request } from 'https';
-import { HttpsError } from '../error';
+import { OutgoingHttpHeaders } from "http2";
+import { request } from "https";
+import { HttpsError } from "./src/error/HttpsError";
+
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -10,22 +11,26 @@ import { HttpsError } from '../error';
  */
 
 export type httpsOptions = {
-	method:
-		| 'GET'
-		| 'POST'
-		| 'PUT'
-		| 'PATCH'
-		| 'DELETE'
-		| 'HEAD'
-		| 'CONNECT'
-		| 'OPTIONS'
-		| 'TRACE';
-	headers: OutgoingHttpHeaders;
-	body?: Object;
+  method:
+    | "GET"
+    | "POST"
+    | "PUT"
+    | "PATCH"
+    | "DELETE"
+    | "HEAD"
+    | "CONNECT"
+    | "OPTIONS"
+    | "TRACE";
+  headers: OutgoingHttpHeaders;
+  body?: Object;
+
+  url?: string;
+  host?: string;
+  endpoint?: string;
 };
 
 /**
- * Inbuilt https function to replace your good ol' node-fetch and axios.
+ * Https function to replace your good ol' node-fetch and axios.
  * @param host
  * @param endpoint
  * @param options
@@ -34,28 +39,59 @@ export type httpsOptions = {
  */
 
 export function https(
-	host: string,
-	endpoint: string,
+	url: string | httpsOptions,
 	options: httpsOptions = {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' }
 	}
 ): Promise<any> {
 	return new Promise((resolve, reject) => {
+
+        let hostUrl: string;
+    let endpointUrl: string;
+
+    if (!options && typeof url != "string") {
+      options = url;
+
+      if (url.host && url.endpoint) {
+        hostUrl = url.host.replace("https://", "").replace("http://", "");
+        endpointUrl = url.endpoint;
+      } else if (url.url) {
+        const split = url.url.split("/");
+
+        hostUrl = split[0];
+        split.shift();
+        endpointUrl = "/" + split.join("/");
+      } else
+        throw new Error(
+          "Provide a Url (or) Host name & Endpoint to make a request"
+        );
+    } else if (typeof url == "string") {
+      url = url.replace("https://", "").replace("http://", "");
+
+      const split = url.split("/");
+
+      hostUrl = split[0];
+      split.shift();
+      endpointUrl = "/" + split.join("/");
+    }
+
 		// Using node:https request function
 		var req = request(
 			{
-				hostname: host,
-				path: endpoint,
+				hostname: hostUrl,
+				path: endpointUrl,
 				method: options.method,
 				headers: options.headers
 			},
 			async (response) => {
 				// Handle any redirects
-				if (response.headers.location && response.statusCode != 200)
+				if (response.headers.location && response.statusCode != 200){
+
 					return resolve(
-						await https(host, response.headers.location.replace(host, ''))
+						await https(response.headers.location, { method: options.method, headers: options.headers, body: options.body })
 					);
+                }
 
 				// Data stream
 
