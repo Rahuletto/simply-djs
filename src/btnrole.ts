@@ -22,12 +22,12 @@ import { toButtonStyle, toRgb } from './misc';
 // ------------------------------
 
 /**
- * **Documentation Url** of the type: https://simplyd.js.org/docs/general/btnRole#dataobject
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/btnRole#buttons
  */
 
-type dataObject = {
+export type BtnRoleButtons = {
 	role?: string | Role;
-	url?: `https://${string}`;
+	url?: `https://${string}`; // Only HTTPS allowed !
 } & CustomizableButton;
 
 /**
@@ -37,7 +37,7 @@ type dataObject = {
 export type btnRoleOptions = {
 	embed?: CustomizableEmbed;
 	content?: string;
-	data?: dataObject[];
+	data?: BtnRoleButtons[];
 	strict?: boolean;
 };
 
@@ -49,13 +49,13 @@ export type btnRoleOptions = {
  * A **Button Role System** that lets you create button roles with your own message. | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
  * @param msgOrInt
  * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/btnrole
- * @example simplydjs.btnRole(message, { data: {...} })
+ * @link `Documentation:` https://simplyd.js.org/docs/general/btnRole
+ * @example simplydjs.btnRole(message, { data: [{...}] })
  */
 
 export async function btnRole(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: btnRoleOptions = {}
+	options: btnRoleOptions = { strict: false }
 ): Promise<boolean> {
 	return new Promise(async (resolve) => {
 		try {
@@ -129,7 +129,7 @@ export async function btnRole(
 
 			// Generates buttons from the data provided
 			async function GenButton(
-				data: dataObject[],
+				data: BtnRoleButtons[],
 				button: ButtonBuilder[][],
 				row: ActionRowBuilder<ButtonBuilder>[]
 			) {
@@ -141,16 +141,35 @@ export async function btnRole(
 					const emoji = data[i].emoji || null;
 					const color = data[i].style || ButtonStyle.Secondary;
 					let url = '';
+
 					const role: Role | null = msgOrInt.guild.roles.cache.find(
-						(r) => r.id === data[i].role
+						(r) =>
+							r.id ===
+							((data[i].role as Role)?.id
+								? (data[i].role as Role).id
+								: data[i].role)
 					);
+
+					if (!role) {
+						if (options.strict)
+							throw new SimplyError({
+								function: 'btnRole',
+								title: 'Role not found',
+								tip: `Expected a Role or Role Id. Received ${data[i].role}`
+							});
+						else
+							console.log(
+								`SimplyError - btnRole | Error:  Role not found. Expected a Role or Role Id. Received ${data[i].role}`
+							);
+					}
+
 					const label = data[i].label || role?.name;
 
 					if (!role && color === 'LINK') {
 						url = data[i].url;
 						button[current].push(createLink(label, url, emoji));
 					} else {
-						button[current].push(createButton(label, role, color, emoji));
+						button[current].push(createButton(label, role.id, color, emoji));
 					}
 
 					// push the row into array (So you can add more than a row of buttons)
@@ -161,13 +180,20 @@ export async function btnRole(
 				}
 
 				if (!options.embed && !options.content)
-					throw new SimplyError({
-						function: 'btnRole',
-						title: 'Provide an embed (or) content in the options.',
-						tip: `Expected embed (or) content options to send. Received ${
-							options.embed || undefined
-						}`
-					});
+					if (options.strict)
+						throw new SimplyError({
+							function: 'btnRole',
+							title: 'Provide an embed (or) content in the options.',
+							tip: `Expected embed (or) content options to send. Received ${
+								options.embed || undefined
+							}`
+						});
+					else
+						console.log(
+							`SimplyError - btnRole | Error:  Provide an embed (or) content in the options. Expected embed (or) content options to send. Received ${
+								options.embed || undefined
+							}`
+						);
 
 				const embed = new EmbedBuilder()
 					.setFooter(
@@ -251,7 +277,7 @@ export async function btnRole(
 
 				function createButton(
 					label: string,
-					role: Role,
+					role: string,
 					color: ExtendedButtonStyle,
 					emoji: string
 				): ButtonBuilder {
@@ -261,7 +287,7 @@ export async function btnRole(
 					btn
 						.setLabel(label)
 						.setStyle((color as ButtonStyle) || ButtonStyle.Secondary)
-						.setCustomId('role-' + role.id);
+						.setCustomId('role-' + role);
 
 					if (emoji && emoji !== null) {
 						btn.setEmoji(emoji);

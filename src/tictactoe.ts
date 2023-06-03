@@ -87,7 +87,7 @@ const combinations = [
 
 export async function tictactoe(
 	message: ExtendedMessage | ExtendedInteraction,
-	options: tictactoeOptions = { max: 5 }
+	options: tictactoeOptions = { max: 5, strict: false }
 ): Promise<User> {
 	return new Promise(async (resolve) => {
 		try {

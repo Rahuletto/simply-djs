@@ -112,7 +112,7 @@ export interface GiveawayResolve {
 
 export async function giveaway(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: giveawayOptions = {}
+	options: giveawayOptions = { strict: false }
 ): Promise<GiveawayResolve | EndResolve> {
 	return new Promise(async (resolve) => {
 		try {

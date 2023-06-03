@@ -1,7 +1,7 @@
 import { ExtendedButtonStyle } from './ExtendedButtonStyle';
 
 /**
- * An Object to customize buttons in specific function
+ * This interface can be used to customize buttons in a specific function.
  *
  * **Documentation Url** of the type: *https://simplyd.js.org/docs/typedef/CustomizableButton*
  * @returns {CustomizableButton}

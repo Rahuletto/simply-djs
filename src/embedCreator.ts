@@ -52,7 +52,7 @@ export type embedCreatorOptions = {
 
 export async function embedCreator(
 	msgOrInt: ExtendedMessage | ExtendedInteraction,
-	options: embedCreatorOptions = {}
+	options: embedCreatorOptions = { strict: false }
 ): Promise<APIEmbed> {
 	return new Promise(async (resolve) => {
 		try {

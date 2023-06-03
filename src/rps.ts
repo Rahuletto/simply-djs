@@ -72,8 +72,8 @@ const combinations = {
 
 export async function rps(
 	msgOrint: ExtendedMessage | ExtendedInteraction,
-	options: rpsOptions = {}
-) {
+	options: rpsOptions = { strict: false }
+): Promise<User> {
 	return new Promise(async (resolve) => {
 		const accept = new ButtonBuilder()
 			.setLabel('Accept')

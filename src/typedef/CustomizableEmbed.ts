@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 
 /**
- * An Object to customize any embed that is sent from the simply-djs package
+ * This interface can be used to customize embeds in a specific function.
  *
  * **Documentation Url** of the type: *https://simplyd.js.org/docs/typedef/CustomizableEmbed*
  * @returns {CustomizableEmbed}

@@ -48,7 +48,7 @@ export type bumpOptions = {
 export async function bumpReminder(
 	client: Client,
 	message: Message | bumpOptions,
-	options: bumpOptions
+	options: bumpOptions = { strict: false }
 ): Promise<boolean> {
 	try {
 		const reminder: EmbedBuilder = new EmbedBuilder()

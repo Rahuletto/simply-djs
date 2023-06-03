@@ -21,7 +21,7 @@ import { CustomizableButton } from './typedef/CustomizableButton';
  * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/betterBtnRole#buttons
  */
 
-type Buttons = {
+export type BetterBtnRoleButtons = {
 	role?: Role;
 } & CustomizableButton;
 
@@ -46,7 +46,7 @@ export type betterbtnOptions = {
 	strict?: boolean;
 	type?: 'Add' | 'Remove';
 	channel?: TextChannel;
-	button?: Buttons;
+	button?: BetterBtnRoleButtons;
 	messageId?: string;
 	contents?: MessageContents;
 };
@@ -65,7 +65,7 @@ export type betterbtnOptions = {
 
 export async function betterBtnRole(
 	interaction: ExtendedInteraction,
-	options: betterbtnOptions = {}
+	options: betterbtnOptions = { strict: false }
 ): Promise<void> {
 	return new Promise(async () => {
 		const { client } = interaction;
