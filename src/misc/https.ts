@@ -1,6 +1,6 @@
-import { OutgoingHttpHeaders } from "http2";
-import { request } from "https";
-import { HttpsError } from "./src/error/HttpsError";
+import { OutgoingHttpHeaders } from 'http2';
+import { request } from 'https';
+import { HttpsError } from '../error/HttpsError';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -11,22 +11,22 @@ import { HttpsError } from "./src/error/HttpsError";
  */
 
 export type httpsOptions = {
-  method:
-    | "GET"
-    | "POST"
-    | "PUT"
-    | "PATCH"
-    | "DELETE"
-    | "HEAD"
-    | "CONNECT"
-    | "OPTIONS"
-    | "TRACE";
-  headers: OutgoingHttpHeaders;
-  body?: Object;
+	method:
+		| 'GET'
+		| 'POST'
+		| 'PUT'
+		| 'PATCH'
+		| 'DELETE'
+		| 'HEAD'
+		| 'CONNECT'
+		| 'OPTIONS'
+		| 'TRACE';
+	headers: OutgoingHttpHeaders;
+	body?: Object;
 
-  url?: string;
-  host?: string;
-  endpoint?: string;
+	url?: string;
+	host?: string;
+	endpoint?: string;
 };
 
 /**
@@ -46,35 +46,34 @@ export function https(
 	}
 ): Promise<any> {
 	return new Promise((resolve, reject) => {
+		let hostUrl: string;
+		let endpointUrl: string;
 
-        let hostUrl: string;
-    let endpointUrl: string;
+		if (!options && typeof url != 'string') {
+			options = url;
 
-    if (!options && typeof url != "string") {
-      options = url;
+			if (url.host && url.endpoint) {
+				hostUrl = url.host.replace('https://', '').replace('http://', '');
+				endpointUrl = url.endpoint;
+			} else if (url.url) {
+				const split = url.url.split('/');
 
-      if (url.host && url.endpoint) {
-        hostUrl = url.host.replace("https://", "").replace("http://", "");
-        endpointUrl = url.endpoint;
-      } else if (url.url) {
-        const split = url.url.split("/");
+				hostUrl = split[0];
+				split.shift();
+				endpointUrl = '/' + split.join('/');
+			} else
+				throw new Error(
+					'Provide a Url (or) Host name & Endpoint to make a request'
+				);
+		} else if (typeof url == 'string') {
+			url = url.replace('https://', '').replace('http://', '');
 
-        hostUrl = split[0];
-        split.shift();
-        endpointUrl = "/" + split.join("/");
-      } else
-        throw new Error(
-          "Provide a Url (or) Host name & Endpoint to make a request"
-        );
-    } else if (typeof url == "string") {
-      url = url.replace("https://", "").replace("http://", "");
+			const split = url.split('/');
 
-      const split = url.split("/");
-
-      hostUrl = split[0];
-      split.shift();
-      endpointUrl = "/" + split.join("/");
-    }
+			hostUrl = split[0];
+			split.shift();
+			endpointUrl = '/' + split.join('/');
+		}
 
 		// Using node:https request function
 		var req = request(
@@ -86,12 +85,15 @@ export function https(
 			},
 			async (response) => {
 				// Handle any redirects
-				if (response.headers.location && response.statusCode != 200){
-
+				if (response.headers.location && response.statusCode != 200) {
 					return resolve(
-						await https(response.headers.location, { method: options.method, headers: options.headers, body: options.body })
+						await https(response.headers.location, {
+							method: options.method,
+							headers: options.headers,
+							body: options.body
+						})
 					);
-                }
+				}
 
 				// Data stream
 

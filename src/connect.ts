@@ -57,7 +57,7 @@ export async function connect(
 			.connect(db)
 			.then(async () => {
 				if (options?.notify !== false) {
-					const json = await https('registry.npmjs.org', '/simply-djs');
+					const json = await https('registry.npmjs.org/simply-djs');
 					const v = json['dist-tags'].latest;
 
 					if (v.toString() != version) {

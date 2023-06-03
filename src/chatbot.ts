@@ -137,8 +137,7 @@ export async function chatbot(
 
 			// Get data from the api made by the same team
 			const jsonRes = await https(
-				`simplyapi.js.org`,
-				url.pathname + '?' + params.toString()
+				`simplyapi.js.org` + url.pathname + '?' + params.toString()
 			);
 
 			const chatbotReply = jsonRes.reply // Just replacing any mass mentions just in case

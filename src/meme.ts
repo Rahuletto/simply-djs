@@ -135,8 +135,7 @@ export async function meme(
 
 				// Get a random reddit post from the subreddit
 				const response = await https(
-					`www.reddit.com`,
-					`/r/${sub[random]}/random.json`
+					`www.reddit.com/r/${sub[random]}/random.json`
 				);
 
 				if (!response) return;

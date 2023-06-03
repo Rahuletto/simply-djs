@@ -1582,8 +1582,7 @@ async function ai(
 	async function aiEngine(boardArray: string[]): Promise<string[]> {
 		let res;
 		res = await https(
-			`simplyapi.js.org`,
-			`/api/tictactoe?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
+			`simplyapi.js.org/api/tictactoe?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
 			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

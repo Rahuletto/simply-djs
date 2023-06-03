@@ -18,7 +18,7 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Intall TypeScript globally
+          name: Install TypeScript globally
           command: sudo npm i -g typescript
       - run:
           name: Compile simply-djs
