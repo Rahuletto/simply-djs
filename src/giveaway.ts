@@ -121,6 +121,8 @@ export async function giveaway(
 			let interaction: ExtendedInteraction;
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as ExtendedInteraction;
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 			}
 			const extInteraction = msgOrInt as ExtendedInteraction;
 			const extMessage = msgOrInt as ExtendedMessage;
@@ -153,7 +155,7 @@ export async function giveaway(
 
 			options.winners ??= 1;
 
-			options.buttons = {
+			const buttonStyles = {
 				enter: {
 					style: options.buttons?.enter?.style || ButtonStyle.Success,
 					label: options.buttons?.enter?.label || '0',
@@ -257,68 +259,68 @@ export async function giveaway(
 				prize = options.prize || args.slice(3)?.join(' ');
 			}
 
-			if (options?.buttons?.enter?.style as string)
-				options.buttons.enter.style = toButtonStyle(
-					options.buttons?.enter?.style as string
+			if (buttonStyles?.enter?.style as string)
+				buttonStyles.enter.style = toButtonStyle(
+					buttonStyles?.enter?.style as string
 				);
 
-			if (options?.buttons?.end?.style as string)
-				options.buttons.end.style = toButtonStyle(
-					options.buttons?.end?.style as string
+			if (buttonStyles?.end?.style as string)
+				buttonStyles.end.style = toButtonStyle(
+					buttonStyles?.end?.style as string
 				);
 
-			if (options?.buttons?.reroll?.style as string)
-				options.buttons.reroll.style = toButtonStyle(
-					options.buttons?.reroll?.style as string
+			if (buttonStyles?.reroll?.style as string)
+				buttonStyles.reroll.style = toButtonStyle(
+					buttonStyles?.reroll?.style as string
 				);
 
 			const enter = new ButtonBuilder()
 				.setCustomId('enter_giveaway')
 				.setStyle(
-					(options.buttons?.enter?.style as ButtonStyle) || ButtonStyle.Primary
+					(buttonStyles?.enter?.style as ButtonStyle) || ButtonStyle.Primary
 				);
 
 			if (options?.type === 'Emoji')
-				enter.setEmoji(options.buttons?.enter?.emoji || '🎁');
+				enter.setEmoji(buttonStyles?.enter?.emoji || '🎁');
 			else if (options?.type === 'Label')
-				enter.setLabel(options.buttons?.enter?.label || '0');
+				enter.setLabel(buttonStyles?.enter?.label || '0');
 			else {
 				enter
-					.setEmoji(options.buttons?.enter?.emoji || '🎁')
-					.setLabel(options.buttons?.enter?.label || '0');
+					.setEmoji(buttonStyles?.enter?.emoji || '🎁')
+					.setLabel(buttonStyles?.enter?.label || '0');
 			}
 
 			const end = new ButtonBuilder()
 				.setCustomId('end_giveaway')
 				.setStyle(
-					(options.buttons?.end?.style as ButtonStyle) || ButtonStyle.Danger
+					(buttonStyles?.end?.style as ButtonStyle) || ButtonStyle.Danger
 				);
 
 			if (options?.type === 'Emoji')
-				end.setEmoji(options.buttons?.end?.emoji || '⛔');
+				end.setEmoji(buttonStyles?.end?.emoji || '⛔');
 			else if (options?.type === 'Label')
-				end.setLabel(options.buttons?.end?.label || 'End');
+				end.setLabel(buttonStyles?.end?.label || 'End');
 			else {
 				end
-					.setEmoji(options.buttons?.end?.emoji || '⛔')
-					.setLabel(options.buttons?.end?.label || 'End');
+					.setEmoji(buttonStyles?.end?.emoji || '⛔')
+					.setLabel(buttonStyles?.end?.label || 'End');
 			}
 
 			const reroll = new ButtonBuilder()
 				.setCustomId('reroll_giveaway')
 				.setStyle(
-					(options.buttons?.reroll?.style as ButtonStyle) || ButtonStyle.Success
+					(buttonStyles?.reroll?.style as ButtonStyle) || ButtonStyle.Success
 				)
 				.setDisabled(true);
 
 			if (options?.type === 'Emoji')
-				reroll.setEmoji(options.buttons?.reroll?.emoji || '🔁');
+				reroll.setEmoji(buttonStyles?.reroll?.emoji || '🔁');
 			else if (options?.type === 'Label')
-				reroll.setLabel(options.buttons?.reroll?.label || 'Reroll');
+				reroll.setLabel(buttonStyles?.reroll?.label || 'Reroll');
 			else {
 				reroll
-					.setEmoji(options.buttons?.reroll?.emoji || '🔁')
-					.setLabel(options.buttons?.reroll?.label || 'Reroll');
+					.setEmoji(buttonStyles?.reroll?.emoji || '🔁')
+					.setLabel(buttonStyles?.reroll?.label || 'Reroll');
 			}
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([

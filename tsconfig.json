@@ -2,6 +2,9 @@
 	"files": ["simplydjs.ts"],
 	"exclude": ["node_modules"],
 	"include": ["./src/**/*", "simplydjs.ts"],
+	"paths": {
+		"@src/*": ["src/*"]
+	},
 	"compilerOptions": {
 		"skipLibCheck": true,
 		"target": "ES2021",

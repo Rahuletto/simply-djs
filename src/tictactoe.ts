@@ -87,7 +87,7 @@ const combinations = [
 
 export async function tictactoe(
 	message: ExtendedMessage | ExtendedInteraction,
-	options: tictactoeOptions = { max: 5, strict: false }
+	options: tictactoeOptions = { max: 6, strict: false }
 ): Promise<User> {
 	return new Promise(async (resolve) => {
 		try {
@@ -97,6 +97,8 @@ export async function tictactoe(
 
 			if ((message as ExtendedInteraction).commandId) {
 				interaction = message as ExtendedInteraction;
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 			}
 
 			let opponent: User;
@@ -116,9 +118,9 @@ export async function tictactoe(
 				);
 			}
 
-			if (limiter[id].limit >= options?.max || 5) {
+			if (limiter[id].limit >= (options?.max || 6)) {
 				if (interaction)
-					return extInteraction.reply({
+					return extInteraction.followUp({
 						content:
 							'Sorry, There is a game happening right now. Please try later.'
 					});
@@ -167,7 +169,7 @@ export async function tictactoe(
 
 				if (!opponent)
 					return ai(message, {
-						max: options?.max || 5,
+						max: options?.max || 6,
 						blank_emoji: blank_emoji,
 						x_emoji: x_emoji,
 						o_emoji: o_emoji,
@@ -180,13 +182,13 @@ export async function tictactoe(
 					});
 
 				if (opponent.bot)
-					return extInteraction.reply({
+					return extInteraction.followUp({
 						content: 'You cannot play with bots!',
 						ephemeral: true
 					});
 
 				if (opponent.id == (message as ExtendedInteraction).user.id)
-					return extInteraction.reply({
+					return extInteraction.followUp({
 						content: 'You cannot play with yourself!',
 						ephemeral: true
 					});
@@ -194,7 +196,7 @@ export async function tictactoe(
 				opponent = extMessage.mentions.users.first();
 				if (!opponent)
 					return ai(message, {
-						max: options?.max || 5,
+						max: options?.max || 6,
 						blank_emoji,
 						x_emoji,
 						o_emoji,
@@ -1023,7 +1025,7 @@ async function ai(
 		id = limiter.findIndex((a) => a.guild == msgOrint.guild.id);
 	}
 
-	if (limiter[id].limit >= options?.max || 5) {
+	if (limiter[id].limit >= (options?.max || 6)) {
 		if (interaction)
 			return extInteraction.followUp({
 				content: 'Sorry, There is a game happening right now. Please try later.'

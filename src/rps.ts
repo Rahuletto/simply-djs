@@ -88,7 +88,7 @@ export async function rps(
 		const requestComponents =
 			new ActionRowBuilder<ButtonBuilder>().addComponents([accept, decline]);
 
-		options.buttons = {
+		const buttonStyles = {
 			rock: {
 				style: options?.buttons?.rock?.style || ButtonStyle.Primary,
 				label: options?.buttons?.rock?.label || 'Rock',
@@ -106,43 +106,43 @@ export async function rps(
 			}
 		};
 
-		if (options?.buttons?.rock?.style as string)
-			options.buttons.rock.style = toButtonStyle(
-				options?.buttons?.rock?.style as string
+		if (buttonStyles?.rock?.style as string)
+			buttonStyles.rock.style = toButtonStyle(
+				buttonStyles?.rock?.style as string
 			);
 
-		if (options?.buttons?.paper?.style as string)
-			options.buttons.paper.style = toButtonStyle(
-				options?.buttons?.paper?.style as string
+		if (buttonStyles?.paper?.style as string)
+			buttonStyles.paper.style = toButtonStyle(
+				buttonStyles?.paper?.style as string
 			);
-		if (options?.buttons?.scissor?.style as string)
-			options.buttons.scissor.style = toButtonStyle(
-				options?.buttons?.scissor?.style as string
+		if (buttonStyles?.scissor?.style as string)
+			buttonStyles.scissor.style = toButtonStyle(
+				buttonStyles?.scissor?.style as string
 			);
 
 		const rock = new ButtonBuilder()
-			.setLabel(options.buttons?.rock?.label)
+			.setLabel(buttonStyles?.rock?.label)
 			.setCustomId('rock')
 			.setStyle(
-				(options.buttons?.rock?.style as ButtonStyle) || ButtonStyle.Primary
+				(buttonStyles?.rock?.style as ButtonStyle) || ButtonStyle.Primary
 			)
-			.setEmoji(options.buttons?.rock?.emoji);
+			.setEmoji(buttonStyles?.rock?.emoji);
 
 		const paper = new ButtonBuilder()
-			.setLabel(options.buttons?.paper?.label)
+			.setLabel(buttonStyles?.paper?.label)
 			.setCustomId('paper')
 			.setStyle(
-				(options.buttons?.paper?.style as ButtonStyle) || ButtonStyle.Success
+				(buttonStyles?.paper?.style as ButtonStyle) || ButtonStyle.Success
 			)
-			.setEmoji(options.buttons?.paper?.emoji);
+			.setEmoji(buttonStyles?.paper?.emoji);
 
 		const scissors = new ButtonBuilder()
-			.setLabel(options.buttons?.scissor?.label)
+			.setLabel(buttonStyles?.scissor?.label)
 			.setCustomId('scissors')
 			.setStyle(
-				(options.buttons?.scissor?.style as ButtonStyle) || ButtonStyle.Danger
+				(buttonStyles?.scissor?.style as ButtonStyle) || ButtonStyle.Danger
 			)
-			.setEmoji(options.buttons?.scissor?.emoji);
+			.setEmoji(buttonStyles?.scissor?.emoji);
 
 		const rpsComponents = new ActionRowBuilder<ButtonBuilder>().addComponents([
 			rock,
@@ -187,6 +187,8 @@ export async function rps(
 
 			if (msgOrint.commandId) {
 				interaction = msgOrint as ExtendedInteraction;
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 				opponent = options.opponent || interaction.options.getUser('user');
 			} else {
 				opponent = (msgOrint as Message).mentions.members.first()?.user;
@@ -400,15 +402,15 @@ export async function rps(
 							p1 = p1
 								.replace(
 									'scissors',
-									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
+									`${buttonStyles?.scissor?.emoji} ${buttonStyles?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
+									`${buttonStyles?.paper?.emoji} ${buttonStyles?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
+									`${buttonStyles?.rock?.emoji} ${buttonStyles?.rock?.label}`
 								);
 
 							const drawEmbed = new EmbedBuilder()
@@ -458,29 +460,29 @@ export async function rps(
 							p1 = p1
 								.replace(
 									'scissors',
-									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
+									`${buttonStyles?.scissor?.emoji} ${buttonStyles?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
+									`${buttonStyles?.paper?.emoji} ${buttonStyles?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
+									`${buttonStyles?.rock?.emoji} ${buttonStyles?.rock?.label}`
 								);
 
 							p2 = p2
 								.replace(
 									'scissors',
-									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
+									`${buttonStyles?.scissor?.emoji} ${buttonStyles?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
+									`${buttonStyles?.paper?.emoji} ${buttonStyles?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
+									`${buttonStyles?.rock?.emoji} ${buttonStyles?.rock?.label}`
 								);
 
 							const winEmbed = new EmbedBuilder()
@@ -532,29 +534,29 @@ export async function rps(
 							p1 = p1
 								.replace(
 									'scissors',
-									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
+									`${buttonStyles?.scissor?.emoji} ${buttonStyles?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
+									`${buttonStyles?.paper?.emoji} ${buttonStyles?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
+									`${buttonStyles?.rock?.emoji} ${buttonStyles?.rock?.label}`
 								);
 
 							p2 = p2
 								.replace(
 									'scissors',
-									`${options.buttons?.scissor?.emoji} ${options.buttons?.scissor?.label}`
+									`${buttonStyles?.scissor?.emoji} ${buttonStyles?.scissor?.label}`
 								)
 								.replace(
 									'paper',
-									`${options.buttons?.paper?.emoji} ${options.buttons?.paper?.label}`
+									`${buttonStyles?.paper?.emoji} ${buttonStyles?.paper?.label}`
 								)
 								.replace(
 									'rock',
-									`${options.buttons?.rock?.emoji} ${options.buttons?.rock?.label}`
+									`${buttonStyles?.rock?.emoji} ${buttonStyles?.rock?.label}`
 								);
 
 							const winEmbed = new EmbedBuilder()

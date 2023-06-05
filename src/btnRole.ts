@@ -83,9 +83,12 @@ export async function btnRole(
 						PermissionFlagsBits.Administrator
 					)
 				)
-					extInteraction.followUp({
-						content: 'You need `ADMINISTRATOR` permission to use this command'
-					});
+					if (extInteraction.deferred)
+						await extInteraction.deferReply({ fetchReply: true });
+
+				await extInteraction.followUp({
+					content: 'You need `ADMINISTRATOR` permission to use this command'
+				});
 				return;
 			} else if (!msgOrInt.customId) {
 				if (
@@ -139,8 +142,10 @@ export async function btnRole(
 					if (button[current].length === 5) current++;
 
 					const emoji = data[i].emoji || null;
-					const color = data[i].style || ButtonStyle.Secondary;
+					let color = data[i].style || ButtonStyle.Secondary;
 					let url = '';
+
+					if (color as string) color = toButtonStyle(color as string);
 
 					const role: Role | null = msgOrInt.guild.roles.cache.find(
 						(r) =>
@@ -165,7 +170,7 @@ export async function btnRole(
 
 					const label = data[i].label || role?.name;
 
-					if (!role && color === 'LINK') {
+					if (!role && color === ButtonStyle.Link) {
 						url = data[i].url;
 						button[current].push(createLink(label, url, emoji));
 					} else {

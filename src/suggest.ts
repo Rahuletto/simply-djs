@@ -89,6 +89,8 @@ export async function suggest(
 			let interaction: ExtendedInteraction;
 			if (msgOrint.commandId || !msgOrint.content) {
 				interaction = msgOrint as ExtendedInteraction;
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 
 				suggestion =
 					options.suggestion ||
@@ -128,7 +130,7 @@ export async function suggest(
 				};
 			}
 
-			options.buttons = {
+			const buttonStyles = {
 				upvote: {
 					style: options.buttons?.upvote?.style || ButtonStyle.Primary,
 					emoji: options.buttons?.upvote?.emoji || '☑️'
@@ -143,17 +145,17 @@ export async function suggest(
 				}
 			};
 
-			if (options?.buttons?.upvote.style as string)
-				options.buttons.upvote.style = toButtonStyle(
-					options?.buttons?.upvote.style as string
+			if (buttonStyles?.upvote.style as string)
+				buttonStyles.upvote.style = toButtonStyle(
+					buttonStyles?.upvote.style as string
 				);
-			if (options?.buttons?.downvote.style as string)
-				options.buttons.downvote.style = toButtonStyle(
-					options?.buttons?.downvote.style as string
+			if (buttonStyles?.downvote.style as string)
+				buttonStyles.downvote.style = toButtonStyle(
+					buttonStyles?.downvote.style as string
 				);
-			if (options?.buttons?.votedInfo.style as string)
-				options.buttons.votedInfo.style = toButtonStyle(
-					options?.buttons?.votedInfo.style as string
+			if (buttonStyles?.votedInfo.style as string)
+				buttonStyles.votedInfo.style = toButtonStyle(
+					buttonStyles?.votedInfo.style as string
 				);
 
 			const ch =
@@ -286,28 +288,28 @@ export async function suggest(
 						);
 
 					const approve = new ButtonBuilder()
-						.setEmoji(options.buttons?.upvote?.emoji)
+						.setEmoji(buttonStyles?.upvote?.emoji)
 						.setLabel('0')
 						.setStyle(
-							(options.buttons?.upvote?.style as ButtonStyle) ||
+							(buttonStyles?.upvote?.style as ButtonStyle) ||
 								ButtonStyle.Primary
 						)
 						.setCustomId('plus-suggestion');
 
 					const no = new ButtonBuilder()
-						.setEmoji(options.buttons?.downvote?.emoji)
+						.setEmoji(buttonStyles?.downvote?.emoji)
 						.setLabel('0')
 						.setStyle(
-							(options.buttons?.downvote?.style as ButtonStyle) ||
+							(buttonStyles?.downvote?.style as ButtonStyle) ||
 								ButtonStyle.Danger
 						)
 						.setCustomId('minus-suggestion');
 
 					const whoVoted = new ButtonBuilder()
-						.setEmoji(options.buttons?.votedInfo?.emoji)
+						.setEmoji(buttonStyles?.votedInfo?.emoji)
 						.setLabel('Who Voted?')
 						.setStyle(
-							(options.buttons?.votedInfo?.style as ButtonStyle) ||
+							(buttonStyles?.votedInfo?.style as ButtonStyle) ||
 								ButtonStyle.Success
 						)
 						.setCustomId('who-voted-suggestion');

@@ -42,6 +42,7 @@ export async function starboard(
 ): Promise<void> {
 	return new Promise(async () => {
 		const { client } = reactionOrMessage;
+
 		const minimumRequired = options.min || 2;
 		let extMessage: ExtendedMessage = reactionOrMessage as ExtendedMessage;
 		let react: MessageReaction = reactionOrMessage as MessageReaction;
@@ -83,9 +84,12 @@ export async function starboard(
 		}
 		try {
 			if (extMessage || !(reactionOrMessage as MessageReaction).message) {
-				let starboard = await client.channels.cache.get(options.channelId);
-
 				if (!extMessage.guild) return;
+
+				let starboard = await extMessage.guild.channels.fetch(
+					options.channelId,
+					{ force: true, cache: true }
+				);
 
 				if (!starboard) {
 					if (options?.strict)
@@ -124,10 +128,13 @@ export async function starboard(
 					const minmax = react.count;
 					if (minmax < minimumRequired) return;
 
-					let starboard = await client.channels.fetch(options.channelId, {
-						force: true,
-						cache: true
-					});
+					let starboard = await react.message.guild.channels.fetch(
+						options.channelId,
+						{
+							force: true,
+							cache: true
+						}
+					);
 
 					if (!react.message.guild) return;
 

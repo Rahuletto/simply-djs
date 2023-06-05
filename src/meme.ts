@@ -82,8 +82,6 @@ export async function meme(
 			}
 
 			// Getting random subreddit
-			const random = Math.floor(Math.random() * sub.length);
-
 			let interval;
 
 			if (options?.interval) {
@@ -109,11 +107,15 @@ export async function meme(
 			}
 
 			setInterval(async () => {
+				const random = Math.floor(Math.random() * sub.length);
 				// Getting the channel from Discord
 				var channel: Channel;
-				if (clientOrChannel as Channel) channel = clientOrChannel as Channel;
+				if ((clientOrChannel as Channel).id)
+					channel = clientOrChannel as Channel;
 				else if (clientOrChannel as Client)
-					channel = await (clientOrChannel as Client).channels.cache.get(ch);
+					channel = await (clientOrChannel as Client).channels.fetch(ch, {
+						force: true
+					});
 
 				// If its unavailable, throw an error.
 				if (!channel) {
@@ -133,29 +135,21 @@ export async function meme(
 						);
 				}
 
+				let subreddit = sub[random];
+				if (!subreddit) subreddit = 'meme';
+
 				// Get a random reddit post from the subreddit
-				const response = await https(
-					`www.reddit.com/r/${sub[random]}/random.json`
-				);
+				const response = await https(`https://meme-api.com/gimme/${subreddit}`);
 
 				if (!response) return;
 
-				const data =
-					response[0].children[0].data.over_18 === false
-						? response[0].children[0]
-						: response[1].children[0].data.over_18 === false
-						? response[1].children[0]
-						: undefined;
-
-				if (data == undefined) return;
+				if (response.nsfw) return;
 
 				// Get all the data from its API
-				const perma = data.data.permalink;
-				const url = `https://www.reddit.com${perma}`;
-				const memeImage = data.data.url || data.data.url_overridden_by_dest;
-				const title = data.data.title;
-				const upp = data.data.ups;
-				const ratio = data.data.upvote_ratio;
+				const url = response.postLink;
+				const memeImage: string = response.url || response.preview[3];
+				const title = response.title;
+				const up = response.ups;
 
 				// Building an Embed to send it.
 				const embed = new EmbedBuilder()
@@ -163,11 +157,10 @@ export async function meme(
 					.setURL(`${url}`)
 					.setImage(memeImage)
 					.setColor(options.embed?.color || toRgb('#406DBC'))
-					.setFooter({ text: `🔺 ${upp} | Upvote Ratio: ${ratio}` });
+					.setFooter({ text: `🔺 ${up}` });
 
 				if (options?.embed?.fields) embed.setFields(options.embed?.fields);
 				if (options?.embed?.author) embed.setAuthor(options.embed?.author);
-				if (options?.embed?.image) embed.setImage(options.embed?.image);
 				if (options?.embed?.thumbnail)
 					embed.setThumbnail(options.embed?.thumbnail);
 				if (options?.embed?.timestamp)

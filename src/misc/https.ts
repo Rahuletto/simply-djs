@@ -27,6 +27,8 @@ export type httpsOptions = {
 	url?: string;
 	host?: string;
 	endpoint?: string;
+
+	debug?: boolean;
 };
 
 /**
@@ -103,7 +105,11 @@ export function https(
 				response.on('data', (chunk) => (data += chunk));
 				response.on('end', async () => {
 					try {
-						// Resolve any objects
+						if (options.debug) {
+							console.log(data);
+						}
+
+						// Resolve any object
 						resolve(JSON.parse(data));
 					} catch (e: any) {
 						// Some API sends html file as error. So this throws error if there is some

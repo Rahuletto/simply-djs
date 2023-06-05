@@ -109,31 +109,28 @@ export async function calculator(
 				};
 			}
 
-			options.buttons = {
+			const buttonStyles = {
 				numbers: options?.buttons?.numbers || ButtonStyle.Secondary,
 				symbols: options?.buttons?.symbols || ButtonStyle.Primary,
 				delete: options?.buttons?.delete || ButtonStyle.Danger
 			};
-			if (options?.buttons?.delete as string)
-				options.buttons.delete = toButtonStyle(
-					options?.buttons?.delete as string
-				);
+			if (buttonStyles.delete as string)
+				buttonStyles.delete = toButtonStyle(buttonStyles.delete as string);
 
-			if (options?.buttons?.numbers as string)
-				options.buttons.numbers = toButtonStyle(
-					options?.buttons?.numbers as string
-				);
+			if (buttonStyles.numbers as string)
+				buttonStyles.numbers = toButtonStyle(buttonStyles.numbers as string);
 
-			if (options?.buttons?.symbols as string)
-				options.buttons.symbols = toButtonStyle(
-					options?.buttons?.symbols as string
-				);
+			if (buttonStyles.symbols as string)
+				buttonStyles.symbols = toButtonStyle(buttonStyles.symbols as string);
 
 			let message: ExtendedMessage;
 
 			if (!msgOrInt.commandId) {
 				message = msgOrInt as ExtendedMessage;
-			}
+			} else if ((msgOrInt as ExtendedInteraction).deferred)
+				await (msgOrInt as ExtendedInteraction).deferReply({
+					fetchReply: true
+				});
 
 			for (let i = 0; i < text.length; i++) {
 				if (buttons[current].length === 5) current++;
@@ -305,17 +302,17 @@ export async function calculator(
 
 			function createButton(
 				label: string | number,
-				style: ExtendedButtonStyle = options?.buttons?.numbers
+				style: ExtendedButtonStyle = buttonStyles.numbers
 			) {
-				if (label === 'Clear') style = options?.buttons?.delete;
-				else if (label === 'Delete') style = options?.buttons?.delete;
-				else if (label === 'Back') style = options?.buttons?.delete;
-				else if (label === 'π') style = options?.buttons?.numbers;
-				else if (label === '%') style = options?.buttons?.numbers;
-				else if (label === '^') style = options?.buttons?.numbers;
-				else if (label === '.') style = options?.buttons?.symbols;
-				else if (label === '=') style = 'SUCCESS';
-				else if (isNaN(Number(label))) style = options?.buttons?.symbols;
+				if (label === 'Clear') style = buttonStyles.delete;
+				else if (label === 'Delete') style = buttonStyles.delete;
+				else if (label === 'Back') style = buttonStyles.delete;
+				else if (label === 'π') style = buttonStyles.numbers;
+				else if (label === '%') style = buttonStyles.numbers;
+				else if (label === '^') style = buttonStyles.numbers;
+				else if (label === '.') style = buttonStyles.symbols;
+				else if (label === '=') style = ButtonStyle.Success;
+				else if (isNaN(Number(label))) style = buttonStyles.symbols;
 
 				const btn = new ButtonBuilder()
 					.setLabel(label.toString())

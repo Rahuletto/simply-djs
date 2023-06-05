@@ -117,7 +117,7 @@ export async function chatbot(
 
 			if (!input || input == '') return;
 
-			options.name ??= 'Simply-DJS';
+			options.name ??= 'Nelly';
 			options.developer ??= 'Rahuletto';
 
 			const url = new URL('https://simplyapi.js.org/api/chatbot'),

@@ -1,6 +1,6 @@
 {
 	"name": "simply-djs",
-	"version": "4.0.0-beta-3",
+	"version": "4.0.0-beta-4",
 	"description": "The simplest way to build complex Discord bots.",
 	"main": "lib/simplydjs.js",
 	"types": "typings/simplydjs.d.ts",

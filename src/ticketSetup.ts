@@ -60,6 +60,9 @@ export async function ticketSetup(
 				channel =
 					client.channels.cache.get(options?.channelId as string) ||
 					interaction.options.get('channel').channel;
+
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 			} else if (!msgOrint.commandId && msgOrint.content) {
 				channel =
 					client.channels.cache.get(options?.channelId as string) ||

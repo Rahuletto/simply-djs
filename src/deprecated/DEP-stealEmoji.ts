@@ -50,6 +50,8 @@ export async function stealEmoji(
 			let interaction: ExtendedInteraction;
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as ExtendedInteraction;
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 
 				if (
 					!interaction.member.permissions.has(

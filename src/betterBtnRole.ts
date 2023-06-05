@@ -3,10 +3,11 @@ import {
 	Role,
 	ButtonBuilder,
 	ActionRowBuilder,
-	ButtonStyle
+	ButtonStyle,
+	Message
 } from 'discord.js';
 
-import { ExtendedInteraction, ExtendedMessage } from './typedef';
+import { ExtendedInteraction } from './typedef';
 
 import { toButtonStyle } from './misc';
 
@@ -70,6 +71,9 @@ export async function betterBtnRole(
 	return new Promise(async () => {
 		const { client } = interaction;
 
+		if (interaction.deferred)
+			await interaction.deferReply({ fetchReply: true });
+
 		// Get all options from CommandInteraction (a.k.a.) slash command.
 		const ch =
 			options?.channel || interaction.options.get('channel', true).channel;
@@ -78,7 +82,7 @@ export async function betterBtnRole(
 		const role = options?.button?.role || interaction.options.get('role').role;
 
 		// Fetch the message using the provided message id
-		const msg: ExtendedMessage = await (ch as TextChannel).messages
+		const msg: Message = await (ch as TextChannel).messages
 			.fetch(msgid)
 			.catch(() => {})
 			.then();
@@ -129,7 +133,7 @@ export async function betterBtnRole(
 				let color =
 					options.button.style ||
 					String(interaction.options.get('style').value) ||
-					'SECONDARY';
+					ButtonStyle.Secondary;
 				const emoji =
 					options.button.emoji ||
 					String(interaction.options.get('emoji').value);

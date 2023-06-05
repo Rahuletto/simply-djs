@@ -45,7 +45,7 @@ if (Number(discordJSVersion.slice(0, 2)) < 14)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '4.0.0-beta-3';
+export const version: string = '4.0.0-beta-4';
 
 export * from './src/misc';
 export * from './src/typedef';

@@ -1,4 +1,4 @@
-# Simply-DJS v4.0.0-beta-3
+# Simply-DJS v4.0.0-beta-4
 
 ## Support for Discord.JS v14
 
@@ -31,7 +31,7 @@ Simply-DJS Reimagined.
 + manageSuggest.ts
 + manageTicket.ts
 
-- meme.ts
++ meme.ts
 - menuPages.ts
 + rps.ts
 - starboard.ts

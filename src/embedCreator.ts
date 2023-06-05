@@ -177,6 +177,9 @@ export async function embedCreator(
 
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as ExtendedInteraction;
+
+				if (interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 			}
 
 			let msg: Message;
