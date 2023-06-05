@@ -39,7 +39,7 @@ export async function nqn(
 
 			if (message.author.bot) return;
 
-			let msg = message.content;
+			const msg = message.content;
 
 			if (msg.includes('<:') || msg.includes('<a:')) return;
 
