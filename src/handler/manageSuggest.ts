@@ -639,8 +639,7 @@ export async function manageSuggest(
 						{
 							name: `Upvoters`,
 							value: `${
-								mapUsersID(getLikes(), 'up') ||
-								'Nobody Has Upvoted This Suggestion'
+								mapUsersID(getLikes()) || 'Nobody Has Upvoted This Suggestion'
 							}`
 						},
 						{
