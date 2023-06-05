@@ -109,7 +109,7 @@ export async function meme(
 			setInterval(async () => {
 				const random = Math.floor(Math.random() * sub.length);
 				// Getting the channel from Discord
-				var channel: Channel;
+				let channel: Channel;
 				if ((clientOrChannel as Channel).id)
 					channel = clientOrChannel as Channel;
 				else if (clientOrChannel as Client)

@@ -86,7 +86,7 @@ export async function starboard(
 			if (extMessage || !(reactionOrMessage as MessageReaction).message) {
 				if (!extMessage.guild) return;
 
-				let starboard = await client.channels.fetch(options.channelId, {
+				const starboard = await client.channels.fetch(options.channelId, {
 					force: true,
 					cache: true
 				});
@@ -128,7 +128,7 @@ export async function starboard(
 					const minmax = react.count;
 					if (minmax < minimumRequired) return;
 
-					let starboard = await client.channels.fetch(options.channelId, {
+					const starboard = await client.channels.fetch(options.channelId, {
 						force: true,
 						cache: true
 					});

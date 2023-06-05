@@ -78,7 +78,7 @@ export function https(
 		}
 
 		// Using node:https request function
-		var req = request(
+		const req = request(
 			{
 				hostname: hostUrl,
 				path: endpointUrl,

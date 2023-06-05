@@ -651,20 +651,20 @@ export async function manageSuggest(
 							}`
 						}
 					);
-					let tagbtn = new ButtonBuilder()
+					const tagbtn = new ButtonBuilder()
 						.setLabel('Show User Tags')
 						.setEmoji('#️⃣')
 						.setStyle(ButtonStyle.Secondary)
 						.setCustomId('tag');
-					let idbtn = new ButtonBuilder()
+					const idbtn = new ButtonBuilder()
 						.setLabel('Show User Mentions')
 						.setEmoji('🔢')
 						.setStyle(ButtonStyle.Secondary)
 						.setCustomId('id');
-					let actt = new ActionRowBuilder<ButtonBuilder>().addComponents([
+					const actt = new ActionRowBuilder<ButtonBuilder>().addComponents([
 						tagbtn
 					]);
-					let acti = new ActionRowBuilder<ButtonBuilder>().addComponents([
+					const acti = new ActionRowBuilder<ButtonBuilder>().addComponents([
 						idbtn
 					]);
 

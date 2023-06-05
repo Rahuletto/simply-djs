@@ -434,7 +434,7 @@ export async function manageTicket(
 					});
 
 					if (options?.logChannelId) {
-						let ch = await client.channels.cache.get(options?.logChannelId);
+						const ch = await client.channels.cache.get(options?.logChannelId);
 
 						if (ch) {
 							const log = new EmbedBuilder()

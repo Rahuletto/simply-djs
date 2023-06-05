@@ -357,7 +357,7 @@ export async function tictactoe(
 					if (options?.embed?.game?.url)
 						gameEmbed.setURL(options.embed?.game?.url);
 
-					let msg: Message = await button.message.edit({
+					const msg: Message = await button.message.edit({
 						embeds: [
 							gameEmbed.setDescription(
 								`Waiting for Input | <@!${players[0]}>, Your Emoji: ${
@@ -1229,7 +1229,7 @@ async function ai(
 		});
 
 		for (let i = 0; i < board.length; i++) {
-			let elem = board[i];
+			const elem = board[i];
 			if (elem == 'x') {
 				Game.board[i] = {
 					style: options.x_style,
@@ -1261,7 +1261,7 @@ async function ai(
 		}
 
 		for (let i = 0; i < board.length; i++) {
-			let elem = board[i];
+			const elem = board[i];
 			if (elem == 'o') {
 				Game.board[i] = {
 					style: options.o_style,
