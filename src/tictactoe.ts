@@ -866,7 +866,7 @@ export async function tictactoe(
 							if (collected.size === 0 && reason == 'idle')
 								if (!options.type || options.type === 'Button')
 									m.edit({
-										content: `<@!${Game.userid}> didn\'t react in time! (30s)`,
+										content: `<@!${Game.userid}> didn't react in time! (30s)`,
 										embeds: [timeoutEmbed],
 
 										components: disableButtons(buttons)
@@ -876,7 +876,7 @@ export async function tictactoe(
 										content: `The opponent didnt respond in time (30s)`,
 										embeds: [
 											timeoutEmbed.setDescription(
-												`<@!${Game.userid}> didn\'t react in time! (30s)\n` +
+												`<@!${Game.userid}> didn't react in time! (30s)\n` +
 													`\`\`\`\n${Game.board[0].emoji} | ${Game.board[1].emoji} | ${Game.board[2].emoji}\n${Game.board[3].emoji} | ${Game.board[4].emoji} | ${Game.board[5].emoji}\n${Game.board[6].emoji} | ${Game.board[7].emoji} | ${Game.board[8].emoji}\n\`\`\``
 														.replaceAll(blank_emoji, '➖')
 														.replaceAll(o_emoji, '⭕')
@@ -1582,8 +1582,7 @@ async function ai(
 	});
 
 	async function aiEngine(boardArray: string[]): Promise<string[]> {
-		let res;
-		res = await https(
+		const res = await https(
 			`simplyapi.js.org/api/tictactoe?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
 			{
 				method: 'POST',

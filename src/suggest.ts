@@ -111,7 +111,7 @@ export async function suggest(
 				if (url) suggestion = suggestion + ' ' + url;
 
 				if (!options.suggestion && (msgOrint as Message)) {
-					const [...args] = (msgOrint as Message).content?.split(/ +/g);
+					const [...args] = (msgOrint as Message).content.split(/ +/g);
 					suggestion = args.slice(1).join(' ');
 				}
 
