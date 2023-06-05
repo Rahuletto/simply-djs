@@ -1,4 +1,4 @@
-# Simply-DJS v4.0.0-beta-4
+# Simply-DJS v4.0.0-beta-5
 
 ## Support for Discord.JS v14
 
