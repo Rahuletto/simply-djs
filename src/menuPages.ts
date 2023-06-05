@@ -152,7 +152,7 @@ export async function menuPages(
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as ExtendedInteraction;
 
-				if (interaction.deferred)
+				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 			}
 

@@ -78,17 +78,17 @@ export async function btnRole(
 			const extInteraction = msgOrInt as ExtendedInteraction;
 
 			if (msgOrInt.commandId) {
+				if (!extInteraction.deferred)
+					await extInteraction.deferReply({ fetchReply: true });
+
 				if (
 					!extInteraction.member.permissions.has(
 						PermissionFlagsBits.Administrator
 					)
 				)
-					if (extInteraction.deferred)
-						await extInteraction.deferReply({ fetchReply: true });
-
-				await extInteraction.followUp({
-					content: 'You need `ADMINISTRATOR` permission to use this command'
-				});
+					await extInteraction.followUp({
+						content: 'You need `ADMINISTRATOR` permission to use this command'
+					});
 				return;
 			} else if (!msgOrInt.customId) {
 				if (

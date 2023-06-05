@@ -24,6 +24,7 @@ export function toButtonStyle(style: string) {
 	const buttonstyle = combination.find((o) => o.key == style);
 
 	// If it doesn't exist just return nothing
+	if (Number(style) >= 1 && Number(style) <= 5) return Number(style);
 	if (!buttonstyle || buttonstyle == undefined) return;
 
 	return buttonstyle.value;

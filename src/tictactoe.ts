@@ -97,7 +97,7 @@ export async function tictactoe(
 
 			if ((message as ExtendedInteraction).commandId) {
 				interaction = message as ExtendedInteraction;
-				if (interaction.deferred)
+				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 			}
 

@@ -187,7 +187,7 @@ export async function rps(
 
 			if (msgOrint.commandId) {
 				interaction = msgOrint as ExtendedInteraction;
-				if (interaction.deferred)
+				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 				opponent = options.opponent || interaction.options.getUser('user');
 			} else {

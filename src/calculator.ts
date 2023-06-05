@@ -127,7 +127,8 @@ export async function calculator(
 
 			if (!msgOrInt.commandId) {
 				message = msgOrInt as ExtendedMessage;
-			} else if ((msgOrInt as ExtendedInteraction).deferred)
+			}
+			if (msgOrInt.commandId && !(msgOrInt as ExtendedInteraction).deferred)
 				await (msgOrInt as ExtendedInteraction).deferReply({
 					fetchReply: true
 				});

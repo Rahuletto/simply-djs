@@ -89,7 +89,7 @@ export async function suggest(
 			let interaction: ExtendedInteraction;
 			if (msgOrint.commandId || !msgOrint.content) {
 				interaction = msgOrint as ExtendedInteraction;
-				if (interaction.deferred)
+				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 
 				suggestion =

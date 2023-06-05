@@ -179,53 +179,63 @@ export async function buttonPages(
 			const first = new ButtonBuilder()
 				.setCustomId('first_embed')
 
-				.setStyle(buttonStyles.first?.style as ButtonStyle);
+				.setStyle(
+					(buttonStyles.first?.style as ButtonStyle) || ButtonStyle.Primary
+				);
 
 			if (options?.disable === 'Label' || options?.disable === 'None')
-				first.setEmoji(buttonStyles.first?.emoji);
+				first.setEmoji(buttonStyles.first?.emoji || '⏪');
 			else if (options?.disable === 'Emoji' || options?.disable === 'None')
-				first.setLabel(buttonStyles.first?.label);
+				first.setLabel(buttonStyles.first?.label || 'First');
 
 			const forward = new ButtonBuilder()
 				.setCustomId('forward_button_embed')
-				.setStyle(buttonStyles.next?.style as ButtonStyle);
+				.setStyle(
+					(buttonStyles.next?.style as ButtonStyle) || ButtonStyle.Success
+				);
 
 			if (options?.disable === 'Label' || options?.disable === 'None')
-				forward.setEmoji(buttonStyles?.next?.emoji);
+				forward.setEmoji(buttonStyles?.next?.emoji || '▶️');
 			else if (options?.disable === 'Emoji' || options?.disable === 'None')
-				forward.setLabel(buttonStyles?.next?.label);
+				forward.setLabel(buttonStyles?.next?.label || 'Next');
 
 			const back = new ButtonBuilder()
 				.setCustomId('back_button_embed')
-				.setStyle(buttonStyles?.back?.style as ButtonStyle);
+				.setStyle(
+					(buttonStyles?.back?.style as ButtonStyle) || ButtonStyle.Success
+				);
 
 			if (options?.disable === 'Label' || options?.disable === 'None')
-				back.setEmoji(buttonStyles?.back?.emoji);
+				back.setEmoji(buttonStyles?.back?.emoji || '◀️');
 			else if (options?.disable === 'Emoji' || options?.disable === 'None')
-				back.setLabel(buttonStyles?.back?.label);
+				back.setLabel(buttonStyles?.back?.label || 'Back');
+
+			const last = new ButtonBuilder()
+				.setCustomId('last_embed')
+				.setStyle(
+					(buttonStyles.last?.style as ButtonStyle) || ButtonStyle.Primary
+				);
+
+			if (options?.disable === 'Label' || options?.disable === 'None')
+				last.setEmoji(buttonStyles.last?.emoji || '⏩');
+			else if (options?.disable === 'Emoji' || options?.disable === 'None')
+				last.setLabel(buttonStyles.last?.label || 'Last');
 
 			if (options?.dynamic) {
 				first.setDisabled(true);
 				back.setDisabled(true);
 			}
 
-			const last = new ButtonBuilder()
-				.setCustomId('last_embed')
-				.setStyle(buttonStyles.last?.style as ButtonStyle);
-
-			if (options?.disable === 'Label' || options?.disable === 'None')
-				last.setEmoji(buttonStyles.last?.emoji);
-			else if (options?.disable === 'Emoji' || options?.disable === 'None')
-				last.setLabel(buttonStyles.last?.label);
-
 			const deleteButton = new ButtonBuilder()
 				.setCustomId('delete_embed')
-				.setStyle(buttonStyles?.delete?.style as ButtonStyle);
+				.setStyle(
+					(buttonStyles?.delete?.style as ButtonStyle) || ButtonStyle.Danger
+				);
 
 			if (options?.disable === 'Label' || options?.disable === 'None')
-				deleteButton.setEmoji(buttonStyles?.delete?.emoji);
+				deleteButton.setEmoji(buttonStyles?.delete?.emoji || '🗑');
 			else if (options?.disable === 'Emoji' || options?.disable === 'None')
-				deleteButton.setLabel(buttonStyles?.delete?.label);
+				deleteButton.setLabel(buttonStyles?.delete?.label || 'Delete');
 
 			let btnCollection: ButtonBuilder[] = [];
 			//Creating the MessageActionRow
@@ -255,7 +265,7 @@ export async function buttonPages(
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as CommandInteraction;
 
-				if (interaction.deferred)
+				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 			}
 

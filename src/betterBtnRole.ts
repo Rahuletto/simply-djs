@@ -71,7 +71,7 @@ export async function betterBtnRole(
 	return new Promise(async () => {
 		const { client } = interaction;
 
-		if (interaction.deferred)
+		if (!interaction.deferred)
 			await interaction.deferReply({ fetchReply: true });
 
 		// Get all options from CommandInteraction (a.k.a.) slash command.

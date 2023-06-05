@@ -818,9 +818,7 @@ export async function manageSuggest(
 						.setFooter(
 							options?.embed?.deny?.footer || { text: `Denied by ${user.tag}` }
 						)
-						.setTitle(
-							options.embed?.deny?.title || 'Suggestion denied by admin'
-						);
+						.setTitle(options.embed?.deny?.title || 'Suggestion denied');
 
 					if (options?.embed?.deny?.author)
 						embed.setAuthor(options.embed?.deny?.author);
@@ -877,9 +875,7 @@ export async function manageSuggest(
 								text: `Accepted by ${user.tag}`
 							}
 						)
-						.setTitle(
-							options.embed?.accept?.title || 'Suggestion accepted by admin'
-						);
+						.setTitle(options.embed?.accept?.title || 'Suggestion accepted');
 
 					if (options?.embed?.accept?.author)
 						embed.setAuthor(options.embed?.accept?.author);
