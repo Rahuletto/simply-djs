@@ -503,7 +503,7 @@ export async function embedCreator(
 											messageCollect.on('collect', async (m: Message) => {
 												const isthumb =
 													m.content.match(
-														/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
+														/(http[s]*:\/\/)([a-z\-_0-9\/.]+)\.([a-z.]{2,3})\/([a-z0-9\-_\/._~:?#\[\]@!$&'()*+,;=%]*)([a-z0-9]+\.)(jpg|jpeg|png)/i
 													) != null ||
 													m.attachments.first()?.url ||
 													null;
@@ -666,7 +666,7 @@ export async function embedCreator(
 								messageCollect.on('collect', async (m: Message) => {
 									const isthumb =
 										m.content.match(
-											/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
+											/(http[s]*:\/\/)([a-z\-_0-9\/.]+)\.([a-z.]{2,3})\/([a-z0-9\-_\/._~:?#\[\]@!$&'()*+,;=%]*)([a-z0-9]+\.)(jpg|jpeg|png)/i
 										) != null ||
 										m.attachments.first()?.url ||
 										null;
@@ -817,7 +817,7 @@ export async function embedCreator(
 								messageCollect.on('collect', async (m: Message) => {
 									const isthumb =
 										m.content.match(
-											/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
+											/(http[s]*:\/\/)([a-z\-_0-9\/.]+)\.([a-z.]{2,3})\/([a-z0-9\-_\/._~:?#\[\]@!$&'()*+,;=%]*)([a-z0-9]+\.)(jpg|jpeg|png)/i
 										) != null ||
 										m.attachments.first()?.url ||
 										null;
@@ -1057,7 +1057,7 @@ export async function embedCreator(
 											messageCollect.on('collect', async (m: Message) => {
 												const isthumb =
 													m.content.match(
-														/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gim
+														/(http[s]*:\/\/)([a-z\-_0-9\/.]+)\.([a-z.]{2,3})\/([a-z0-9\-_\/._~:?#\[\]@!$&'()*+,;=%]*)([a-z0-9]+\.)(jpg|jpeg|png)/i
 													) != null ||
 													m.attachments.first()?.url ||
 													null;

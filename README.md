@@ -4,6 +4,8 @@
 
 Its finally done. Gosh X_x
 
+[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge/v4.x.x)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview/v4.x.x)
+
 Simply-DJS Reimagined.
 **We will not support legacy system panels**
 

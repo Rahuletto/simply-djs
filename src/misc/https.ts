@@ -22,7 +22,7 @@ export type httpsOptions = {
 		| 'OPTIONS'
 		| 'TRACE';
 	headers: OutgoingHttpHeaders;
-	body?: Object;
+	body?: object;
 
 	url?: string;
 	host?: string;

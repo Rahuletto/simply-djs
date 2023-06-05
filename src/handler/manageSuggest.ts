@@ -619,14 +619,14 @@ export async function manageSuggest(
 						const array = getUsers().filter((val) => val.vote === 'down');
 						return array;
 					}
-					function mapUsersID(array: Vote[], _type: 'up' | 'down') {
+					function mapUsersID(array: Vote[]) {
 						let myString = '';
 						array.forEach((val) => {
 							myString += `<@${val.userId}>\n`;
 						});
 						return myString;
 					}
-					function mapUsersTag(array: Vote[], _type: 'up' | 'down') {
+					function mapUsersTag(array: Vote[]) {
 						let myString = '';
 						array.forEach((val) => {
 							myString += `${
@@ -646,7 +646,7 @@ export async function manageSuggest(
 						{
 							name: `Downvoters`,
 							value: `${
-								mapUsersID(getDislikes(), 'down') ||
+								mapUsersID(getDislikes()) ||
 								'Nobody Has Downvoted This Suggestion'
 							}`
 						}
@@ -688,14 +688,14 @@ export async function manageSuggest(
 								{
 									name: `Upvoters`,
 									value: `${
-										mapUsersTag(getLikes(), 'up') ||
+										mapUsersTag(getLikes()) ||
 										'Nobody Has Upvoted This Suggestion'
 									}`
 								},
 								{
 									name: `Downvoters`,
 									value: `${
-										mapUsersTag(getDislikes(), 'down') ||
+										mapUsersTag(getDislikes()) ||
 										'Nobody Has Downvoted This Suggestion'
 									}`
 								}
@@ -706,14 +706,14 @@ export async function manageSuggest(
 								{
 									name: `Upvoters`,
 									value: `${
-										mapUsersID(getLikes(), 'up') ||
+										mapUsersID(getLikes()) ||
 										'Nobody Has Upvoted This Suggestion'
 									}`
 								},
 								{
 									name: `Downvoters`,
 									value: `${
-										mapUsersID(getDislikes(), 'down') ||
+										mapUsersID(getDislikes()) ||
 										'Nobody Has Downvoted This Suggestion'
 									}`
 								}
