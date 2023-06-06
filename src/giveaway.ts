@@ -167,9 +167,9 @@ export async function giveaway(
 					emoji: options.buttons?.end?.emoji || '⛔'
 				},
 				reroll: {
-					style: options.buttons?.end?.style || ButtonStyle.Primary,
-					label: options.buttons?.end?.label || 'Reroll',
-					emoji: options.buttons?.end?.emoji || '🔁'
+					style: options.buttons?.reroll?.style || ButtonStyle.Primary,
+					label: options.buttons?.reroll?.label || 'Reroll',
+					emoji: options.buttons?.reroll?.emoji || '🔁'
 				}
 			};
 

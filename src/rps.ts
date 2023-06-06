@@ -100,9 +100,9 @@ export async function rps(
 				emoji: options?.buttons?.paper?.emoji || '📄'
 			},
 			scissor: {
-				style: options?.buttons?.paper?.style || ButtonStyle.Danger,
-				label: options?.buttons?.paper?.label || 'Scissor',
-				emoji: options?.buttons?.paper?.emoji || '✂️'
+				style: options?.buttons?.scissor?.style || ButtonStyle.Danger,
+				label: options?.buttons?.scissor?.label || 'Scissor',
+				emoji: options?.buttons?.scissor?.emoji || '✂️'
 			}
 		};
 
