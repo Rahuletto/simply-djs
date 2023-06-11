@@ -299,18 +299,20 @@ export async function manageGiveaway(
 
 							const time = Number(data.endTime);
 							const fields: APIEmbedField[] = [];
-							data?.embeds?.result?.fields.forEach((a) => {
-								if (a.name === 'Requirements') return;
-								a.value = a.value
-									.replaceAll('{hosted}', `<@${data.host}>`)
-									.replaceAll('{endsAt}', `<t:${time}:f>`)
-									.replaceAll('{prize}', data.prize.toString())
+							if (data?.embeds?.result?.fields) {
+								data?.embeds?.result?.fields.forEach((a) => {
+									if (a.name === 'Requirements') return;
+									a.value = a.value
+										.replaceAll('{hosted}', `<@${data.host}>`)
+										.replaceAll('{endsAt}', `<t:${time}:f>`)
+										.replaceAll('{prize}', data.prize.toString())
 
-									.replaceAll('{winCount}', data.winCount.toString())
-									.replaceAll('{entered}', data.entered.toString());
+										.replaceAll('{winCount}', data.winCount.toString())
+										.replaceAll('{entered}', data.entered.toString());
 
-								fields.push(a);
-							});
+									fields.push(a);
+								});
+							}
 
 							if (data.entered <= 0 || !winnerArray[0]) {
 								embed

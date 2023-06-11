@@ -44,11 +44,12 @@ export async function starboard(
 		const { client } = reactionOrMessage;
 
 		const minimumRequired = options.min || 2;
-		let extMessage: ExtendedMessage = reactionOrMessage as ExtendedMessage;
-		let react: MessageReaction = reactionOrMessage as MessageReaction;
-		if ((reactionOrMessage as ExtendedMessage).id)
+		let extMessage: ExtendedMessage;
+		let react: MessageReaction;
+		if ((reactionOrMessage as MessageReaction).emoji)
+			react = reactionOrMessage as MessageReaction;
+		else if ((reactionOrMessage as ExtendedMessage).author)
 			extMessage = reactionOrMessage as ExtendedMessage;
-		else react = reactionOrMessage as MessageReaction;
 
 		if (
 			!minimumRequired ||
@@ -83,7 +84,7 @@ export async function starboard(
 				);
 		}
 		try {
-			if (extMessage || !(reactionOrMessage as MessageReaction).message) {
+			if (extMessage && !(reactionOrMessage as MessageReaction).message) {
 				if (!extMessage.guild) return;
 
 				const starboard = await client.channels.fetch(options.channelId, {
@@ -117,7 +118,7 @@ export async function starboard(
 				);
 
 				if (existing) {
-					await existing.delete();
+					return await existing.delete();
 				}
 			} else if (react) {
 				if (
@@ -126,14 +127,30 @@ export async function starboard(
 					react.emoji.name == '🌟'
 				) {
 					const minmax = react.count;
-					if (minmax < minimumRequired) return;
 
 					const starboard = await client.channels.fetch(options.channelId, {
 						force: true,
 						cache: true
 					});
 
+					if (minmax < minimumRequired) {
+						const messages = await (starboard as TextChannel)?.messages.fetch({
+							limit: 100
+						});
+
+						const existing = messages.find(
+							(msg) =>
+								msg.embeds[0]?.footer?.text == '⭐ | ID: ' + extMessage.id
+						);
+
+						if (existing) {
+							return await existing.delete();
+						}
+					}
+
 					if (!react.message.guild) return;
+					if ((starboard as TextChannel).guild.id !== react.message.guild.id)
+						return;
 
 					if (!starboard) {
 						if (options?.strict)
@@ -152,27 +169,20 @@ export async function starboard(
 							);
 					}
 
-					if (react.count == 0 || !react.count) {
-						const messages = await (starboard as TextChannel)?.messages.fetch({
-							limit: 100
-						});
-
-						const existing = messages.find(
-							(msg) =>
-								msg.embeds[0]?.footer?.text == '⭐ | ID: ' + extMessage.id
-						);
-
-						if (existing) {
-							await existing.delete();
-						}
-					}
-
 					const fetch = await react.message.fetch(true);
 
 					const attachment = fetch.attachments.first();
-					const url = attachment ? attachment.url : null;
+					let url = attachment ? attachment.url : null;
 
-					if (fetch.embeds.length !== 0) return;
+					if (fetch.content.match(/\bhttps?:\/\/\S+/gi)) {
+						url = fetch.content.match(/\bhttps?:\/\/\S+/gi)[0];
+					}
+					if (fetch.embeds[0]?.data?.thumbnail) {
+						url = fetch.embeds[0]?.data?.thumbnail?.url;
+					}
+					if (fetch.embeds[0]?.image) {
+						url = fetch.embeds[0].image.url;
+					}
 
 					const embed = new EmbedBuilder()
 						.setAuthor(
@@ -182,20 +192,20 @@ export async function starboard(
 							}
 						)
 						.setColor(options.embed?.color || '#FFC83D')
-						.setDescription(options.embed?.description || fetch.content)
+						.setDescription(
+							options.embed?.description || fetch.content || '** **'
+						)
 						.setTitle(options.embed?.title || `Jump to message`)
 						.setURL(fetch.url)
 						.setFooter({ text: '⭐ | ID: ' + fetch.id });
+
+					if (url) embed.setImage(url);
 
 					if (options?.embed?.fields) embed.setFields(options.embed?.fields);
 					if (options?.embed?.thumbnail)
 						embed.setThumbnail(options.embed?.thumbnail);
 					if (options?.embed?.timestamp)
 						embed.setTimestamp(options.embed?.timestamp);
-
-					if (url) {
-						embed.setImage(url);
-					}
 
 					const messages = await (starboard as TextChannel)?.messages.fetch({
 						limit: 100
@@ -230,13 +240,17 @@ export async function starboard(
 						if (react.count < minimumRequired) return await existing.delete();
 						else
 							await existing.edit({
-								content: `**${starEmoji} ${react.count}**`,
+								content: `**${starEmoji} ${react.count}${
+									attachment?.contentType?.startsWith('video') ? `\n${url}` : ''
+								}**`,
 								embeds: [embed],
 								components: [row]
 							});
 					} else {
 						await (starboard as TextChannel).send({
-							content: `**${starEmoji} ${react.count}**`,
+							content: `**${starEmoji} ${react.count}${
+								attachment?.contentType?.startsWith('video') ? `\n${url}` : ''
+							}**`,
 							embeds: [embed],
 							components: [row]
 						});

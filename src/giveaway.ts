@@ -277,7 +277,7 @@ export async function giveaway(
 			const enter = new ButtonBuilder()
 				.setCustomId('enter_giveaway')
 				.setStyle(
-					(buttonStyles?.enter?.style as ButtonStyle) || ButtonStyle.Primary
+					(buttonStyles?.enter?.style as ButtonStyle) || ButtonStyle.Success
 				);
 
 			if (options?.type === 'Emoji')
@@ -309,7 +309,7 @@ export async function giveaway(
 			const reroll = new ButtonBuilder()
 				.setCustomId('reroll_giveaway')
 				.setStyle(
-					(buttonStyles?.reroll?.style as ButtonStyle) || ButtonStyle.Success
+					(buttonStyles?.reroll?.style as ButtonStyle) || ButtonStyle.Primary
 				)
 				.setDisabled(true);
 
@@ -333,7 +333,7 @@ export async function giveaway(
 
 			const endTime = Number((Date.now() + timeInMS).toString().slice(0, -3));
 
-			options.embed.giveaway.fields = options?.embed?.giveaway?.fields || [
+			const fields = options?.embed?.giveaway?.fields || [
 				{
 					name: 'Prize',
 					value: `{prize}`
@@ -383,7 +383,7 @@ export async function giveaway(
 					.replaceAll('{entered}', '0');
 			}
 
-			options.embed?.giveaway?.fields?.forEach((a) => {
+			fields?.forEach((a) => {
 				a.value = replacer(a?.value);
 			});
 
@@ -423,11 +423,12 @@ export async function giveaway(
 			await channel
 				.send({ content: content, embeds: [embed], components: [row] })
 				.then(async (msg: Message) => {
+					const end = Number(Date.now() + timeInMS);
 					resolve({
 						message: msg,
 						winners: winners,
 						prize: prize,
-						endsAt: endTime,
+						endsAt: end,
 						requirements: requirements
 					});
 
@@ -451,7 +452,7 @@ export async function giveaway(
 							components: [linkRow]
 						});
 
-					const end = Number(Date.now() + timeInMS);
+					options.embed.giveaway.fields = fields;
 
 					const createDb = new model({
 						message: msg.id,

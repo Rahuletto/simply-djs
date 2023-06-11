@@ -36,6 +36,26 @@ export async function ghostPing(
 	options: ghostOptions = { strict: false }
 ): Promise<User> {
 	return new Promise(async (resolve) => {
+		message
+			.fetch(true)
+			.then((m) => {
+				if (m) {
+					if (options.strict)
+						throw new SimplyError({
+							function: 'ghostPing',
+							title: 'Use this function in messageDelete event',
+							tip: 'We recognised that you are not using this function in messageDelete event.'
+						});
+					else
+						console.log(
+							`SimplyError - ghostPing | Error: Use this function in messageDelete event\n\nWe recognised that you are not using this function in messageDelete event.`
+						);
+				}
+			})
+			.catch((_err) => {
+				return true;
+			});
+
 		if (message.mentions.users.first()) {
 			try {
 				if (message.author.bot) return;
@@ -100,7 +120,7 @@ export async function ghostPing(
 						.then(async (msg: Message) => {
 							setTimeout(() => {
 								msg.delete();
-							}, ms('10s'));
+							}, ms('20s'));
 
 							resolve(message.mentions.users.first());
 						});

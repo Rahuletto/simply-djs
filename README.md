@@ -1,4 +1,4 @@
-# Simply-DJS v4.0.0-beta-5
+# Simply-DJS v4.0.0-beta-6
 
 ## Support for Discord.JS v14
 
@@ -17,24 +17,24 @@ Simply-DJS Reimagined.
 
 ```diff
 - betterBtnRole.ts
-- btnRole.ts
++ btnRole.ts
 - bumpReminder.ts
 + calculator.ts
 + chatbot.ts
 
 + connect.ts
 + embedCreator.ts
-- buttonPages.ts
-- ghostPing.ts
++ buttonPages.ts
++ ghostPing.ts
 + giveaway.ts
 
-- manageBtnRole.ts
++ manageBtnRole.ts
 + manageGiveaway.ts
 + manageSuggest.ts
 + manageTicket.ts
 
 + meme.ts
-- menuPages.ts
++ menuPages.ts
 + rps.ts
 - starboard.ts
 + suggest.ts

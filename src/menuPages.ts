@@ -181,19 +181,20 @@ export async function menuPages(
 			collector.on('collect', async (menu: StringSelectMenuInteraction) => {
 				const selected = menu.values[0];
 
-				await menu.deferUpdate();
-
 				if (type === 'Edit') {
 					if (msgOrInt.member.user.id !== menu.user.id)
-						menu.followUp({
-							content: "You cannot access other's pagination."
+						await menu.reply({
+							content: "You cannot access other's pagination.",
+							ephemeral: true
 						});
+					return;
 				}
 
 				if (selected === 'delete_menuPages') {
 					if (msgOrInt.member.user.id !== menu.user.id)
-						menu.editReply({
-							content: "You cannot access other's pagination."
+						await menu.reply({
+							content: "You cannot access other's pagination.",
+							ephemeral: true
 						});
 					else collector.stop('delete');
 				}
@@ -201,7 +202,7 @@ export async function menuPages(
 				for (let i = 0; i < data.length; i++) {
 					if (selected === data[i].label) {
 						if (type === 'Send') {
-							menu.followUp({ embeds: [data[i].embed], ephemeral: true });
+							await menu.reply({ embeds: [data[i].embed], ephemeral: true });
 						} else if (type === 'Edit') {
 							menu.message.edit({ embeds: [data[i].embed] });
 						}

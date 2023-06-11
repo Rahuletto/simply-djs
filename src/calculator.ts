@@ -174,7 +174,7 @@ export async function calculator(
 			const extMessage = msgOrInt as ExtendedMessage;
 
 			if (!message) {
-				await extInteraction.reply({
+				await extInteraction.followUp({
 					embeds: [embed],
 					components: row
 				});

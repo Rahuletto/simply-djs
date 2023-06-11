@@ -1,6 +1,6 @@
 {
 	"name": "simply-djs",
-	"version": "4.0.0-beta-5",
+	"version": "4.0.0-beta-6",
 	"description": "The simplest way to build complex Discord bots.",
 	"main": "lib/simplydjs.js",
 	"types": "typings/simplydjs.d.ts",
@@ -108,7 +108,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
-		"discord.js": "^14.10.2",
+		"discord.js": "^14.11.0",
 		"husky": "^8.0.3",
 		"openai": "^3.2.1",
 		"pretty-quick": "^3.1.3",
