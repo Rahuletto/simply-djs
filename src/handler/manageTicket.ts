@@ -103,7 +103,7 @@ export async function manageTicket(
 
 					name = name
 						.replaceAll('{username}', member.user.username)
-						.replaceAll('{tag}', (member.user as User).tag)
+						.replaceAll('{tag}', (member.user as User).username)
 						.replaceAll('{id}', member.user.id);
 
 					const topic = `Ticket has been opened by <@${member.user.id}>`;
@@ -190,7 +190,7 @@ export async function manageTicket(
 									`Ticket has been raised by {user}. The support will reach you shortly.\n\n**User ID**: \`{id}\` | **User Tag**: \`{tag}\``
 								)
 									.replaceAll('{user}', member.user.toString())
-									.replaceAll('{tag}', (member.user as User).tag)
+									.replaceAll('{tag}', (member.user as User).username)
 									.replaceAll('{id}', member.user.id)
 									.replaceAll('{guild}', button.guild.name)
 							)
@@ -349,7 +349,7 @@ export async function manageTicket(
 					const attach = new AttachmentBuilder(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						{
-							name: `${(user.user as User).tag}.txt`
+							name: `${(user.user as User).username}.txt`
 						}
 					);
 
@@ -422,7 +422,7 @@ export async function manageTicket(
 					const attach = new AttachmentBuilder(
 						Buffer.from(response.join(`\n`), 'utf-8'),
 						{
-							name: `${(user.user as User).tag}.txt`
+							name: `${(user.user as User).username}.txt`
 						}
 					);
 

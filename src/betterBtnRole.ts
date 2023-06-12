@@ -57,7 +57,7 @@ export type betterbtnOptions = {
 // ------------------------------
 
 /**
- * A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
+ * A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtnRole()**](https://simplyd.js.org/docs/handler/manageBtnRole)*
  * @param interaction
  * @param options
  * @link `Documentation:` https://simplyd.js.org/docs/systems/betterBtnRole
@@ -399,6 +399,17 @@ export async function betterBtnRole(
 						`SimplyError - betterBtnRole (Remove) | Error: ${err.stack}`
 					);
 			}
+		} else {
+			if (options?.strict === true)
+				throw new SimplyError({
+					title: 'Provide a valid type',
+					tip: `We recognised that you are not using the correct type option.\nReceived: ${options?.type}. Expected: "Add"/"Remove"`,
+					function: 'betterBtnRole'
+				});
+			else
+				return console.log(
+					`SimplyError - betterBtnRole (Add) | Error: Provide a valid type\n\nWe recognised that you are not using the correct type option.\nReceived: ${options?.type}. Expected: "Add"/"Remove"`
+				);
 		}
 	});
 }

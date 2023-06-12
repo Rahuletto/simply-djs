@@ -630,7 +630,7 @@ export async function manageSuggest(
 						let myString = '';
 						array.forEach((val) => {
 							myString += `${
-								button.client.users.cache.get(val.userId.toString()).tag
+								button.client.users.cache.get(val.userId.toString()).username
 							}\n`;
 						});
 						return myString;
@@ -815,7 +815,9 @@ export async function manageSuggest(
 					const embed = EmbedBuilder.from(oldemb)
 						.setColor(options?.embed?.deny?.color || `Red`)
 						.setFooter(
-							options?.embed?.deny?.footer || { text: `Denied by ${user.tag}` }
+							options?.embed?.deny?.footer || {
+								text: `Denied by ${user.username}`
+							}
 						)
 						.setTitle(options.embed?.deny?.title || 'Suggestion denied');
 
@@ -871,7 +873,7 @@ export async function manageSuggest(
 						.setColor(options?.embed?.accept?.color || `Green`)
 						.setFooter(
 							options?.embed?.accept?.footer || {
-								text: `Accepted by ${user.tag}`
+								text: `Accepted by ${user.username}`
 							}
 						)
 						.setTitle(options.embed?.accept?.title || 'Suggestion accepted');

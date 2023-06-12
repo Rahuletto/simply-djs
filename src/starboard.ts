@@ -187,8 +187,8 @@ export async function starboard(
 					const embed = new EmbedBuilder()
 						.setAuthor(
 							options?.embed?.author || {
-								name: fetch.author.tag,
-								iconURL: fetch.author.displayAvatarURL()
+								name: fetch.author.username,
+								iconURL: fetch.author.displayAvatarURL({ forceStatic: false })
 							}
 						)
 						.setColor(options.embed?.color || '#FFC83D')

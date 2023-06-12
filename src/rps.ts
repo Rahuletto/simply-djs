@@ -223,11 +223,11 @@ export async function rps(
 
 			const requestEmbed = new EmbedBuilder()
 				.setTitle(
-					options.embed?.request?.title || `Request for ${opponent.tag} !`
+					options.embed?.request?.title || `Request for ${opponent.username} !`
 				)
 				.setAuthor(
 					options.embed?.request?.author || {
-						name: (msgOrint.member.user as User).tag,
+						name: (msgOrint.member.user as User).username,
 						iconURL: (msgOrint.member.user as User).displayAvatarURL({
 							forceStatic: false
 						})
@@ -300,11 +300,13 @@ export async function rps(
 				const gameEmbed = new EmbedBuilder()
 					.setTitle(
 						options.embed?.game?.title ||
-							`${(msgOrint.member.user as User).tag} VS. ${opponent.tag}`
+							`${(msgOrint.member.user as User).username} VS. ${
+								opponent.username
+							}`
 					)
 					.setAuthor(
 						options.embed?.game?.author || {
-							name: (msgOrint.member.user as User).tag,
+							name: (msgOrint.member.user as User).username,
 							iconURL: (msgOrint.member.user as User).displayAvatarURL({
 								forceStatic: false
 							})
@@ -486,7 +488,9 @@ export async function rps(
 								);
 
 							const winEmbed = new EmbedBuilder()
-								.setTitle(options.embed?.win?.title || `${opponent.tag} Won !`)
+								.setTitle(
+									options.embed?.win?.title || `${opponent.username} Won !`
+								)
 								.setColor(options.embed?.win?.color || 'Green')
 								.setDescription(
 									options.embed?.win?.description ||
@@ -562,7 +566,7 @@ export async function rps(
 							const winEmbed = new EmbedBuilder()
 								.setTitle(
 									options.embed?.win?.title ||
-										`${(msgOrint.member.user as User).tag} Won !`
+										`${(msgOrint.member.user as User).username} Won !`
 								)
 								.setColor(options.embed?.win?.color || 'Green')
 								.setDescription(
@@ -634,7 +638,7 @@ export async function rps(
 						.setTitle(options.embed?.decline?.title || 'Game Declined!')
 						.setDescription(
 							options.embed?.decline?.description ||
-								`${opponent.tag} has declined your game request!`
+								`${opponent.username} has declined your game request!`
 						);
 
 					if (options?.embed?.decline?.fields)

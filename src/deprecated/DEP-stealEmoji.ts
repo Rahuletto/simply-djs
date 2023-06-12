@@ -9,7 +9,7 @@ import {
 	ExtendedMessage,
 	CustomizableEmbed
 } from '../typedef';
-import { ms } from '../misc';
+import { ms, toRgb } from '../misc';
 import { Deprecated, SimplyError } from '../error';
 
 /**
@@ -185,7 +185,7 @@ export async function stealEmoji(
 										.replaceAll('{url}', emoji.url)
 								)
 								.setThumbnail(emoji.url)
-								.setColor(options.embed?.color || 0x075fff)
+								.setColor(options.embed?.color || toRgb('#406DBC'))
 								.setFooter(
 									options.embed?.footer
 										? options.embed?.footer
@@ -266,7 +266,7 @@ export async function stealEmoji(
 										.replaceAll('{url}', emoji.url)
 								)
 								.setThumbnail(emoji.url)
-								.setColor(options.embed?.color || 0x075fff)
+								.setColor(options.embed?.color || toRgb('#406DBC'))
 								.setFooter(
 									options.embed?.footer
 										? options.embed?.footer

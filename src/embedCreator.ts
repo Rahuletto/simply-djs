@@ -109,6 +109,11 @@ export async function embedCreator(
 					value: 'setThumbnail'
 				},
 				{
+					label: 'Field',
+					description: 'Add a field to the embed',
+					value: 'addField'
+				},
+				{
 					label: 'Footer',
 					description: 'Set a footer in the embed',
 					value: 'setFooter'
@@ -148,11 +153,9 @@ export async function embedCreator(
 				.setTitle(options.embed?.title || 'Embed Generator')
 				.setDescription(
 					options.embed?.description ||
-						'Select any option from the Select Menu in this message to create a custom embed for you.\n\nThis is a completed embed.'
+						'Select any option from the Select Menu in this message to create a custom embed for you.\n\nTake this image below as a reference.'
 				)
-				.setImage(
-					'https://media.discordapp.net/attachments/885411032128978955/955066865347076226/unknown.png'
-				)
+				.setImage('https://i.postimg.cc/sXS767Gd/image.png')
 				.setColor(options.embed?.color || toRgb('#406DBC'))
 				.setFooter(
 					options.embed?.footer
@@ -238,7 +241,7 @@ export async function embedCreator(
 					const collector = msg.createMessageComponentCollector({
 						filter: filter,
 						componentType: ComponentType.StringSelect,
-						idle: ms('3m')
+						idle: ms('5m')
 					});
 
 					const buttonCltr = msg.createMessageComponentCollector({
@@ -269,7 +272,7 @@ export async function embedCreator(
 
 								const msgCollector = button.channel.createMessageCollector({
 									filter: messageFilter,
-									time: ms('30s'),
+									time: ms('1m'),
 									max: 1
 								});
 
@@ -294,7 +297,7 @@ export async function embedCreator(
 									PermissionFlagsBits.Administrator
 								)
 							) {
-								button.reply({ content: 'Done 👍', ephemeral: true });
+								await button.reply({ content: 'Done 👍', ephemeral: true });
 
 								msgOrInt.channel.send({
 									content: preview.content,
@@ -322,7 +325,7 @@ export async function embedCreator(
 									.setCustomId('timestamp-no')
 									.setStyle(ButtonStyle.Danger);
 
-								select.reply({
+								await select.reply({
 									content: 'Do you want a Timestamp in the embed ?',
 									ephemeral: true,
 									components: [
@@ -344,7 +347,7 @@ export async function embedCreator(
 									'collect',
 									async (button: ButtonInteraction) => {
 										if (button.customId === 'timestamp-yes') {
-											select.editReply({
+											await select.editReply({
 												components: [],
 												content: 'Enabled the Timestamp on the embed'
 											});
@@ -362,7 +365,7 @@ export async function embedCreator(
 										}
 
 										if (button.customId === 'timestamp-no') {
-											select.editReply({
+											await select.editReply({
 												components: [],
 												content: 'Disabled the Timestamp on the embed'
 											});
@@ -403,7 +406,7 @@ export async function embedCreator(
 										}
 									]);
 
-								select.reply({
+								await select.reply({
 									content: 'Select one from the "Author" options',
 									ephemeral: true,
 									components: [
@@ -445,7 +448,7 @@ export async function embedCreator(
 											await menu.showModal(modal);
 
 											const submitted = await menu.awaitModalSubmit({
-												time: ms('30s'),
+												time: ms('1m'),
 
 												filter: (i) => i.user.id === menu.user.id
 											});
@@ -486,7 +489,7 @@ export async function embedCreator(
 										}
 
 										if (menu.values[0] === 'author-icon') {
-											menu.reply({
+											await menu.reply({
 												content:
 													'Send me the Author icon (Attachment/Image URL)',
 												ephemeral: true,
@@ -496,7 +499,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: ms('30s'),
+													time: ms('1m'),
 													max: 1
 												});
 
@@ -559,7 +562,7 @@ export async function embedCreator(
 											await menu.showModal(modal);
 
 											const submitted = await menu.awaitModalSubmit({
-												time: ms('30s'),
+												time: ms('1m'),
 
 												filter: (i) => i.user.id === menu.user.id
 											});
@@ -626,7 +629,7 @@ export async function embedCreator(
 								await select.showModal(modal);
 
 								const submitted = await select.awaitModalSubmit({
-									time: ms('30s'),
+									time: ms('1m'),
 
 									filter: (i) => i.user.id === select.user.id
 								});
@@ -651,7 +654,7 @@ export async function embedCreator(
 									}
 								}
 							} else if (select.values[0] === 'setThumbnail') {
-								select.reply({
+								await select.reply({
 									content:
 										'Send me an image for the embed thumbnail (small image at top right)',
 									ephemeral: true
@@ -659,7 +662,7 @@ export async function embedCreator(
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: ms('30s'),
+									time: ms('1m'),
 									max: 1
 								});
 
@@ -713,7 +716,7 @@ export async function embedCreator(
 								await select.showModal(modal);
 
 								const submitted = await select.awaitModalSubmit({
-									time: ms('30s'),
+									time: ms('1m'),
 
 									filter: (i) => i.user.id === select.user.id
 								});
@@ -748,7 +751,11 @@ export async function embedCreator(
 													ephemeral: true
 												});
 											});
-									}
+									} else
+										await submitted.reply({
+											content: `Provide a valid hex code with \`#\` (Example: #406DBC)`,
+											ephemeral: true
+										});
 								}
 							} else if (select.values[0] === 'setURL') {
 								const url = new TextInputBuilder()
@@ -768,7 +775,7 @@ export async function embedCreator(
 								await select.showModal(modal);
 
 								const submitted = await select.awaitModalSubmit({
-									time: ms('30s'),
+									time: ms('1m'),
 
 									filter: (i) => i.user.id === select.user.id
 								});
@@ -802,15 +809,79 @@ export async function embedCreator(
 											.catch(() => {});
 									}
 								}
+							} else if (select.values[0] == 'addField') {
+								const name = new TextInputBuilder()
+									.setLabel('Send me the Field name')
+									.setCustomId('field-name')
+									.setStyle(TextInputStyle.Short)
+									.setRequired(true);
+								const value = new TextInputBuilder()
+									.setLabel('Send me the Field value')
+									.setCustomId('field-value')
+									.setStyle(TextInputStyle.Short)
+									.setRequired(true);
+
+								const title =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										name
+									]);
+								const val =
+									new ActionRowBuilder<TextInputBuilder>().setComponents([
+										value
+									]);
+
+								const modal = new ModalBuilder()
+									.setCustomId('add-field')
+									.setTitle('Add field')
+									.addComponents(title, val);
+
+								await select.showModal(modal);
+
+								const submitted = await select.awaitModalSubmit({
+									time: ms('1m'),
+
+									filter: (i) => i.user.id === select.user.id
+								});
+
+								if (submitted) {
+									const fieldName =
+										submitted.fields.getTextInputValue('field-name');
+									const fieldValue =
+										submitted.fields.getTextInputValue('field-value');
+
+									if (fieldName.toLowerCase() === 'cancel') {
+										await submitted.reply({
+											content: `You have cancelled.`,
+											ephemeral: true
+										});
+									} else {
+										await submitted.reply({
+											content: `Done ! Added the field in embed`,
+											ephemeral: true
+										});
+
+										preview
+											.edit({
+												content: preview.content,
+												embeds: [
+													EmbedBuilder.from(preview.embeds[0]).addFields({
+														name: fieldName,
+														value: fieldValue
+													})
+												]
+											})
+											.catch(() => {});
+									}
+								}
 							} else if (select.values[0] === 'setImage') {
-								select.reply({
+								await select.reply({
 									content: 'Send me the image you need for embed',
 									ephemeral: true
 								});
 
 								const messageCollect = select.channel.createMessageCollector({
 									filter: messageFilter,
-									time: ms('30s'),
+									time: ms('1m'),
 									max: 1
 								});
 
@@ -822,7 +893,7 @@ export async function embedCreator(
 										m.attachments.first()?.url ||
 										null;
 									if (!isthumb) {
-										msgOrInt.reply(
+										await select.followUp(
 											'That is not a image url/image attachment. Please provide me a image url or attachment.'
 										);
 										return;
@@ -861,7 +932,7 @@ export async function embedCreator(
 								await select.showModal(modal);
 
 								const submitted = await select.awaitModalSubmit({
-									time: ms('30s'),
+									time: ms('1m'),
 
 									filter: (i) => i.user.id === select.user.id
 								});
@@ -910,7 +981,7 @@ export async function embedCreator(
 								await select.showModal(modal);
 
 								const submitted = await select.awaitModalSubmit({
-									time: ms('30s'),
+									time: ms('1m'),
 
 									filter: (i) => i.user.id === select.user.id
 								});
@@ -960,7 +1031,7 @@ export async function embedCreator(
 										}
 									]);
 
-								select.reply({
+								await select.reply({
 									content: 'Select one from the "Footer" options',
 									ephemeral: true,
 									components: [
@@ -974,7 +1045,7 @@ export async function embedCreator(
 									select.channel.createMessageComponentCollector({
 										componentType: ComponentType.StringSelect,
 										filter: filter,
-										idle: ms('30s')
+										idle: ms('1m')
 									});
 
 								menuCollector.on(
@@ -1002,7 +1073,7 @@ export async function embedCreator(
 											await menu.showModal(modal);
 
 											const submitted = await menu.awaitModalSubmit({
-												time: ms('30s'),
+												time: ms('1m'),
 
 												filter: (i) => i.user.id === menu.user.id
 											});
@@ -1040,7 +1111,7 @@ export async function embedCreator(
 										}
 
 										if (menu.values[0] === 'footer-icon') {
-											menu.reply({
+											await menu.reply({
 												content:
 													'Send me the Footer icon (Attachment/Image URL)',
 												ephemeral: true,
@@ -1050,7 +1121,7 @@ export async function embedCreator(
 											const messageCollect =
 												select.channel.createMessageCollector({
 													filter: messageFilter,
-													time: ms('30s'),
+													time: ms('1m'),
 													max: 1
 												});
 

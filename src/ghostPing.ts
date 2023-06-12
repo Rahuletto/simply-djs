@@ -81,17 +81,19 @@ export async function ghostPing(
 					const embed: EmbedBuilder = new EmbedBuilder()
 						.setAuthor(
 							options.embed?.author || {
-								name: message.author.tag,
-								iconURL: message.author.displayAvatarURL({ extension: 'gif' })
+								name: message.author.username,
+								iconURL: message.author.displayAvatarURL({
+									forceStatic: false
+								})
 							}
 						)
 						.setTitle(options.embed?.title || 'Ghost Ping')
 						.setDescription(
 							options.embed?.description ||
 								`${message.author} **(${
-									message.author.tag
+									message.author.username
 								})** just ghost pinged ${message.mentions.members.first()} **(${
-									message.mentions.users.first().tag
+									message.mentions.users.first().username
 								})**\n\nContent: **${message.content}**`
 						)
 						.setColor(options.embed?.color || toRgb('#406DBC'))

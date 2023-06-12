@@ -37,7 +37,7 @@ export type ticketSetupOptions = {
 // ------------------------------
 
 /**
- * A Flexible yet Powerful Ticket System | *Requires: [**manageBtn()**](https://simplyd.js.org/docs/handler/manageBtn)*
+ * A Flexible yet Powerful Ticket System | *Requires: [**manageTicket()**](https://simplyd.js.org/docs/handler/manageTicket)*
  *
  * @param msgOrint
  * @param options

@@ -260,7 +260,7 @@ export async function suggest(
 					const suggestEmb = new EmbedBuilder()
 						.setDescription(suggestion)
 						.setAuthor({
-							name: (msgOrint.member.user as User).tag,
+							name: (msgOrint.member.user as User).username,
 							iconURL: (msgOrint.member.user as User).displayAvatarURL({
 								forceStatic: false
 							})

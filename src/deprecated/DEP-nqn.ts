@@ -66,14 +66,18 @@ export async function nqn(
 				if (!webhook) {
 					webhook = await (message.channel as TextChannel).createWebhook({
 						name: `simply-djs NQN`,
-						avatar: client.user.displayAvatarURL()
+						avatar: client.user.displayAvatarURL({
+							forceStatic: false
+						})
 					});
 				}
 
 				await message.delete();
 				await webhook.send({
 					username: message.member.nickname || message.author.username,
-					avatarURL: message.author.displayAvatarURL({ forceStatic: false }),
+					avatarURL: message.author.displayAvatarURL({
+						forceStatic: false
+					}),
 					content: reply
 				});
 			}

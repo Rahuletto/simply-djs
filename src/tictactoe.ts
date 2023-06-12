@@ -221,7 +221,8 @@ export async function tictactoe(
 
 			const requestEmbed = new EmbedBuilder()
 				.setTitle(
-					options?.embed?.request?.title || `Tictactoe with ${opponent.tag}`
+					options?.embed?.request?.title ||
+						`Tictactoe with ${opponent.username}`
 				)
 				.setDescription(
 					options?.embed?.request?.description ||
@@ -229,8 +230,10 @@ export async function tictactoe(
 				)
 				.setAuthor(
 					options?.embed?.request?.author || {
-						name: (message.member.user as User).tag,
-						iconURL: (message.member.user as User).displayAvatarURL()
+						name: (message.member.user as User).username,
+						iconURL: (message.member.user as User).displayAvatarURL({
+							forceStatic: false
+						})
 					}
 				)
 				.setColor(options.embed?.request?.color || toRgb('#406DBC'))
@@ -278,7 +281,7 @@ export async function tictactoe(
 			if (interaction) {
 				m = await extInteraction.followUp({
 					content: `<@${opponent.id}>, You got a tictactoe request from ${
-						(message.member.user as User).tag
+						(message.member.user as User).username
 					}`,
 					embeds: [requestEmbed],
 					components: [row]
@@ -286,7 +289,7 @@ export async function tictactoe(
 			} else if (!interaction) {
 				m = await extMessage.reply({
 					content: `<@${opponent.id}>, You got a tictactoe request from ${
-						(message.member.user as User).tag
+						(message.member.user as User).username
 					}`,
 					embeds: [requestEmbed],
 					components: [row]
@@ -328,7 +331,7 @@ export async function tictactoe(
 						)
 						.setAuthor(
 							options.embed?.game?.author || {
-								name: (message.member.user as User).tag,
+								name: (message.member.user as User).username,
 								iconURL: (message.member.user as User).displayAvatarURL({
 									forceStatic: false
 								})
@@ -536,7 +539,7 @@ export async function tictactoe(
 											winEmbed
 												.setAuthor(
 													options.embed?.win?.author || {
-														name: (winner as User).tag,
+														name: (winner as User).username,
 														iconURL: (winner as User).displayAvatarURL({
 															forceStatic: false
 														})
@@ -563,7 +566,7 @@ export async function tictactoe(
 											winEmbed
 												.setAuthor(
 													options.embed?.win?.author || {
-														name: (winner as User).tag,
+														name: (winner as User).username,
 														iconURL: (winner as User).displayAvatarURL({
 															forceStatic: false
 														})
@@ -606,7 +609,7 @@ export async function tictactoe(
 											winEmbed
 												.setAuthor(
 													options.embed?.win?.author || {
-														name: (winner as User).tag,
+														name: (winner as User).username,
 														iconURL: (winner as User).displayAvatarURL({
 															forceStatic: false
 														})
@@ -633,7 +636,7 @@ export async function tictactoe(
 											winEmbed
 												.setAuthor(
 													options.embed?.win?.author || {
-														name: (winner as User).tag,
+														name: (winner as User).username,
 														iconURL: (winner as User).displayAvatarURL({
 															forceStatic: false
 														})
@@ -731,7 +734,7 @@ export async function tictactoe(
 								gameEmbed
 									.setAuthor(
 										options.embed?.game?.author || {
-											name: play.tag,
+											name: play.username,
 											iconURL: play.displayAvatarURL({
 												forceStatic: false
 											})
@@ -944,7 +947,7 @@ export async function tictactoe(
 						.setTitle(options.embed?.decline?.title || 'Game Declined!')
 						.setDescription(
 							options.embed?.decline?.description ||
-								`${opponent.tag} has declined your game request!`
+								`${opponent.username} has declined your game request!`
 						);
 
 					if (options?.embed?.decline?.fields)
@@ -1057,7 +1060,7 @@ async function ai(
 		)
 		.setAuthor(
 			options.embed?.game?.author || {
-				name: (msgOrint.member.user as User).tag,
+				name: (msgOrint.member.user as User).username,
 				iconURL: (msgOrint.member.user as User).displayAvatarURL({
 					forceStatic: false
 				})

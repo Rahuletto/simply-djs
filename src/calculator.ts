@@ -199,10 +199,6 @@ export async function calculator(
 				time: ms('5m')
 			});
 
-			collector.on('end', (collected) =>
-				console.log(`Collected ${collected.size} items`)
-			);
-
 			collector.on('collect', async (buttons: ButtonInteraction) => {
 				await buttons.deferUpdate();
 
@@ -232,11 +228,11 @@ export async function calculator(
 					return;
 				}
 
-				elem = elem + name.toString();
+				if (name === 'Back') elem = elem.slice(0, -1);
+				else elem = elem + name.toString();
 
 				if (name === 'Delete') await msg.delete().catch(() => {});
 				else if (name === 'Clear') elem = '0';
-				if (name === 'Back') elem = elem.slice(0, -2);
 
 				if (isNaN(Number(name)) && name !== 'Back') {
 					embed.setDescription(
