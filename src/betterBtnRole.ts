@@ -76,10 +76,10 @@ export async function betterBtnRole(
 
 		// Get all options from CommandInteraction (a.k.a.) slash command.
 		const ch =
-			options?.channel || interaction.options.get('channel', true).channel;
+			options?.channel || interaction.options.get('channel', true)?.channel;
 		const msgid: string =
-			options?.messageId || String(interaction.options.get('message').value);
-		const role = options?.button?.role || interaction.options.get('role').role;
+			options?.messageId || String(interaction.options.get('message')?.value);
+		const role = options?.button?.role || interaction.options.get('role')?.role;
 
 		// Fetch the message using the provided message id
 		const msg: Message = await (ch as TextChannel).messages
@@ -127,16 +127,16 @@ export async function betterBtnRole(
 			try {
 				// Get all button properties from CommandInteraction (a.k.a) slash command
 				const label =
-					options.button.label ||
-					String(interaction.options.get('label').value) ||
+					options?.button?.label ||
+					String(interaction.options.get('label')?.value) ||
 					role.name;
 				let color =
-					options.button.style ||
-					String(interaction.options.get('style').value) ||
+					options?.button?.style ||
+					String(interaction.options.get('style')?.value) ||
 					ButtonStyle.Secondary;
 				const emoji =
-					options.button.emoji ||
-					String(interaction.options.get('emoji').value);
+					options?.button?.emoji ||
+					(interaction.options.get('emoji')?.value as string);
 
 				if (msg.components) {
 					for (let i = 0; msg.components.length > i; i++) {
