@@ -48,20 +48,22 @@ export type bumpOptions = {
 export async function bumpReminder(
 	client: Client,
 	message: Message | bumpOptions,
-	options: bumpOptions = { strict: false }
+	options: bumpOptions
 ): Promise<boolean> {
 	try {
+		if (!options && message) options = message as bumpOptions;
+
 		const reminder: EmbedBuilder = new EmbedBuilder()
 			.setTitle(options.embed?.remind?.title || 'Bump Reminder !')
 			.setDescription(
 				options.embed?.remind?.description ||
-					'Its been 2 hours since last bump. Reminding the server members to bump again.'
+					'Its been 2 hours since last bump. Reminding the server members to bump again.\nDo /bump to bump the server ;)'
 			)
 			.setTimestamp()
 			.setColor(options.embed?.remind?.color || toRgb('#406DBC'))
 			.setFooter(
 				options.embed?.remind?.footer || {
-					text: 'Do /bump to bump the server ;) | ©️ Rahuletto. npm i simply-djs',
+					text: '©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				}
 			);
@@ -85,13 +87,13 @@ export async function bumpReminder(
 			.setTitle(options.embed?.thank?.title || 'Thank you for bump!')
 			.setDescription(
 				options.embed?.thank?.description ||
-					'Thank you for bumping the server. This means a lot. Will notify everyone after 2 hours'
+					'Thank you for bumping the server. This means a lot. Will notify everyone after 2 hours (120 minutes)'
 			)
 			.setTimestamp()
-			.setColor(options.embed?.thank?.color || toRgb('#06bf00'))
+			.setColor(options.embed?.thank?.color || toRgb('#209120'))
 			.setFooter(
 				options.embed?.thank?.footer || {
-					text: 'Next bump after 120 minutes. (2 hours) | ©️ Rahuletto. npm i simply-djs',
+					text: ' ©️ Rahuletto. npm i simply-djs',
 					iconURL: 'https://i.imgur.com/XFUIwPh.png'
 				}
 			);
@@ -110,12 +112,10 @@ export async function bumpReminder(
 			thankyou.setTitle(options.embed?.thank?.title);
 		if (options?.embed?.thank?.url) thankyou.setURL(options.embed?.thank?.url);
 
-		if ((!options && (message as bumpOptions)) || (!options && !message)) {
+		if (options == (message as bumpOptions) || (!options && !message)) {
 			return new Promise(async (resolve) => {
 				setInterval(async () => {
-					const data = await db.find({
-						counts: []
-					});
+					const data = await db.find({});
 
 					data.forEach(async (dt) => {
 						if (dt.nextBump && dt.nextBump < Date.now()) {
@@ -134,7 +134,7 @@ export async function bumpReminder(
 							resolve(true);
 						} else return;
 					});
-				}, ms('5s'));
+				}, ms('10s'));
 			});
 		}
 
@@ -175,6 +175,7 @@ export async function bumpReminder(
 								}
 
 								data.nextBump = time;
+
 								await data.save().catch(() => {});
 
 								await (message as Message).channel.send({

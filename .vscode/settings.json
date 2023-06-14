@@ -9,5 +9,10 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"vue.features.codeActions.enable": false
+	"vue.features.codeActions.enable": false,
+	"editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+	"editor.codeLensFontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+	"scm.inputFontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+	"debug.console.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+	"terminal.integrated.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace"
 }

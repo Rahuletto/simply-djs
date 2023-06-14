@@ -207,17 +207,14 @@ export async function calculator(
 				if (elem === '0') elem = '';
 
 				if (name === '=') {
-					elem = mathEval(elem, true);
-
 					embed.setDescription(
-						`\`\`\`js\n${elem}\n\`\`\`` +
+						`\`\`\`js\n${mathEval(elem, true)}\n\`\`\`` +
 							(options.embed?.description
 								? `\n${options.embed?.description}`
 								: '')
 					);
 
-					elem = '0';
-
+					elem = mathEval(elem);
 					await msg
 						.edit({
 							embeds: [embed],

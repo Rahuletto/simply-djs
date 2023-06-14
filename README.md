@@ -1,6 +1,6 @@
 <div class="heading" align="center">
   
-  <img src="https://github.com/Rahuletto/simply-djs/assets/71836991/cfd6dd4d-7dd2-4998-96f7-0cae86c25492" width="330" height="100"></img>
+  <img src="https://i.postimg.cc/fLTS9tZL/icony.png" width="330" height="100"></img>
 
   <h2>The simplest way to build complex Discord bots.</h2>
   <h3>Made by Rahuletto#0243</h3>

@@ -121,8 +121,6 @@ export async function giveaway(
 			let interaction: ExtendedInteraction;
 			if (msgOrInt.commandId) {
 				interaction = msgOrInt as ExtendedInteraction;
-				if (!interaction.deferred)
-					await interaction.deferReply({ fetchReply: true });
 			}
 			const extInteraction = msgOrInt as ExtendedInteraction;
 			const extMessage = msgOrInt as ExtendedMessage;
@@ -147,11 +145,21 @@ export async function giveaway(
 					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.Administrator)
 				)
 			) {
-				return msgOrInt.channel.send({
-					content:
-						'You must have • `Administrator` (or) `Manage Guild` (or) `Manage Events` Permission or • Giveaway Manager Role'
-				});
+				if (interaction)
+					return extInteraction.reply({
+						content:
+							'You must have • `Administrator`/`Manage Guild`/`Manage Events` Permission or • Giveaway Manager Role to perform this action',
+						ephemeral: true
+					});
+				else
+					return extMessage.reply({
+						content:
+							'You must have • `Administrator`/`Manage Guild`/`Manage Events` Permission or • Giveaway Manager Role to perform this action'
+					});
 			}
+
+			if (msgOrInt.commandId && !interaction.deferred)
+				await interaction.deferReply({ fetchReply: true });
 
 			options.winners ??= 1;
 
