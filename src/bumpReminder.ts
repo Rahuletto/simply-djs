@@ -53,65 +53,6 @@ export async function bumpReminder(
 	try {
 		if (!options && message) options = message as bumpOptions;
 
-		const reminder: EmbedBuilder = new EmbedBuilder()
-			.setTitle(options.embed?.remind?.title || 'Bump Reminder !')
-			.setDescription(
-				options.embed?.remind?.description ||
-					'Its been 2 hours since last bump. Reminding the server members to bump again.\nDo /bump to bump the server ;)'
-			)
-			.setTimestamp()
-			.setColor(options.embed?.remind?.color || toRgb('#406DBC'))
-			.setFooter(
-				options.embed?.remind?.footer || {
-					text: '©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/XFUIwPh.png'
-				}
-			);
-
-		if (options?.embed?.remind?.fields)
-			reminder.setFields(options.embed?.remind?.fields);
-		if (options?.embed?.remind?.author)
-			reminder.setAuthor(options.embed?.remind?.author);
-		if (options?.embed?.remind?.image)
-			reminder.setImage(options.embed?.remind?.image);
-		if (options?.embed?.remind?.thumbnail)
-			reminder.setThumbnail(options.embed?.remind?.thumbnail);
-		if (options?.embed?.remind?.timestamp)
-			reminder.setTimestamp(options.embed?.remind?.timestamp);
-		if (options?.embed?.remind?.title)
-			reminder.setTitle(options.embed?.remind?.title);
-		if (options?.embed?.remind?.url)
-			reminder.setURL(options.embed?.remind?.url);
-
-		const thankyou: EmbedBuilder = new EmbedBuilder()
-			.setTitle(options.embed?.thank?.title || 'Thank you for bump!')
-			.setDescription(
-				options.embed?.thank?.description ||
-					'Thank you for bumping the server. This means a lot. Will notify everyone after 2 hours (120 minutes)'
-			)
-			.setTimestamp()
-			.setColor(options.embed?.thank?.color || toRgb('#209120'))
-			.setFooter(
-				options.embed?.thank?.footer || {
-					text: ' ©️ Rahuletto. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/XFUIwPh.png'
-				}
-			);
-
-		if (options?.embed?.thank?.fields)
-			thankyou.setFields(options.embed?.thank?.fields);
-		if (options?.embed?.thank?.author)
-			thankyou.setAuthor(options.embed?.thank?.author);
-		if (options?.embed?.thank?.image)
-			thankyou.setImage(options.embed?.thank?.image);
-		if (options?.embed?.thank?.thumbnail)
-			thankyou.setThumbnail(options.embed?.thank?.thumbnail);
-		if (options?.embed?.thank?.timestamp)
-			thankyou.setTimestamp(options.embed?.thank?.timestamp);
-		if (options?.embed?.thank?.title)
-			thankyou.setTitle(options.embed?.thank?.title);
-		if (options?.embed?.thank?.url) thankyou.setURL(options.embed?.thank?.url);
-
 		if (options == (message as bumpOptions) || (!options && !message)) {
 			return new Promise(async (resolve) => {
 				setInterval(async () => {
@@ -125,6 +66,36 @@ export async function bumpReminder(
 							const cho = await client.channels.fetch(dt.channel, {
 								force: true
 							});
+
+							const reminder: EmbedBuilder = new EmbedBuilder()
+								.setTitle(options.embed?.remind?.title || 'Bump Reminder !')
+								.setDescription(
+									options.embed?.remind?.description ||
+										'Its been 2 hours since last bump. Reminding the server members to bump again.\nDo /bump to bump the server ;)'
+								)
+								.setTimestamp()
+								.setColor(options.embed?.remind?.color || toRgb('#406DBC'))
+								.setFooter(
+									options.embed?.remind?.footer || {
+										text: '©️ Rahuletto. npm i simply-djs',
+										iconURL: 'https://i.imgur.com/XFUIwPh.png'
+									}
+								);
+
+							if (options?.embed?.remind?.fields)
+								reminder.setFields(options.embed?.remind?.fields);
+							if (options?.embed?.remind?.author)
+								reminder.setAuthor(options.embed?.remind?.author);
+							if (options?.embed?.remind?.image)
+								reminder.setImage(options.embed?.remind?.image);
+							if (options?.embed?.remind?.thumbnail)
+								reminder.setThumbnail(options.embed?.remind?.thumbnail);
+							if (options?.embed?.remind?.timestamp)
+								reminder.setTimestamp(options.embed?.remind?.timestamp);
+							if (options?.embed?.remind?.title)
+								reminder.setTitle(options.embed?.remind?.title);
+							if (options?.embed?.remind?.url)
+								reminder.setURL(options.embed?.remind?.url);
 
 							await (cho as TextChannel).send({
 								content: message.content || '\u200b',
@@ -177,6 +148,38 @@ export async function bumpReminder(
 								data.nextBump = time;
 
 								await data.save().catch(() => {});
+
+								const thankyou: EmbedBuilder = new EmbedBuilder()
+									.setTitle(
+										options.embed?.thank?.title || 'Thank you for bump!'
+									)
+									.setDescription(
+										options.embed?.thank?.description ||
+											'Thank you for bumping the server. This means a lot. Will notify everyone after 2 hours (120 minutes)'
+									)
+									.setTimestamp()
+									.setColor(options.embed?.thank?.color || toRgb('#209120'))
+									.setFooter(
+										options.embed?.thank?.footer || {
+											text: ' ©️ Rahuletto. npm i simply-djs',
+											iconURL: 'https://i.imgur.com/XFUIwPh.png'
+										}
+									);
+
+								if (options?.embed?.thank?.fields)
+									thankyou.setFields(options.embed?.thank?.fields);
+								if (options?.embed?.thank?.author)
+									thankyou.setAuthor(options.embed?.thank?.author);
+								if (options?.embed?.thank?.image)
+									thankyou.setImage(options.embed?.thank?.image);
+								if (options?.embed?.thank?.thumbnail)
+									thankyou.setThumbnail(options.embed?.thank?.thumbnail);
+								if (options?.embed?.thank?.timestamp)
+									thankyou.setTimestamp(options.embed?.thank?.timestamp);
+								if (options?.embed?.thank?.title)
+									thankyou.setTitle(options.embed?.thank?.title);
+								if (options?.embed?.thank?.url)
+									thankyou.setURL(options.embed?.thank?.url);
 
 								await (message as Message).channel.send({
 									content: options?.content || '\u200b',
