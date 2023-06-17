@@ -1,54 +1,91 @@
-<h1>This package has been deprecated. Thanks for this wonderful journey</h1>
+<div class="heading" align="center">
+  
+  <img src="https://i.postimg.cc/fLTS9tZL/icony.png" width="330" height="100"></img>
 
-----
+  <h2>The simplest way to build complex Discord bots.</h2>
+  <h3>Made by Rahuletto#0243</h3>
 
-<div align="center"><img style="width: 60%" src="https://user-images.githubusercontent.com/71836991/151350002-7a6885d1-b340-4b01-860a-0c0e9dc1d026.png"></div>
+</div>
 
-<h2 align="center">A Simple, Easy and Beginner friendly Discord.js Package for everyone.</h2>
-   <br>
-   <br>
-   
-   ------------------
-   
-   <h2 align="center">Deprecated by Rahuletto#0243</h2>
+---
 
 <br>
-<p align="center">
-<a class="shield" href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge" /></a> 
- <a class="shield" href="https://www.npmjs.com/package/simply-djs"><img src="https://img.shields.io/npm/dt/simply-djs?style=for-the-badge" /></a>
-   <br></br>
-   <a class="shield" href="https://simplyd.js.org"><img src="https://img.shields.io/badge/Simply--DJS-Documentation-075FFF?style=for-the-badge"/></a> 
-      <a class="shield" href="https://discord.gg/3JzDV9T5Fn"><img src="https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord"/></a> 
-      <br></br>
-   <a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
 
-</p>
+<div class="badges" align="center">
+
+[![Version](https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
+[![Downloads](https://img.shields.io/npm/dt/simply-djs?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
+[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge/v4.x.x?style=for-the-badge)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview/v4.x.x)
+
+[![Documentation](https://img.shields.io/badge/SimplyDJS-Documentation-406dbc?style=for-the-badge)](https://simplyd.js.org)
+[![Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/3JzDV9T5Fn)
+
+[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)
+
+</div>
+
+<div align="center">
+  <h3>Now returning with v4 (DiscordJS v14 support)</h3>
+  This was too late. But we will support v15 as soon as its released.
+</div>
+
+---
+
+> Thank you `CyberJack#6350` for helping me
 
 ---
 
 <br>
 
 ## 🖥️ <b>How to install ?</b>
+
 ```
-We don't recommend installing it. Please use other package
+npm install simply-djs
 ```
 
-<br>
- 
-# 💀 [What's New](https://simplyd.js.org/docs/new) 💀
+```
+yarn add simply-djs
+```
 
-- Deprecated
-
-<br></br>
-
-# 🤔 But Why ?
-
-- Don't. Please don't. This will not work for discord.js v14
-- If you use Discord.js v13, you can use it
+```
+pnpm add simply-djs
+```
 
 ---
 
-<br>
+# What's new 🎁
+
+### Package 📦
+
+- Converted to DiscordJS v14
+- All new `strict` mode.
+- Proper Typings and Commenting
+- Embeds and Buttons are now customized easily yet making it all yours
+- Names that just make sense
+- Removed `credit` option
+- DEPRECATED many functions. [Refer to docs](https://simplyd.js.org/docs/deprecated/renames/)
+- Remade all systems and games (For efficient and optimized results)
+- Fixed many many bugs
+
+### Documentation 📖
+
+- Redesigned UI
+- Documented every thing possible
+- New Examples
+- New Outputs
+- Very much optimized for every device
+- Optimized performance
+- Better Search engine.
+
+### Typings 🔍
+
+- Splitted every common types and options
+- Unified options
+- Better intellisense
+- Commented every code
+- Options now have documentation JSDoc
+
+---
 
 # 📄 [License](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
@@ -66,7 +103,8 @@ We don't recommend installing it. Please use other package
 
 <img style="margin-bottom:-6px; width: 100px" src="https://mirrors.creativecommons.org/presskit/logos/cc.logo.large.png">
 
-<br>
+---
 
- <h1>👥 Contact us | Support</h1>
-<a href="https://discord.gg/3JzDV9T5Fn"><img src="https://invidget.switchblade.xyz/3JzDV9T5Fn" /></a>
+# 👥 Contact us/Support
+
+[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)

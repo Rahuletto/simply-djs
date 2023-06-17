@@ -2,11 +2,14 @@
 	"files": ["simplydjs.ts"],
 	"exclude": ["node_modules"],
 	"include": ["./src/**/*", "simplydjs.ts"],
+	"paths": {
+		"@src/*": ["src/*"]
+	},
 	"compilerOptions": {
 		"skipLibCheck": true,
-		"target": "es2016",
+		"target": "ES2021",
 		"module": "commonjs",
-		"lib": ["DOM", "ESNext"],
+		"lib": ["ES2021"],
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
@@ -15,8 +18,12 @@
 		"moduleResolution": "node",
 		"strictNullChecks": false,
 		"declaration": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"declarationDir": "typings",
-		"allowJs": true,
-		"allowSyntheticDefaultImports": true
+		"allowJs": false,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": true
 	}
 }

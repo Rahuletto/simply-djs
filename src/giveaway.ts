@@ -1,90 +1,101 @@
 import {
-	MessageEmbed,
+	ButtonStyle,
+	GuildTextBasedChannel,
+	Guild,
 	Message,
-	MessageEmbedFooter,
-	MessageEmbedAuthor,
-	ColorResolvable,
-	MessageActionRow,
-	MessageButton,
-	Client,
-	MessageButtonStyle,
+	PermissionFlagsBits,
 	Role,
-	Permissions,
-	EmbedFieldData
+	TextChannel,
+	ButtonBuilder,
+	ActionRowBuilder,
+	Invite,
+	Collection,
+	EmbedBuilder,
+	GuildMember,
+	APIEmbedField
 } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	CustomizableButton
+} from './typedef';
 
-import chalk from 'chalk';
-import model from './model/gSys';
+import model, { Entry } from './model/giveaway';
+import { toButtonStyle, disableButtons, ms, toRgb } from './misc';
+import { SimplyError } from './error';
+import { EndResolve } from './handler/manageGiveaway';
 
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#requirements
  */
 
-interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
-
-	credit?: boolean;
-}
-
-interface requirement {
+export interface Requirements {
 	type: 'Role' | 'Guild' | 'None';
 	id: string;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#giveawaybuttons
  */
 
-interface btnTemplate {
-	style?: MessageButtonStyle;
-	label?: string;
-	emoji?: string;
+export interface GiveawayButtons {
+	enter?: CustomizableButton;
+	end?: CustomizableButton;
+	reroll?: CustomizableButton;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/Buttons/giveawaySystem*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/giveaway#giveawayembeds
  */
 
-interface gSysButtons {
-	enter?: btnTemplate;
-	end?: btnTemplate;
-	reroll?: btnTemplate;
+export interface GiveawayEmbeds {
+	giveaway?: CustomizableEmbed;
+	load?: CustomizableEmbed;
+	result?: CustomizableEmbed;
 }
+
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/systems/giveaway#giveawayoptions
+ */
 
 export type giveawayOptions = {
 	prize?: string;
-	winners?: string | number;
-	channel?: MessageChannel;
+	winners?: number;
+	channel?: GuildTextBasedChannel | TextChannel;
 	time?: string;
 
-	buttons?: gSysButtons;
+	buttons?: GiveawayButtons;
 
 	manager?: Role | string;
 
-	req?: requirement;
-	ping?: string;
+	requirements?: Requirements;
+	pingRole?: Role | string;
 
-	embed?: CustomizableEmbed;
-	fields?: EmbedFieldData[];
+	embed?: GiveawayEmbeds;
 
-	disable?: 'Label' | 'Emoji';
+	type?: 'Label' | 'Emoji' | 'Both';
+	strict?: boolean;
 };
 
-interface returns {
-	message: string;
+// ------------------------------
+// ------ R E S O L V E S -------
+// ------------------------------
+
+/**
+ * **Documentation Url** of the resolve: https://simplyd.js.org/docs/systems/giveaway#giveawayresolve
+ */
+
+export interface GiveawayResolve {
+	message: Message;
 	winners: number;
 	prize: string;
 	endsAt: number;
-	req: string;
+	requirements: { type: 'None' | 'Role' | 'Guild'; value: Guild | Role };
 }
 
 // ------------------------------
@@ -92,193 +103,245 @@ interface returns {
 // ------------------------------
 
 /**
- * A **Powerful** yet simple giveawaySystem | *Required: **manageBtn()***
- * @param client
- * @param message
+ * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()
+ * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/givewaySystem***
- * @example simplydjs.giveawaySystem(client, message)
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/giveway
+ * @example simplydjs.giveaway(interaction)
  */
 
-export async function giveawaySystem(
-	client: Client,
-	message: ExtendedMessage | ExtendedInteraction,
-	options: giveawayOptions = {}
-): Promise<returns> {
+export async function giveaway(
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	options: giveawayOptions = { strict: false }
+): Promise<GiveawayResolve | EndResolve> {
 	return new Promise(async (resolve) => {
 		try {
-			let interaction: any;
-			if (message.commandId) {
-				interaction = message;
+			const { client } = msgOrInt;
+
+			let interaction: ExtendedInteraction;
+			if (msgOrInt.commandId) {
+				interaction = msgOrInt as ExtendedInteraction;
 			}
+			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrInt as ExtendedMessage;
+
 			const timeStart: number = Date.now();
-			const int = message as ExtendedInteraction;
-			const mes = message as Message;
 
-			let roly;
+			let manager: Role;
 
-			if (options.manager as Role)
-				roly = await message.member.roles.cache.find(
-					(r: Role) => r.id === (options.manager as Role).id
-				);
-			else if (options.manager as string)
-				roly = await message.member.roles.cache.find(
+			if (options?.manager as Role) manager = options.manager as Role;
+			else if (options?.manager as string)
+				manager = await msgOrInt.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
 			if (
 				!(
-					roly ||
-					message?.member?.permissions?.has(Permissions.FLAGS.ADMINISTRATOR)
+					manager ||
+					msgOrInt?.member?.permissions?.has(
+						PermissionFlagsBits.ManageEvents
+					) ||
+					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
+					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.Administrator)
 				)
 			) {
-				return message.channel.send({
-					content:
-						'You Must Have • Administrator Permission (or) • Giveaway Manager Role'
-				});
+				if (interaction)
+					return extInteraction.reply({
+						content:
+							'You must have • `Administrator`/`Manage Guild`/`Manage Events` Permission or • Giveaway Manager Role to perform this action',
+						ephemeral: true
+					});
+				else
+					return extMessage.reply({
+						content:
+							'You must have • `Administrator`/`Manage Guild`/`Manage Events` Permission or • Giveaway Manager Role to perform this action'
+					});
 			}
+
+			if (msgOrInt.commandId && !interaction.deferred)
+				await interaction.deferReply({ fetchReply: true });
 
 			options.winners ??= 1;
 
-			options.buttons = {
+			const buttonStyles = {
 				enter: {
-					style: options.buttons?.enter?.style || 'SUCCESS',
+					style: options.buttons?.enter?.style || ButtonStyle.Success,
 					label: options.buttons?.enter?.label || '0',
 					emoji: options.buttons?.enter?.emoji || '🎁'
 				},
 				end: {
-					style: options.buttons?.end?.style || 'DANGER',
+					style: options.buttons?.end?.style || ButtonStyle.Danger,
 					label: options.buttons?.end?.label || 'End',
 					emoji: options.buttons?.end?.emoji || '⛔'
 				},
 				reroll: {
-					style: options.buttons?.end?.style || 'PRIMARY',
-					label: options.buttons?.end?.label || 'Reroll',
-					emoji: options.buttons?.end?.emoji || '🔁'
+					style: options.buttons?.reroll?.style || ButtonStyle.Primary,
+					label: options.buttons?.reroll?.label || 'Reroll',
+					emoji: options.buttons?.reroll?.emoji || '🔁'
 				}
 			};
 
 			if (!options.embed) {
 				options.embed = {
-					footer: {
-						text: '©️ Simply Develop. npm i simply-djs',
-						iconURL: 'https://i.imgur.com/u8VlLom.png'
-					},
-					color: '#075FFF',
-					title: 'Giveaways',
-					credit: true
+					giveaway: {
+						footer: {
+							text: '©️ Rahuletto. npm i simply-djs',
+							iconURL: 'https://i.imgur.com/XFUIwPh.png'
+						},
+						color: toRgb('#406DBC'),
+						title: 'Giveaway !'
+					}
 				};
 			}
 
-			let ch;
-			let time: any;
-			let winners: any;
-			let prize: any;
-			let req = 'None';
-			let gid: string;
+			let channel: TextChannel;
+			let time: string;
+			let winners: number;
+			let prize: string;
+			let requirements: {
+				type: 'None' | 'Role' | 'Guild';
+				value: Role | Guild | null;
+			} = { type: 'None', value: null };
 
 			let content = '** **';
 
-			if (options.ping) {
-				content = message.guild.roles
-					.fetch(options.ping, { force: true })
-					.toString();
-			}
-			let val: any;
+			if (options?.pingRole as Role)
+				content = (options.pingRole as Role).toString();
+			else if (options?.pingRole as string)
+				content = (
+					await msgOrInt.member.roles.cache.find(
+						(r: Role) => r.id === (options.pingRole as string)
+					)
+				).toString();
 
-			if (options.req?.type === 'Role') {
-				val = await message.guild.roles.fetch(options.req?.id, {
-					force: true
-				});
+			if (options?.requirements?.type === 'Role') {
+				const role = await msgOrInt.guild.roles.fetch(
+					options.requirements?.id,
+					{
+						force: true
+					}
+				);
 
-				req = 'Role';
-			} else if (options.req?.type === 'Guild') {
-				val = client.guilds.cache.get(options.req?.id);
+				requirements = { type: 'Role', value: role };
+			} else if (options?.requirements?.type === 'Guild') {
+				const guild = await client.guilds.cache.get(options.requirements?.id);
 
-				if (!val)
-					return message.channel.send({
+				if (!guild)
+					return extMessage.channel.send({
 						content:
-							'Please add me to that server so i can set the requirement.'
+							'Please add me to that server so I can set the requirement.'
 					});
-				gid = val.id;
 
-				await val.invites.fetch().then((a: any) => {
-					val = `[${val.name}](https://discord.gg/${a.first()})`;
-				});
-				req = 'Guild';
+				requirements = { type: 'Guild', value: guild };
 			}
 
 			if (interaction) {
-				ch =
-					options.channel ||
-					int.options.getChannel('channel') ||
-					interaction.channel;
-				time = options.time || int.options.getString('time') || '1h';
-				winners = options.winners || int.options.getNumber('winners');
-				prize = options.prize || int.options.getString('prize');
+				channel =
+					(options.channel as TextChannel) ||
+					(extInteraction.options.get('channel')?.channel as TextChannel) ||
+					(interaction.channel as TextChannel);
+				time =
+					options.time ||
+					extInteraction.options.get('time')?.value.toString() ||
+					'1h';
+				winners =
+					options.winners ||
+					Number(extInteraction.options.get('winners')?.value);
+				prize =
+					options.prize ||
+					extInteraction.options.get('prize')?.value?.toString();
 			} else if (!interaction) {
-				const [...args] = mes.content.split(/ +/g);
+				const [...args] = extMessage.content.split(/ +/g);
 
-				ch =
-					options.channel ||
-					// @ts-ignore
-					message.mentions.channels.first() ||
-					message.channel;
+				if (!Number(args[2]))
+					return extMessage.reply({
+						content: 'Please provide a number for winners argument'
+					});
+
+				channel =
+					(options.channel as TextChannel) ||
+					(extMessage.mentions?.channels?.first() as TextChannel) ||
+					(extMessage.channel as TextChannel);
 				time = options.time || args[1] || '1h';
-				winners = args[2] || options.winners;
-				prize = options.prize || args.slice(3).join(' ');
+				winners = Number(args[2]) || options.winners;
+				prize = options.prize || args.slice(3)?.join(' ');
 			}
 
-			const enter = new MessageButton()
-				.setCustomId('enter_giveaway')
-				.setStyle(options.buttons?.enter?.style || 'SUCCESS');
+			if (buttonStyles?.enter?.style as string)
+				buttonStyles.enter.style = toButtonStyle(
+					buttonStyles?.enter?.style as string
+				);
 
-			if (options.disable === 'Label')
-				enter.setEmoji(options.buttons?.enter?.emoji || '🎁');
-			else if (options.disable === 'Emoji')
-				enter.setLabel(options.buttons?.enter?.label || '0');
+			if (buttonStyles?.end?.style as string)
+				buttonStyles.end.style = toButtonStyle(
+					buttonStyles?.end?.style as string
+				);
+
+			if (buttonStyles?.reroll?.style as string)
+				buttonStyles.reroll.style = toButtonStyle(
+					buttonStyles?.reroll?.style as string
+				);
+
+			const enter = new ButtonBuilder()
+				.setCustomId('enter_giveaway')
+				.setStyle(
+					(buttonStyles?.enter?.style as ButtonStyle) || ButtonStyle.Success
+				);
+
+			if (options?.type === 'Emoji')
+				enter.setEmoji(buttonStyles?.enter?.emoji || '🎁');
+			else if (options?.type === 'Label')
+				enter.setLabel(buttonStyles?.enter?.label || '0');
 			else {
 				enter
-					.setEmoji(options.buttons?.enter?.emoji || '🎁')
-					.setLabel(options.buttons?.enter?.label || '0');
+					.setEmoji(buttonStyles?.enter?.emoji || '🎁')
+					.setLabel(buttonStyles?.enter?.label || '0');
 			}
 
-			const end = new MessageButton()
+			const end = new ButtonBuilder()
 				.setCustomId('end_giveaway')
-				.setStyle(options.buttons?.end?.style || 'DANGER');
+				.setStyle(
+					(buttonStyles?.end?.style as ButtonStyle) || ButtonStyle.Danger
+				);
 
-			if (options.disable === 'Label')
-				end.setEmoji(options.buttons?.end?.emoji || '⛔');
-			else if (options.disable === 'Emoji')
-				end.setLabel(options.buttons?.end?.label || 'End');
+			if (options?.type === 'Emoji')
+				end.setEmoji(buttonStyles?.end?.emoji || '⛔');
+			else if (options?.type === 'Label')
+				end.setLabel(buttonStyles?.end?.label || 'End');
 			else {
 				end
-					.setEmoji(options.buttons?.end?.emoji || '⛔')
-					.setLabel(options.buttons?.end?.label || 'End');
+					.setEmoji(buttonStyles?.end?.emoji || '⛔')
+					.setLabel(buttonStyles?.end?.label || 'End');
 			}
 
-			const reroll = new MessageButton()
+			const reroll = new ButtonBuilder()
 				.setCustomId('reroll_giveaway')
-				.setStyle(options.buttons?.reroll?.style || 'SUCCESS')
+				.setStyle(
+					(buttonStyles?.reroll?.style as ButtonStyle) || ButtonStyle.Primary
+				)
 				.setDisabled(true);
 
-			if (options.disable === 'Label')
-				reroll.setEmoji(options.buttons?.reroll?.emoji || '🔁');
-			else if (options.disable === 'Emoji')
-				reroll.setLabel(options.buttons?.reroll?.label || 'Reroll');
+			if (options?.type === 'Emoji')
+				reroll.setEmoji(buttonStyles?.reroll?.emoji || '🔁');
+			else if (options?.type === 'Label')
+				reroll.setLabel(buttonStyles?.reroll?.label || 'Reroll');
 			else {
 				reroll
-					.setEmoji(options.buttons?.reroll?.emoji || '🔁')
-					.setLabel(options.buttons?.reroll?.label || 'Reroll');
+					.setEmoji(buttonStyles?.reroll?.emoji || '🔁')
+					.setLabel(buttonStyles?.reroll?.label || 'Reroll');
 			}
 
-			const row = new MessageActionRow().addComponents([enter, reroll, end]);
+			const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				enter,
+				reroll,
+				end
+			]);
 
-			time = ms(time);
+			const timeInMS = ms(time);
 
-			const endtime = Number((Date.now() + time).toString().slice(0, -3));
+			const endTime = Number((Date.now() + timeInMS).toString().slice(0, -3));
 
-			options.fields = options.fields || [
+			const fields = options?.embed?.giveaway?.fields || [
 				{
 					name: 'Prize',
 					value: `{prize}`
@@ -300,331 +363,339 @@ export async function giveawaySystem(
 				}
 			];
 
-			options.fields?.forEach((a) => {
-				a.value = a?.value
-					.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-					.replaceAll('{endsAt}', `<t:${endtime}:f>`)
+			let guildInvite: string;
+			if (requirements.type == 'Guild') {
+				await (requirements.value as Guild).invites
+					.fetch()
+					.then((a: Collection<string, Invite>) => {
+						guildInvite = `https://discord.gg/${a.first()}`;
+					});
+			}
+
+			function replacer(str: string) {
+				return str
+					.replaceAll('{hosted}', `<@${msgOrInt.member.user.id}>`)
+					.replaceAll('{endsAt}', `<t:${endTime}:f>`)
 					.replaceAll('{prize}', prize)
 					.replaceAll(
 						'{requirements}',
-						req === 'None'
+						requirements.type === 'None'
 							? 'None'
-							: req + ' | ' + (req === 'Role' ? `${val}` : val)
+							: requirements.type +
+									' | ' +
+									(requirements.type === 'Guild'
+										? `${guildInvite}`
+										: `${requirements.value}`)
 					)
-					.replaceAll('{winCount}', winners)
+					.replaceAll('{winCount}', winners.toString())
 					.replaceAll('{entered}', '0');
+			}
+
+			fields?.forEach((a) => {
+				a.value = replacer(a?.value);
 			});
 
-			const embed = new MessageEmbed()
-				.setTitle(
-					(options.embed?.title || 'Giveaway')
-						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-						.replaceAll('{prize}', prize)
-						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
-						.replaceAll(
-							'{requirements}',
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? `${val}` : val)
-						)
-						.replaceAll('{winCount}', winners)
-						.replaceAll('{entered}', '0') || prize
-				)
-				.setColor(options.embed?.color || '#075FFF')
-				.setTimestamp(Number(Date.now() + time))
+			const embed = new EmbedBuilder()
+				.setTitle(replacer(options?.embed?.giveaway?.title || 'Giveaway Time!'))
+				.setColor(options?.embed?.giveaway?.color || toRgb('#406DBC'))
+				.setTimestamp(Number(Date.now() + timeInMS))
 				.setFooter(
-					options.embed?.credit === false
-						? options.embed?.footer
+					options?.embed?.giveaway?.footer
+						? options?.embed?.giveaway?.footer
 						: {
-								text: '©️ Simply Develop. npm i simply-djs',
-								iconURL: 'https://i.imgur.com/u8VlLom.png'
+								text: '©️ Rahuletto. npm i simply-djs',
+								iconURL: 'https://i.imgur.com/XFUIwPh.png'
 						  }
 				)
 				.setDescription(
-					(
-						options.embed?.description ||
-						`Interact with the giveaway using the buttons.`
+					replacer(
+						options?.embed?.giveaway?.description ||
+							`Interact with the giveaway using the buttons below.`
 					)
-						.replaceAll('{hosted}', `<@${message.member.user.id}>`)
-						.replaceAll('{prize}', prize)
-						.replaceAll('{endsAt}', `<t:${endtime}:R>`)
-						.replaceAll(
-							'{requirements}',
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? `${val}` : val)
-						)
-						.replaceAll('{winCount}', winners)
-						.replaceAll('{entered}', '0')
 				)
-				.addFields(options.fields);
+				.setFields(options?.embed?.giveaway?.fields);
 
-			await ch
+			if (options?.embed?.giveaway?.author)
+				embed.setAuthor(options.embed?.giveaway?.author);
+			if (options?.embed?.giveaway?.image)
+				embed.setImage(options.embed?.giveaway?.image);
+			if (options?.embed?.giveaway?.thumbnail)
+				embed.setThumbnail(options.embed?.giveaway?.thumbnail);
+			if (options?.embed?.giveaway?.timestamp)
+				embed.setTimestamp(options.embed?.giveaway?.timestamp);
+			if (options?.embed?.giveaway?.title)
+				embed.setTitle(options.embed?.giveaway?.title);
+			if (options?.embed?.giveaway?.url)
+				embed.setURL(options.embed?.giveaway?.url);
+
+			await channel
 				.send({ content: content, embeds: [embed], components: [row] })
 				.then(async (msg: Message) => {
+					const end = Number(Date.now() + timeInMS);
 					resolve({
-						message: msg.id,
+						message: msg,
 						winners: winners,
 						prize: prize,
-						endsAt: endtime,
-						req:
-							req === 'None'
-								? 'None'
-								: req + ' | ' + (req === 'Role' ? val : gid)
+						endsAt: end,
+						requirements: requirements
 					});
 
-					const link = new MessageButton()
+					const link = new ButtonBuilder()
 						.setLabel('View Giveaway.')
-						.setStyle('LINK')
+						.setStyle(ButtonStyle.Link)
 						.setURL(msg.url);
 
-					const rowew = new MessageActionRow().addComponents([link]);
+					const linkRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+						link
+					]);
 
-					if (int && interaction) {
-						await int.followUp({
+					if (interaction) {
+						await extInteraction.followUp({
 							content: 'Giveaway has started.',
-							components: [rowew]
+							components: [linkRow]
 						});
 					} else
-						await message.channel.send({
+						await extMessage.channel.send({
 							content: 'Giveaway has started.',
-							components: [rowew]
+							components: [linkRow]
 						});
 
-					const tim = Number(Date.now() + time);
+					options.embed.giveaway.fields = fields;
 
-					const crete = new model({
+					const createDb = new model({
 						message: msg.id,
 						entered: 0,
 						winCount: winners,
-						desc: options.embed?.description || null,
+						description: options.embed?.giveaway?.description || null,
+						embeds: options.embed,
 						requirements: {
-							type: req === 'None' ? 'none' : req.toLowerCase(),
-							id: req === 'Role' ? val : gid
+							type:
+								requirements?.type === 'None'
+									? 'none'
+									: requirements?.type?.toLowerCase(),
+							id: requirements?.value?.id
 						},
 						started: timeStart,
 						prize: prize,
 						entry: [],
-						endTime: tim,
-						host: message.member.user.id
+						endTime: end,
+						host: msgOrInt.member.user.id
 					});
 
-					await crete.save();
+					await createDb.save();
 
 					const timer = setInterval(async () => {
 						if (!msg) return;
-						const allComp = await msg?.components[0];
 
-						const dt = await model.findOne({ message: msg.id });
+						const components = ActionRowBuilder.from(msg?.components[0]);
 
-						if (dt.endTime && Number(dt.endTime) < Date.now()) {
-							const embeded = new MessageEmbed()
-								.setTitle('Processing Data...')
-								.setColor(0xcc0000)
+						const data = await model.findOne({ message: msg.id });
+
+						if (data.endTime && Number(data.endTime) < Date.now()) {
+							const loadEmbed = new EmbedBuilder()
+								.setTitle(data?.embeds?.load?.title || 'Processing Tickets...')
+								.setColor(data?.embeds?.load?.color || toRgb('#cc0000'))
 								.setDescription(
-									`Please wait.. We are Processing the winner with some magiks`
+									data?.embeds?.load?.description ||
+										`Please wait.. We are shuffling the members to pick a winner.`
 								)
-								.setFooter({
-									text: 'Ending the Giveaway, Scraping the ticket..'
-								});
+								.setFooter(
+									data?.embeds?.load?.footer || {
+										text: 'Ending the Giveaway, Choosing a winner...'
+									}
+								);
+
+							if (data?.embeds?.load?.fields)
+								loadEmbed.setFields(data?.embeds?.load?.fields);
+							if (data?.embeds?.load?.author)
+								loadEmbed.setAuthor(data?.embeds?.load?.author);
+							if (data?.embeds?.load?.image)
+								loadEmbed.setImage(data?.embeds?.load?.image);
+							if (data?.embeds?.load?.thumbnail)
+								loadEmbed.setThumbnail(data?.embeds?.load?.thumbnail);
+							if (data?.embeds?.load?.timestamp)
+								loadEmbed.setTimestamp(data?.embeds?.load?.timestamp);
+							if (data?.embeds?.load?.title)
+								loadEmbed.setTitle(data?.embeds?.load?.title);
+							if (data?.embeds?.load?.url)
+								loadEmbed.setURL(data?.embeds?.load?.url);
 
 							clearInterval(timer);
 
 							await msg
-								.edit({ embeds: [embeded], components: [] })
+								.edit({ embeds: [loadEmbed], components: [] })
 								.catch(() => {});
 
-							const dispWin: string[] = [];
+							const displayWinner: string[] = [];
 
-							const winArr: any[] = [];
+							const winnerArray: Entry[] = [];
 
-							const winCt = dt.winCount;
+							const winnerCount = data.winCount;
 
-							const entries = dt.entry;
+							const entries = data.entry;
 
-							for (let i = 0; i < winCt; i++) {
-								const winno = Math.floor(Math.random() * dt.entered);
+							for (let i = 0; i < winnerCount; i++) {
+								const win = Math.floor(Math.random() * data.entered);
 
-								winArr.push(entries[winno]);
+								if (entries.length != 0) winnerArray.push(entries[win]);
 							}
+							const oldFields = msg.embeds[0].fields;
+
+							const resultWinner: GuildMember[] = [];
 
 							setTimeout(() => {
-								winArr.forEach(async (name) => {
-									await message.guild.members
-										.fetch(name?.userID)
-										.then((user) => {
-											dispWin.push(`<@${user.user.id}>`);
+								winnerArray.forEach(async (name) => {
+									await interaction.guild.members
+										.fetch(name?.userId)
+										.then((member) => {
+											resultWinner.push(member);
+											displayWinner.push(`<@${member.user.id}>`);
 
-											const embod = new MessageEmbed()
-												.setTitle('You.. Won the Giveaway !')
+											const dmEmbed: EmbedBuilder = new EmbedBuilder()
+												.setTitle('You, Won the Giveaway!')
 												.setDescription(
-													`You just won \`${dt.prize}\` in the Giveaway at \`${user.guild.name}\` Go claim it fast !`
+													`You just won \`${data.prize}\` in the Giveaway at \`${member.guild.name}\` Go claim it fast !`
 												)
-												.setColor(0x075fff)
+												.setColor('DarkGreen')
 												.setFooter(
-													options.embed?.credit === false
-														? options.embed?.footer
-														: {
-																text: '©️ Simply Develop. npm i simply-djs',
-																iconURL: 'https://i.imgur.com/u8VlLom.png'
-														  }
+													data?.embeds?.result?.footer || { text: 'GG winner.' }
 												);
 
-											const gothe = new MessageButton()
+											const linkButton = new ButtonBuilder()
 												.setLabel('View Giveaway')
-												.setStyle('LINK')
+												.setStyle(ButtonStyle.Link)
 												.setURL(msg.url);
 
-											const entrow = new MessageActionRow().addComponents([
-												gothe
-											]);
+											const linkRow =
+												new ActionRowBuilder<ButtonBuilder>().addComponents([
+													linkButton
+												]);
 
-											return user
-												.send({ embeds: [embod], components: [entrow] })
+											return member
+												.send({ embeds: [dmEmbed], components: [linkRow] })
 												.catch(() => {});
 										})
 										.catch(() => {});
 								});
-							}, 2000);
+							}, ms('2s'));
 
 							setTimeout(async () => {
-								if (!dt) return await msg.delete();
-								if (dt) {
-									const tim = Number(dt.endTime.slice(0, -3));
-									const f: EmbedFieldData[] = [];
-									if (options.fields) {
-										options.fields.forEach((a) => {
-											a.value = a.value
-												.replaceAll('{hosted}', `<@${dt.host}>`)
-												.replaceAll('{endsAt}', `<t:${tim}:f>`)
-												.replaceAll('{prize}', dt.prize.toString())
-												.replaceAll(
-													'{requirements}',
-													req === 'None'
-														? 'None'
-														: req + ' | ' + (req === 'Role' ? `${val}` : val)
-												)
-												.replaceAll('{winCount}', dt.winCount.toString())
-												.replaceAll('{entered}', dt.entered.toString());
+								if (!data) return await msg.delete();
+								if (data) {
+									const embed = EmbedBuilder.from(msg.embeds[0]);
 
-											f.push(a);
-										});
-									}
+									const time = Number(data.endTime);
+									const fields: APIEmbedField[] = [];
+									data?.embeds?.result?.fields.forEach((a) => {
+										if (a.name === 'Requirements') return;
+										a.value = a.value
+											.replaceAll('{hosted}', `<@${data.host}>`)
+											.replaceAll('{endsAt}', `<t:${time}:f>`)
+											.replaceAll('{prize}', data.prize.toString())
 
-									if (dt.entered <= 0 || !winArr[0]) {
+											.replaceAll('{winCount}', data.winCount.toString())
+											.replaceAll('{entered}', data.entered.toString());
+
+										fields.push(a);
+									});
+
+									if (
+										data.entered <= 0 ||
+										entries.length == 0 ||
+										!winnerArray[0]
+									) {
 										embed
 											.setTitle('No one entered')
 
-											.setFields(f)
-											.setColor('RED')
-											.setFooter(
-												options.embed?.credit === false
-													? options.embed?.footer
-													: {
-															text: '©️ Simply Develop. npm i simply-djs',
-															iconURL: 'https://i.imgur.com/u8VlLom.png'
-													  }
-											);
+											.setFields(fields || oldFields)
+											.setColor(toRgb('#cc0000'))
+											.setFooter({
+												text: 'Ohh man, Its ok lets get another giveaway goin.'
+											});
 
 										return await msg.edit({
 											embeds: [embed],
-											components: []
+											components: disableButtons([
+												components as ActionRowBuilder<ButtonBuilder>
+											])
 										});
 									}
 
-									embed
-										.setTitle('We got the winner !')
-										.setDescription(
-											`${dispWin.join(', ')} got the prize !\n\n` +
-												(
-													options.embed?.description ||
-													`Interact with the giveaway using the buttons.`
-												)
-													.replaceAll('{hosted}', `<@${dt.host}>`)
-													.replaceAll('{prize}', dt.prize)
-													.replaceAll('{endsAt}', `<t:${dt.endTime}:R>`)
-													.replaceAll(
-														'{requirements}',
-														req === 'None'
-															? 'None'
-															: req + ' | ' + (req === 'Role' ? `${val}` : val)
-													)
-													.replaceAll('{winCount}', dt.winCount.toString())
-													.replaceAll('{entered}', dt.entered.toString())
-										)
-										.setFields(options.fields)
-										.setColor(0x3bb143)
-										.setFooter(
-											options.embed?.credit === false
-												? options.embed?.footer
-												: {
-														text: '©️ Simply Develop. npm i simply-djs',
-														iconURL: 'https://i.imgur.com/u8VlLom.png'
-												  }
-										);
+									const b1 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[0]
+									).setDisabled(true);
+									const b2 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[1]
+									).setDisabled(false);
+									const b3 = ButtonBuilder.from(
+										(components as ActionRowBuilder<ButtonBuilder>)
+											.components[2]
+									).setDisabled(true);
 
-									allComp.components[0].disabled = true;
-									allComp.components[1].disabled = false;
-									allComp.components[2].disabled = true;
+									const buttonRow =
+										new ActionRowBuilder<ButtonBuilder>().setComponents([
+											b1,
+											b2,
+											b3
+										]);
+
+									const resultEmbed = new EmbedBuilder()
+										.setTitle(
+											data?.embeds?.result?.title || 'And the winner is,'
+										)
+										.setColor(data?.embeds?.result?.color || 'DarkGreen')
+										.setDescription(
+											data?.embeds?.result?.description.replaceAll(
+												'{winners}',
+												displayWinner.join(', ')
+											) ||
+												`${displayWinner.join(
+													', '
+												)} won the prize !\nGet in touch with the staff members to collect your prize.`
+										)
+										.setFooter(
+											data?.embeds?.result?.footer || { text: 'GG winner.' }
+										)
+										.setFields(fields || oldFields);
+
+									if (data?.embeds?.result?.author)
+										resultEmbed.setAuthor(data?.embeds?.result?.author);
+									if (data?.embeds?.result?.image)
+										resultEmbed.setImage(data?.embeds?.result?.image);
+									if (data?.embeds?.result?.thumbnail)
+										resultEmbed.setThumbnail(data?.embeds?.result?.thumbnail);
+									if (data?.embeds?.result?.timestamp)
+										resultEmbed.setTimestamp(data?.embeds?.result?.timestamp);
+									if (data?.embeds?.result?.title)
+										resultEmbed.setTitle(data?.embeds?.result?.title);
+									if (data?.embeds?.result?.url)
+										resultEmbed.setURL(data?.embeds?.result?.url);
 
 									await msg.edit({
-										embeds: [embed],
-										components: [allComp]
+										embeds: [resultEmbed],
+										components: [buttonRow]
+									});
+
+									resolve({
+										type: 'End',
+										url: msg.url,
+										user: resultWinner
 									});
 								}
-							}, 5200);
+							}, ms('6s'));
 						}
-					}, 5000);
+					}, timeInMS);
 				});
 		} catch (err: any) {
-			console.log(
-				`${chalk.red('Error Occured.')} | ${chalk.magenta(
-					'giveaway'
-				)} | Error: ${err.stack}`
-			);
+			if (options?.strict)
+				throw new SimplyError({
+					function: 'giveaway',
+					title: 'An Error occured when running the function ',
+					tip: err.stack
+				});
+			else console.log(`SimplyError - giveaway | Error: ${err.stack}`);
 		}
 	});
-}
-
-function ms(str: string) {
-	let sum = 0,
-		time,
-		type,
-		val;
-
-	const arr: string[] = ('' + str)
-		.split(' ')
-		.filter((v) => v != '' && /^(\d{1,}\.)?\d{1,}([wdhms])?$/i.test(v));
-
-	const length = arr.length;
-
-	for (let i = 0; i < length; i++) {
-		time = arr[i];
-		type = time.match(/[wdhms]$/i);
-
-		if (type) {
-			val = Number(time.replace(type[0], ''));
-
-			switch (type[0].toLowerCase()) {
-				case 'w':
-					sum += val * 604800000;
-					break;
-				case 'd':
-					sum += val * 86400000;
-					break;
-				case 'h':
-					sum += val * 3600000;
-					break;
-				case 'm':
-					sum += val * 60000;
-					break;
-				case 's':
-					sum += val * 1000;
-					break;
-			}
-		} else if (!isNaN(parseFloat(time)) && isFinite(parseFloat(time))) {
-			sum += parseFloat(time);
-		}
-	}
-	return sum;
 }

@@ -1,18 +1,25 @@
-import { MessageEmbed, MessageActionRow, MessageSelectMenu } from 'discord.js';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import {
+	EmbedBuilder,
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	Message,
+	ComponentType,
+	StringSelectMenuInteraction
+} from 'discord.js';
+import { ExtendedInteraction, ExtendedMessage } from './typedef';
 
-import chalk from 'chalk';
-import { SimplyError } from './Error/Error';
+import { SimplyError } from './error/SimplyError';
+import { ms } from './misc';
 
 // ------------------------------
 // ----- I N T E R F A C E ------
 // ------------------------------
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#deleteopt*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/menuPages#deleteoption
  */
 
-interface deleteOpt {
+export interface DeleteOption {
 	enable?: boolean;
 	label?: string;
 	description?: string;
@@ -20,26 +27,31 @@ interface deleteOpt {
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/General/menuPages#dataobj*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/general/menuPages#dataobject
  */
 
-interface dataObj {
+export interface Pagemenus {
 	label?: string;
 	description?: string;
-	embed?: MessageEmbed;
+	embed?: EmbedBuilder;
 	emoji?: string;
 }
 
-export type menuEmbOptions = {
-	type?: 1 | 2;
-	rows?: MessageActionRow[];
-	embed?: MessageEmbed;
+/**
+ * **Documentation Url** of the options: https://simplyd.js.org/docs/general/menuPages#menupagesoption
+ */
 
-	delete?: deleteOpt;
+export type menuPagesOptions = {
+	type?: 'Send' | 'Edit';
+	rows?: ActionRowBuilder<StringSelectMenuBuilder>[];
+	embed?: EmbedBuilder;
 
-	data?: dataObj[];
+	delete?: DeleteOption;
+
+	data?: Pagemenus[];
 
 	placeHolder?: string;
+	strict?: boolean;
 };
 
 // ------------------------------
@@ -48,148 +60,170 @@ export type menuEmbOptions = {
 
 /**
  * An Embed paginator using Select Menus
- * @param message
+ * @param msgOrInt
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/General/menuPages***
- * @example simplydjs.menuPages(interaction, { data: {...} })
+ * @link `Documentation:` https://simplyd.js.org/docs/general/menuPages
+ * @example simplydjs.menuPages(interaction, { data: [{...}] })
  */
 
 export async function menuPages(
-	message: ExtendedMessage | ExtendedInteraction,
-	options: menuEmbOptions = {}
-) {
-	try {
-		let type: number = options.type || 1;
-		type = Number(type);
-		if (type > 2)
-			throw new SimplyError({
-				name: 'There are only two types. You provided a type which doesnt exist',
-				tip: 'TYPE 1: SEND EPHEMERAL MSG | TYPE 2: EDIT MSG'
-			});
+	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	options: menuPagesOptions = { strict: false }
+): Promise<void> {
+	return new Promise(async () => {
+		try {
+			const type: string = options.type || 'Send';
 
-		const data = options.data;
-		const rowz = options.rows;
-		const menuOptions = [];
-
-		for (let i = 0; i < data.length; i++) {
-			if (data[i].emoji) {
-				const dataopt = {
-					label: data[i].label,
-					description: data[i].description,
-					value: data[i].label,
-					emoji: data[i].emoji
-				};
-
-				menuOptions.push(dataopt);
-			} else if (!data[i].emoji) {
-				const dataopt = {
-					label: data[i].label,
-					description: data[i].description,
-					value: data[i].label
-				};
-
-				menuOptions.push(dataopt);
-			}
-		}
-		let delopt;
-
-		if (
-			options.delete?.enable === undefined ||
-			(options.delete?.enable !== false && options.delete?.enable === true)
-		) {
-			delopt = {
-				label: options.delete?.label || 'Delete',
-				description:
-					options.delete?.description || 'Delete the Select Menu Embed',
-				value: 'delete_menuemb',
-				emoji: options.delete?.emoji || '❌'
-			};
-
-			menuOptions.push(delopt);
-		}
-
-		const slct = new MessageSelectMenu()
-			.setMaxValues(1)
-			.setCustomId('menuPages')
-			.setPlaceholder(options.placeHolder || 'Dropdown Pages')
-			.addOptions(menuOptions);
-
-		const row = new MessageActionRow().addComponents(slct);
-
-		const rows = [];
-
-		rows.push(row);
-
-		if (rowz) {
-			for (let i = 0; i < rowz.length; i++) {
-				rows.push(rowz[i]);
-			}
-		}
-
-		let interaction;
-		if (message.commandId) {
-			interaction = message;
-		}
-
-		const int = message as ExtendedInteraction;
-		const mes = message as ExtendedMessage;
-
-		let m: any;
-
-		if (interaction) {
-			m = await int.followUp({
-				embeds: [options.embed],
-				components: rows,
-				fetchReply: true
-			});
-		} else if (!interaction) {
-			m = await mes.reply({ embeds: [options.embed], components: rows });
-		}
-
-		const collector = (m as ExtendedMessage).createMessageComponentCollector({
-			componentType: 'SELECT_MENU',
-			idle: 600000
-		});
-		collector.on('collect', async (menu: any) => {
-			const selected = menu.values[0];
-
-			if (type === 2) {
-				await menu.deferUpdate();
-				if (message.member.user.id !== menu.user.id)
-					return menu.followUp({
-						content: "You cannot access other's pagination."
+			if (type !== 'Send' && type !== 'Receive') {
+				if (options?.strict)
+					throw new SimplyError({
+						function: 'menuPages',
+						title:
+							'There are only two types. You have provided a type which doesnt exist',
+						tip: 'There are only "Send" and "Edit" where "Send" sends a ephemeral message but "Edit" edits the original message'
 					});
-			} else await menu.deferReply({ ephemeral: true });
-
-			if (selected === 'delete_menuemb') {
-				if (message.member.user.id !== menu.user.id)
-					return menu.editReply({
-						content: "You cannot access other's pagination."
-					});
-				else collector.stop('delete');
+				else
+					console.log(
+						`SimplyError - menuPages | Error:  There are only two types. You have provided a type which doesnt exist.\n\nThere are only "Send" and "Edit" where "Send" sends a ephemeral message but "Edit" edits the original message`
+					);
 			}
+
+			const data = options.data;
+			const rowOption = options.rows;
+			const menuOptions = [];
 
 			for (let i = 0; i < data.length; i++) {
-				if (selected === data[i].label) {
-					if (type === 1) {
-						menu.editReply({ embeds: [data[i].embed], ephemeral: true });
-					} else if (type === 2) {
-						menu.message.edit({ embeds: [data[i].embed] });
-					}
+				if (data[i].emoji) {
+					const dataopt = {
+						label: data[i].label,
+						description: data[i].description,
+						value: data[i].label,
+						emoji: data[i].emoji
+					};
+
+					menuOptions.push(dataopt);
+				} else if (!data[i].emoji) {
+					const dataopt = {
+						label: data[i].label,
+						description: data[i].description,
+						value: data[i].label
+					};
+
+					menuOptions.push(dataopt);
 				}
 			}
-		});
-		collector.on('end', async (collected: any, reason: string) => {
-			if (reason === 'delete') return await m.delete();
-			if (collected.size === 0) {
-				m.edit({ embeds: [options.embed], components: [] });
+
+			if (
+				options.delete?.enable === undefined ||
+				options.delete?.enable === true
+			) {
+				const delopt = {
+					label: options?.delete?.label || 'Delete',
+					description:
+						options.delete?.description || 'Delete the Select Menu Embed',
+					value: 'delete_menuPages',
+					emoji: options?.delete?.emoji || '❌'
+				};
+
+				menuOptions.push(delopt);
 			}
-		});
-	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
-				'menuPages'
-			)} | Error: ${err.stack}`
-		);
-	}
+
+			const slct = new StringSelectMenuBuilder()
+				.setMaxValues(1)
+				.setCustomId('menuPages')
+				.setPlaceholder(options.placeHolder || 'Dropdown Pages')
+				.addOptions(menuOptions);
+
+			const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+				slct
+			);
+
+			const rows = [];
+
+			rows.push(row);
+
+			if (rowOption) {
+				for (let i = 0; i < rowOption.length; i++) {
+					rows.push(rowOption[i]);
+				}
+			}
+
+			let interaction: ExtendedInteraction;
+			if (msgOrInt.commandId) {
+				interaction = msgOrInt as ExtendedInteraction;
+
+				if (!interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
+			}
+
+			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrInt as ExtendedMessage;
+
+			let m: Message;
+
+			if (interaction) {
+				m = await extInteraction.followUp({
+					embeds: [options.embed],
+					components: rows,
+					fetchReply: true
+				});
+			} else if (!interaction) {
+				m = await extMessage.reply({
+					embeds: [options.embed],
+					components: rows
+				});
+			}
+
+			const collector = m.createMessageComponentCollector({
+				componentType: ComponentType.StringSelect,
+				idle: ms('10m')
+			});
+			collector.on('collect', async (menu: StringSelectMenuInteraction) => {
+				const selected = menu.values[0];
+
+				if (type === 'Edit') {
+					if (msgOrInt.member.user.id !== menu.user.id)
+						await menu.reply({
+							content: "You cannot access other's pagination.",
+							ephemeral: true
+						});
+					return;
+				}
+
+				if (selected === 'delete_menuPages') {
+					if (msgOrInt.member.user.id !== menu.user.id)
+						await menu.reply({
+							content: "You cannot access other's pagination.",
+							ephemeral: true
+						});
+					else collector.stop('delete');
+				}
+
+				for (let i = 0; i < data.length; i++) {
+					if (selected === data[i].label) {
+						if (type === 'Send') {
+							await menu.reply({ embeds: [data[i].embed], ephemeral: true });
+						} else if (type === 'Edit') {
+							menu.message.edit({ embeds: [data[i].embed] });
+						}
+					}
+				}
+			});
+
+			collector.on('end', async (collected, reason: string) => {
+				if (reason === 'delete') await m.delete();
+				if (collected.size === 0) {
+					m.edit({ embeds: [options.embed], components: [] });
+				}
+			});
+		} catch (err: any) {
+			if (options?.strict)
+				throw new SimplyError({
+					function: 'menuPages',
+					title: 'An Error occured when running the function ',
+					tip: err.stack
+				});
+			else console.log(`SimplyError - menuPages | Error: ${err.stack}`);
+		}
+	});
 }

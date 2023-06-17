@@ -24,8 +24,8 @@ If applicable, add screenshots to help explain your problem.
 
 **Versions (please complete the following information):**
 
-- Discord.js Version [e.g. v13.7.0]
-- simply-djs Version [e.g. v3.0.0]
+- Discord.js Version [e.g. v14.10.0]
+- simply-djs Version [e.g. v4.0.0]
 
 **Additional context**
 Add any other context about the problem here.

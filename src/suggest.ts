@@ -1,271 +1,366 @@
 import {
-	MessageEmbed,
-	MessageEmbedAuthor,
-	ColorResolvable,
+	EmbedBuilder,
 	TextChannel,
-	MessageEmbedFooter,
-	MessageActionRow,
-	MessageButton,
-	MessageButtonStyle,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	Message,
-	User
+	User,
+	InteractionResponse,
+	ComponentType,
+	ButtonInteraction,
+	GuildMember
 } from 'discord.js';
 
-import { SimplyError } from './Error/Error';
-import chalk from 'chalk';
-import db from './model/suggestion';
-import { APIMessage } from 'discord-api-types/v10';
-import { ExtendedInteraction, ExtendedMessage } from './interfaces';
+import { SimplyError } from './error/SimplyError';
+
+import db from './model/suggest';
+
+import {
+	ExtendedInteraction,
+	ExtendedMessage,
+	CustomizableEmbed,
+	CustomizableButton
+} from './typedef';
+import { toButtonStyle, ms, toRgb } from './misc';
+
+import { Document as Doc } from 'mongoose';
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/CustomizableEmbed*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#suggestbuttons
  */
 
-interface CustomizableEmbed {
-	author?: MessageEmbedAuthor;
-	title?: string;
-	footer?: MessageEmbedFooter;
-	description?: string;
-	color?: ColorResolvable;
-
-	credit?: boolean;
+export interface SuggestButtons {
+	votedInfo?: CustomizableButton;
+	upvote?: CustomizableButton;
+	downvote?: CustomizableButton;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/types/btnTemplate*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#progress
  */
 
-interface btnTemplate {
-	style?: MessageButtonStyle;
-	emoji?: string;
+export interface Progress {
+	up: string;
+	down: string;
+	blank: string;
 }
 
 /**
- * **URL** of the Type: *https://simplyd.js.org/docs/Systems/suggestSystem#suggestbuttons*
+ * **Documentation Url** of the type: https://simplyd.js.org/docs/systems/suggest#suggestoptions
  */
 
-interface suggestButtons {
-	upvote?: btnTemplate;
-	downvote?: btnTemplate;
-}
-
-export type suggestOption = {
+export type suggestOptions = {
 	embed?: CustomizableEmbed;
 	channelId?: string | TextChannel;
 	suggestion?: string;
-	buttons?: suggestButtons;
+	buttons?: SuggestButtons;
+	progress?: Progress;
+	strict: boolean;
 };
 
+export type SuggestResolve = {
+	suggestion: string; // the suggestion provided
+	channel: TextChannel; // the channel to send the suggestion
+	user: GuildMember; // the user who suggested
+};
 // ------------------------------
 // ------ F U N C T I O N -------
 // ------------------------------
 
 /**
  * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
- * @param message
+ * @param msgOrint
  * @param options
- * @link `Documentation:` ***https://simplyd.js.org/docs/Systems/suggestSystem***
+ * @link `Documentation:` https://simplyd.js.org/docs/systems/suggestSystem
  * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
  */
 
-export async function suggestSystem(
-	message: ExtendedMessage | ExtendedInteraction,
-	options: suggestOption = {}
-) {
-	try {
-		const { client } = message;
-		let url;
-		let suggestion: string;
+export async function suggest(
+	msgOrint: ExtendedMessage | ExtendedInteraction,
+	options: suggestOptions = { strict: false }
+): Promise<SuggestResolve> {
+	return new Promise(async (resolve) => {
+		try {
+			const { client } = msgOrint;
+			let url: string;
+			let suggestion: string;
 
-		let interaction;
-		if (message.commandId || !message.content) {
-			interaction = message as ExtendedInteraction;
+			let interaction: ExtendedInteraction;
+			if (msgOrint.commandId || !msgOrint.content) {
+				interaction = msgOrint as ExtendedInteraction;
+				if (!interaction.deferred)
+					await interaction.deferReply({ fetchReply: true });
 
-			suggestion =
-				options.suggestion || interaction.options.getString('suggestion');
+				suggestion =
+					options.suggestion ||
+					String(interaction.options.get('suggestion').value);
 
-			if (!suggestion)
-				return interaction.followUp('Give me a suggestion to post.');
-		} else if (!message.commandId && message.content) {
-			const attachment = (message as Message).attachments?.first();
-
-			url = attachment ? attachment.url : null;
-
-			suggestion = options?.suggestion;
-
-			if (url) {
-				suggestion = suggestion + ' ' + url;
-			}
-
-			if (!options.suggestion) {
-				const [...args] = (message as Message).content?.split(/ +/g);
-				suggestion = args.slice(1).join(' ');
-			}
-
-			if (suggestion === '' || !suggestion)
-				return message.reply('Give me a suggestion to post.');
-		}
-
-		const channel = options?.channelId;
-
-		if (!options.embed) {
-			options.embed = {
-				footer: {
-					text: '©️ Simply Develop. npm i simply-djs',
-					iconURL: 'https://i.imgur.com/u8VlLom.png'
-				},
-				color: '#075FFF',
-				title: 'Giveaways',
-				credit: true
-			};
-		}
-
-		options.buttons = {
-			upvote: {
-				style: options.buttons?.upvote?.style || 'PRIMARY',
-				emoji: options.buttons?.upvote?.emoji || '☑️'
-			},
-			downvote: {
-				style: options.buttons?.downvote?.style || 'DANGER',
-				emoji: options.buttons?.downvote?.emoji || '🇽'
-			}
-		};
-
-		const ch =
-			client.channels.cache.get(channel as string) || (channel as TextChannel);
-		if (!ch)
-			throw new SimplyError({
-				name: `INVALID_CHID - ${channel} | The channel id you specified is not valid (or) The bot has no VIEW_CHANNEL permission.`,
-				tip: 'Check the permissions (or) Try using another Channel ID'
-			});
-
-		const surebtn = new MessageButton()
-			.setStyle('SUCCESS')
-			.setLabel('Yes')
-			.setCustomId('send-sug');
-
-		const nobtn = new MessageButton()
-			.setStyle('DANGER')
-			.setLabel('No')
-			.setCustomId('nope-sug');
-
-		const row1 = new MessageActionRow().addComponents([surebtn, nobtn]);
-
-		const embedo = new MessageEmbed()
-			.setTitle('Are you sure ?')
-			.setDescription(`Is this your suggestion ? \`${suggestion}\``)
-			.setTimestamp()
-			.setColor(options.embed?.color || '#075FFF')
-			.setFooter(
-				options.embed?.credit === false
-					? options.embed?.footer
-					: {
-							text: '©️ Simply Develop. npm i simply-djs',
-							iconURL: 'https://i.imgur.com/u8VlLom.png'
-					  }
-			);
-
-		let m: Message | APIMessage | void;
-
-		if (interaction) {
-			m = await interaction.followUp({
-				embeds: [embedo],
-				components: [row1],
-				ephemeral: true
-			});
-		} else if (!interaction) {
-			m = await message.reply({
-				embeds: [embedo],
-				components: [row1],
-				ephemeral: true
-			});
-		}
-
-		const filter = (m: any) =>
-			m.user.id === (message.user ? message.user : message.author).id;
-		const collect = (m as Message).createMessageComponentCollector({
-			filter,
-			max: 1,
-			componentType: 'BUTTON',
-			time: 1000 * 15
-		});
-
-		collect.on('collect', async (b) => {
-			if (b.customId === 'send-sug') {
-				await b.reply({ content: 'Ok Suggested.', ephemeral: true });
-				await (b.message as Message).delete();
-
-				const emb = new MessageEmbed()
-					.setDescription(suggestion)
-					.setAuthor({
-						name: (message.member.user as User).tag,
-						iconURL: (message.member.user as User).displayAvatarURL({
-							dynamic: true
-						})
-					})
-					.setColor(options.embed?.color || '#075FFF')
-					.setFooter(
-						options.embed?.credit === false
-							? options.embed?.footer
-							: {
-									text: '©️ Simply Develop. npm i simply-djs',
-									iconURL: 'https://i.imgur.com/u8VlLom.png'
-							  }
-					)
-					.addFields(
-						{
-							name: 'Status',
-							value: `\`\`\`\nWaiting for the response..\n\`\`\``
-						},
-						{
-							name: 'Percentage',
-							value: `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛ [0% - 0%]`
-						}
-					);
-
-				const approve = new MessageButton()
-					.setEmoji(options.buttons?.upvote?.emoji)
-					.setLabel('0')
-					.setStyle(options.buttons?.upvote?.style)
-					.setCustomId('agree-sug');
-
-				const no = new MessageButton()
-					.setEmoji(options.buttons?.downvote?.emoji)
-					.setLabel('0')
-					.setStyle(options.buttons?.downvote?.style)
-					.setCustomId('no-sug');
-
-				const row = new MessageActionRow().addComponents([approve, no]);
-
-				await (ch as TextChannel)
-					.send({ embeds: [emb], components: [row] })
-					.then(async (ms) => {
-						const cr = new db({
-							message: ms.id,
-							author: message.member.user.id
-						});
-
-						await cr.save();
+				if (!suggestion)
+					return interaction.followUp({
+						content: 'Provide a suggestion to post.',
+						ephemeral: true
 					});
-			} else if (b.customId === 'nope-sug') {
-				(b.message as Message).delete();
-			}
-		});
+			} else if (!msgOrint.commandId && msgOrint.content) {
+				const attachment = (msgOrint as Message).attachments?.first();
 
-		collect.on('end', async (b) => {
-			if (b.size == 0) {
-				(m as Message).edit({
-					content: 'Timeout.. Cancelled the suggestion',
-					embeds: [],
-					components: []
+				url = attachment ? attachment.url : '';
+
+				if (options?.suggestion) suggestion = options?.suggestion;
+
+				if (url) suggestion = suggestion + ' ' + url;
+
+				if (!options.suggestion && (msgOrint as Message)) {
+					const [...args] = (msgOrint as Message).content.split(/ +/g);
+					suggestion = args.slice(1).join(' ');
+				}
+
+				if (suggestion === '' || !suggestion)
+					return msgOrint.reply({ content: 'Provide a suggestion to post.' });
+			}
+
+			if (!options.embed) {
+				options.embed = {
+					footer: {
+						text: '©️ Rahuletto. npm i simply-djs',
+						iconURL: 'https://i.imgur.com/XFUIwPh.png'
+					},
+					color: toRgb('#406DBC'),
+					title: 'New Suggestion'
+				};
+			}
+
+			const buttonStyles = {
+				upvote: {
+					style: options.buttons?.upvote?.style || ButtonStyle.Primary,
+					emoji: options.buttons?.upvote?.emoji || '☑️'
+				},
+				downvote: {
+					style: options.buttons?.downvote?.style || ButtonStyle.Danger,
+					emoji: options.buttons?.downvote?.emoji || '🇽'
+				},
+				votedInfo: {
+					style: options.buttons?.votedInfo?.style || ButtonStyle.Success,
+					emoji: options.buttons?.votedInfo?.emoji || '❓'
+				}
+			};
+
+			if (buttonStyles?.upvote.style as string)
+				buttonStyles.upvote.style = toButtonStyle(
+					buttonStyles?.upvote.style as string
+				);
+			if (buttonStyles?.downvote.style as string)
+				buttonStyles.downvote.style = toButtonStyle(
+					buttonStyles?.downvote.style as string
+				);
+			if (buttonStyles?.votedInfo.style as string)
+				buttonStyles.votedInfo.style = toButtonStyle(
+					buttonStyles?.votedInfo.style as string
+				);
+
+			const ch =
+				client.channels.cache.get(options?.channelId as string) ||
+				(options?.channelId as TextChannel);
+			if (!ch) {
+				if (options?.strict)
+					throw new SimplyError({
+						function: 'suggest',
+						title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
+						tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
+							options.channelId || 'undefined'
+						}`
+					});
+				else
+					console.log(
+						`SimplyError - suggest | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\n Received ${
+							options.channelId || 'undefined'
+						}`
+					);
+			}
+
+			const surebtn = new ButtonBuilder()
+				.setStyle(ButtonStyle.Success)
+				.setLabel('Suggest')
+				.setCustomId('send-suggestion');
+
+			const nobtn = new ButtonBuilder()
+				.setStyle(ButtonStyle.Danger)
+				.setLabel('Cancel')
+				.setCustomId('cancel-suggestion');
+
+			const sendRow = new ActionRowBuilder<ButtonBuilder>().addComponents([
+				surebtn,
+				nobtn
+			]);
+
+			const embed = new EmbedBuilder()
+				.setTitle(options.embed?.title || 'Are you sure?')
+				.setDescription(
+					options.embed?.description ||
+						`Is this your suggestion ? \`\`\`${suggestion}\`\`\``
+				)
+				.setTimestamp()
+				.setColor(options.embed?.color || toRgb('#406DBC'))
+				.setFooter(
+					options.embed?.footer
+						? options.embed?.footer
+						: {
+								text: '©️ Rahuletto. npm i simply-djs',
+								iconURL: 'https://i.imgur.com/XFUIwPh.png'
+						  }
+				);
+
+			if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+			if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+			if (options?.embed?.image) embed.setImage(options.embed?.image);
+			if (options?.embed?.thumbnail)
+				embed.setThumbnail(options.embed?.thumbnail);
+			if (options?.embed?.timestamp)
+				embed.setTimestamp(options.embed?.timestamp);
+			if (options?.embed?.title) embed.setTitle(options.embed?.title);
+			if (options?.embed?.url) embed.setURL(options.embed?.url);
+
+			let m: Message | InteractionResponse;
+
+			if (interaction) {
+				m = await interaction.followUp({
+					embeds: [embed],
+					components: [sendRow],
+					ephemeral: true
+				});
+			} else if (!interaction) {
+				m = await msgOrint.reply({
+					embeds: [embed],
+					components: [sendRow]
 				});
 			}
-		});
-	} catch (err: any) {
-		console.log(
-			`${chalk.red('Error Occured.')} | ${chalk.magenta(
-				'suggestSystem'
-			)} | Error: ${err.stack}`
-		);
-	}
+
+			const filter = (m: ButtonInteraction) => {
+				if (m.user.id === (msgOrint.member.user as User).id) return true;
+				m.reply({
+					content: `Only <@!${
+						(msgOrint.member.user as User).id
+					}> can use these buttons!`,
+					ephemeral: true
+				});
+				return false;
+			};
+			const collector = (m as Message).createMessageComponentCollector({
+				filter: filter,
+				max: 1,
+				componentType: ComponentType.Button,
+				time: ms('15s') // 15 Seconds
+			});
+
+			collector.on('collect', async (b) => {
+				if (b.customId === 'send-suggestion') {
+					await b.reply({ content: 'Ok, Posted. :+1:', ephemeral: true });
+					await (b.message as Message).delete();
+
+					const suggestEmb = new EmbedBuilder()
+						.setDescription(suggestion)
+						.setAuthor({
+							name: (msgOrint.member.user as User).username,
+							iconURL: (msgOrint.member.user as User).displayAvatarURL({
+								forceStatic: false
+							})
+						})
+						.setColor(options.embed?.color || toRgb('#406DBC'))
+						.setFooter(
+							options.embed?.footer
+								? options.embed?.footer
+								: {
+										text: '©️ Rahuletto. npm i simply-djs',
+										iconURL: 'https://i.imgur.com/XFUIwPh.png'
+								  }
+						)
+						.addFields(
+							{
+								name: 'Status',
+								value: `\`\`\`\nWaiting for the response..\n\`\`\``
+							},
+							{
+								name: 'Percentage',
+								value: `${(options?.progress?.blank || '⬛').repeat(
+									10
+								)} [0% - 0%]`
+							}
+						);
+
+					const approve = new ButtonBuilder()
+						.setEmoji(buttonStyles?.upvote?.emoji)
+						.setLabel('0')
+						.setStyle(
+							(buttonStyles?.upvote?.style as ButtonStyle) ||
+								ButtonStyle.Primary
+						)
+						.setCustomId('plus-suggestion');
+
+					const no = new ButtonBuilder()
+						.setEmoji(buttonStyles?.downvote?.emoji)
+						.setLabel('0')
+						.setStyle(
+							(buttonStyles?.downvote?.style as ButtonStyle) ||
+								ButtonStyle.Danger
+						)
+						.setCustomId('minus-suggestion');
+
+					const whoVoted = new ButtonBuilder()
+						.setEmoji(buttonStyles?.votedInfo?.emoji)
+						.setLabel('Who Voted?')
+						.setStyle(
+							(buttonStyles?.votedInfo?.style as ButtonStyle) ||
+								ButtonStyle.Success
+						)
+						.setCustomId('who-voted-suggestion');
+
+					const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+						approve,
+						no,
+						whoVoted
+					]);
+
+					await (ch as TextChannel)
+						.send({ embeds: [suggestEmb], components: [row] })
+						.then(async (ms) => {
+							const database: Doc = new db({
+								message: ms.id,
+								author: msgOrint.member.user.id,
+								progress: options?.progress
+									? options?.progress
+									: { blank: '⬛', up: '🟩', down: '🟥' }
+							});
+
+							await database.save();
+
+							resolve({
+								user: msgOrint.member,
+								suggestion: suggestion,
+								channel: ch as TextChannel
+							});
+						});
+				} else if (b.customId === 'cancel-suggestion') {
+					(b.message as Message).delete();
+				}
+			});
+
+			collector.on('end', async (collected) => {
+				if (collected.size == 0) {
+					(m as Message).edit({
+						content: "Timeout.. Didn't post the suggestion.",
+						embeds: [],
+						components: []
+					});
+				}
+			});
+		} catch (err: any) {
+			if (options?.strict)
+				throw new SimplyError({
+					function: 'suggest',
+					title: 'An Error occured when running the function',
+					tip: err.stack
+				});
+			else console.log(`SimplyError - suggest | Error: ${err.stack}`);
+		}
+	});
 }

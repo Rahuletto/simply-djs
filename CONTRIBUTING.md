@@ -1,6 +1,6 @@
 # Welcome to Simply-DJS contributing guide
 
-Thank you for spending your time in this dumb package which makes things simple.
+Thank you for spending your time in this amazing package.
 
 Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep this awesome community approachable and respectable.
 
