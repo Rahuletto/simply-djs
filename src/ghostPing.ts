@@ -52,7 +52,7 @@ export async function ghostPing(
 						);
 				}
 			})
-			.catch((_err) => {
+			.catch(() => {
 				return true;
 			});
 

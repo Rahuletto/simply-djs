@@ -126,21 +126,21 @@ export async function starboard(
 					react.emoji.name == '⭐' ||
 					react.emoji.name == '🌟'
 				) {
-					const minmax = react.count;
+					const count = react.count;
 
 					const starboard = await client.channels.fetch(options.channelId, {
 						force: true,
 						cache: true
 					});
 
-					if (minmax < minimumRequired) {
+					if (count < minimumRequired) {
 						const messages = await (starboard as TextChannel)?.messages.fetch({
 							limit: 100
 						});
 
 						const existing = messages.find(
 							(msg) =>
-								msg.embeds[0]?.footer?.text == '⭐ | ID: ' + extMessage.id
+								msg.embeds[0]?.footer?.text == '⭐ | ID: ' + react.message.id
 						);
 
 						if (existing) {

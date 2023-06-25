@@ -1,15 +1,9 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: 'Bug Report'
-labels: 'bug'
-assignees: ''
----
+## Describe the bug
 
-**Describe the bug**
 A clear description of what the bug is.
 
-**To Reproduce**
+### To Reproduce
+
 Steps to reproduce the behavior:
 
 1. Run the bot

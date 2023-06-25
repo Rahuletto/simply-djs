@@ -14,8 +14,8 @@ currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 14.10.x | :white_check_mark: |
-| 12.5.x  | :x:                |
+| 14.x.x  | :white_check_mark: |
+| 13.x.x  | :x:                |
 
 ## Reporting a Vulnerability
 
