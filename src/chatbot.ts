@@ -3,8 +3,6 @@ import { https } from './misc';
 import { SimplyError } from './error';
 import { ExtendedMessage } from './typedef';
 
-import { Configuration, OpenAIApi } from 'openai';
-
 // ------------------------------
 // ------- T Y P I N G S --------
 // ------------------------------
@@ -88,6 +86,15 @@ export async function chatbot(
 
 			// For ChatGPT integration.
 			if (options?.gptToken) {
+				const { Configuration, OpenAIApi } = await import('openai').catch(
+					() => {
+						throw new SimplyError({
+							function: 'chatbot',
+							title: "Cannot find the module 'openai'",
+							tip: 'To use the chatbot with gpt, you need to install openai package. Use\n\nnpm install openai\n'
+						});
+					}
+				);
 				await message.channel.sendTyping();
 
 				const configuration = new Configuration({
