@@ -1,11 +1,3 @@
----
-name: Pull Request
-about: Improve the package by contributing.
-title: 'Pull Request'
-labels: 'pr'
-assignees: ''
----
-
 # Description
 
 _Overview of the things you changed_
