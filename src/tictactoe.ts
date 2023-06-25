@@ -15,7 +15,7 @@ import {
 	ExtendedMessage,
 	CustomizableButton
 } from './typedef';
-import { toButtonStyle, disableButtons, https, ms, toRgb } from './misc';
+import { toButtonStyle, disableButtons, ms, toRgb } from './misc';
 import { SimplyError } from './error';
 
 const limiter: { guild: string; limit: number }[] = [];
@@ -60,6 +60,7 @@ export type tictactoeOptions = {
 	buttons?: TictactoeButtons;
 
 	strict?: boolean;
+	hard?: boolean;
 };
 
 // ------------------------------
@@ -178,7 +179,8 @@ export async function tictactoe(
 						emptyStyle: emptyStyle,
 						embed: options.embed,
 						buttons: options.buttons,
-						type: options.type
+						type: options.type,
+						hard: options.hard || false
 					});
 
 				if (opponent.bot)
@@ -995,6 +997,7 @@ type aiOptions = {
 	embed?: TictactoeEmbeds;
 	buttons?: TictactoeButtons;
 	type?: 'Button' | 'Embed';
+	hard?: boolean;
 };
 
 async function ai(
@@ -1260,7 +1263,7 @@ async function ai(
 
 		if (!isDraw() && !checkWin(options.x_emoji) && !checkWin(options.o_emoji)) {
 			aiCollector.resetTimer();
-			board = await aiEngine(board);
+			board = await aiEngine(board, options.hard || false);
 		}
 
 		for (let i = 0; i < board.length; i++) {
@@ -1583,21 +1586,252 @@ async function ai(
 				});
 		}
 	});
+}
 
-	async function aiEngine(boardArray: string[]): Promise<string[]> {
-		const res = await https(
-			`simplyapi.js.org/api/tictactoe?uid=${msgOrint.member.user.id}&ai=o&hard=true`,
-			{
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: {
-					board: boardArray
-				}
+// The AI Engine code is from this article https://medium.com/@alialaa/tic-tac-toe-with-javascript-es2015-ai-player-with-minimax-algorithm-59f069f46efa
+// Modified for discord.js usage
+async function aiEngine(
+	boardArray: string[],
+	hard: boolean = false
+): Promise<string[]> {
+	const board = new Board(boardArray);
+
+	const plr = new Player();
+
+	const best = plr.getBestMove(board, false);
+	const available = board.getAvailableMoves();
+
+	let moved = [];
+
+	boardArray.forEach((a) => {
+		moved.push(a);
+	});
+
+	if (hard) moved[Number(best)] = 'o';
+	else
+		moved[
+			Number(
+				available[Math.floor(Math.random() * Math.floor(available.length))]
+			)
+		] = 'o';
+
+	return moved;
+}
+
+// ------------------------------
+// ------- A I - C O R E --------
+// ------------------------------
+
+type Terminal = {
+	winner?: string;
+	direction?: string;
+};
+
+class Board {
+	state: string[];
+	constructor(state = ['', '', '', '', '', '', '', '', '']) {
+		this.state = state;
+	}
+
+	isEmpty() {
+		return this.state.every((cell) => !cell);
+	}
+	isFull() {
+		return this.state.every((cell) => cell);
+	}
+	insert(symbol: 'x' | 'o', position: number) {
+		if (![0, 1, 2, 3, 4, 5, 6, 7, 8].includes(position)) {
+			throw new Error('Cell index does not exist!');
+		}
+		if (!['x', 'o'].includes(symbol)) {
+			throw new Error('The symbol can only be x or o!');
+		}
+		if (this.state[position]) {
+			return false;
+		}
+		this.state[position] = symbol;
+		return true;
+	}
+	isTerminal(): boolean | Terminal {
+		//Return False if board in empty
+		if (this.isEmpty()) return false;
+		//Checking Horizontal Wins
+		if (
+			this.state[0] === this.state[1] &&
+			this.state[0] === this.state[2] &&
+			this.state[0]
+		) {
+			return { winner: this.state[0], direction: 'H' };
+		}
+		if (
+			this.state[3] === this.state[4] &&
+			this.state[3] === this.state[5] &&
+			this.state[3]
+		) {
+			return { winner: this.state[3], direction: 'H' };
+		}
+		if (
+			this.state[6] === this.state[7] &&
+			this.state[6] === this.state[8] &&
+			this.state[6]
+		) {
+			return { winner: this.state[6], direction: 'H' };
+		}
+
+		//Checking Vertical Wins
+		if (
+			this.state[0] === this.state[3] &&
+			this.state[0] === this.state[6] &&
+			this.state[0]
+		) {
+			return { winner: this.state[0], direction: 'V' };
+		}
+		if (
+			this.state[1] === this.state[4] &&
+			this.state[1] === this.state[7] &&
+			this.state[1]
+		) {
+			return { winner: this.state[1], direction: 'V' };
+		}
+		if (
+			this.state[2] === this.state[5] &&
+			this.state[2] === this.state[8] &&
+			this.state[2]
+		) {
+			return { winner: this.state[2], direction: 'V' };
+		}
+
+		//Checking Diagonal Wins
+		if (
+			this.state[0] === this.state[4] &&
+			this.state[0] === this.state[8] &&
+			this.state[0]
+		) {
+			return { winner: this.state[0], direction: 'D' };
+		}
+		if (
+			this.state[2] === this.state[4] &&
+			this.state[2] === this.state[6] &&
+			this.state[2]
+		) {
+			return { winner: this.state[2], direction: 'D' };
+		}
+
+		//If no winner but the board is full, then it's a draw
+		if (this.isFull()) {
+			return { winner: 'draw' };
+		}
+
+		//return false otherwise
+		return false;
+	}
+
+	getAvailableMoves() {
+		const moves: number[] = [];
+		this.state.forEach((cell, index) => {
+			if (!cell) moves.push(index);
+		});
+		return moves;
+	}
+}
+
+class Player {
+	nodesMap: Map<any, any>;
+	maxDepth: number;
+	constructor(maxDepth = -1) {
+		this.maxDepth = maxDepth;
+		this.nodesMap = new Map();
+	}
+	getBestMove(board: Board, maximizing = true, depth = 0) {
+		if (depth == 0) this.nodesMap.clear();
+
+		if (board.isTerminal() || depth === this.maxDepth) {
+			if ((board.isTerminal() as Terminal).winner === 'x') {
+				return 100 - depth;
+			} else if ((board.isTerminal() as Terminal).winner === 'o') {
+				return -100 + depth;
 			}
-		);
+			return 0;
+		}
+		if (maximizing) {
+			//Initialize best to the lowest possible value
+			let best = -100;
+			//Loop through all empty cells
+			board.getAvailableMoves().forEach((index) => {
+				//Initialize a new board with a copy of our current state
+				const child = new Board([...board.state]);
+				//Create a child node by inserting the maximizing symbol x into the current empty cell
+				child.insert('x', index);
+				//Recursively calling getBestMove this time with the new board and minimizing turn and incrementing the depth
+				const nodeValue = this.getBestMove(child, false, depth + 1);
+				//Updating best value
+				best = Math.max(best, nodeValue);
 
-		if (!res) return;
+				//If it's the main function call, not a recursive one, map each heuristic value with it's moves indices
+				if (depth == 0) {
+					//Comma separated indices if multiple moves have the same heuristic value
+					const moves = this.nodesMap.has(nodeValue)
+						? `${this.nodesMap.get(nodeValue)},${index}`
+						: index;
+					this.nodesMap.set(nodeValue, moves);
+				}
+			});
+			//If it's the main call, return the index of the best move or a random index if multiple indices have the same value
+			if (depth == 0) {
+				let returnValue;
+				if (typeof this.nodesMap.get(best) == 'string') {
+					const arr = this.nodesMap.get(best).split(',');
+					const rand = Math.floor(Math.random() * arr.length);
+					returnValue = arr[rand];
+				} else {
+					returnValue = this.nodesMap.get(best);
+				}
+				return returnValue;
+			}
+			//If not main call (recursive) return the heuristic value for next calculation
+			return best;
+		}
 
-		return res.after;
+		if (!maximizing) {
+			//Initialize best to the highest possible value
+			let best = 100;
+			//Loop through all empty cells
+			board.getAvailableMoves().forEach((index) => {
+				//Initialize a new board with a copy of our current state
+				const child = new Board([...board.state]);
+
+				//Create a child node by inserting the minimizing symbol o into the current empty cell
+				child.insert('o', index);
+
+				//Recursively calling getBestMove this time with the new board and maximizing turn and incrementing the depth
+				let nodeValue = this.getBestMove(child, true, depth + 1);
+				//Updating best value
+				best = Math.min(best, nodeValue);
+
+				//If it's the main function call, not a recursive one, map each heuristic value with it's moves indices
+				if (depth == 0) {
+					//Comma separated indices if multiple moves have the same heuristic value
+					const moves = this.nodesMap.has(nodeValue)
+						? this.nodesMap.get(nodeValue) + ',' + index
+						: index;
+					this.nodesMap.set(nodeValue, moves);
+				}
+			});
+			//If it's the main call, return the index of the best move or a random index if multiple indices have the same value
+			if (depth == 0) {
+				let returnValue;
+				if (typeof this.nodesMap.get(best) == 'string') {
+					const arr = this.nodesMap.get(best).split(',');
+					const rand = Math.floor(Math.random() * arr.length);
+					returnValue = arr[rand];
+				} else {
+					returnValue = this.nodesMap.get(best);
+				}
+
+				return returnValue;
+			}
+			//If not main call (recursive) return the heuristic value for next calculation
+			return best;
+		}
 	}
 }
