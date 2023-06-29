@@ -15,3 +15,5 @@ tsconfig.json
 simplydjs.ts
 test.js
 gitpush.sh
+
+uglify.js

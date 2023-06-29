@@ -75,10 +75,16 @@ export type DeleteResolve = {
 // ------------------------------
 
 /**
- * A Ticket Handler for **simplydjs ticket system.**
- * @param button
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/handler/manageTicket
+ * ##manageTicket
+ * ### A Ticket Handler for **simplydjs ticket system.**
+
+ * @param {ButtonInteraction} button [`ButtonInteraction`](https://old.discordjs.dev/#/docs/discord.js/main/class/ButtonInteraction)
+ * @param {manageTicketOptions} options [`manageTicketOptions`](https://simplyd.js.org/docs/handler/managesuggest#managesuggestoptions)
+ * @returns {Promise<DeleteResolve>} [`DeleteResolve`](https://simplyd.js.org/docs/handler/managesuggest#deleteresolve)
+ * 
+ * ---
+ * 
+ * @link [`Documentation`](https://simplyd.js.org/docs/handler/manageTicket)
  * @example simplydjs.manageTicket(interaction)
  */
 

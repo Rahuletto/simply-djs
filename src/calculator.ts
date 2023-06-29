@@ -48,15 +48,22 @@ export type calculatorOptions = {
 // ------------------------------
 
 /**
- * An Unique **calculator** which can be *used inside Discord*
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/calculator
+ * ## calculator
+ * ### An Unique **calculator** which can be *used inside Discord*
+ *
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {calculatorOptions} options [`calculatorOptions`](https://simplyd.js.org/docs/general/calculator#calculatoroptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/calculator)
  * @example simplydjs.calculator(interaction)
  */
 
 export async function calculator(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: calculatorOptions = {
 		strict: false,
 		buttons: {
@@ -125,11 +132,11 @@ export async function calculator(
 
 			let message: ExtendedMessage;
 
-			if (!msgOrInt.commandId) {
-				message = msgOrInt as ExtendedMessage;
+			if (!msgOrint.commandId) {
+				message = msgOrint as ExtendedMessage;
 			}
-			if (msgOrInt.commandId && !(msgOrInt as ExtendedInteraction).deferred)
-				await (msgOrInt as ExtendedInteraction).deferReply({
+			if (msgOrint.commandId && !(msgOrint as ExtendedInteraction).deferred)
+				await (msgOrint as ExtendedInteraction).deferReply({
 					fetchReply: true
 				});
 
@@ -170,8 +177,8 @@ export async function calculator(
 
 			let msg: Message;
 
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
 
 			if (!message) {
 				await extInteraction.followUp({
@@ -190,7 +197,7 @@ export async function calculator(
 			let elem = '0';
 
 			const filter = (buttons: ButtonInteraction) =>
-				buttons.user?.id === msgOrInt.member.user.id &&
+				buttons.user?.id === msgOrint.member.user.id &&
 				buttons.customId.startsWith('cal-');
 
 			const collector = msg.createMessageComponentCollector({

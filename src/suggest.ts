@@ -69,11 +69,18 @@ export type SuggestResolve = {
 // ------------------------------
 
 /**
- * An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSug()**](https://simplyd.js.org/docs/handler/manageSug)*
- * @param msgOrint
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/suggestSystem
- * @example simplydjs.suggestSystem(interaction, { channelId: '1234567890123' })
+ * ## suggest
+ * ### An **Beautiful** suggestion system with buttons ;D | *Requires: [**manageSuggest()**](https://simplyd.js.org/docs/handler/manageSuggest)*
+ *
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {suggestOptions} options [`suggestOptions`](https://simplyd.js.org/docs/systems/suggest#suggestoptions)
+ * @returns {Promise<SuggestResolve>} [`SuggestResolve`](https://simplyd.js.org/docs/systems/suggest#suggestresolve)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/suggest)
+ * @example simplydjs.suggest(interaction, { channelId: '1234567890123' })
  */
 
 export async function suggest(

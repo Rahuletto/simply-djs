@@ -27,12 +27,19 @@ export type starboardOptions = {
 // ------------------------------
 
 /**
- * Efficient yet Simplest starboard system ever existed !
+ * ## starboard
+ * ### Efficient yet Simplest starboard system ever existed !
  *
  * `NOTE:` **Only Use it in `messageReactionAdd`, `messageReactionRemove` and `messageDelete` events.**
- * @param reaction
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/starboard
+ *
+ * @async
+ * @param {(MessageReaction|ExtendedMessage)} reactionOrMessage [`MessageReaction`](https://discord.js.org/#/docs/discord.js/stable/class/MessageReaction) | [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage)
+ * @param {starboardOptions} options [`starboardOptions`](https://simplyd.js.org/docs/systems/starboard#starboardoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/starboard)
  * @example simplydjs.starboard(reaction, { channelId: '1234567890123' })
  */
 

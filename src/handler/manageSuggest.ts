@@ -43,10 +43,16 @@ export type manageSuggestOptions = {
 // ------------------------------
 
 /**
- * A **Suggestion** handler which handles all sugestions from the package
- * @param button
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/handler/manageSuggest
+ * ## manageSuggest
+ * ### A **Suggestion** handler which handles all sugestions from the package
+ *
+ * @param {ButtonInteraction} button [`ButtonInteraction`](https://old.discordjs.dev/#/docs/discord.js/main/class/ButtonInteraction)
+ * @param {manageSuggestOptions} options [`manageSuggestOptions`](https://simplyd.js.org/docs/handler/managesuggest#managesuggestoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/handler/manageSuggest)
  * @example simplydjs.manageSuggest(interaction)
  */
 

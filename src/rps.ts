@@ -62,11 +62,17 @@ const combinations = {
 };
 
 /**
- * A classic RPS game, except this time it's on Discord to play with your pals, how cool is that ?
+ * ## rps
+ * ### A classic RPS game, except this time it's on Discord to play with your pals, how cool is that ?
  *
- * @param msgOrint
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/Fun/rps
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {rpsOptions} options [`rpsOptions`](https://simplyd.js.org/docs/fun/rps#rpsOptions)
+ * @returns {Promise<User>} [`User`](https://discord.js.org/#/docs/discord.js/stable/class/User)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/Fun/rps)
  * @example simplydjs.rps(interaction)
  */
 

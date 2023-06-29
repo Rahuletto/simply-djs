@@ -57,10 +57,17 @@ export type EndResolve = {
 // ------------------------------
 
 /**
- * A Giveaway Handler for **simplydjs giveaway system.**
- * @param button
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/handler/manageGiveaway
+ * ## manageGiveaway
+ * ### A Giveaway Handler for **simplydjs giveaway system.**
+ *
+ * @async
+ * @param {ButtonInteraction} button [`ButtonInteraction`](https://old.discordjs.dev/#/docs/discord.js/main/class/ButtonInteraction)
+ * @param {manageGiveawayOptions} options [`manageGiveawayOptions`](https://simplyd.js.org/docs/handler/managegiveaway#managegiveawayoptions)
+ * @returns {Promise<RerollResolve|EndResolve>} [`RerollResolve`](https://simplyd.js.org/docs/handler/managegiveaway#rerollresolve) | [`EndResolve`](https://simplyd.js.org/docs/handler/managegiveaway#endresolve)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/handler/manageGiveaway)
  * @example simplydjs.manageGiveaway(interaction)
  */
 

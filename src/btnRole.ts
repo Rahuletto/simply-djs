@@ -46,15 +46,22 @@ export type btnRoleOptions = {
 // ------------------------------
 
 /**
- * A **Button Role System** that lets you create button roles with your own message. | *Requires: [**manageBtnRole()**](https://simplyd.js.org/docs/handler/manageBtnRole)*
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/btnRole
+ * ## btnRole
+ * ### A **Button Role System** that lets you create button roles with your own message. | *Requires: [**manageBtnRole()**](https://simplyd.js.org/docs/handler/manageBtnRole)*
+ *
+ * @async
+ * @param {ExtendedMessage|ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {btnRoleOptions} options [`btnRoleOptions`](https://simplyd.js.org/docs/general/btnrole#btnroleoptions)
+ * @returns {Promise<boolean>} `boolean`
+ *
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/btnRole)
  * @example simplydjs.btnRole(message, { data: [{...}] })
  */
-
 export async function btnRole(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: btnRoleOptions = { strict: false }
 ): Promise<boolean> {
 	return new Promise(async (resolve) => {
@@ -74,10 +81,10 @@ export async function btnRole(
 					);
 			}
 
-			const extMessage = msgOrInt as ExtendedMessage;
-			const extInteraction = msgOrInt as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
 
-			if (msgOrInt.commandId) {
+			if (msgOrint.commandId) {
 				if (!extInteraction.deferred)
 					await extInteraction.deferReply({ fetchReply: true });
 
@@ -90,7 +97,7 @@ export async function btnRole(
 						content: 'You need `ADMINISTRATOR` permission to use this command'
 					});
 				return;
-			} else if (!msgOrInt.customId) {
+			} else if (!msgOrint.customId) {
 				if (
 					!extMessage.member.permissions.has(PermissionFlagsBits.Administrator)
 				)
@@ -147,7 +154,7 @@ export async function btnRole(
 
 					if (color as string) color = toButtonStyle(color as string);
 
-					const role: Role | null = msgOrInt.guild.roles.cache.find(
+					const role: Role | null = msgOrint.guild.roles.cache.find(
 						(r) =>
 							r.id ===
 							((data[i].role as Role)?.id

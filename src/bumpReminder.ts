@@ -35,20 +35,27 @@ export type bumpOptions = {
 // ------------------------------
 
 /**
- * A Very cool bump reminder system that reminds when a bump is necessary [Only Disboard].
+ * ## bumpReminder
+ * ### A Very cool bump reminder system that reminds when a bump is necessary [Only Disboard].
  *
  * **Requires you to have this in `messageCreate` and `ready` event**
- * @param client
- * @param message
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/bumpReminder
+ *
+ * @async
+ * @param {Client} client
+ * @param {Message|bumpOptions} message `Message` | [`bumpOptions`](https://simplyd.js.org/docs/systems/bumpreminder#bumpoptions)
+ * @param {bumpOptions} options [`bumpOptions`](https://simplyd.js.org/docs/systems/bumpreminder#bumpoptions)
+ * @returns {Promise<boolean>} `boolean`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/bumpReminder)
  * @example simplydjs.bumpReminder(client, message)
  */
 
 export async function bumpReminder(
 	client: Client,
 	message: Message | bumpOptions,
-	options: bumpOptions
+	options?: bumpOptions
 ): Promise<boolean> {
 	try {
 		if (!options && message) options = message as bumpOptions;

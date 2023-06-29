@@ -22,15 +22,18 @@ export type connectOptions = {
 // ------------------------------
 
 /**
- * Connect to a mongo database to access some of the simply-djs functions ! *Requires* [MongoDB](https://mongodb.com/)
+ * ## connect
+ * ### Connect to a mongo database to access some of the simply-djs functions ! *Requires* [MongoDB](https://mongodb.com/)
  *
- * @param db - The MongoDB URI string that is used to connect to the database.
- * @param options
+ * @param {string} db
+ * @param {connectOptions} options [`connectOptions`](https://simplyd.js.org/docs/genera/connect#connectoptions)
  *
- * @returns A Promise that resolves to a boolean value indicating whether the database connection was
+ * @returns {Promise<boolean>} `boolean` - A Promise that resolves to a boolean value indicating whether the database connection was
  * successful or not.
  *
- * @link `Documentation:` https://simplyd.js.org/docs/general/connect
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/connect)
  * @example simplydjs.connect('mongoURI')
  */
 

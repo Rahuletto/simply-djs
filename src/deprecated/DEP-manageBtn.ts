@@ -14,6 +14,7 @@ import {
 } from '../handler/manageGiveaway';
 
 /**
+ * ## _~manageBtn~_
  * manageBtn() handles btnRole(), betterBtnRole(), giveaway() and ticketSetup() combined. As users don't use everything from the package. Using this combined handler was a mess. So we separated it into three handlers.
  *
  * @deprecated Use {@link manageBtnRole()} to handle btnRole() and betterBtnRole()
@@ -29,7 +30,7 @@ export async function manageBtn(
 		| manageTicketOptions = {}
 ): Promise<boolean | RerollResolve | DeleteResolve> {
 	Deprecated({
-		desc: 'manageBtn() is separated to three handlers. manageBtnRole() | manageTicket() | manageGiveaway()'
+		desc: 'manageBtn() is separated to three handlers. manageBtnRole() | manageTicket() | manageGiveaway(). manageBtn is deprecated !'
 	});
 	let resolve: boolean | RerollResolve | DeleteResolve | EndResolve;
 	resolve = await manageBtnRole(interaction, options as manageBtnRoleOptions);

@@ -37,10 +37,16 @@ export type ticketSetupOptions = {
 // ------------------------------
 
 /**
- * A Flexible yet Powerful Ticket System | *Requires: [**manageTicket()**](https://simplyd.js.org/docs/handler/manageTicket)*
+ * ## ticketSetup
+ * ### A Flexible yet Powerful Ticket System | *Requires: [**manageTicket()**](https://simplyd.js.org/docs/handler/manageTicket)*
  *
- * @param msgOrint
- * @param options
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {ticketSetupOptions} options [`ticketSetupOptions`](https://simplyd.js.org/docs/systems/ticketsetup#ticketsetupoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
  * @link `Documentation:` https://simplyd.js.org/docs/systems/ticketSetup
  * @example simplydjs.ticketSetup(interaction, { channelId: '0123456789012' })
  */
