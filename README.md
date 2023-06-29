@@ -20,8 +20,6 @@
 [![Documentation](https://img.shields.io/badge/SimplyDJS-Documentation-406dbc?style=for-the-badge)](https://simplyd.js.org)
 [![Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/3JzDV9T5Fn)
 
-[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)
-
 </div>
 
 <div align="center">
@@ -89,4 +87,4 @@ pnpm add simply-djs
 
 # 👥 Contact us/Support
 
-[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)
+https://discord.gg/3JzDV9T5Fn
