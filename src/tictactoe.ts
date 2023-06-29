@@ -1607,7 +1607,7 @@ async function aiEngine(
 	const best = plr.getBestMove(board, false);
 	const available = board.getAvailableMoves();
 
-	let moved = [];
+	const moved = [];
 
 	boardArray.forEach((a) => {
 		moved.push(a);
@@ -1810,7 +1810,7 @@ class Player {
 				child.insert('o', index);
 
 				//Recursively calling getBestMove this time with the new board and maximizing turn and incrementing the depth
-				let nodeValue = this.getBestMove(child, true, depth + 1);
+				const nodeValue = this.getBestMove(child, true, depth + 1);
 				//Updating best value
 				best = Math.min(best, nodeValue);
 
