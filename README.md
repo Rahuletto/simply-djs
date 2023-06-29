@@ -65,6 +65,8 @@ pnpm add simply-djs
 - Provided documentation links in all jsdoc options
 - More Bug fixes
 
+- ### (478kb => 301kb) -37% lighter than v4.0.1
+
 ---
 
 # 📄 [License](https://creativecommons.org/licenses/by-nc-nd/4.0/)
