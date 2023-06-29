@@ -117,8 +117,8 @@ export async function meme(
 				ch.forEach(async (c) => {
 					mountInterval(c);
 				});
-			} else if(!Array.isArray(ch)) {
-				mountInterval(ch)
+			} else if (!Array.isArray(ch)) {
+				mountInterval(ch);
 			}
 
 			function mountInterval(ch: string) {

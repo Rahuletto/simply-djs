@@ -45,10 +45,23 @@ if (Number(discordJSVersion.slice(0, 2)) < 14)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '4.0.2';
+export const version: string = '4.1.0';
 
-export { https, ms, disableButtons, emitError, toButtonStyle, toRgb } from './src/misc';
-export { CustomizableButton, CustomizableEmbed, ExtendedButtonStyle, ExtendedInteraction, ExtendedMessage} from './src/typedef';
+export {
+	https,
+	ms,
+	disableButtons,
+	emitError,
+	toButtonStyle,
+	toRgb
+} from './src/misc';
+export {
+	CustomizableButton,
+	CustomizableEmbed,
+	ExtendedButtonStyle,
+	ExtendedInteraction,
+	ExtendedMessage
+} from './src/typedef';
 
 export { meme } from './src/meme';
 export { betterBtnRole } from './src/betterBtnRole';
@@ -81,7 +94,6 @@ export { manageSuggest } from './src/handler/manageSuggest';
 // ---- D E P R E C A T E D -----
 // ------------------------------
 
-
 export { automeme } from './src/deprecated/DEP-automeme';
 export { bumpSystem } from './src/deprecated/DEP-bumpSystem';
 export { embedCreate } from './src/deprecated/DEP-embedCreate';
@@ -91,5 +103,5 @@ export { manageBtn } from './src/deprecated/DEP-manageBtn';
 export { manageSug } from './src/deprecated/DEP-manageSug';
 export { nqn } from './src/deprecated/DEP-nqn';
 export { stealEmoji } from './src/deprecated/DEP-stealEmoji';
-export { suggestSystem} from './src/deprecated/DEP-suggestSystem';
+export { suggestSystem } from './src/deprecated/DEP-suggestSystem';
 export { ticketSystem } from './src/deprecated/DEP-ticketSystem';
