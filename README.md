@@ -55,35 +55,15 @@ pnpm add simply-djs
 
 # What's new 🎁
 
-### Package 📦
+## v4.1.0
 
-- Converted to DiscordJS v14
-- All new `strict` mode.
-- Proper Typings and Commenting
-- Embeds and Buttons are now customized easily yet making it all yours
-- Names that just make sense
-- Removed `credit` option
-- DEPRECATED many functions. [Refer to docs](https://simplyd.js.org/docs/deprecated/renames/)
-- Remade all systems and games (For efficient and optimized results)
-- Fixed many many bugs
-
-### Documentation 📖
-
-- Redesigned UI
-- Documented every thing possible
-- New Examples
-- New Outputs
-- Very much optimized for every device
-- Optimized performance
-- Better Search engine.
-
-### Typings 🔍
-
-- Splitted every common types and options
-- Unified options
-- Better intellisense
-- Commented every code
-- Options now have documentation JSDoc
+- JSDoc updated !. Now every single function gets intellisense upgrade
+- Better optimization
+- Tictactoe AI is now baked inbuilt.
+- Compressed whole package using "uglify-js"
+- Smaller, Lighter yet blazing fast !
+- Provided documentation links in all jsdoc options
+- More Bug fixes
 
 ---
 
