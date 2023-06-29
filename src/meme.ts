@@ -14,7 +14,7 @@ import { CustomizableEmbed } from './typedef';
 
 export type memeOptions = {
 	embed?: CustomizableEmbed;
-	channelId?: string;
+	channelId?: string[] | string;
 	interval?: number;
 	sub?: string[] | string;
 
@@ -26,16 +26,23 @@ export type memeOptions = {
 // ------------------------------
 
 /**
- * The memes are sent automatically, so others will able to laugh at the jokes without having to do anything !
- * @param clientOrChannel
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/meme
+ * ## meme
+ * ### The memes are sent automatically, so others will able to laugh at the jokes without having to do anything !
+ *
+ * @async
+ * @param {Client} client
+ * @param {memeOptions} options [`memeOptions`](https://simplyd.js.org/docs/systems/meme#memeoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/meme)
  * @example simplydjs.meme(client, { channelId: '1234567890123' })
  * @example simplydjs.meme(channel, { sub: ["coding", "memes"] })
  */
 
 export async function meme(
-	clientOrChannel: Client | Channel,
+	client: Client,
 	options: memeOptions = { strict: false }
 ): Promise<void> {
 	return new Promise(async () => {
@@ -82,7 +89,7 @@ export async function meme(
 			}
 
 			// Getting random subreddit
-			let interval;
+			let interval: number;
 
 			if (options?.interval) {
 				if (options?.interval < 60000) {
@@ -106,70 +113,79 @@ export async function meme(
 				interval = ms('10m'); // 600k ms (10 minutes)
 			}
 
-			setInterval(async () => {
-				const random = Math.floor(Math.random() * sub.length);
-				// Getting the channel from Discord
-				let channel: Channel;
-				if ((clientOrChannel as Channel).id)
-					channel = clientOrChannel as Channel;
-				else if (clientOrChannel as Client)
-					channel = await (clientOrChannel as Client).channels.fetch(ch, {
+			if (Array.isArray(ch)) {
+				ch.forEach(async (c) => {
+					mountInterval(c);
+				});
+			} else if (!Array.isArray(ch)) {
+				mountInterval(ch);
+			}
+
+			function mountInterval(ch: string) {
+				setInterval(async () => {
+					const random = Math.floor(Math.random() * sub.length);
+					// Getting the channel from Discord
+
+					const channel: Channel = await client.channels.fetch(ch, {
 						force: true
 					});
 
-				// If its unavailable, throw an error.
-				if (!channel) {
-					if (options?.strict)
-						throw new SimplyError({
-							function: 'meme',
-							title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
-							tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
-								options.channelId || 'undefined'
-							}`
-						});
-					else
-						console.log(
-							`SimplyError - meme | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\nReceived ${
-								options.channelId || 'undefined'
-							}`
-						);
-				}
+					// If its unavailable, throw an error.
+					if (!channel) {
+						if (options?.strict)
+							throw new SimplyError({
+								function: 'meme',
+								title: `Invalid Channel (or) No VIEW_CHANNEL permission`,
+								tip: `Check the permissions (or) Try using another Channel ID.\nReceived ${
+									options.channelId || 'undefined'
+								}`
+							});
+						else
+							console.log(
+								`SimplyError - meme | Invalid Channel (or) No VIEW_CHANNEL permission\n\nCheck the permissions (or) Try using another Channel ID.\nReceived ${
+									options.channelId || 'undefined'
+								}`
+							);
+					}
 
-				let subreddit = sub[random];
-				if (!subreddit) subreddit = 'meme';
+					let subreddit = sub[random];
+					if (!subreddit) subreddit = 'meme';
 
-				// Get a random reddit post from the subreddit
-				const response = await https(`https://meme-api.com/gimme/${subreddit}`);
+					// Get a random reddit post from the subreddit
+					const response = await https(
+						`https://meme-api.com/gimme/${subreddit}`
+					);
 
-				if (!response) return;
+					if (!response) return;
 
-				if (response.nsfw) return;
+					if (response.nsfw) return;
 
-				// Get all the data from its API
-				const url = response.postLink;
-				const memeImage: string = response.url || response.preview[3];
-				const title = response.title;
-				const up = response.ups;
+					// Get all the data from its API
+					const url = response.postLink;
+					const memeImage: string = response.url || response.preview[3];
+					const title = response.title;
+					const up = response.ups;
 
-				// Building an Embed to send it.
-				const embed = new EmbedBuilder()
-					.setTitle(options.embed?.title || `${title}`)
-					.setURL(`${url}`)
-					.setImage(memeImage)
-					.setColor(options.embed?.color || toRgb('#406DBC'))
-					.setFooter({ text: `🔺 ${up}` });
+					// Building an Embed to send it.
+					const embed = new EmbedBuilder()
+						.setTitle(options.embed?.title || `${title}`)
+						.setURL(`${url}`)
+						.setImage(memeImage)
+						.setColor(options.embed?.color || toRgb('#406DBC'))
+						.setFooter({ text: `🔺 ${up}` });
 
-				if (options?.embed?.fields) embed.setFields(options.embed?.fields);
-				if (options?.embed?.author) embed.setAuthor(options.embed?.author);
-				if (options?.embed?.thumbnail)
-					embed.setThumbnail(options.embed?.thumbnail);
-				if (options?.embed?.timestamp)
-					embed.setTimestamp(options.embed?.timestamp);
-				if (options?.embed?.title) embed.setTitle(options.embed?.title);
-				if (options?.embed?.url) embed.setURL(options.embed?.url);
+					if (options?.embed?.fields) embed.setFields(options.embed?.fields);
+					if (options?.embed?.author) embed.setAuthor(options.embed?.author);
+					if (options?.embed?.thumbnail)
+						embed.setThumbnail(options.embed?.thumbnail);
+					if (options?.embed?.timestamp)
+						embed.setTimestamp(options.embed?.timestamp);
+					if (options?.embed?.title) embed.setTitle(options.embed?.title);
+					if (options?.embed?.url) embed.setURL(options.embed?.url);
 
-				await (channel as TextChannel).send({ embeds: [embed] });
-			}, interval);
+					await (channel as TextChannel).send({ embeds: [embed] });
+				}, interval);
+			}
 		} catch (err: any) {
 			if (options?.strict)
 				throw new SimplyError({

@@ -59,15 +59,22 @@ export type menuPagesOptions = {
 // ------------------------------
 
 /**
- * An Embed paginator using Select Menus
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/menuPages
+ * ## menuPages
+ * ### An Embed paginator using Select Menus
+ *
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {menuPagesOptions} options [`menuPagesOptions`](https://simplyd.js.org/docs/general/menuPages#menuPagesOptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/menuPages)
  * @example simplydjs.menuPages(interaction, { data: [{...}] })
  */
 
 export async function menuPages(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: menuPagesOptions = { strict: false }
 ): Promise<void> {
 	return new Promise(async () => {
@@ -149,15 +156,15 @@ export async function menuPages(
 			}
 
 			let interaction: ExtendedInteraction;
-			if (msgOrInt.commandId) {
-				interaction = msgOrInt as ExtendedInteraction;
+			if (msgOrint.commandId) {
+				interaction = msgOrint as ExtendedInteraction;
 
 				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
 			}
 
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
 
 			let m: Message;
 
@@ -182,7 +189,7 @@ export async function menuPages(
 				const selected = menu.values[0];
 
 				if (type === 'Edit') {
-					if (msgOrInt.member.user.id !== menu.user.id)
+					if (msgOrint.member.user.id !== menu.user.id)
 						await menu.reply({
 							content: "You cannot access other's pagination.",
 							ephemeral: true
@@ -191,7 +198,7 @@ export async function menuPages(
 				}
 
 				if (selected === 'delete_menuPages') {
-					if (msgOrInt.member.user.id !== menu.user.id)
+					if (msgOrint.member.user.id !== menu.user.id)
 						await menu.reply({
 							content: "You cannot access other's pagination.",
 							ephemeral: true

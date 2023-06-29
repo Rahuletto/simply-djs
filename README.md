@@ -15,12 +15,10 @@
 
 [![Version](https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
 [![Downloads](https://img.shields.io/npm/dt/simply-djs?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
-[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge/v4.x.x?style=for-the-badge)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview/v4.x.x)
+[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview)
 
 [![Documentation](https://img.shields.io/badge/SimplyDJS-Documentation-406dbc?style=for-the-badge)](https://simplyd.js.org)
 [![Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/3JzDV9T5Fn)
-
-[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)
 
 </div>
 
@@ -55,35 +53,17 @@ pnpm add simply-djs
 
 # What's new 🎁
 
-### Package 📦
+## v4.1.0
 
-- Converted to DiscordJS v14
-- All new `strict` mode.
-- Proper Typings and Commenting
-- Embeds and Buttons are now customized easily yet making it all yours
-- Names that just make sense
-- Removed `credit` option
-- DEPRECATED many functions. [Refer to docs](https://simplyd.js.org/docs/deprecated/renames/)
-- Remade all systems and games (For efficient and optimized results)
-- Fixed many many bugs
+- JSDoc updated !. Now every single function gets intellisense upgrade
+- Better optimization
+- Tictactoe AI is now baked inbuilt.
+- Compressed whole package using "uglify-js"
+- Smaller, Lighter yet blazing fast !
+- Provided documentation links in all jsdoc options
+- More Bug fixes
 
-### Documentation 📖
-
-- Redesigned UI
-- Documented every thing possible
-- New Examples
-- New Outputs
-- Very much optimized for every device
-- Optimized performance
-- Better Search engine.
-
-### Typings 🔍
-
-- Splitted every common types and options
-- Unified options
-- Better intellisense
-- Commented every code
-- Options now have documentation JSDoc
+- ### (478kb => 301kb) -37% lighter than v4.0.1
 
 ---
 
@@ -107,4 +87,4 @@ pnpm add simply-djs
 
 # 👥 Contact us/Support
 
-[![Support](https://invidget.switchblade.xyz/3JzDV9T5Fn)](https://discord.gg/3JzDV9T5Fn)
+https://discord.gg/3JzDV9T5Fn

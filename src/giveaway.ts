@@ -103,27 +103,34 @@ export interface GiveawayResolve {
 // ------------------------------
 
 /**
- * A **Powerful** yet simple giveaway system | *Required: **manageGiveaway()
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/giveway
+ * ## giveaway
+ * ### A **Powerful** yet simple giveaway system | *Requires: [**manageGiveaway()**](https://simplyd.js.org/docs/handler/manageGiveaway)*
+ *
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint  [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {giveawayOptions} options [`giveawayOptions`](https://simplyd.js.org/docs/systems/giveway#giveawayoptions)
+ * @returns {Promise<GiveawayResolve | EndResolve>} [`GiveawayResolve`](https://simplyd.js.org/docs/systems/giveaway#giveawayresolve)`|`[`EndResolve`](https://simplyd.js.org/docs/systems/giveaway#endresolve)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/giveway)
  * @example simplydjs.giveaway(interaction)
  */
 
 export async function giveaway(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: giveawayOptions = { strict: false }
 ): Promise<GiveawayResolve | EndResolve> {
 	return new Promise(async (resolve) => {
 		try {
-			const { client } = msgOrInt;
+			const { client } = msgOrint;
 
 			let interaction: ExtendedInteraction;
-			if (msgOrInt.commandId) {
-				interaction = msgOrInt as ExtendedInteraction;
+			if (msgOrint.commandId) {
+				interaction = msgOrint as ExtendedInteraction;
 			}
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
 
 			const timeStart: number = Date.now();
 
@@ -131,18 +138,18 @@ export async function giveaway(
 
 			if (options?.manager as Role) manager = options.manager as Role;
 			else if (options?.manager as string)
-				manager = await msgOrInt.member.roles.cache.find(
+				manager = await msgOrint.member.roles.cache.find(
 					(r: Role) => r.id === (options.manager as string)
 				);
 
 			if (
 				!(
 					manager ||
-					msgOrInt?.member?.permissions?.has(
+					msgOrint?.member?.permissions?.has(
 						PermissionFlagsBits.ManageEvents
 					) ||
-					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
-					msgOrInt?.member?.permissions?.has(PermissionFlagsBits.Administrator)
+					msgOrint?.member?.permissions?.has(PermissionFlagsBits.ManageGuild) ||
+					msgOrint?.member?.permissions?.has(PermissionFlagsBits.Administrator)
 				)
 			) {
 				if (interaction)
@@ -158,7 +165,7 @@ export async function giveaway(
 					});
 			}
 
-			if (msgOrInt.commandId && !interaction.deferred)
+			if (msgOrint.commandId && !interaction.deferred)
 				await interaction.deferReply({ fetchReply: true });
 
 			options.winners ??= 1;
@@ -209,13 +216,13 @@ export async function giveaway(
 				content = (options.pingRole as Role).toString();
 			else if (options?.pingRole as string)
 				content = (
-					await msgOrInt.member.roles.cache.find(
+					await msgOrint.member.roles.cache.find(
 						(r: Role) => r.id === (options.pingRole as string)
 					)
 				).toString();
 
 			if (options?.requirements?.type === 'Role') {
-				const role = await msgOrInt.guild.roles.fetch(
+				const role = await msgOrint.guild.roles.fetch(
 					options.requirements?.id,
 					{
 						force: true
@@ -374,7 +381,7 @@ export async function giveaway(
 
 			function replacer(str: string) {
 				return str
-					.replaceAll('{hosted}', `<@${msgOrInt.member.user.id}>`)
+					.replaceAll('{hosted}', `<@${msgOrint.member.user.id}>`)
 					.replaceAll('{endsAt}', `<t:${endTime}:f>`)
 					.replaceAll('{prize}', prize)
 					.replaceAll(
@@ -479,7 +486,7 @@ export async function giveaway(
 						prize: prize,
 						entry: [],
 						endTime: end,
-						host: msgOrInt.member.user.id
+						host: msgOrint.member.user.id
 					});
 
 					await createDb.save();

@@ -18,11 +18,17 @@ export type nqnOptions = {
 // ------------------------------
 
 /**
- * @deprecated Removed from the package
- *
+ * ## _~nqn~_
  * NQN bot feature. But you have the power to do it.
- * @param message
- * @link `Documentation:` https://simplyd.js.org/docs/deprecated/nqn
+ *
+ * @deprecated **Removed from the package**
+ *
+ * @param {Message} message `Message`
+ * @param {nqnOptions} options [`nqnOptions`](https://simplyd.js.org/docs/deprecated/nqn#nqnoptions)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/deprecated/nqn)
  * @example simplydjs.nqn(message)
  */
 

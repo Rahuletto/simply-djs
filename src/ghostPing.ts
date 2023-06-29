@@ -21,13 +21,19 @@ export type ghostOptions = {
 // ------------------------------
 
 /**
- * A Great system to see **who ghost pinged**
+ * ## ghostPing
+ * ### A Great system to see **who ghost pinged**
  *
  * **Important!**: Use it in `messageDelete` event
  *
- * @param message
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/ghostPing
+ * @async
+ * @param {Message} message `Message`
+ * @param {ghostOptions} options [`ghostOptions`](https://simplyd.js.org/docs/general/ghostPing#ghostoptions)
+ * @returns {Promise<User>} [`User`](https://discord.js.org/#/docs/discord.js/stable/class/User)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/ghostPing)
  * @example simplydjs.ghostPing(message)
  */
 

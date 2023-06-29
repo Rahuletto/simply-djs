@@ -57,11 +57,18 @@ export type betterbtnOptions = {
 // ------------------------------
 
 /**
- * A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtnRole()**](https://simplyd.js.org/docs/handler/manageBtnRole)*
- * @param interaction
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/systems/betterBtnRole
- * @example simplydjs.betterBtnRole(client, interaction)
+ * ## betterBtnRole
+ * ### A **Button Role builder** that lets **admins create** button roles. | *Requires: [**manageBtnRole()**](https://simplyd.js.org/docs/handler/manageBtnRole)*
+ *
+ * @async
+ * @param {ExtendedInteraction} interaction [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {betterbtnOptions} options [`betterbtnOptions`](https://simplyd.js.org/docs/systems/betterbtnrole#betterbtnoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/systems/betterBtnRole)
+ * @example simplydjs.betterBtnRole(interaction)
  */
 
 export async function betterBtnRole(

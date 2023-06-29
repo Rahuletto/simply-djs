@@ -59,16 +59,22 @@ export type pagesOptions = {
 // ------------------------------
 
 /**
- * An *powerful yet customizable* **Embed Paginator**
+ * ## buttonPages
+ * ### An *powerful yet customizable* **Embed Paginator**
  *
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/buttonPages
+ * @async
+ * @param {ExtendedMessage|ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {pagesOptions} options [`pagesOptions`](https://simplyd.js.org/docs/general/buttonpages#pagesoptions)
+ * @returns {Promise<void>} `void`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/buttonPages)
  * @example simplydjs.buttonPages(interaction, [embed1, embed2] )
  */
 
 export async function buttonPages(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: pagesOptions = { strict: false }
 ): Promise<void> {
 	return new Promise(async () => {
@@ -262,8 +268,8 @@ export async function buttonPages(
 
 			let interaction: CommandInteraction;
 
-			if (msgOrInt.commandId) {
-				interaction = msgOrInt as CommandInteraction;
+			if (msgOrint.commandId) {
+				interaction = msgOrint as CommandInteraction;
 
 				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
@@ -272,8 +278,8 @@ export async function buttonPages(
 			let m: Message | InteractionResponse;
 			const pages = options?.embeds;
 
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
 
 			if (interaction) {
 				if (options?.count) {
@@ -309,7 +315,7 @@ export async function buttonPages(
 			}
 
 			const filter = (m: ButtonInteraction) =>
-				m.user.id === (msgOrInt.user ? msgOrInt.user : msgOrInt.author).id;
+				m.user.id === (msgOrint.user ? msgOrint.user : msgOrint.author).id;
 
 			const collector = m.createMessageComponentCollector({
 				time: options?.timeout || ms('2m'),

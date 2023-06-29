@@ -1,7 +1,7 @@
 import { ButtonStyle } from 'discord.js';
 
 /**
- * @returns {ExtendedButtonStyle}
+ * @typedef {ExtendedButtonStyle}
  */
 
 export type ExtendedButtonStyle =

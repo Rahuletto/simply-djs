@@ -1,10 +1,18 @@
 import { ColorResolvable } from 'discord.js';
 
 /**
- * Transforms Hex code into RGB Array (or) RGB String. This makes it easy to convert from discord.js v13 to v14.
- * @param hex
- * @link `Documentation:` https://simplyd.js.org/docs/misc/toRgb
+ * ## toRgb
+ * ### Transforms Hex code into RGB Array (or) RGB String. This makes it easy to convert from discord.js v13 to v14.
+ *
+ * @export
+ * @param {string} hex `string`
+ * @returns {ColorResolvable} [`ColorResolvable`](https://discord.js.org/#/docs/discord.js/stable/typedef/ColorResolvable)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/misc/toRgb)
  * @example simplydjs.toRgb('#406DBC')
+ *
  */
 
 export function toRgb(hex: string): ColorResolvable {

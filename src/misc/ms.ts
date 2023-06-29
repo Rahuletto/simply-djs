@@ -1,11 +1,17 @@
 /**
- * A Powerful, efficient yet simple system to convert human-readable time to ms
- * @param str
- * @link `Documentation:` https://simplyd.js.org/docs/misc/ms
+ * ## ms
+ * ### A Powerful, efficient yet simple system to convert human-readable time to ms
+ *
+ * @param {string} str `string`
+ * @returns {number} `number`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/misc/ms)
  * @example simplydjs.ms('1h')
  */
 
-export function ms(str: string) {
+export function ms(str: string): number {
 	let sum = 0,
 		time,
 		type,

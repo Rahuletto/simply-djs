@@ -16,7 +16,10 @@ import { GuildMember, Message } from 'discord.js';
  * @param {user} Discord.GuildMember Member type for Message object due to it missing.
  * @param {commandId} string Parameter used by simply-djs to get command-id's.
  * @param {customId} string Option used by the simply-djs's functions for custom-id checking.
- * @returns {ExtendedMessage}
+ *
+ * @interface ExtendedMessage
+ * @typedef {ExtendedMessage}
+ * @extends {Message}
  */
 
 export interface ExtendedMessage extends Message {

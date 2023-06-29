@@ -31,9 +31,16 @@ export type manageBtnRoleOptions = {
 // ------------------------------
 
 /**
- * A Button Role Handler for **simplydjs button role system.**
- * @param button
- * @param options
+ * ## manageBtnRole
+ * ### A Button Role Handler for **simplydjs button role system.**
+ *
+ * @async
+ * @param {ButtonInteraction} button [`ButtonInteraction`](https://old.discordjs.dev/#/docs/discord.js/main/class/ButtonInteraction)
+ * @param {manageBtnRoleOptions} options [`manageBtnRoleOptions`](https://simplyd.js.org/docs/handler/manageBtnRole#manageBtnRoleoptions)
+ * @returns {Promise<boolean>} `boolean`
+ *
+ * ---
+ *
  * @link `Documentation:` https://simplyd.js.org/docs/hhandler/manageBtnRole
  * @example simplydjs.manageBtnRole(interaction)
  */

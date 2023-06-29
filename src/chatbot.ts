@@ -1,7 +1,7 @@
 import { https } from './misc';
 
 import { SimplyError } from './error';
-import { ExtendedMessage } from './typedef';
+import { Message } from 'discord.js';
 
 // ------------------------------
 // ------- T Y P I N G S --------
@@ -25,19 +25,24 @@ export type chatbotOptions = {
 // ------------------------------
 
 /**
- * A chatbot system that is both technically advanced and intelligent, and is your buddy.
+ * ## chatbot
+ * ### A chatbot system that is both technically advanced and intelligent, and is your buddy.
  *
  * Implements a chatbot feature using an external API to generate responses to user messages.
  *
- * @param message
- * @param options
+ * @async
+ * @param {Message} message `Message`
+ * @param {chatbotOptions} options [`chatbotOptions`](https://simplyd.js.org/docs/fun/chatbot#chatbotoptions)
+ * @returns {Promise<void>} `void`
  *
- * @link `Documentation:` https://simplyd.js.org/docs/Fun/chatbot
+ * ----
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/fun/chatbot)
  * @example simplydjs.chatbot(client, message)
  */
 
 export async function chatbot(
-	message: ExtendedMessage,
+	message: Message,
 	options: chatbotOptions = { strict: false }
 ): Promise<void> {
 	return new Promise(async () => {
@@ -144,7 +149,7 @@ export async function chatbot(
 
 			// Get data from the api made by the same team
 			const jsonRes = await https(
-				`simplyapi.js.org` + url.pathname + '?' + params.toString()
+				`simplyapi.js.org${url.pathname}?${params.toString()}`
 			);
 
 			const chatbotReply = jsonRes.reply // Just replacing any mass mentions just in case

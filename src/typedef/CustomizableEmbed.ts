@@ -9,7 +9,9 @@ import {
  * This interface can be used to customize embeds in a specific function.
  *
  * **Documentation Url** of the type: *https://simplyd.js.org/docs/typedef/CustomizableEmbed*
- * @returns {CustomizableEmbed}
+ *
+ * @interface CustomizableEmbed
+ * @typedef {CustomizableEmbed}
  *
  * @example
  * simplydjs.someFunction(interaction, {

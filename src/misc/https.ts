@@ -32,12 +32,17 @@ export type httpsOptions = {
 };
 
 /**
- * Https function to replace your good ol' node-fetch and axios.
- * @param host
- * @param endpoint
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/misc/https
- * @example simplydjs.https("postman-echo.com", "/get") // An Echo endpoint
+ * ## https
+ * ### Https function to replace your good ol' node-fetch and axios.
+ *
+ * @param {string | httpsOptions} url `string` | [`httpsOptions`](https://simplyd.js.org/docs/misc/https#httpsoptions)
+ * @param {httpsOptions} options [`httpsOptions`](https://simplyd.js.org/docs/misc/https#httpsoptions)
+ * @returns {Promise<any>} `any`
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/misc/https)
+ * @example simplydjs.https("postman-echo.com/get") // An Echo endpoint
  */
 
 export function https(

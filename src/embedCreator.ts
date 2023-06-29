@@ -43,15 +43,22 @@ export type embedCreatorOptions = {
 // ------------------------------
 
 /**
- * Lets you create embeds with **an interactive builder**
- * @param msgOrInt
- * @param options
- * @link `Documentation:` https://simplyd.js.org/docs/general/embedCreator
+ * ## embedCreator
+ * ### Lets you create embeds with **an interactive builder**
+ *
+ * @async
+ * @param {ExtendedMessage | ExtendedInteraction} msgOrint [`ExtendedMessage`](https://simplyd.js.org/docs/typedef/extendedmessage) | [`ExtendedInteraction`](https://simplyd.js.org/docs/typedef/extendedinteraction)
+ * @param {embedCreatorOptions} options [`embedCreatorOptions`](https://simplyd.js.org/docs/general/embedCreator#embedcreatoroptions)
+ * @returns {Promise<APIEmbed>} [`APIEmbed`](https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbed)
+ *
+ * ---
+ *
+ * @link [`Documentation`](https://simplyd.js.org/docs/general/embedCreator)
  * @example simplydjs.embedCreate(interaction)
  */
 
 export async function embedCreator(
-	msgOrInt: ExtendedMessage | ExtendedInteraction,
+	msgOrint: ExtendedMessage | ExtendedInteraction,
 	options: embedCreatorOptions = { strict: false }
 ): Promise<APIEmbed> {
 	return new Promise(async (resolve) => {
@@ -178,8 +185,8 @@ export async function embedCreator(
 
 			let interaction: ExtendedInteraction;
 
-			if (msgOrInt.commandId) {
-				interaction = msgOrInt as ExtendedInteraction;
+			if (msgOrint.commandId) {
+				interaction = msgOrint as ExtendedInteraction;
 
 				if (!interaction.deferred)
 					await interaction.deferReply({ fetchReply: true });
@@ -187,8 +194,8 @@ export async function embedCreator(
 
 			let msg: Message;
 
-			const extInteraction = msgOrInt as ExtendedInteraction;
-			const extMessage = msgOrInt as ExtendedMessage;
+			const extInteraction = msgOrint as ExtendedInteraction;
+			const extMessage = msgOrint as ExtendedMessage;
 
 			if (interaction) {
 				msg = await extInteraction.followUp({
@@ -214,25 +221,25 @@ export async function embedCreator(
 				)
 				.setColor(toRgb('#2F3136'));
 
-			msgOrInt.channel
+			msgOrint.channel
 				.send({ content: '** **', embeds: [creator] })
 				.then(async (preview) => {
 					const filter = (m: MessageComponentInteraction) => {
-						if (m.user.id === msgOrInt.member.user.id) return true;
+						if (m.user.id === msgOrint.member.user.id) return true;
 						m.reply({
-							content: `Only <@!${msgOrInt.member.user.id}> can use these buttons!`,
+							content: `Only <@!${msgOrint.member.user.id}> can use these buttons!`,
 							ephemeral: true
 						});
 						return false;
 					};
 
 					const messageFilter = (m: Message) =>
-						msgOrInt.member.user.id === m.author.id;
+						msgOrint.member.user.id === m.author.id;
 
 					const buttonFilter = (m: ButtonInteraction) => {
-						if (m.user.id === msgOrInt.member.user.id) return true;
+						if (m.user.id === msgOrint.member.user.id) return true;
 						m.reply({
-							content: `Only <@!${msgOrInt.member.user.id}> can use these buttons!`,
+							content: `Only <@!${msgOrint.member.user.id}> can use these buttons!`,
 							ephemeral: true
 						});
 						return false;
@@ -261,7 +268,7 @@ export async function embedCreator(
 							msg.delete().catch(() => {});
 						} else if (button.customId === 'setDone') {
 							if (
-								msgOrInt.member.permissions.has(
+								msgOrint.member.permissions.has(
 									PermissionFlagsBits.Administrator
 								)
 							) {
@@ -293,13 +300,13 @@ export async function embedCreator(
 									}
 								});
 							} else if (
-								!msgOrInt.member.permissions.has(
+								!msgOrint.member.permissions.has(
 									PermissionFlagsBits.Administrator
 								)
 							) {
 								await button.reply({ content: 'Done 👍', ephemeral: true });
 
-								msgOrInt.channel.send({
+								msgOrint.channel.send({
 									content: preview.content,
 									embeds: [preview.embeds[0]]
 								});
