@@ -15,7 +15,7 @@
 
 [![Version](https://img.shields.io/npm/v/simply-djs.svg?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
 [![Downloads](https://img.shields.io/npm/dt/simply-djs?style=for-the-badge)](https://www.npmjs.com/package/simply-djs)
-[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge/v4.x.x?style=for-the-badge)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview/v4.x.x)
+[![CodeFactor](https://www.codefactor.io/repository/github/rahuletto/simply-djs/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/rahuletto/simply-djs/overview)
 
 [![Documentation](https://img.shields.io/badge/SimplyDJS-Documentation-406dbc?style=for-the-badge)](https://simplyd.js.org)
 [![Support](https://img.shields.io/badge/Discord-Support-5865F2?style=for-the-badge&logo=discord)](https://discord.gg/3JzDV9T5Fn)
