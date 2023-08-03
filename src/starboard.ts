@@ -130,6 +130,9 @@ export async function starboard(
 			} else if (react) {
 				if (
 					react.emoji.id == options.emoji ||
+					react.emoji.name == options.emoji ||
+					`<:${react.emoji.name}:${react.emoji.id}>` == options.emoji ||
+					`<a:${react.emoji.name}:${react.emoji.id}>` == options.emoji ||
 					react.emoji.name == '⭐' ||
 					react.emoji.name == '🌟'
 				) {

@@ -151,7 +151,7 @@ export async function meme(
 					let subreddit = sub[random];
 					if (!subreddit) subreddit = 'meme';
 
-					// Get a random reddit post from the subreddit
+					// Get a random meme from that topic (Boycotting Reddit)
 					const response = await https(
 						`https://meme-api.com/gimme/${subreddit}`
 					);
