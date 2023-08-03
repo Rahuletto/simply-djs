@@ -6,15 +6,12 @@
 		"allowUnusedLabels": false,
 		"alwaysStrict": true,
 		"declaration": true,
-		"declarationDir": "typings",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-		"lib": ["ES2021"],
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitAny": true,
-		"noImplicitReturns": false,
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
@@ -23,8 +20,12 @@
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": false,
-		"target": "ES2021"
+		"target": "ES2021",
+		"skipLibCheck": true
 	},
 	"exclude": ["node_modules"],
-	"include": ["./src/**/*", "simplydjs.ts"]
+	"include": ["./src/**/*", "simplydjs.ts"],
+	"paths": {
+		"@src/*": ["src/*"]
+	}
 }

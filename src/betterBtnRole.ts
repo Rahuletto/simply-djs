@@ -354,6 +354,7 @@ export async function betterBtnRole(
 												ephemeral: true
 											});
 										});
+									break;
 								} else {
 									await msg
 										.edit({
@@ -380,6 +381,7 @@ export async function betterBtnRole(
 												ephemeral: true
 											});
 										});
+									break;
 								}
 							} else if (i === msg.components.length - 1) {
 								if (o === msg.components[i].components.length - 1) {

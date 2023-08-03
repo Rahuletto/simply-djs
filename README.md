@@ -53,17 +53,10 @@ pnpm add simply-djs
 
 # What's new 🎁
 
-## v4.1.0
+## v4.1.1
 
 - JSDoc updated !. Now every single function gets intellisense upgrade
-- Better optimization
-- Tictactoe AI is now baked inbuilt.
-- Compressed whole package using "uglify-js"
-- Smaller, Lighter yet blazing fast !
-- Provided documentation links in all jsdoc options
-- More Bug fixes
-
-- ### (478kb => 301kb) -37% lighter than v4.0.1
+- Bug fixes
 
 ---
 

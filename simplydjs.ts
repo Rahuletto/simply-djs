@@ -45,7 +45,7 @@ if (Number(discordJSVersion.slice(0, 2)) < 14)
 // ------- E X P O R T S --------
 // ------------------------------
 
-export const version: string = '4.1.0';
+export const version: string = '4.1.1';
 
 export {
 	https,
